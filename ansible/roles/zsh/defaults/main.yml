@@ -1,0 +1,10 @@
+---
+zsh_prompt: grml
+
+zsh_packages:
+  - zsh
+  - zsh-completions
+  - zsh-doc
+  - zsh-lovers
+  - zsh-syntax-highlighting
+

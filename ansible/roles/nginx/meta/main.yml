@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: cron
+    when: webserver_enable_letsencrypt

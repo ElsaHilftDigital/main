@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+127.0.0.1 {{ ansible_hostname }}.{{ hostname_domain }} {{ ansible_hostname }}
+::1 {{ ansible_hostname }}.{{ hostname_domain }} {{ ansible_hostname }}
+
+{% if hostname_extra_entries is defined %}
+{% for entry in hostname_extra_entries %}
+{{ entry.ip }} {{ entry.fqdn }} {{ entry.alias | default("") }}
+{% endfor %}
+{% endif %}

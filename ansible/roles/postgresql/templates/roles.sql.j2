@@ -1,0 +1,20 @@
+{% for role in postgresql_roles %}
+alter role {{ role.name }} with
+{% if not (role.superuser | default(False)) %}no{% endif %}superuser
+{% if not (role.createdb | default(False)) %}no{% endif %}createdb
+{% if not (role.createrole | default(False)) %}no{% endif %}createrole
+{% if not (role.inherit | default(False)) %}no{% endif %}inherit
+{% if not (role.login | default(False)) %}no{% endif %}login
+{% if not (role.replication | default(False)) %}no{% endif %}replication
+{% if not (role.bypassrls | default(False)) %}no{% endif %}bypassrls;
+{% for parent in role.in_role | default([]) %}
+grant {{ parent }} to {{ role.name }};
+{% endfor %}
+{% for child in role.role | default([]) %}
+grant {{ role.name }} to {{ child }};
+{% endfor %}
+{% for child in role.role | default([]) %}
+grant {{ role.name }} to {{ child }} with admin option;
+{% endfor %}
+
+{% endfor %}

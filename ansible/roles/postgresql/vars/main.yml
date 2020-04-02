@@ -1,0 +1,16 @@
+---
+
+table_privileges:
+  - select
+  - insert
+  - update
+  - delete
+  - truncate
+  - references
+  - trigger
+
+database_privileges:
+  - create
+  - connect
+  - temporary
+  - temp

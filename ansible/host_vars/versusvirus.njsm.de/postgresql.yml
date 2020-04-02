@@ -1,0 +1,45 @@
+---
+postgresql_base_directory: /var/lib/postgresql/
+postgresql_data_directory: /var/lib/postgresql/11/main
+
+postgresql_roles:
+  - name: peer
+    inherit: True
+    login: False
+  - name: postgres
+    superuser: True
+    createdb: True
+    createrole: True
+    inherit: True
+    login: True
+    replication: True
+    bypassrls: True
+    in_role:
+      - peer
+  - name: production
+    login: True
+    password: "production"
+
+postgresql_databases:
+  - name: production
+    owner: production
+
+postgresql_access_rights:
+  - type: local
+    database: all
+    user: +peer
+    method: "peer"
+  - type: local
+    database: all
+    user: all
+    method: md5
+  - type: host
+    database: all
+    user: all
+    address: "127.0.0.1/32"
+    method: "md5"
+  - type: host
+    database: all
+    user: all
+    address: "::1/128"
+    method: "md5"

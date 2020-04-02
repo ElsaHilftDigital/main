@@ -1,0 +1,29 @@
+---
+- name: Install package
+  become: True
+  package:
+    name: gvim
+    state: present
+  vars:
+    desktop: desktop
+  when: desktop in group_names
+
+- name: Install package
+  become: True
+  package:
+    name: vim
+    state: present
+  when: not 'desktop' in group_names
+
+- name: Configure vim
+  template:
+    src: vimrc.j2
+    dest: "{{ ansible_env.HOME }}/.vimrc"
+    mode: 0644
+
+- name: Configure vim for root
+  become: True
+  template:
+    src: vimrc.j2
+    dest: /root/.vimrc
+    mode: 0644

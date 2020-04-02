@@ -1,0 +1,88 @@
+- name: Install package
+  package:
+    name: "{{ item }}"
+    state: present
+  become: True
+  with_items:
+    - postgresql
+    - python3-psycopg2
+    - locales
+    - postgresql-client
+    - postgresql-contrib
+
+- name: Configure
+  become: True
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ postgresql_config_directory }}/{{ item }}"
+    owner: postgres
+    group: postgres
+    mode: 0600
+  with_items:
+    - pg_hba.conf
+    - postgresql.conf
+    - pg_ident.conf
+  notify: Restart Postgres
+
+- name: Configure client
+  become: True
+  template:
+    src: "psqlrc.j2"
+    dest: "{{ postgresql_data_directory }}/../.psqlrc"
+    owner: postgres
+    group: postgres
+    mode: 0644
+
+- name: Start
+  become: True
+  service:
+    name: postgresql@11-main
+    state: started
+    enabled: True
+
+- name: Setup users
+  become: True
+  become_user: postgres
+  postgresql_user:
+    name: "{{ item.name }}"
+    conn_limit: "{{ item.connection_limit | default(-1) }}"
+    password: "{{ item.password | default(None) }}"
+    expires: "{{ item.valid_until | default('infinity') }}"
+  with_items: "{{ postgresql_roles }}"
+
+- name: Create script for role hierarchy
+  become: True
+  template:
+    src: "{{ item }}.sql.j2"
+    dest: "{{ postgresql_base_directory }}/{{ item }}.sql"
+    owner: postgres
+    group: postgres
+    mode: 0440
+  loop:
+    - roles
+    - grants
+
+- name: Setup role hierarchies
+  become: True
+  become_user: postgres
+  postgresql_db:
+    name: postgres
+    target: "{{ postgresql_base_directory }}/roles.sql"
+    state: restore
+
+- name: Setup databases
+  become: True
+  become_user: postgres
+  postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.owner | default('postgres') }}"
+    encoding: "{{ item.encoding | default('UTF8') }}"
+  with_items: "{{ postgresql_databases }}"
+
+- name: Setup grants
+  become: True
+  become_user: postgres
+  postgresql_db:
+    name: postgres
+    target: "{{ postgresql_base_directory }}/grants.sql"
+    state: restore

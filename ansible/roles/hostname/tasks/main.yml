@@ -1,0 +1,14 @@
+---
+- name: Set hostname now
+  become: True
+  hostname:
+    name: "{{ ansible_hostname }}.{{ hostname_domain }}"
+
+- name: Setup hosts file
+  become: True
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644

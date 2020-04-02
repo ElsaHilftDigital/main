@@ -1,0 +1,81 @@
+# {{ ansible_managed }}
+
+user www-data www-data;
+worker_processes  auto;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+
+    access_log  /var/log/nginx/access.log;
+    error_log   /var/log/nginx/error.log;
+
+    server_tokens off;
+
+    types_hash_max_size 4096;
+    server_names_hash_bucket_size 128;
+
+    keepalive_requests 32;
+    keepalive_timeout 60s;
+
+    resolver{% for resolver in webserver_dns_resolvers %}{% if ':' in resolver %} [{{ resolver }}]{% else %} {{ resolver }}{% endif %}{% endfor %};
+
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        '' '';
+    }
+
+    server {
+        listen      *:80;
+        listen      [::]:80;
+        server_name {{ webserver_server_name }};
+{% if webserver_enable_letsencrypt or webserver_tls is defined %}
+
+        include locations-insecure-enabled/*.conf;
+
+        location / {
+
+            if ($request_method = POST) {
+                return 307 https://$host$request_uri;
+            }
+
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen       *:443 ssl http2;
+        listen       [::]:443 ssl http2;
+        server_name  {{ webserver_server_name }};
+
+        ssl_protocols   TLSv1.2 TLSv1.3;
+        ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
+{% if webserver_tls is defined %}
+        ssl_certificate {{ webserver_tls.cert }};
+        ssl_certificate_key {{ webserver_tls.key }};
+        ssl_trusted_certificate {{ webserver_tls.chain }};
+{% endif %}
+{% if webserver_enable_letsencrypt %}
+        ssl_certificate /etc/letsencrypt/live/{{ webserver_server_name }}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/{{ webserver_server_name }}/privkey.pem;
+        ssl_trusted_certificate /etc/letsencrypt/live/{{ webserver_server_name }}/chain.pem;
+{% endif %}
+        ssl_dhparam     /etc/nginx/dhparam.pem;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:TLS:20m;
+        ssl_session_tickets on;
+        ssl_session_timeout 10m;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+
+        add_header Strict-Transport-Security "max-age=31536000;" always;
+{% endif %}
+
+        include locations-enabled/*.conf;
+    }
+
+    include sites-enabled/*.conf;
+}

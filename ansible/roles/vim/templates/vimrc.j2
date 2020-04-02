@@ -1,0 +1,21 @@
+" {{ ansible_managed }}
+
+highlight ColorColumn ctermbg=red guibg=red
+highlight ExtraWhitespace ctermbg=darkgreen guibg=lightgreen
+match ExtraWhitespace /\s\+$/
+set colorcolumn=81
+set tabstop=4
+filetype plugin on
+syntax on
+set expandtab
+set spelllang=en,de
+set nowrap
+set textwidth=80
+set relativenumber
+set scrolloff=6
+set number
+
+augroup resCur
+  autocmd!
+  autocmd BufReadPost * call setpos(".", getpos("'\""))
+augroup END

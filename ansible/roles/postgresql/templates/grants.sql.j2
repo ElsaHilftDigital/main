@@ -1,0 +1,21 @@
+{% for db in postgresql_databases %}
+{% for grant in db.grants | default([]) %}
+{% if loop.first %}
+\c {{ db.name }}
+{% endif %}
+grant connect on database {{ db.name }} to {{ grant.role }};
+grant usage on schema public to {{ grant.role }};
+{% if grant.privileges is defined %}
+{% set privileges = grant.privileges | intersect(table_privileges) | join(", ") %}
+{% else %}
+{% set privileges = "all privileges" %}
+{% endif %}
+{% if grant.tables is defined %}
+{% set tables = grant.tables | join(", ") %}
+grant {{ privileges }} on public.{{ tables }} to {{ grant.role }};
+{% else %}
+{% set tables = "all tables in schema public" %}
+grant {{ privileges }} on {{ tables }} to {{ grant.role }};
+{% endif %}
+{% endfor %}
+{% endfor %}

@@ -1,0 +1,149 @@
+---
+
+- name: Install packages
+  become: True
+  package:
+    name: nginx
+    state: present
+
+- name: Install packages
+  become: True
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - certbot
+    - python-certbot-nginx
+  when: webserver_enable_letsencrypt
+
+- name: Set up directories
+  become: True
+  file:
+    path: "/etc/nginx/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - locations-enabled
+    - locations-insecure-enabled
+    - locations-available
+    - locations-insecure-available
+    - sites-available
+    - sites-enabled
+
+- name: Configure nginx
+  become: True
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+
+- name: Configure insecure locations
+  become: True
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/locations-insecure-available/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+  with_fileglob:
+    - "{{ inventory_hostname }}/webserver/locations-insecure/*"
+
+- name: Enable insecure locations
+  become: True
+  file:
+    state: link
+    src: "/etc/nginx/locations-insecure-available/{{ item | basename }}"
+    dest: "/etc/nginx/locations-insecure-enabled/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+  with_fileglob:
+    - "{{ inventory_hostname }}/webserver/locations-insecure/*"
+
+- name: Configure locations
+  become: True
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/locations-available/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+  with_fileglob:
+    - "{{ inventory_hostname }}/webserver/locations/*"
+
+- name: Enable locations
+  become: True
+  file:
+    state: link
+    src: "/etc/nginx/locations-available/{{ item | basename }}"
+    dest: "/etc/nginx/locations-enabled/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+  with_fileglob:
+    - "{{ inventory_hostname }}/webserver/locations/*"
+
+- name: Configure sites
+  become: True
+  template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/sites-available/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+  with_fileglob:
+    - "{{ inventory_hostname }}/webserver/sites/*"
+
+- name: Enable sites
+  become: True
+  file:
+    state: link
+    src: "/etc/nginx/sites-available/{{ item | basename }}"
+    dest: "/etc/nginx/sites-enabled/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+  with_fileglob:
+    - "{{ inventory_hostname }}/webserver/sites/*"
+
+- name: Start services
+  become: True
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Check if certificate has been issued
+  become: True
+  stat:
+    path: "/etc/letsencrypt/live/{{ webserver_server_name }}"
+  register: certificate
+  when: webserver_enable_letsencrypt
+
+- name: Run certbot
+  become: True
+  command: certbot --nginx --register-unsafely-without-email
+  when: webserver_enable_letsencrypt and not certificate.stat.isdir is defined
+
+- name: Add cron job for certificate renewal
+  become: True
+  cron:
+    state: present
+    job: '/usr/bin/certbot renew --post-hook "systemctl reload nginx" > /dev/null 2>&1'
+    minute: "14"
+    hour: "7,19"
+    name: Letsencrypt certificate renewal
+  when: webserver_enable_letsencrypt
+
+

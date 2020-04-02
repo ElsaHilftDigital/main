@@ -1,0 +1,8 @@
+---
+webserver_server_name: "{{ ansible_fqdn }}"
+webserver_dns_resolvers: "{{ ansible_dns.nameservers }}"
+webserver_enable_letsencrypt: False
+#webserver_tls:
+# chain: /path/to/chain
+# key: /path/to/key
+# cert: /path/to/cert

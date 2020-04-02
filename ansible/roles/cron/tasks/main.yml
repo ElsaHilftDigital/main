@@ -1,0 +1,13 @@
+---
+- name: Install package
+  become: True
+  package:
+    name: cron
+    state: present
+
+- name: Activate service
+  become: True
+  service:
+    name: cron
+    state: started
+    enabled: True
