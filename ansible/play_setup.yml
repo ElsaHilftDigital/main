@@ -14,3 +14,7 @@
       tags: postgresql
     - role: nginx
       tags: nginx
+    - role: java
+      tags: java
+    - role: elsa-backend
+      tags: elsa-backend
