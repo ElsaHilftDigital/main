@@ -2,6 +2,7 @@ package de.njsm.versusvirus.backend;
 
 import de.njsm.versusvirus.backend.telegram.BotCommand;
 import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
+import de.njsm.versusvirus.backend.telegram.PhotoDownloader;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
 import de.njsm.versusvirus.backend.telegram.dto.Update;
@@ -18,6 +19,12 @@ public class TelegramController implements BotCommandDispatcher {
     private static final Logger LOG = LoggerFactory.getLogger(TelegramController.class);
 
     public static final String TELEGRAM_WEBHOOK = "/telegram/the/next/path/is/a/password/Wz4Bg0pZUybWCbyjjRxpol";
+
+    private PhotoDownloader photoDownloader;
+
+    // TODO How to autowire?
+    public TelegramController(/*PhotoDownloader photoDownloader*/) {
+    }
 
     @GetMapping(TELEGRAM_WEBHOOK)
     public void receiveTelegramUpdate(Update update) {
@@ -41,7 +48,7 @@ public class TelegramController implements BotCommandDispatcher {
         }
 
         if (message.getPhoto() != null) {
-            // message contains images. Offer available purchases to select from
+            // TODO message contains images. Offer available purchases to select from
             return;
         }
 
@@ -113,7 +120,7 @@ public class TelegramController implements BotCommandDispatcher {
 
             if different volunteer than assigned by us -> tell them not to hack
 
-            download picture and
+            download picture and assign to purchase
 
          */
     }

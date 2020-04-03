@@ -1,6 +1,9 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.telegram.dto.*;
+import de.njsm.versusvirus.backend.telegram.dto.File;
+import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
+import de.njsm.versusvirus.backend.telegram.dto.TelegramResponse;
+import de.njsm.versusvirus.backend.telegram.dto.WebhookRequest;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
@@ -12,7 +15,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
-import java.util.concurrent.LinkedTransferQueue;
 
 class TelegramApiWrapper {
 
@@ -22,20 +24,14 @@ class TelegramApiWrapper {
 
     private ApiClient apiClient;
 
-    private LinkedTransferQueue<Update> updates;
-
-    private int offset;
-
-    public TelegramApiWrapper(String token, int offset) {
+    TelegramApiWrapper(String token) {
         apiClient = new Retrofit.Builder()
                 .baseUrl("https://api.telegram.org")
                 .client(new OkHttpClient.Builder().build())
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build()
                 .create(ApiClient.class);
-        updates = new LinkedTransferQueue<>();
         this.token = token;
-        this.offset = offset;
         registerWebhook();
     }
 

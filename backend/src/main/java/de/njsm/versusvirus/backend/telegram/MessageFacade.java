@@ -1,6 +1,13 @@
 package de.njsm.versusvirus.backend.telegram;
 
-public class MessageSendingFacade {
+// TODO Make this thing a bean
+public class MessageFacade {
+
+    private TelegramApiWrapper api;
+
+    public MessageFacade(TelegramApiWrapper api) {
+        this.api = api;
+    }
 
     public void confirmPreliminaryRegistration(/*User*/) {
         /*
