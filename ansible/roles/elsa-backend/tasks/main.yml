@@ -3,11 +3,12 @@
 - name: Install binary
   become: True
   copy:
-    src: "{{ playbook_dir }}/../backend/???"
+    src: "{{ playbook_dir }}/../backend/build/libs/backend-0.0.1-SNAPSHOT.jar"
     dest: /usr/local/lib/elsa-hilft.jar
     owner: root
     group: root
     mode: 0644
+  notify: Restart service
 
 - name: Create group
   become: True
