@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { electronicFormatIBAN, isValidIBAN } from 'ibantools';
+
+import { volunteerActions } from '../store/volunteer';
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 
 const RegisterVolunteer = () => {
-    const { errors, handleSubmit, register, setValue, triggerValidation } = useForm();
+    const dispatch = useDispatch();
+
+    const { errors, getValues, handleSubmit, register, setValue, triggerValidation } = useForm();
     const [ oldBirthdayValue, setOldBirthdayValue ] = useState('');
     const [ oldPhoneNumber, setOldPhoneNumber ] = useState('');
     const [ oldZipCode, setOldZipCode ] = useState('');
-    const onSubmit = data => console.log(data);
+    const [ wantsCompensation, setWantsCompensation ] = useState(true);
+    const { registerFormIban } = getValues();
+    const onSubmit = data => dispatch(volunteerActions.createVolunteer({
+        firstName: data.registerFormSurname,
+        lastName: data.registerFormName,
+        phone: data.registerFormPhone,
+        email: data.registerFormEmail,
+        address: data.registerFormStreet,
+        city: data.registerFormOrt,
+        zipCode: data.registerFormPlz,
+        birthDate: getBirthdateAsDate(data.registerFormBirthday.replace(/\s/g, '')),
+        iban: electronicFormatIBAN(data.registerFormIban),
+        bankName: data.registerFormBankName,
+        wantsCompensation: !data.registerFormWantsNoCompensation,
+    }));
 
     const formatBirthdate = (e) => {
         if (!e.currentTarget.value) {
@@ -35,20 +54,23 @@ const RegisterVolunteer = () => {
         setOldBirthdayValue(newBirthdayValue);
     };
 
-    const validateBirthdate = (value) => {
-        if (!value) {
-            return false;
-        }
-
-        const birthdate = value.replace(/\s/g, '');
-
+    const getBirthdateAsDate = (birthdate) => {
         const dayEndIndex = birthdate.indexOf('/');
         const monthEndIndex = birthdate.indexOf('/', dayEndIndex+1);
         const day = birthdate.substring(0,dayEndIndex);
         const month = birthdate.substring(dayEndIndex + 1, monthEndIndex);
         const year = birthdate.substring(monthEndIndex + 1);
 
-        const date = new Date(`${year}-${month}-${day}`);
+        return new Date(`${year}-${month}-${day}`);
+    }
+
+    const validateBirthdate = (value) => {
+        if (!value) {
+            return false;
+        }
+
+        const birthdate = value.replace(/\s/g, '');
+        const date = getBirthdateAsDate(birthdate);
         if (!(date instanceof Date && !isNaN(date))) {
             return false;
         }
@@ -116,7 +138,7 @@ const RegisterVolunteer = () => {
 
     const validateIBAN = (value) => {
         if (!value) {
-            return true;
+            return false;
         }
 
         return isValidIBAN(electronicFormatIBAN(value));
@@ -146,7 +168,7 @@ const RegisterVolunteer = () => {
                 <div className="form-group">
                     <label htmlFor="registerFormEmail">E-mail</label>
                     <input name="registerFormEmail" ref={register({ required: true })} type="email" className="form-control" id="registerFormEmail" placeholder="elsa@baden.ch" />
-                    {errors.registerFormEmail && (<span className="text-danger">Email wird benötigt</span>)}
+                    {errors.registerFormEmail && (<span className="text-danger">E-mail wird benötigt</span>)}
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormStreet">Strasse, Nr.</label>
@@ -170,11 +192,24 @@ const RegisterVolunteer = () => {
                     <input onChange={formatBirthdate} onBlur={() => triggerValidation('registerFormBirthday')} name="registerFormBirthday" ref={register({ validate: validateBirthdate })} type="text" className="form-control" id="registerFormBirthday" />
                     {errors.registerFormBirthday && (<span className="text-danger">{!!oldBirthdayValue ? 'Ungültiges Datum' : 'Geburtstag wird benötigt'}</span>)}
                 </div>
-                <div className="form-group">
-                    <label htmlFor="registerFormIban">IBAN <small>(optional)</small></label>
-                    <input name="registerFormIban" ref={register({ validate: validateIBAN })} type="text" className="form-control" id="registerFormIban" />
-                    {errors.registerFormIban && (<span className="text-danger">IBAN ist ungültig</span>)}
+                <div className="form-check mb-2">
+                    <input onClick={() => setWantsCompensation(!wantsCompensation)} name="registerFormWantsNoCompensation" ref={register()} type="checkbox" className="form-check-input" id="registerFormWantsNoCompensation" />
+                    <label className="form-check-label" htmlFor="registerFormWantsNoCompensation">Ich möchte keine Entschädigung für meinen Einsatz</label>
                 </div>
+                {wantsCompensation && (
+                    <>
+                        <div className="form-group">
+                            <label htmlFor="registerFormIban">IBAN</label>
+                            <input name="registerFormIban" ref={register({ validate: validateIBAN })} type="text" className="form-control" id="registerFormIban" />
+                            {errors.registerFormIban && (<span className="text-danger">{!registerFormIban ? 'IBAN wird benötigt' : 'IBAN ist ungültig'}</span>)}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="registerFormBankName">Bank Name</label>
+                            <input name="registerFormBankName" ref={register({ required: true })} type="text" className="form-control" id="registerFormBankName" />
+                            {errors.registerFormBankName && (<span className="text-danger">Bank Name wird benötigt</span>)}
+                        </div>
+                    </>
+                )}
                 <button type="submit" className="btn btn-primary">Absenden</button>
             </form>
         </div>
