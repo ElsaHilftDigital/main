@@ -27,29 +27,26 @@ const RegisterVolunteer = () => {
             return;
         }
 
-        if (!newBirthdayValue.match(/^\d*$/) &&
-            !newBirthdayValue.match(/^\d\d( | \/| \/ )?$/) &&
-            !newBirthdayValue.match(/^\d\d \/ \d\d?$/) &&
-            !newBirthdayValue.match(/^\d\d \/ \d\d( | \/| \/ )?$/) &&
-            !newBirthdayValue.match(/^\d\d \/ \d\d \/ \d\d?\d?\d?$/)) {
+        if (!newBirthdayValue.match(/^(\d| |\/)*$/)) {
             setValue('registerFormBirthday', oldBirthdayValue);
             return;
         }
 
-        if (newBirthdayValue.match(/^\d\d \/ \d\d \/ \d\d\d\d$/)) {
-            triggerValidation('registerFormBirthday');
-        }
         setOldBirthdayValue(newBirthdayValue);
     };
 
     const validateBirthdate = (value) => {
-        if (!value || !value.match(/^\d\d \/ \d\d \/ \d\d\d\d$/)) {
+        if (!value) {
             return false;
         }
 
-        const day = value.substring(0,2);
-        const month = value.substring(5,7);
-        const year = value.substring(10);
+        const birthdate = value.replace(/\s/g, '');
+
+        const dayEndIndex = birthdate.indexOf('/');
+        const monthEndIndex = birthdate.indexOf('/', dayEndIndex+1);
+        const day = birthdate.substring(0,dayEndIndex);
+        const month = birthdate.substring(dayEndIndex + 1, monthEndIndex);
+        const year = birthdate.substring(monthEndIndex + 1);
 
         const date = new Date(`${year}-${month}-${day}`);
         if (!(date instanceof Date && !isNaN(date))) {
@@ -109,6 +106,14 @@ const RegisterVolunteer = () => {
         setOldZipCode(zipCode);
     };
 
+    const validateZipCode = (value) => {
+        if(!value) {
+            return false;
+        }
+
+        return !isNaN(value) && value >= 1000 && value < 10000;
+    };
+
     const validateIBAN = (value) => {
         if (!value) {
             return true;
@@ -139,19 +144,19 @@ const RegisterVolunteer = () => {
                     {errors.registerFormPhone && (<span className="text-danger">{!!oldPhoneNumber ? 'Ungültige Telefonnummber' : 'Telefonnummer wird benötigt'}</span>)}
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormEmail">Email</label>
-                    <input name="registerFormEmail" ref={register({ required: true })} type="email" className="form-control" id="registerFormEmail" placeholder="Email" />
+                    <label htmlFor="registerFormEmail">E-mail</label>
+                    <input name="registerFormEmail" ref={register({ required: true })} type="email" className="form-control" id="registerFormEmail" placeholder="elsa@baden.ch" />
                     {errors.registerFormEmail && (<span className="text-danger">Email wird benötigt</span>)}
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormStreet">Strasse, Nr.</label>
-                    <input name="registerFormStreet" ref={register({ required: true })} type="text" className="form-control" id="registerFormStreet" placeholder="Hauptrasse, 1" />
+                    <input name="registerFormStreet" ref={register({ required: true })} type="text" className="form-control" id="registerFormStreet" placeholder="Hauptrasse 1" />
                     {errors.registerFormStreet && (<span className="text-danger">Addresse wird benötigt</span>)}
                 </div>
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="registerFormPlz">PLZ</label>
-                        <input onChange={formatZipCode} name="registerFormPlz" ref={register({ required: true, format: /^\d\d\d\d$/ })} type="text" className="form-control" id="registerFormPlz" placeholder="8000" />
+                        <input onChange={formatZipCode} name="registerFormPlz" ref={register({ validate: validateZipCode })} type="text" className="form-control" id="registerFormPlz" placeholder="8000" />
                         {errors.registerFormPlz && (<span className="text-danger">PLZ wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
@@ -162,7 +167,7 @@ const RegisterVolunteer = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormBirthday">Geburtstag <small>(DD/MM/YYYY)</small></label>
-                    <input onChange={formatBirthdate} name="registerFormBirthday" ref={register({ validate: validateBirthdate })} type="text" className="form-control" id="registerFormBirthday" />
+                    <input onChange={formatBirthdate} onBlur={() => triggerValidation('registerFormBirthday')} name="registerFormBirthday" ref={register({ validate: validateBirthdate })} type="text" className="form-control" id="registerFormBirthday" />
                     {errors.registerFormBirthday && (<span className="text-danger">{!!oldBirthdayValue ? 'Ungültiges Datum' : 'Geburtstag wird benötigt'}</span>)}
                 </div>
                 <div className="form-group">
