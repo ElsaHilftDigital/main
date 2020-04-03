@@ -1,0 +1,10 @@
+---
+
+- name: Copy resources
+  become: True
+  copy:
+    src: "{{ playbook_dir }}/../frontend/???/"
+    dest: /var/www/html
+    owner: root
+    group: root
+    mode: 0444
