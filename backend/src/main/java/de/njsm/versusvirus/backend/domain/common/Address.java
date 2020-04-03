@@ -1,4 +1,4 @@
-package de.njsm.versusvirus.backend.domain.volunteer;
+package de.njsm.versusvirus.backend.domain.common;
 
 import javax.persistence.Embeddable;
 

@@ -1,6 +1,6 @@
 package de.njsm.versusvirus.backend.domain.volunteer;
 
-import de.njsm.versusvirus.backend.domain.volunteer.Address;
+import de.njsm.versusvirus.backend.domain.common.Address;
 
 import javax.persistence.*;
 import java.time.LocalDate;

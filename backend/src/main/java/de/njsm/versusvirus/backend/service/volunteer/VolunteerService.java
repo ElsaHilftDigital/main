@@ -1,6 +1,6 @@
 package de.njsm.versusvirus.backend.service.volunteer;
 
-import de.njsm.versusvirus.backend.domain.volunteer.Address;
+import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.rest.api.volunteer.SignupRequest;
