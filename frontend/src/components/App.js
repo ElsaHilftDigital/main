@@ -7,6 +7,7 @@ import About from './About';
 import Header from './Header';
 import Home from './Home';
 import Ping from './Ping';
+import Register from './Register';
 
 
 const App = (props) => {
@@ -17,6 +18,7 @@ const App = (props) => {
                 <Route exact path="/" component={Home} />
                 <Route exact path="/ping" component={Ping} />
                 <Route exact path="/about" component={About} />
+                <Route exact path="/register" component={Register} />
             </Router>
         </Provider>
     );

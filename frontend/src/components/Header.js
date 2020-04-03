@@ -16,6 +16,7 @@ const Header = (props) => {
                 <Nav activeKey={currLocation} className="mr-auto">
                     <Nav.Link onClick={navigate("/")} eventKey="" className="text-dark font-weight-bold">Home</Nav.Link>
                     <Nav.Link onClick={navigate("/ping")} eventKey="ping" className="text-dark font-weight-bold">Ping</Nav.Link>
+                    <Nav.Link onClick={navigate("/register")} eventKey="ping" className="text-dark font-weight-bold">Registrieren</Nav.Link>
                     <Nav.Link onClick={navigate("/about")} eventKey="about" className="text-dark font-weight-bold">Über Elsa hilft</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
