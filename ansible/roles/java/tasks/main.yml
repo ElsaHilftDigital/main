@@ -1,0 +1,6 @@
+---
+
+- name: Install java
+  become: True
+  package:
+    name: openjdk-11-jre
