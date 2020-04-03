@@ -18,3 +18,5 @@
       tags: java
     - role: elsa-backend
       tags: elsa-backend
+    - role: elsa-frontend
+      tags: elsa-frontend

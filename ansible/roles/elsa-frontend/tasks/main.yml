@@ -3,7 +3,7 @@
 - name: Copy resources
   become: True
   copy:
-    src: "{{ playbook_dir }}/../frontend/???/"
+    src: "{{ playbook_dir }}/../frontend/build/"
     dest: /var/www/html
     owner: root
     group: root
