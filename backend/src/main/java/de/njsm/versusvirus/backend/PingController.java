@@ -1,5 +1,7 @@
 package de.njsm.versusvirus.backend;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class PingController {
 
-    @RequestMapping("/ping")
+    @CrossOrigin
+    @GetMapping("/ping")
     public String ping() {
         return "Hello World";
     }
