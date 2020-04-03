@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import App from './components/App';
+import configureStore from './store/store';
 import './styles/index.scss';
 
+const store = configureStore({});
+
 ReactDOM.render(
-    <div>Hello World</div>,
+    <App store={store} />,
     document.getElementById('root')
 );
