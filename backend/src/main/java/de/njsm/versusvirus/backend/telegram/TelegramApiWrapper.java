@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.telegram;
 import de.njsm.versusvirus.backend.telegram.dto.File;
 import de.njsm.versusvirus.backend.telegram.dto.TelegramResponse;
 import de.njsm.versusvirus.backend.telegram.dto.Update;
+import de.njsm.versusvirus.backend.telegram.dto.WebhookRequest;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
@@ -14,14 +15,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.LinkedTransferQueue;
 
-public class TelegramController {
+public class TelegramApiWrapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TelegramController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
     private String token;
 
@@ -31,7 +29,7 @@ public class TelegramController {
 
     private int offset;
 
-    public TelegramController(String token, int offset) {
+    public TelegramApiWrapper(String token, int offset) {
         apiClient = new Retrofit.Builder()
                 .baseUrl("https://api.telegram.org")
                 .client(new OkHttpClient.Builder().build())
@@ -41,19 +39,7 @@ public class TelegramController {
         updates = new LinkedTransferQueue<>();
         this.token = token;
         this.offset = offset;
-    }
-
-    public Update waitForUpdate() {
-        while (updates.isEmpty()) {
-            List<Update> freshUpdates = fillQueueFromBackend();
-            updates.addAll(freshUpdates);
-        }
-
-        Update result = updates.poll();
-        if (result != null) {
-            this.offset = result.getId() + 1;
-        }
-        return result;
+        registerWebhook();
     }
 
     public byte[] getFile(String fileId) {
@@ -72,18 +58,10 @@ public class TelegramController {
         return body;
     }
 
-    private List<Update> fillQueueFromBackend() {
-        Call<TelegramResponse<Update[]>> call = apiClient.getUpdates(token, offset, 10, 10, new String[]{
-                "message",
-        });
-
-        Update[] result = executeQuery(call);
-        if (result == null) {
-            // insert exponential backoff here
-            return Collections.emptyList();
-        }
-
-        return Arrays.asList(result);
+    private void registerWebhook() {
+        Call<TelegramResponse<Void>> call = apiClient.setWebhook(token,
+                new WebhookRequest("https://versusvirus.njsm.de/api/v1/telegram/the/next/path/is/a/password/Wz4Bg0pZUybWCbyjjRxpol"));
+        executeQuery(call);
     }
 
     @Nullable
