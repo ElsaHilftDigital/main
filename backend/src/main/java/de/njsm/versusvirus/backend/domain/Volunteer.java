@@ -2,6 +2,7 @@ package de.njsm.versusvirus.backend.domain;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 public class Volunteer {
@@ -9,6 +10,8 @@ public class Volunteer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    private UUID uuid;
 
     private String name;
     private String surname;
