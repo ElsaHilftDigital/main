@@ -4,3 +4,4 @@ ssh_config_privileged_users:
   - samuel
   - swe
   - jan
+  - teamcity
