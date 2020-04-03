@@ -123,7 +123,7 @@ const RegisterVolunteer = () => {
     };
 
     return (
-        <div className="container mt-3">
+        <div className="container mt-3 mb-5">
             <h1>Helfer werden</h1>
             <form onSubmit={handleSubmit(onSubmit)} >
                 <div className="row">
