@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { pingActions, pingSelectors } from '../store/ping';
 
-const Ping = (props) => {
+const Ping = () => {
     const dispatch = useDispatch();
     const pingResponse = useSelector(pingSelectors.pingResponse);
     const pingRequestOngoing = useSelector(pingSelectors.pingRequestOngoing);
     const pingServer = () => dispatch(pingActions.ping());
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-3">
             <h1>Ping!</h1>
             <div className="d-flex flex-column justify-content-center">
                 {pingRequestOngoing && (
