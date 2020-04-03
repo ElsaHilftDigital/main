@@ -1,7 +1,5 @@
 package de.njsm.versusvirus.backend.domain.volunteer;
 
-import de.njsm.versusvirus.backend.domain.volunteer.Address;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -22,6 +20,12 @@ public class Volunteer {
     private Address address;
     private LocalDate birthDate;
     private String iban;
+    private String bankName;
+    // Means of Transportation
+    // Employment Status
+
+    private boolean wantsCompensation;
+    private boolean validated;
 
     public long getId() {
         return id;
@@ -84,6 +88,30 @@ public class Volunteer {
 
     public void setIban(String iban) {
         this.iban = iban;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public boolean wantsCompensation() {
+        return wantsCompensation;
+    }
+
+    public void setWantsCompensation(boolean wantsCompensation) {
+        this.wantsCompensation = wantsCompensation;
+    }
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
     }
 }
 

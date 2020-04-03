@@ -13,4 +13,6 @@ public class SignupRequest {
     public String zipCode;
     public LocalDate birthDate;
     public String iban;
+    public String bankName;
+    public boolean wantsCompensation;
 }

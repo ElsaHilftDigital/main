@@ -38,6 +38,8 @@ public class VolunteerService {
         volunteer.setAddress(address);
         volunteer.setBirthDate(signupRequest.birthDate);
         volunteer.setIban(signupRequest.iban);
+        volunteer.setBankName(signupRequest.bankName);
+        volunteer.setWantsCompensation(signupRequest.wantsCompensation);
 
         repository.save(volunteer);
         return new VolunteerDTO(volunteer);
