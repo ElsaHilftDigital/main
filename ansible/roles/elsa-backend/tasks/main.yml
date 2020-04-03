@@ -1,0 +1,44 @@
+---
+
+- name: Install binary
+  become: True
+  copy:
+    src: "{{ playbook_dir }}/../backend/???"
+    dest: /usr/local/lib/elsa-hilft.jar
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create group
+  become: True
+  group:
+    name: elsa
+    system: True
+
+- name: Create user
+  become: True
+  user:
+    create_home: True
+    group: elsa
+    home: /var/lib/elsa
+    name: elsa
+    shell: /bin/false
+    system: True
+
+- name: Configure systemd
+  become: True
+  template:
+    src: systemd.service.j2
+    dest: /usr/lib/systemd/system/elsa-backend.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart service
+
+- name: Start service
+  become: True
+  systemd:
+    name: elsa-backend
+    enabled: True
+    state: started
+    daemon_reload: True

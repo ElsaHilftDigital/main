@@ -1,0 +1,6 @@
+---
+- name: Restart service
+  become: True
+  systemd:
+    name: elsa-backend
+    state: restarted
