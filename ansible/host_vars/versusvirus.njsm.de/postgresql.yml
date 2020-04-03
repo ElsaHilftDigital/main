@@ -2,6 +2,8 @@
 postgresql_base_directory: /var/lib/postgresql/
 postgresql_data_directory: /var/lib/postgresql/11/main
 
+postgresql_port: 5434
+
 postgresql_roles:
   - name: peer
     inherit: True
@@ -19,10 +21,15 @@ postgresql_roles:
   - name: production
     login: True
     password: "production"
+  - name: db
+    login: True
+    password: "db"
 
 postgresql_databases:
   - name: production
     owner: production
+  - name: db
+    owner: db
 
 postgresql_access_rights:
   - type: local
