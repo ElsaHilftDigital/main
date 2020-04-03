@@ -8,7 +8,7 @@ export const initialState = {
 };
 
 export default function pingReducer(state = initialState, action) {
-    const { type, payload, meta } = action;
+    const { type, payload } = action;
 
     switch(type) {
         case actions.PING:

@@ -6,6 +6,7 @@ import rootSaga from './rootSaga';
 
 let instrumenter = f => f;
 
+// run redux devtools extension also on prod for easier debugging
 if (window.__REDUX_DEVTOOLS_EXTENSION__) {
     instrumenter = window.__REDUX_DEVTOOLS_EXTENSION__();
 } else {
