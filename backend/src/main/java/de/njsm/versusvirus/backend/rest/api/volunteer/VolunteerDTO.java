@@ -17,6 +17,8 @@ public class VolunteerDTO {
     public String zipCode;
     public LocalDate birthDate;
     public String iban;
+    public String bankName;
+    public boolean wantsCompensation;
 
     public VolunteerDTO(Volunteer volunteer) {
         uuid = volunteer.getUuid();
@@ -29,5 +31,7 @@ public class VolunteerDTO {
         zipCode = volunteer.getAddress().getZipCode();
         birthDate = volunteer.getBirthDate();
         iban = volunteer.getIban();
+        bankName = volunteer.getBankName();
+        wantsCompensation = volunteer.wantsCompensation();
     }
 }
