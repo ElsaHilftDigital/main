@@ -3,7 +3,7 @@ import * as actions from './pingActions';
 export const initialState = {
     pingRequestOngoing: false,
     pingResponse: null,
-    pingSuccessful: null,
+    pingSuccess: null,
     pingError: null,
 };
 
@@ -15,7 +15,7 @@ export default function pingReducer(state = initialState, action) {
             return {
                 ...state,
                 pingRequestOngoing: true,
-                pingSuccessful: null,
+                pingSuccess: null,
                 pingError: null,
             };
         case actions.PING_SUCCESS:
@@ -23,14 +23,14 @@ export default function pingReducer(state = initialState, action) {
                 ...state,
                 pingResponse: payload,
                 pingRequestOngoing: false,
-                pingSuccessful: true,
+                pingSuccess: true,
                 pingError: null,
             };
         case actions.PING_ERROR:
             return {
                 ...state,
                 pingRequestOngoing: false,
-                pingSuccessful: false,
+                pingSuccess: false,
                 pingError: payload,
             };
         default:
