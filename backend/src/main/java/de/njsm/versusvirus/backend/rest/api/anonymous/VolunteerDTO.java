@@ -1,4 +1,4 @@
-package de.njsm.versusvirus.backend.rest.api.volunteer;
+package de.njsm.versusvirus.backend.rest.api.anonymous;
 
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 
