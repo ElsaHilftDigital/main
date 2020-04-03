@@ -2,3 +2,21 @@ databaseChangeLog:
   - include:
       file: 20200403-1754-create-volunteer.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200403-1917-fix-volunteer-table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200403-1939-add-volunteer-uuid.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200403-1957-improve-volunteer-name-fields.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200403-2040-create-organization.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200403-2130-add-additional-volunteer-fields.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200403-2140-create-customer.sql
+      relativeToChangelogFile: true
