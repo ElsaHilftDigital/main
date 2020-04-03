@@ -3,11 +3,12 @@ package de.njsm.versusvirus.backend.service.volunteer;
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
-import de.njsm.versusvirus.backend.rest.api.volunteer.SignupRequest;
-import de.njsm.versusvirus.backend.rest.api.volunteer.VolunteerDTO;
+import de.njsm.versusvirus.backend.rest.api.anonymous.SignupRequest;
+import de.njsm.versusvirus.backend.rest.api.anonymous.VolunteerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,8 +21,8 @@ public class VolunteerService {
         this.repository = repository;
     }
 
-    public VolunteerDTO getVolunteer(UUID uuid) {
-        return new VolunteerDTO(repository.findByUuid(uuid));
+    public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
+        return repository.findByUuid(uuid).map(VolunteerDTO::new);
     }
 
     public VolunteerDTO signup(SignupRequest signupRequest) {

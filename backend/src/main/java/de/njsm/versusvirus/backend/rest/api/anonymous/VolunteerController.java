@@ -1,4 +1,4 @@
-package de.njsm.versusvirus.backend.rest.api.volunteer;
+package de.njsm.versusvirus.backend.rest.api.anonymous;
 
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerService;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/volunteers")
+@RequestMapping("/api/v1/anonymous/volunteers")
 public class VolunteerController {
 
     private final VolunteerService service;
@@ -17,8 +17,11 @@ public class VolunteerController {
     }
 
     @RequestMapping("/{uuid}")
-    public VolunteerDTO getVolunteer(@PathVariable("uuid") UUID uuid) {
-        return service.getVolunteer(uuid);
+    public ResponseEntity<VolunteerDTO> getVolunteer(@PathVariable("uuid") UUID uuid) {
+        return service.getVolunteer(uuid)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound()
+                        .build());
     }
 
     @PostMapping()

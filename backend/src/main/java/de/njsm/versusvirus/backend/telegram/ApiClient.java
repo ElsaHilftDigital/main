@@ -11,7 +11,7 @@ import retrofit2.http.*;
 /**
  * https://core.telegram.org/bots/api
  */
-public interface ApiClient {
+interface ApiClient {
 
     @POST("/bot{token}/setWebhook")
     Call<TelegramResponse<Void>> setWebhook(@Path("token") String token,

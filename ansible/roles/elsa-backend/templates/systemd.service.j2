@@ -4,7 +4,8 @@ After=network.target network-online.target nss-lookup.target
 
 [Service]
 Type=simple
-ExecStart=java -jar /usr/local/lib/elsa-hilft.jar
+ExecStart=java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4004 \
+        -jar /usr/local/lib/elsa-hilft.jar
 User=elsa
 Group=elsa
 WorkingDirectory=/var/lib/elsa

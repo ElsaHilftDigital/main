@@ -12,7 +12,7 @@ public enum BotCommand {
 
     HILFE_ANBIETEN {
         @Override
-        public Pattern getRegex() {
+        Pattern getRegex() {
             return Pattern.compile("^/hilfe_anbieten (?<purchaseId>.*)$");
         }
 
@@ -25,7 +25,7 @@ public enum BotCommand {
 
     HILFE_BESTAETIGEN {
         @Override
-        public Pattern getRegex() {
+        Pattern getRegex() {
             return Pattern.compile("^/hilfe_bestaetigen (?<purchaseId>.*)$");
         }
 
@@ -38,7 +38,7 @@ public enum BotCommand {
 
     HILFE_ZURUECKZIEHEN {
         @Override
-        public Pattern getRegex() {
+        Pattern getRegex() {
             return Pattern.compile("^/hilfe_zurueckziehen (?<purchaseId>.*)$");
         }
 
@@ -51,7 +51,7 @@ public enum BotCommand {
 
     QUITTUNG_EINREICHEN {
         @Override
-        public Pattern getRegex() {
+        Pattern getRegex() {
             return Pattern.compile("^/quittung_einreichen (?<fileId>[^ ]*) (?<purchaseId>[^ ]*)$");
         }
 
@@ -65,7 +65,7 @@ public enum BotCommand {
 
     START {
         @Override
-        public Pattern getRegex() {
+        Pattern getRegex() {
             return Pattern.compile("^/start (?<token>.*)$");
         }
 
@@ -78,7 +78,7 @@ public enum BotCommand {
 
     QUIT {
         @Override
-        public Pattern getRegex() {
+        Pattern getRegex() {
             return Pattern.compile("^/quit$");
         }
 
@@ -88,7 +88,7 @@ public enum BotCommand {
         }
     };
 
-    public abstract Pattern getRegex();
+    abstract Pattern getRegex();
 
     public abstract void dispatch(BotCommandDispatcher dispatcher, String command, Message message);
 
