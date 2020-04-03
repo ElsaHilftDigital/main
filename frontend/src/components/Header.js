@@ -7,17 +7,19 @@ const Header = (props) => {
 
     return (
         <Navbar bg="primary" expand="sm">
-            <Navbar.Brand>
-                <img src="elsahilft_Baden.jpg" className="mr-3" width="50" height="50" alt="" />
-                <span className="font-weight-bold">Elsa hilft</span>
+            <Navbar.Brand onClick={navigate("/")} className="hover-pointer" >
+                <a>
+                    <img src="elsahilft_Baden.jpg" className="mr-3" width="50" height="50" alt="" />
+                    <span className="text-light font-weight-bold">Elsa hilft</span>
+                </a>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav activeKey={currLocation} className="mr-auto">
-                    <Nav.Link onClick={navigate("/")} eventKey="" className="text-dark font-weight-bold">Home</Nav.Link>
-                    <Nav.Link onClick={navigate("/ping")} eventKey="ping" className="text-dark font-weight-bold">Ping</Nav.Link>
-                    <Nav.Link onClick={navigate("/register")} eventKey="ping" className="text-dark font-weight-bold">Registrieren</Nav.Link>
-                    <Nav.Link onClick={navigate("/about")} eventKey="about" className="text-dark font-weight-bold">Über Elsa hilft</Nav.Link>
+                    <Nav.Link onClick={navigate("/")} eventKey="" className="text-light font-weight-bold">Home</Nav.Link>
+                    <Nav.Link onClick={navigate("/ping")} eventKey="ping" className="text-light font-weight-bold">Ping</Nav.Link>
+                    <Nav.Link onClick={navigate("/register")} eventKey="ping" className="text-light font-weight-bold">Registrieren</Nav.Link>
+                    <Nav.Link onClick={navigate("/about")} eventKey="about" className="text-light font-weight-bold">Über Elsa hilft</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
