@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.telegram.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MessageToBeSent {
@@ -9,8 +10,16 @@ public class MessageToBeSent {
 
     private String text;
 
-    public MessageToBeSent(int id, String text) {
+    @JsonProperty("parse_mode")
+    private String parseMode;
+
+    @JsonProperty("disable_web_page_preview")
+    private boolean disableWebPagePreview;
+
+    public MessageToBeSent(int id, String markdownText) {
         this.id = id;
-        this.text = text;
+        this.text = markdownText;
+        this.parseMode = "Markdown";
+        this.disableWebPagePreview = true;
     }
 }

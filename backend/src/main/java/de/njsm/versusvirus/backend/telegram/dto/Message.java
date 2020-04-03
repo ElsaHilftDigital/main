@@ -27,4 +27,42 @@ public class Message {
     private String text;
 
     private PhotoSize[] photo;
+
+    private MessageEntity[] entities;
+
+    public int getId() {
+        return id;
+    }
+
+    public User getFrom() {
+        return from;
+    }
+
+    public int getDate() {
+        return date;
+    }
+
+    public Chat getChat() {
+        return chat;
+    }
+
+    public User getForwardFrom() {
+        return forwardFrom;
+    }
+
+    public Chat getForwardFromChat() {
+        return forwardFromChat;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public PhotoSize[] getPhoto() {
+        return photo;
+    }
+
+    public MessageEntity[] getEntities() {
+        return entities;
+    }
 }
