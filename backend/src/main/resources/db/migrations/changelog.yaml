@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: 20200403-1754-create-volunteer.sql
+      relativeToChangelogFile: true
