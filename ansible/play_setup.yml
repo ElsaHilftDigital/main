@@ -6,6 +6,8 @@
       tags: zsh
     - role: vim
       tags: vim
+    - role: ssh_config
+      tags: ssh_config
     - role: hostname
       tags: hostname
     - role: postgresql

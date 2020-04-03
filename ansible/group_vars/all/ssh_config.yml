@@ -1,0 +1,6 @@
+---
+ssh_config_privileged_users:
+  - nicolas
+  - samuel
+  - swe
+  - jan
