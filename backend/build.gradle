@@ -8,6 +8,10 @@ group = 'de.njsm.versusvirus'
 sourceCompatibility = '11'
 version = '0.0.1-SNAPSHOT'
 
+bootRun {
+    jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4004"]
+}
+
 repositories {
     mavenCentral()
 }

@@ -1,9 +1,6 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.telegram.dto.File;
-import de.njsm.versusvirus.backend.telegram.dto.TelegramResponse;
-import de.njsm.versusvirus.backend.telegram.dto.Update;
-import de.njsm.versusvirus.backend.telegram.dto.WebhookRequest;
+import de.njsm.versusvirus.backend.telegram.dto.*;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
@@ -17,7 +14,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.IOException;
 import java.util.concurrent.LinkedTransferQueue;
 
-public class TelegramApiWrapper {
+class TelegramApiWrapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
@@ -40,6 +37,11 @@ public class TelegramApiWrapper {
         this.token = token;
         this.offset = offset;
         registerWebhook();
+    }
+
+    public void sendMessage(MessageToBeSent message) {
+        Call<TelegramResponse<Void>> call = apiClient.sendMessage(token, message);
+        executeQuery(call);
     }
 
     public byte[] getFile(String fileId) {

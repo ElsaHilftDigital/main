@@ -1,38 +1,63 @@
 package de.njsm.versusvirus.backend;
 
-import de.njsm.versusvirus.backend.telegram.dto.PhotoSize;
+import de.njsm.versusvirus.backend.telegram.BotCommand;
+import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
+import de.njsm.versusvirus.backend.telegram.dto.Message;
+import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
 import de.njsm.versusvirus.backend.telegram.dto.Update;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1")
-public class TelegramController {
+public class TelegramController implements BotCommandDispatcher {
 
-    @GetMapping("/telegram/the/next/path/is/a/password/Wz4Bg0pZUybWCbyjjRxpol")
+    private static final Logger LOG = LoggerFactory.getLogger(TelegramController.class);
+
+    public static final String TELEGRAM_WEBHOOK = "/telegram/the/next/path/is/a/password/Wz4Bg0pZUybWCbyjjRxpol";
+
+    @GetMapping(TELEGRAM_WEBHOOK)
     public void receiveTelegramUpdate(Update update) {
-        /*
+        if (update.getMessage() == null) {
+            LOG.info("I don't feel responsible for this update");
+            return;
+        }
 
-            - check if this is new (update_offset)
+        // TODO check if update is new via update_offset
 
-            Telegram messages:
+        Message message = update.getMessage();
 
-            - New helper registers
+        if (message.getText() == null || message.getText().isEmpty()) {
+            LOG.info("No message found");
+            return;
+        }
 
-            - Existing helper quits
+        if (message.getEntities() == null) {
+            LOG.info("The message didn't contain commands");
+            return;
+        }
 
-            - Offer help (id of purchase)
+        if (message.getPhoto() != null) {
+            // message contains images. Offer available purchases to select from
+            return;
+        }
 
-            - confirm help (id of purchase)
-
-            - withdraw help (id of purchase)
-
-            - submit receipt (picture)
-         */
+        for (MessageEntity e : message.getEntities()) {
+            String rawCommand = e.extractCommand(message.getText());
+            BotCommand command = BotCommand.create(rawCommand);
+            if (command == null) {
+                LOG.info("Not a command for us: {}", rawCommand);
+                continue;
+            }
+            command.dispatch(this, rawCommand, message);
+        }
     }
 
-    private void handleNewHelper() {
+    @Override
+    public void handleNewHelper(Message message, String token) {
         /*
 
             if helper is not known to us -> send to registration form
@@ -40,7 +65,8 @@ public class TelegramController {
          */
     }
 
-    private void handleLeavingHelper() {
+    @Override
+    public void handleLeavingHelper(Message message) {
         /*
             if helper not known -> no problem :)
 
@@ -48,7 +74,8 @@ public class TelegramController {
          */
     }
 
-    private void handleHelpOffering(String purchaseId) {
+    @Override
+    public void handleHelpOffering(Message message, String purchaseId) {
         /*
 
             if purchase is assigned -> reply
@@ -58,7 +85,8 @@ public class TelegramController {
          */
     }
 
-    private void handleConfirmingHelp(String purchaseId) {
+    @Override
+    public void handleConfirmingHelp(Message message, String purchaseId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
@@ -68,7 +96,8 @@ public class TelegramController {
          */
     }
 
-    private void handleRejectingHelp(String purchaseId) {
+    @Override
+    public void handleRejectingHelp(Message message, String purchaseId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
@@ -78,7 +107,8 @@ public class TelegramController {
          */
     }
 
-    private void handleReceiptSubmission(String purchaseId, PhotoSize[] photos) {
+    @Override
+    public void handleReceiptSubmission(Message message, String purchaseId, String fileId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
