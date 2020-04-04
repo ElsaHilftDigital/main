@@ -11,12 +11,13 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 const RegisterVolunteer = () => {
     const dispatch = useDispatch();
 
-    const { errors, getValues, handleSubmit, register, setValue, triggerValidation } = useForm();
+    const { errors, handleSubmit, register, setValue, triggerValidation, watch } = useForm();
     const [ oldBirthdayValue, setOldBirthdayValue ] = useState('');
     const [ oldPhoneNumber, setOldPhoneNumber ] = useState('');
     const [ oldZipCode, setOldZipCode ] = useState('');
-    const [ wantsCompensation, setWantsCompensation ] = useState(true);
-    const { registerFormIban } = getValues();
+    const registerFormIban = watch('registerFormIban');
+    const registerFormWantsNoCompensation = watch('registerFormWantsNoCompensation');
+
     const onSubmit = data => dispatch(volunteerActions.createVolunteer({
         firstName: data.registerFormSurname,
         lastName: data.registerFormName,
@@ -193,10 +194,10 @@ const RegisterVolunteer = () => {
                     {errors.registerFormBirthday && (<span className="text-danger">{!!oldBirthdayValue ? 'Ungültiges Datum' : 'Geburtstag wird benötigt'}</span>)}
                 </div>
                 <div className="form-check mb-2">
-                    <input onClick={() => setWantsCompensation(!wantsCompensation)} name="registerFormWantsNoCompensation" ref={register()} type="checkbox" className="form-check-input" id="registerFormWantsNoCompensation" />
+                    <input name="registerFormWantsNoCompensation" ref={register()} type="checkbox" className="form-check-input" id="registerFormWantsNoCompensation" />
                     <label className="form-check-label" htmlFor="registerFormWantsNoCompensation">Ich möchte keine Entschädigung für meinen Einsatz</label>
                 </div>
-                {wantsCompensation && (
+                {!registerFormWantsNoCompensation && (
                     <>
                         <div className="form-group">
                             <label htmlFor="registerFormIban">IBAN</label>
