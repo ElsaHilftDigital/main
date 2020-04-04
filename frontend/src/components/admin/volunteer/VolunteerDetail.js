@@ -14,7 +14,8 @@ const VolunteerDetail = (props) => {
         registerFormBirthday: props.currentVolunteer.birthdate,
         registerFormWantsNoCompensation: props.currentVolunteer.wantsCompensation,
         registerFormIban: props.currentVolunteer.iban,
-        registerFormBankName: props.currentVolunteer.bank
+        registerFormBankName: props.currentVolunteer.bank,
+        displayFormAmountPurchase: props.currentVolunteer.amountPurchases
     }});
 
     const onSubmit = (values) => {
@@ -83,6 +84,25 @@ const VolunteerDetail = (props) => {
                     <label htmlFor="registerFormBankName">Bank Name</label>
                     <input name="registerFormBankName" ref={register({ required: true })} type="text" className="form-control" id="registerFormBankName" />
                     {errors.registerFormBankName && (<span className="text-danger">Bank Name wird benötigt</span>)}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="displayFormAmountPurchase">Anzahl Einkäufe</label>
+                    <input name="displayFormAmountPurchase" ref={register({ required: true })} type="text" className="form-control" id="displayFormAmountPurchase" disabled />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="displayTablePurchases">Erledigte Einkäufe</label>
+                    <table className="table table-striped">
+                        <tr>
+                            <th>Kundenname</th>
+                            <th>Gemeinde</th>
+                            <th>Datum</th>
+                        </tr>
+                        <tr>
+                            <td>Frozen</td>
+                            <td>Baden</td>
+                            <td>03.04.2020</td>
+                        </tr>
+                    </table>
                 </div>
                 <button type="submit" className="btn btn-primary">Speichern</button>
             </form>
