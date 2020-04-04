@@ -49,7 +49,6 @@ public class TelegramController {
 
         if (message.getPhoto() != null && message.getPhoto().length > 0) {
             botCommandDispatcher.handleReceiptWithoutPurchaseContext(message, message.getPhoto()[0].getId());
-            return;
         }
 
         if (message.getText() == null || message.getText().isEmpty()) {

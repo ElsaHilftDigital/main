@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AdminMessageFacade {
+public class AdminMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
@@ -15,12 +15,11 @@ public class AdminMessageFacade {
     private TelegramMessages telegramMessages;
 
     @Autowired
-    public AdminMessageFacade(TelegramApiWrapper api, TelegramMessages telegramMessages) {
+    public AdminMessageSender(TelegramApiWrapper api, TelegramMessages telegramMessages) {
         this.api = api;
         this.telegramMessages = telegramMessages;
     }
 
-    // TODO link
     public void newHelperHasRegistered(long chatId) {
         var m = new MessageToBeSent(chatId, telegramMessages.getNewHelperHasRegistered());
         api.sendMessage(m);
