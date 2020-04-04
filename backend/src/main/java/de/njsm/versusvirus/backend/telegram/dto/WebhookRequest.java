@@ -12,4 +12,12 @@ public class WebhookRequest {
                 "message",
         };
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String[] getAllowedUpdates() {
+        return allowedUpdates;
+    }
 }
