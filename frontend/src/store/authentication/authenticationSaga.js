@@ -17,7 +17,7 @@ export function* handleLogin(authApi, action) {
         yield call([authApi, authApi.login], action.payload);
         const response = yield call([authApi, authApi.getAuthInstance]);
         if (response) {
-            history.push('/');
+            history.push('/admin');
         }
         yield put(actions.getAuthInstanceSuccess(response));
     } catch (error) {
@@ -32,10 +32,17 @@ export function* handleLogin(authApi, action) {
 export function* handleLogout(authApi) {
     try {
         yield call([authApi, authApi.logout]);
-        const response = yield call([authApi, authApi.getAuthInstance]);
-        yield put(actions.getAuthInstance(response));
     } catch (error) {
-        console.log(error);
+        if (history.location.pathname.match(/^\/admin.*$/i)) {
+            history.push('/');
+        }
+        // logout returns 401 if successful
+        try {
+            const response = yield call([authApi, authApi.getAuthInstance]);
+            yield put(actions.getAuthInstance(response));
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 

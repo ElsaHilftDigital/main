@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { electronicFormatIBAN, isValidIBAN } from 'ibantools';
 
-import { volunteerActions } from '../store/volunteer';
+import { volunteerActions } from '../../store/volunteer';
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 
