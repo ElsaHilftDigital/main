@@ -32,7 +32,7 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             String purchaseId = getRegex().matcher(command).group("purchaseId");
-            dispatcher.handleHelpOffering(message, purchaseId);
+            dispatcher.handleHelpOffering(message, UUID.fromString(purchaseId));
         }
     },
 
@@ -55,7 +55,7 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             String purchaseId = getRegex().matcher(command).group("purchaseId");
-            dispatcher.handleConfirmingHelp(message, purchaseId);
+            dispatcher.handleConfirmingHelp(message, UUID.fromString(purchaseId));
         }
     },
 
@@ -78,7 +78,7 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             String purchaseId = getRegex().matcher(command).group("purchaseId");
-            dispatcher.handleRejectingHelp(message, purchaseId);
+            dispatcher.handleRejectingHelp(message, UUID.fromString(purchaseId));
         }
     },
 
@@ -102,7 +102,7 @@ public enum BotCommand {
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             String purchaseId = getRegex().matcher(command).group("purchaseId");
             String fileId = getRegex().matcher(command).group("fileId");
-            dispatcher.handleReceiptSubmission(message, purchaseId, fileId);
+            dispatcher.handleReceiptSubmission(message, UUID.fromString(purchaseId), fileId);
         }
     },
 

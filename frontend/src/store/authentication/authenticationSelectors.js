@@ -1,0 +1,2 @@
+export const currentUser = (state) => state.authentication.currentUser;
+export const crrentUserUsername = (state) => state.authentication.currentUser ? state.authentication.currentUser.username : null;

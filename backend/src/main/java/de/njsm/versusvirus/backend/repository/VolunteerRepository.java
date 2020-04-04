@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
 
     Optional<Volunteer> findByUuid(UUID uuid);
+
+    Optional<Volunteer> findByTelegramUserId(Integer id);
 }

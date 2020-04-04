@@ -1,5 +1,8 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.domain.Purchase;
+import de.njsm.versusvirus.backend.repository.OrganizationRepository;
+import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import org.springframework.stereotype.Service;
@@ -11,58 +14,88 @@ import java.util.UUID;
 @Transactional
 public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
+    private final OrganizationRepository organizationRepository;
+
     private final VolunteerRepository volunteerRepository;
 
-    public TelegramBotCommandDispatcher(VolunteerRepository volunteerRepository) {
+    private final PurchaseRepository purchaseRepository;
+
+    private final MessageFacade messageFacade;
+
+    private final TelegramApiWrapper telegramApi;
+
+    public TelegramBotCommandDispatcher(OrganizationRepository organizationRepository,
+                                        VolunteerRepository volunteerRepository,
+                                        PurchaseRepository purchaseRepository,
+                                        MessageFacade messageFacade,
+                                        TelegramApiWrapper telegramApi) {
+        this.organizationRepository = organizationRepository;
         this.volunteerRepository = volunteerRepository;
+        this.purchaseRepository = purchaseRepository;
+        this.messageFacade = messageFacade;
+        this.telegramApi = telegramApi;
     }
 
     @Override
     public void handleNewHelper(Message message, UUID userId) {
-        var volunteer = volunteerRepository.findByUuid(userId).orElseThrow(() -> new RuntimeException("Volunteer not found"));
+        var volunteer = volunteerRepository.findByUuid(userId).orElseThrow(() -> {
+                    messageFacade.directUserToRegistrationForm(message.getChat().getId());
+                    throw new RuntimeException("new helper not found. uuid: " + userId);
+                }
+        );
         volunteer.setTelegramUserId(message.getFrom().getId());
         volunteer.setTelegramChatId(message.getChat().getId());
         volunteerRepository.save(volunteer);
-        /*
-
-            if helper is not known to us -> send to registration form
-
-         */
     }
 
     @Override
     public void handleLeavingHelper(Message message) {
-        /*
-            if helper not known -> no problem :)
-
-            Thank them for their help!
-         */
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+                    messageFacade.resignUnknownVolunteer(message.getChat().getId());
+                    throw new RuntimeException("helper not found. telegram id: " + message.getFrom().getId());
+                }
+        );
+        messageFacade.resignVolunteer(message.getChat().getId());
     }
 
     @Override
-    public void handleHelpOffering(Message message, String purchaseId) {
-        /*
+    public void handleHelpOffering(Message message, UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
 
-            if purchase is assigned -> reply
-
-            if not -> assign / schedule....
-
-         */
+        if (purchase.getStatus() != Purchase.Status.NEW) {
+            // TODO inform already taken
+            return;
+        }
+        // TODO assign helper
+        purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
+        purchaseRepository.save(purchase);
     }
 
     @Override
-    public void handleConfirmingHelp(Message message, String purchaseId) {
+    public void handleConfirmingHelp(Message message, UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
+        var organization = organizationRepository.findById(1).orElseThrow(() -> new RuntimeException("Organization not found"));
+
+        if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
+            purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
+            purchaseRepository.save(purchase);
+            telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
+        }
+
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
 
-            if not -> mark as assigned, remove offer from group chat
-
          */
     }
 
     @Override
-    public void handleRejectingHelp(Message message, String purchaseId) {
+    public void handleRejectingHelp(Message message, UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
+
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
@@ -73,7 +106,17 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleReceiptSubmission(Message message, String purchaseId, String fileId) {
+    public void handleReceiptWithoutPurchaseContext(Message message, String fileId) {
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
+
+
+    }
+
+    @Override
+    public void handleReceiptSubmission(Message message, UUID purchaseId, String fileId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
+
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
