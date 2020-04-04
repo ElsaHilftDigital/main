@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { pingActions, pingSelectors } from '../store/ping';
+import { pingActions, pingSelectors } from '../../store/ping';
 
 const Ping = () => {
     const dispatch = useDispatch();

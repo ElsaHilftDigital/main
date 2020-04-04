@@ -45,5 +45,11 @@ databaseChangeLog:
       file: 20200404-1314-add-moderators.sql
       relativeToChangelogFile: true
   - include:
+      file: 20200404-1408-map-purchase-to-volunteer.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1445-migrate-telegram-ids-to-long.sql
+      relativeToChangelogFile: true
+  - include:
       file: 20200404-1442-organization-add-moderators.sql
       relativeToChangelogFile: true

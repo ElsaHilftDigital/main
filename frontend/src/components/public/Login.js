@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { authenticationActions, authenticationSelectors } from '../store/authentication';
+import { authenticationActions, authenticationSelectors } from '../../store/authentication';
 
 const Login = () => {
     const dispatch = useDispatch();

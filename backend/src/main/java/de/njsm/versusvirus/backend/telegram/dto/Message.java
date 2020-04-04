@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Message {
 
     @JsonProperty("message_id")
-    private int id;
+    private long id;
 
     private User from;
 
@@ -30,7 +30,7 @@ public class Message {
 
     private MessageEntity[] entities;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

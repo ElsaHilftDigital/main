@@ -14,6 +14,14 @@ public class Purchase {
 
     private UUID uuid;
 
+    public Long getAssignedVolunteer() {
+        return assignedVolunteer;
+    }
+
+    public void setAssignedVolunteer(Long assignedVolunteer) {
+        this.assignedVolunteer = assignedVolunteer;
+    }
+
     public enum Status {
         NEW,
         VOLUNTEER_FOUND,
@@ -55,6 +63,8 @@ public class Purchase {
     private byte[] receipt;                   // picture of receipt
     private double cost;                      // cost of purchase in "Rappen"
     private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
+
+    private Long assignedVolunteer;
 
     // telegram parameters
     private String receiptFileId;
