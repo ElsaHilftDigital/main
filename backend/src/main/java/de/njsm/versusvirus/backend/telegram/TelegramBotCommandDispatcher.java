@@ -6,6 +6,8 @@ import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,6 +16,8 @@ import java.util.UUID;
 @Service
 @Transactional
 public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TelegramBotCommandDispatcher.class);
 
     private final OrganizationRepository organizationRepository;
 
@@ -67,11 +71,11 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new TelegramShouldBeFineException("purchase not found"));
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new TelegramShouldBeFineException("volunteer not found"));
 
-        if (purchase.getStatus() != Purchase.Status.NEW) {  // TODO check assigned helper
+        if (purchase.getStatus() != Purchase.Status.NEW && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
             messageFacade.informPurchaseHasBeenAssigned(message.getChat().getId());
             return;
         }
-        // TODO assign helpers
+        purchase.getVolunteerApplications().add(volunteer.getId());
         purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
         purchaseRepository.save(purchase);
     }
@@ -91,6 +95,8 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
             purchaseRepository.save(purchase);
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
+        } else {
+            LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
         }
     }
 
@@ -106,8 +112,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.NEW);
+            purchase.setAssignedVolunteer(null);
             purchaseRepository.save(purchase);
-            // TODO write to new helper
+        } else {
+            LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
         }
     }
 
