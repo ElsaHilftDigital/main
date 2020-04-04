@@ -14,6 +14,14 @@ public class Purchase {
 
     private UUID uuid;
 
+    public List<Long> getVolunteerApplications() {
+        return volunteerApplications;
+    }
+
+    public void setVolunteerApplications(List<Long> volunteerApplications) {
+        this.volunteerApplications = volunteerApplications;
+    }
+
     public enum Status {
         NEW,
         VOLUNTEER_FOUND,
