@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Chat {
 
-    private int id;
+    private long id;
 
     /**
      * "private", "group", "supergroup" or "channel"
@@ -22,7 +22,7 @@ public class Chat {
 
     private String description;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
-    private int id;
+    private long id;
 
     @JsonProperty("is_bot")
     private boolean isBot;
@@ -20,7 +20,7 @@ public class User {
     @JsonProperty("username")
     private String userName;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
