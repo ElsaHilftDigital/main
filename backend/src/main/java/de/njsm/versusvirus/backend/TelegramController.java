@@ -1,8 +1,12 @@
 package de.njsm.versusvirus.backend;
 
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.rest.api.anonymous.VolunteerDTO;
+import de.njsm.versusvirus.backend.service.volunteer.VolunteerService;
 import de.njsm.versusvirus.backend.telegram.BotCommand;
 import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.PhotoDownloader;
+import de.njsm.versusvirus.backend.telegram.TelegramBotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
 import de.njsm.versusvirus.backend.telegram.dto.Update;
@@ -12,18 +16,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1")
-public class TelegramController implements BotCommandDispatcher {
+public class TelegramController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramController.class);
 
     public static final String TELEGRAM_WEBHOOK = "/telegram/the/next/path/is/a/password/Wz4Bg0pZUybWCbyjjRxpol";
 
     private PhotoDownloader photoDownloader;
+    private final BotCommandDispatcher botCommandDispatcher;
 
-    // TODO How to autowire?
-    public TelegramController(/*PhotoDownloader photoDownloader*/) {
+    public TelegramController(
+            PhotoDownloader photoDownloader,
+            TelegramBotCommandDispatcher botCommandDispatcher) {
+        this.botCommandDispatcher = botCommandDispatcher;
     }
 
     @GetMapping(TELEGRAM_WEBHOOK)
@@ -47,8 +57,8 @@ public class TelegramController implements BotCommandDispatcher {
             return;
         }
 
-        if (message.getPhoto() != null) {
-            // TODO message contains images. Offer available purchases to select from
+        if (message.getPhoto() != null && message.getPhoto().length > 0) {
+            askUserWhichPurchaseBelongsTo(message.getPhoto()[0].getId());
             return;
         }
 
@@ -59,69 +69,11 @@ public class TelegramController implements BotCommandDispatcher {
                 LOG.info("Not a command for us: {}", rawCommand);
                 continue;
             }
-            command.dispatch(this, rawCommand, message);
+            command.dispatch(botCommandDispatcher, rawCommand, message);
         }
     }
 
-    @Override
-    public void handleNewHelper(Message message, String token) {
-        /*
+    private void askUserWhichPurchaseBelongsTo(String fileId) {
 
-            if helper is not known to us -> send to registration form
-
-         */
-    }
-
-    @Override
-    public void handleLeavingHelper(Message message) {
-        /*
-            if helper not known -> no problem :)
-
-            Thank them for their help!
-         */
-    }
-
-    @Override
-    public void handleHelpOffering(Message message, String purchaseId) {
-        /*
-
-            if purchase is assigned -> reply
-
-            if not -> assign / schedule....
-
-         */
-    }
-
-    @Override
-    public void handleConfirmingHelp(Message message, String purchaseId) {
-        /*
-
-            if different volunteer than assigned by us -> tell them not to hack
-
-            if not -> mark as assigned, remove offer from group chat
-
-         */
-    }
-
-    @Override
-    public void handleRejectingHelp(Message message, String purchaseId) {
-        /*
-
-            if different volunteer than assigned by us -> tell them not to hack
-
-            if not -> reschedule
-
-         */
-    }
-
-    @Override
-    public void handleReceiptSubmission(Message message, String purchaseId, String fileId) {
-        /*
-
-            if different volunteer than assigned by us -> tell them not to hack
-
-            download picture and assign to purchase
-
-         */
     }
 }

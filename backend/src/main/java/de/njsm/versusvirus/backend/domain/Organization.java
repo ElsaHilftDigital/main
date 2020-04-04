@@ -15,6 +15,7 @@ public class Organization {
     private String name;
     private int updateOffset;
     private String urlGroupChat;
+    private Integer telegramGroupChatId;
 
     public long getId() {
         return id;
@@ -42,5 +43,13 @@ public class Organization {
 
     public void setUrlGroupChat(String urlGroupChat) {
         this.urlGroupChat = urlGroupChat;
+    }
+
+    public Integer getTelegramGroupChatId() {
+        return telegramGroupChatId;
+    }
+
+    public void setTelegramGroupChatId(Integer telegramGroupChatId) {
+        this.telegramGroupChatId = telegramGroupChatId;
     }
 }

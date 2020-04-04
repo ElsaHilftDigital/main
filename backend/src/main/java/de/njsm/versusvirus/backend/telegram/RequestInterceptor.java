@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-class LoggingInterceptor implements Interceptor {
+class RequestInterceptor implements Interceptor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LoggingInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RequestInterceptor.class);
 
     @Override public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
