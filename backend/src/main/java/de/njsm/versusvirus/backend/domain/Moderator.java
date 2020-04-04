@@ -11,6 +11,14 @@ public class Moderator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     private String name;
     private String email;
     private String login;
