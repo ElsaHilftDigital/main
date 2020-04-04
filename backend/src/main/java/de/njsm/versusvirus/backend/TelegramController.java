@@ -47,6 +47,11 @@ public class TelegramController {
 
         Message message = update.getMessage();
 
+        if (message.getPhoto() != null && message.getPhoto().length > 0) {
+            botCommandDispatcher.handleReceiptWithoutPurchaseContext(message, message.getPhoto()[0].getId());
+            return;
+        }
+
         if (message.getText() == null || message.getText().isEmpty()) {
             LOG.info("No message found");
             return;
@@ -54,11 +59,6 @@ public class TelegramController {
 
         if (message.getEntities() == null) {
             LOG.info("The message didn't contain commands");
-            return;
-        }
-
-        if (message.getPhoto() != null && message.getPhoto().length > 0) {
-            botCommandDispatcher.handleReceiptWithoutPurchaseContext(message, message.getPhoto()[0].getId());
             return;
         }
 
