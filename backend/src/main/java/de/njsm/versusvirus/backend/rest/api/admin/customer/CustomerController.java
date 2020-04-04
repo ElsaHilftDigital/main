@@ -1,5 +1,7 @@
 package de.njsm.versusvirus.backend.rest.api.admin.customer;
 
+import de.njsm.versusvirus.backend.service.customer.CustomerDTO;
+import de.njsm.versusvirus.backend.service.customer.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +12,15 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/customers")
 public class CustomerController {
 
+    private final CustomerService customerService;
+
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
     @RequestMapping()
-    public List<Object> getCustomers() {
-        return List.of();
+    public List<CustomerDTO> getCustomers() {
+        return customerService.getCustomers();
     }
 
     @RequestMapping("/{id}")
