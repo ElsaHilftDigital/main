@@ -10,13 +10,13 @@ public interface BotCommandDispatcher {
 
     void handleLeavingHelper(Message message);
 
-    void handleHelpOffering(Message message, String purchaseId);
+    void handleHelpOffering(Message message, UUID purchaseId);
 
-    void handleConfirmingHelp(Message message, String purchaseId);
+    void handleConfirmingHelp(Message message, UUID purchaseId);
 
-    void handleRejectingHelp(Message message, String purchaseId);
+    void handleRejectingHelp(Message message, UUID purchaseId);
 
     void handleReceiptWithoutPurchaseContext(Message message, String fileId);
 
-    void handleReceiptSubmission(Message message, String purchaseId, String fileId);
+    void handleReceiptSubmission(Message message, UUID purchaseId, String fileId);
 }

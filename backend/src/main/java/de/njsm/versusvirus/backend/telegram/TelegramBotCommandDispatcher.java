@@ -43,7 +43,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleHelpOffering(Message message, String purchaseId) {
+    public void handleHelpOffering(Message message, UUID purchaseId) {
         /*
 
             if purchase is assigned -> reply
@@ -54,7 +54,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleConfirmingHelp(Message message, String purchaseId) {
+    public void handleConfirmingHelp(Message message, UUID purchaseId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
@@ -65,7 +65,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleRejectingHelp(Message message, String purchaseId) {
+    public void handleRejectingHelp(Message message, UUID purchaseId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
@@ -81,7 +81,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleReceiptSubmission(Message message, String purchaseId, String fileId) {
+    public void handleReceiptSubmission(Message message, UUID purchaseId, String fileId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack

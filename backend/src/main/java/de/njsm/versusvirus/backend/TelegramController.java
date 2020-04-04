@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend;
 import de.njsm.versusvirus.backend.telegram.BotCommand;
 import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.TelegramBotCommandDispatcher;
+import de.njsm.versusvirus.backend.telegram.UpdateService;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
 import de.njsm.versusvirus.backend.telegram.dto.Update;
@@ -22,8 +23,11 @@ public class TelegramController {
 
     private final BotCommandDispatcher botCommandDispatcher;
 
-    public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher) {
+    private final UpdateService updateService;
+
+    public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher, UpdateService updateService) {
         this.botCommandDispatcher = botCommandDispatcher;
+        this.updateService = updateService;
     }
 
     @GetMapping(TELEGRAM_WEBHOOK)
@@ -33,7 +37,11 @@ public class TelegramController {
             return;
         }
 
-        // TODO check if update is new via update_offset
+        if (update.getId() <= updateService.getLatestUpdate()) {
+            LOG.info("Repost of update " + update.getId());
+            return;
+        }
+        updateService.setLatestUpdate(update.getId());
 
         Message message = update.getMessage();
 
