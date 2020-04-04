@@ -60,6 +60,11 @@ public class Purchase {
     private Long createdByModerator;
     private Long customer;
 
+    @ElementCollection
+    @CollectionTable(name = "purchase_applications")
+    @Column(name = "volunteer_id")
+    private List<Long> volunteerApplications;
+
     // telegram parameters
     private String receiptFileId;
     private int broadcastMessageId;
