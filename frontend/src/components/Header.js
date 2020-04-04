@@ -40,6 +40,7 @@ const Header = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav activeKey={currLocation} className="mr-auto">
                         <Nav.Link onClick={navigate("/admin")} eventKey="/" className="text-light font-weight-bold">Dashboard</Nav.Link>
+                        <Nav.Link onClick={navigate("/admin/new-request")} eventKey="/admin/new-request" className="text-light font-weight-bold">Neuer Auftag</Nav.Link>
                         <Nav.Link onClick={navigate("/admin/customers")} eventKey="/admin/customers" className="text-light font-weight-bold">Kunden</Nav.Link>
                         <Nav.Link onClick={navigate("/admin/volunteers")} eventKey="/admin/volunteers" className="text-light font-weight-bold">Helfer</Nav.Link>
                     </Nav>
@@ -57,7 +58,6 @@ const Header = () => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav activeKey={currLocation} className="mr-auto">
                             <Nav.Link onClick={navigate("/")} eventKey="/" className="text-light font-weight-bold">Home</Nav.Link>
-                            <Nav.Link onClick={navigate("/ping")} eventKey="/ping" className="text-light font-weight-bold">Ping</Nav.Link>
                             <Nav.Link onClick={navigate("/register")} eventKey="/register" className="text-light font-weight-bold">Registrieren</Nav.Link>
                             <Nav.Link onClick={navigate("/about")} eventKey="/about" className="text-light font-weight-bold">Über Elsa hilft</Nav.Link>
                         </Nav>

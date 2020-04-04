@@ -22,6 +22,14 @@ public class Purchase {
         this.volunteerApplications = volunteerApplications;
     }
 
+    public List<OrderItem> getPurchaseList() {
+        return purchaseList;
+    }
+
+    public void setPurchaseList(List<OrderItem> purchaseList) {
+        this.purchaseList = purchaseList;
+    }
+
     public enum Status {
         NEW,
         VOLUNTEER_FOUND,
@@ -35,9 +43,25 @@ public class Purchase {
     }
 
     public enum PurchaseSize {
-        SMALL,
-        MEDIUM,
-        LARGE
+        SMALL {
+            @Override
+            public String displayName() {
+                return "kleiner Einkauf";
+            }
+        },
+        MEDIUM {
+            @Override
+            public String displayName() {
+                return "mittlerer Einkauf";
+            }
+        },
+        LARGE {
+            @Override
+            public String displayName() {
+                return "grosser Einkauf";
+            }
+        };
+        public abstract String displayName();
     }
 
     public enum PaymentMethod {
@@ -171,14 +195,6 @@ public class Purchase {
 
     public void setBroadcastMessageId(long broadcastMessageId) {
         this.broadcastMessageId = broadcastMessageId;
-    }
-
-    public String getDescriptionForGroupChat() {
-        return "";
-    }
-
-    public String getDescriptionForPersonalChat() {
-        return "";
     }
 
     public Long getAssignedVolunteer() {

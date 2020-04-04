@@ -1,12 +1,11 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
-import { authenticationSelectors } from '../../../store/authentication';
+import { useAuthentication } from '../../useAuthentication';
 import Dashboard from './Dashboard';
 import AdminLogin from './AdminLogin';
 
 const AdminHome = () => {
-    const isLoggedIn = !!useSelector(authenticationSelectors.currentUser);
+    const isLoggedIn = !!useAuthentication();
 
     return (
         <>
