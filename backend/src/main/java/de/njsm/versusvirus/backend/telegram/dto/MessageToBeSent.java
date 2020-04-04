@@ -17,7 +17,7 @@ public class MessageToBeSent {
     @JsonProperty("disable_web_page_preview")
     private boolean disableWebPagePreview;
 
-    public MessageToBeSent(int chatId, String markdownText) {
+    public MessageToBeSent(long chatId, String markdownText) {
         this.chatId = chatId;
         this.text = markdownText;
         this.parseMode = "Markdown";

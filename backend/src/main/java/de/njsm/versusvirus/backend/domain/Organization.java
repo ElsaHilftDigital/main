@@ -13,7 +13,7 @@ public class Organization {
     private long id;
 
     private String name;
-    private int updateOffset;
+    private long updateOffset;
     private String urlGroupChat;
     private Integer telegramGroupChatId;
 
@@ -29,11 +29,11 @@ public class Organization {
         this.name = name;
     }
 
-    public int getUpdateOffset() {
+    public long getUpdateOffset() {
         return updateOffset;
     }
 
-    public void setUpdateOffset(int updateOffset) {
+    public void setUpdateOffset(long updateOffset) {
         this.updateOffset = updateOffset;
     }
 

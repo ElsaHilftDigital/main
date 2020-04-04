@@ -26,7 +26,7 @@ public class MessageFacade {
         this.telegramMessages = telegramMessages;
     }
 
-    public void directUserToRegistrationForm(int chatId) {
+    public void directUserToRegistrationForm(long chatId) {
         String template = telegramMessages.getUnknownVolunteer();
         String text = MessageFormat.format(template, "https://versusvirus.njsm.de/#/register");
 
@@ -34,19 +34,19 @@ public class MessageFacade {
         api.sendMessage(message);
     }
 
-    public void resignVolunteer(int chatId) {
+    public void resignVolunteer(long chatId) {
         String text = telegramMessages.getVolunteerResignation();
         MessageToBeSent message = new MessageToBeSent(chatId, text);
         api.sendMessage(message);
     }
 
-    public void resignUnknownVolunteer(int chatId) {
+    public void resignUnknownVolunteer(long chatId) {
         String text = telegramMessages.getUnknownVolunteerResignation();
         MessageToBeSent message = new MessageToBeSent(chatId, text);
         api.sendMessage(message);
     }
 
-    public void informPurchaseHasBeenAssigned(int chatId) {
+    public void informPurchaseHasBeenAssigned(long chatId) {
         MessageToBeSent message = new MessageToBeSent(chatId, telegramMessages.getPurchaseAlreadyTaken());
         api.sendMessage(message);
     }
@@ -151,7 +151,7 @@ public class MessageFacade {
         return builder.toString();
     }
 
-    public void blameHackingUser(int chatId) {
+    public void blameHackingUser(long chatId) {
         MessageToBeSent message = new MessageToBeSent(chatId, telegramMessages.getBlameHackingUser());
         api.sendMessage(message);
     }

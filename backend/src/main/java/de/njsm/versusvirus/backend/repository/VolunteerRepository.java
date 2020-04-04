@@ -12,5 +12,5 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
 
     Optional<Volunteer> findByUuid(UUID uuid);
 
-    Optional<Volunteer> findByTelegramUserId(Integer id);
+    Optional<Volunteer> findByTelegramUserId(Long id);
 }
