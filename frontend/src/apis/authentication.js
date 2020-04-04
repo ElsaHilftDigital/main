@@ -4,7 +4,6 @@ import { BACKEND_URL } from '../config/constants';
 
 const client = axios.create({ baseURL: `${BACKEND_URL}`});
 
-
 export async function getAuthInstance() {
     const response = await client.get(`/v1/login`);
     return response.data;
