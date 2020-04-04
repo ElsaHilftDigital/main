@@ -22,8 +22,7 @@ public class TelegramController implements BotCommandDispatcher {
 
     private PhotoDownloader photoDownloader;
 
-    // TODO How to autowire?
-    public TelegramController(/*PhotoDownloader photoDownloader*/) {
+    public TelegramController(PhotoDownloader photoDownloader) {
     }
 
     @GetMapping(TELEGRAM_WEBHOOK)
@@ -47,8 +46,8 @@ public class TelegramController implements BotCommandDispatcher {
             return;
         }
 
-        if (message.getPhoto() != null) {
-            // TODO message contains images. Offer available purchases to select from
+        if (message.getPhoto() != null && message.getPhoto().length > 0) {
+            askUserWhichPurchaseBelongsTo(message.getPhoto()[0].getId());
             return;
         }
 
@@ -64,7 +63,7 @@ public class TelegramController implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleNewHelper(Message message, String token) {
+    public void handleNewHelper(Message message, String userId) {
         /*
 
             if helper is not known to us -> send to registration form
@@ -123,5 +122,9 @@ public class TelegramController implements BotCommandDispatcher {
             download picture and assign to purchase
 
          */
+    }
+
+    private void askUserWhichPurchaseBelongsTo(String fileId) {
+
     }
 }

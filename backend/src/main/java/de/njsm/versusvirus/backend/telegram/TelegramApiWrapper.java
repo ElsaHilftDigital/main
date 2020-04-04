@@ -29,7 +29,7 @@ class TelegramApiWrapper {
     private ApiClient apiClient;
 
     TelegramApiWrapper(@Value("${telegram.bot.token}") String token) {
-        LoggingInterceptor logger = new LoggingInterceptor();
+        RequestInterceptor logger = new RequestInterceptor();
         apiClient = new Retrofit.Builder()
                 .baseUrl("https://api.telegram.org")
                 .client(new OkHttpClient.Builder().addInterceptor(logger).build())

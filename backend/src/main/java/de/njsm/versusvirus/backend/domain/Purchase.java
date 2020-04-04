@@ -1,7 +1,6 @@
 package de.njsm.versusvirus.backend.domain;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -149,5 +148,13 @@ public class Purchase {
 
     public void setBroadcastMessageId(int broadcastMessageId) {
         this.broadcastMessageId = broadcastMessageId;
+    }
+
+    public String getDescriptionForGroupChat() {
+        return "";
+    }
+
+    public String getDescriptionForPersonalChat() {
+        return "";
     }
 }

@@ -4,7 +4,7 @@ import de.njsm.versusvirus.backend.telegram.dto.Message;
 
 public interface BotCommandDispatcher {
 
-    void handleNewHelper(Message message, String token);
+    void handleNewHelper(Message message, String userId);
 
     void handleLeavingHelper(Message message);
 

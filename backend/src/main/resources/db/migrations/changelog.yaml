@@ -32,3 +32,6 @@ databaseChangeLog:
   - include:
       file: 20200404-1011-organization-modify-fields.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200404-1046-organization-add-telegram-groupchat-id.sql
+      relativeToChangelogFile: true
