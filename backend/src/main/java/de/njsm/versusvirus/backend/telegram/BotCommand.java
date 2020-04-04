@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.telegram;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import org.springframework.lang.Nullable;
 
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
@@ -10,10 +11,21 @@ import java.util.regex.Pattern;
  */
 public enum BotCommand {
 
+
     HILFE_ANBIETEN {
         @Override
         Pattern getRegex() {
             return Pattern.compile("^/hilfe_anbieten (?<purchaseId>.*)$");
+        }
+
+        @Override
+        public String render(String purchaseId) {
+            return MessageFormat.format("{0}hilfe_anbieten={1}", BASE_URL, purchaseId);
+        }
+
+        @Override
+        public String render(String contextDependentValue1, String contextDependentValue2) {
+            throw new UnsupportedOperationException("I only need one value");
         }
 
         @Override
@@ -30,6 +42,16 @@ public enum BotCommand {
         }
 
         @Override
+        public String render(String purchaseId) {
+            return MessageFormat.format("{0}hilfe_bestaetigen={1}", BASE_URL, purchaseId);
+        }
+
+        @Override
+        public String render(String contextDependentValue1, String contextDependentValue2) {
+            throw new UnsupportedOperationException("I only need one value");
+        }
+
+        @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             String purchaseId = getRegex().matcher(command).group("purchaseId");
             dispatcher.handleConfirmingHelp(message, purchaseId);
@@ -40,6 +62,16 @@ public enum BotCommand {
         @Override
         Pattern getRegex() {
             return Pattern.compile("^/hilfe_zurueckziehen (?<purchaseId>.*)$");
+        }
+
+        @Override
+        public String render(String purchaseId) {
+            return MessageFormat.format("{0}hilfe_zurueckziehen={1}", BASE_URL, purchaseId);
+        }
+
+        @Override
+        public String render(String contextDependentValue1, String contextDependentValue2) {
+            throw new UnsupportedOperationException("I only need one value");
         }
 
         @Override
@@ -56,6 +88,16 @@ public enum BotCommand {
         }
 
         @Override
+        public String render(String contextDependentValue) {
+            throw new UnsupportedOperationException("I need two values");
+        }
+
+        @Override
+        public String render(String fileId, String purchaseId) {
+            return MessageFormat.format("{0}quittung_einreichen={1}%20{2}", BASE_URL, fileId, purchaseId);
+        }
+
+        @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             String purchaseId = getRegex().matcher(command).group("purchaseId");
             String fileId = getRegex().matcher(command).group("fileId");
@@ -66,13 +108,23 @@ public enum BotCommand {
     START {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start (?<token>.*)$");
+            return Pattern.compile("^/start (?<userId>.*)$");
+        }
+
+        @Override
+        public String render(String userId) {
+            return MessageFormat.format("{0}start={1}", BASE_URL, userId);
+        }
+
+        @Override
+        public String render(String contextDependentValue1, String contextDependentValue2) {
+            throw new UnsupportedOperationException("I only need one value");
         }
 
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
-            String token = getRegex().matcher(command).group("token");
-            dispatcher.handleNewHelper(message, token);
+            String userId = getRegex().matcher(command).group("userId");
+            dispatcher.handleNewHelper(message, userId);
         }
     },
 
@@ -83,14 +135,30 @@ public enum BotCommand {
         }
 
         @Override
+        public String render(String unused) {
+            return MessageFormat.format("{0}quit={1}", BASE_URL);
+        }
+
+        @Override
+        public String render(String contextDependentValue1, String contextDependentValue2) {
+            throw new UnsupportedOperationException("I only need one value");
+        }
+
+        @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             dispatcher.handleLeavingHelper(message);
         }
     };
 
-    abstract Pattern getRegex();
+    private static final String BASE_URL = "https://t.me/elsahilftbot?";
+
+    public abstract String render(String contextDependentValue);
+
+    public abstract String render(String contextDependentValue1, String contextDependentValue2);
 
     public abstract void dispatch(BotCommandDispatcher dispatcher, String command, Message message);
+
+    abstract Pattern getRegex();
 
     @Nullable
     public static BotCommand create(String command) {

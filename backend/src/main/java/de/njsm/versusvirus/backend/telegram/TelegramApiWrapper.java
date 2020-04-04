@@ -24,13 +24,12 @@ class TelegramApiWrapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
-
     private String token;
 
     private ApiClient apiClient;
 
     TelegramApiWrapper(@Value("${telegram.bot.token}") String token) {
-        LoggingInterceptor logger = new LoggingInterceptor();
+        RequestInterceptor logger = new RequestInterceptor();
         apiClient = new Retrofit.Builder()
                 .baseUrl("https://api.telegram.org")
                 .client(new OkHttpClient.Builder().addInterceptor(logger).build())
@@ -42,7 +41,7 @@ class TelegramApiWrapper {
     }
 
     public void sendMessage(MessageToBeSent message) {
-        LOG.debug("Sending message to {}", message.getId());
+        LOG.debug("Sending message to {}", message.getChatId());
         Call<TelegramResponse<Void>> call = apiClient.sendMessage(token, message);
         executeQuery(call);
     }

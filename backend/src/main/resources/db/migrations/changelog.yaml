@@ -23,3 +23,18 @@ databaseChangeLog:
   - include:
       file: 20200404-0040-volunteer-drop-iban-bankname-not-null-constraints.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200404-0924-volunteer-add-telegram-fields.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-0934-create-purchase.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1011-organization-modify-fields.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1046-organization-add-telegram-groupchat-id.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1053-create-moderator.sql
+      relativeToChangelogFile: true

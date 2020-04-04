@@ -1,5 +1,8 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PhotoDownloader {
 
     private TelegramApiWrapper api;
