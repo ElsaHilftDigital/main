@@ -18,14 +18,16 @@ public class MessageFacade {
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
     private TelegramApiWrapper api;
+    private TelegramMessages telegramMessages;
 
     @Autowired
-    public MessageFacade(TelegramApiWrapper api) {
+    public MessageFacade(TelegramApiWrapper api, TelegramMessages telegramMessages) {
         this.api = api;
+        this.telegramMessages = telegramMessages;
     }
 
     public void directUserToRegistrationForm(int chatId) {
-        String template = MessageTemplates.UNKNOWN_HELPER.getTemplate();
+        String template = telegramMessages.getUnknownVolunteer();
         String text = MessageFormat.format(template, "https://versusvirus.njsm.de/#/register");
 
         MessageToBeSent message = new MessageToBeSent(chatId, text);
@@ -33,13 +35,13 @@ public class MessageFacade {
     }
     
     public void resignVolunteer(int chatId) {
-        String text = MessageTemplates.HELPER_RESIGNATION.getTemplate();
+        String text = telegramMessages.getVolunteerResignation();
         MessageToBeSent message = new MessageToBeSent(chatId, text);
         api.sendMessage(message);
     }
 
     public void resignUnknownVolunteer(int chatId) {
-        String text = MessageTemplates.UNKNOWN_HELPER_RESIGNATION.getTemplate();
+        String text = telegramMessages.getUnknownVolunteerResignation();
         MessageToBeSent message = new MessageToBeSent(chatId, text);
         api.sendMessage(message);
     }
@@ -53,11 +55,11 @@ public class MessageFacade {
 
         String text;
         if (volunteer.isValidated()) {
-            String template = MessageTemplates.CONFIRM_REGISTRATION.getTemplate();
+            String template = telegramMessages.getConfirmRegistration();
             String groupChatJoinUrl = BotCommand.START.render(organization.getUrlGroupChat());
             text = MessageFormat.format(template, volunteer.getFirstName(), groupChatJoinUrl);
         } else {
-            String template = MessageTemplates.CONFIRM_PRELIMINARY_REGISTRATION.getTemplate();
+            String template = telegramMessages.getPreconfirmRegistration();
             text = MessageFormat.format(template, volunteer.getFirstName());
         }
 
@@ -72,7 +74,7 @@ public class MessageFacade {
             return;
         }
 
-        String template = MessageTemplates.BROADCAST_PURCHASE.getTemplate();
+        String template = telegramMessages.getBroadcastPurchase();
         String botCommand = BotCommand.HILFE_ANBIETEN.render(purchase.getUuid().toString());
         String text = MessageFormat.format(template, purchase.getDescriptionForGroupChat(), botCommand);
 
@@ -87,7 +89,7 @@ public class MessageFacade {
             return;
         }
 
-        String template = MessageTemplates.OFFER_PURCHASE.getTemplate();
+        String template = telegramMessages.getOfferPurchase();
         String acceptCommand = BotCommand.HILFE_BESTAETIGEN.render(purchase.getUuid().toString());
         String rejectCommand = BotCommand.HILFE_ZURUECKZIEHEN.render(purchase.getUuid().toString());
         String text = MessageFormat.format(
@@ -106,7 +108,7 @@ public class MessageFacade {
             return;
         }
 
-        String template = MessageTemplates.CONFIRM_PURCHASE_MAPPING.getTemplate();
+        String template = telegramMessages.getConfirmPurchaseMapping();
         String renderedPurchaseList = MessageTemplates.renderPurchaseList(fileId, purchases);
         String text = MessageFormat.format(
                 template,
@@ -122,7 +124,7 @@ public class MessageFacade {
             return;
         }
 
-        String template = MessageTemplates.INFORM_TO_DELIVER_PURCHASE.getTemplate();
+        String template = telegramMessages.getInformToDeliverPurchase();
         String text = MessageFormat.format(
                 template,
                 purchase.getUuid());
