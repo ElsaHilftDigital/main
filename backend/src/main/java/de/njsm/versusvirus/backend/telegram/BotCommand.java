@@ -16,7 +16,7 @@ public enum BotCommand {
     HILFE_ANBIETEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/hilfe_anbieten (?<purchaseId>.*)$");
+            return Pattern.compile("^/hilfe_anbieten(?<botname>@elsahilftbot)? (?<purchaseId>.*)$");
         }
 
         @Override
@@ -39,7 +39,7 @@ public enum BotCommand {
     HILFE_BESTAETIGEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/hilfe_bestaetigen (?<purchaseId>.*)$");
+            return Pattern.compile("^/hilfe_bestaetigen(?<botname>@elsahilftbot)? (?<purchaseId>.*)$");
         }
 
         @Override
@@ -62,7 +62,7 @@ public enum BotCommand {
     HILFE_ZURUECKZIEHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/hilfe_zurueckziehen (?<purchaseId>.*)$");
+            return Pattern.compile("^/hilfe_zurueckziehen(?<botname>@elsahilftbot)? (?<purchaseId>.*)$");
         }
 
         @Override
@@ -85,7 +85,7 @@ public enum BotCommand {
     QUITTUNG_EINREICHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/quittung_einreichen (?<fileId>[^ ]*) (?<purchaseId>[^ ]*)$");
+            return Pattern.compile("^/quittung_einreichen(?<botname>@elsahilftbot)? (?<fileId>[^ ]*) (?<purchaseId>[^ ]*)$");
         }
 
         @Override
@@ -109,7 +109,7 @@ public enum BotCommand {
     START {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start (?<userId>.*)$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? (?<userId>.*)$");
         }
 
         @Override
@@ -132,7 +132,7 @@ public enum BotCommand {
     QUIT {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/quit$");
+            return Pattern.compile("^/quit(?<botname>@elsahilftbot)?$");
         }
 
         @Override
