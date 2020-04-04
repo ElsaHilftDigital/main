@@ -10,8 +10,28 @@ import java.util.List;
  */
 public enum MessageTemplates {
 
-    CONFIRM_PRELIMINARY_REGISTRATION {
+    UNKNOWN_HELPER {
+        @Override
+        public String getTemplate() {
+            return "I don't know you. Please register on [our website]({0})";
+        }
+    },
 
+    UNKNOWN_HELPER_RESIGNATION {
+        @Override
+        public String getTemplate() {
+            return "Well, I didn't know you anyway";
+        }
+    },
+
+    HELPER_RESIGNATION {
+        @Override
+        public String getTemplate() {
+            return "Goodbye, thanks for you help";
+        }
+    },
+
+    CONFIRM_PRELIMINARY_REGISTRATION {
         @Override
         public String getTemplate() {
             return "Hi {0}, please wait to be confirmed";

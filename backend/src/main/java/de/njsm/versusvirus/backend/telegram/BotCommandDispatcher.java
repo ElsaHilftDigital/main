@@ -16,5 +16,7 @@ public interface BotCommandDispatcher {
 
     void handleRejectingHelp(Message message, String purchaseId);
 
+    void handleReceiptWithoutPurchaseContext(Message message, String fileId);
+
     void handleReceiptSubmission(Message message, String purchaseId, String fileId);
 }
