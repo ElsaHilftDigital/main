@@ -65,3 +65,6 @@ databaseChangeLog:
   - include:
       file: 20200404-1641-make-telegram-groupchat-id-longer.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200404-1848-add-telegram-moderator-group-chat.sql
+      relativeToChangelogFile: true

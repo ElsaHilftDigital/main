@@ -1,0 +1,1 @@
+alter table organization add column telegram_moderator_group_chat_id bigint;
