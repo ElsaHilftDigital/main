@@ -150,4 +150,9 @@ public class MessageFacade {
         }
         return builder.toString();
     }
+
+    public void blameHackingUser(int chatId) {
+        MessageToBeSent message = new MessageToBeSent(chatId, telegramMessages.getBlameHackingUser());
+        api.sendMessage(message);
+    }
 }

@@ -17,6 +17,7 @@ public class TelegramMessages {
     private String confirmRegistration;
     private String broadcastPurchase;
     private String purchaseAlreadyTaken;
+    private String blameHackingUser;
     private String offerPurchase;
     private String confirmPurchaseMapping;
     private String informToDeliverPurchase;
@@ -99,5 +100,13 @@ public class TelegramMessages {
 
     public void setPurchaseAlreadyTaken(String purchaseAlreadyTaken) {
         this.purchaseAlreadyTaken = purchaseAlreadyTaken;
+    }
+
+    public String getBlameHackingUser() {
+        return blameHackingUser;
+    }
+
+    public void setBlameHackingUser(String blameHackingUser) {
+        this.blameHackingUser = blameHackingUser;
     }
 }
