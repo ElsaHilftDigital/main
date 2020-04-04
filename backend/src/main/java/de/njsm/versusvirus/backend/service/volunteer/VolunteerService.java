@@ -54,6 +54,24 @@ public class VolunteerService {
                 .collect(Collectors.toList());
     }
 
+    public void updateVolunteer(UUID uuid, UpdateRequest updateRequest) {
+        var volunteer = repository.findByUuid(uuid).orElseThrow(NotFoundException::new);
+
+        volunteer.setFirstName(updateRequest.firstName);
+        volunteer.setLastName(updateRequest.lastName);
+        volunteer.getAddress().setAddress(updateRequest.address);
+        volunteer.getAddress().setCity(updateRequest.city);
+        volunteer.getAddress().setZipCode(updateRequest.zipCode);
+        volunteer.setEmail(updateRequest.email);
+        volunteer.setPhone(updateRequest.phone);
+        volunteer.setBirthDate(updateRequest.birthDate);
+        volunteer.setIban(updateRequest.iban);
+        volunteer.setBankName(updateRequest.bankName);
+        volunteer.setWantsCompensation(updateRequest.wantsCompensation);
+
+        repository.save(volunteer);
+    }
+
     public void deleteVolunteer(UUID uuid) {
         var volunteer = repository.findByUuid(uuid).orElseThrow(NotFoundException::new);
         volunteer.setDeleted(true);

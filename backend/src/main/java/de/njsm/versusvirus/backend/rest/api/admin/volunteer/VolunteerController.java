@@ -1,7 +1,9 @@
 package de.njsm.versusvirus.backend.rest.api.admin.volunteer;
 
+import de.njsm.versusvirus.backend.service.volunteer.UpdateRequest;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,17 +33,16 @@ public class VolunteerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateVolunteer(@PathVariable("id") UUID volunteerId,
-                                                @RequestBody Object updatedVolunteer) {
-        return ResponseEntity.noContent()
-                .build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateVolunteer(@PathVariable("id") UUID volunteerId,
+                                                @RequestBody UpdateRequest updateRequest) {
+        volunteerService.updateVolunteer(volunteerId, updateRequest);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVolunteer(@PathVariable("id") UUID volunteerId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteVolunteer(@PathVariable("id") UUID volunteerId) {
         volunteerService.deleteVolunteer(volunteerId);
-        return ResponseEntity.noContent()
-                .build();
     }
 
     @GetMapping("/{id}/completed-purchases")

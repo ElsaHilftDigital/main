@@ -18,14 +18,6 @@ public class SignupController {
         this.service = service;
     }
 
-    @RequestMapping("/{uuid}")
-    public ResponseEntity<VolunteerDTO> getVolunteer(@PathVariable("uuid") UUID uuid) {
-        return service.getVolunteer(uuid)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound()
-                        .build());
-    }
-
     @PostMapping()
     public VolunteerDTO signup(@RequestBody SignupRequest signupRequest) {
         return service.signup(signupRequest);
