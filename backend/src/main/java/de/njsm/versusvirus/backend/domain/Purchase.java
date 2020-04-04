@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.domain;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -13,22 +14,6 @@ public class Purchase {
     private long id;
 
     private UUID uuid;
-
-    public List<Long> getVolunteerApplications() {
-        return volunteerApplications;
-    }
-
-    public void setVolunteerApplications(List<Long> volunteerApplications) {
-        this.volunteerApplications = volunteerApplications;
-    }
-
-    public List<OrderItem> getPurchaseList() {
-        return purchaseList;
-    }
-
-    public void setPurchaseList(List<OrderItem> purchaseList) {
-        this.purchaseList = purchaseList;
-    }
 
     public enum Status {
         NEW,
@@ -79,6 +64,7 @@ public class Purchase {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private String comments;
+    private Instant createTime;
 
     @JoinColumn(name = "purchase_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -219,5 +205,29 @@ public class Purchase {
 
     public void setCustomer(Long customer) {
         this.customer = customer;
+    }
+
+    public Instant getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime() {
+        this.createTime = Instant.now();
+    }
+
+    public List<Long> getVolunteerApplications() {
+        return volunteerApplications;
+    }
+
+    public void setVolunteerApplications(List<Long> volunteerApplications) {
+        this.volunteerApplications = volunteerApplications;
+    }
+
+    public List<OrderItem> getPurchaseList() {
+        return purchaseList;
+    }
+
+    public void setPurchaseList(List<OrderItem> purchaseList) {
+        this.purchaseList = purchaseList;
     }
 }
