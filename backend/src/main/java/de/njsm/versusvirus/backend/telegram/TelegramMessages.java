@@ -22,6 +22,10 @@ public class TelegramMessages {
     private String confirmPurchaseMapping;
     private String informToDeliverPurchase;
     private String noActivePurchases;
+    private String thankForOfferingHelp;
+    private String thankForDoingPurchase;
+    private String unexpectedMessage;
+    private String confirmReceiptUpload;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -117,5 +121,37 @@ public class TelegramMessages {
 
     public void setNoActivePurchases(String noActivePurchases) {
         this.noActivePurchases = noActivePurchases;
+    }
+
+    public String getThankForOfferingHelpMessage() {
+        return this.thankForOfferingHelp;
+    }
+
+    public void setThankForOfferingHelp(String thankForOfferingHelp) {
+        this.thankForOfferingHelp = thankForOfferingHelp;
+    }
+
+    public String getThankForDoingPurchaseMessage() {
+        return this.thankForDoingPurchase;
+    }
+
+    public void setThankForDoingPurchase(String thankForDoingPurchase) {
+        this.thankForDoingPurchase = thankForDoingPurchase;
+    }
+
+    public String getUnexpectedMessage() {
+        return this.unexpectedMessage;
+    }
+
+    public void setUnexpectedMessage(String unexpectedMessage) {
+        this.unexpectedMessage = unexpectedMessage;
+    }
+
+    public String getConfirmReceiptUpload() {
+        return this.confirmReceiptUpload;
+    }
+
+    public void setConfirmReceiptUpload(String confirmReceiptUpload) {
+        this.confirmReceiptUpload = confirmReceiptUpload;
     }
 }

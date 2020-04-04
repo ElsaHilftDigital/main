@@ -166,4 +166,24 @@ public class MessageFacade {
         MessageToBeSent message = new MessageToBeSent(chatId, telegramMessages.getBlameHackingUser());
         api.sendMessage(message);
     }
+
+    public void confirmHelpOfferingReceived(long chatId) {
+        MessageToBeSent m = new MessageToBeSent(chatId, telegramMessages.getThankForOfferingHelpMessage());
+        api.sendMessage(m);
+    }
+
+    public void confirmConfirmation(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getThankForDoingPurchaseMessage());
+        api.sendMessage(m);
+    }
+
+    public void sendUnexpectedMessage(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getUnexpectedMessage());
+        api.sendMessage(m);
+    }
+
+    public void confirmReceiptUpload(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getConfirmReceiptUpload());
+        api.sendMessage(m);
+    }
 }

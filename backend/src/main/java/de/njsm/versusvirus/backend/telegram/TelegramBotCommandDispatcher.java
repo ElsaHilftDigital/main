@@ -64,6 +64,8 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
                     throw new TelegramShouldBeFineException("helper not found. telegram id: " + message.getFrom().getId());
                 }
         );
+        volunteer.setDeleted(true);
+        volunteerRepository.save(volunteer);
         messageFacade.resignVolunteer(message.getChat().getId());
     }
 
@@ -79,6 +81,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         purchase.getVolunteerApplications().add(volunteer.getId());
         purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
         purchaseRepository.save(purchase);
+        messageFacade.confirmHelpOfferingReceived(message.getChat().getId());
     }
 
     @Override
@@ -96,8 +99,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
             purchaseRepository.save(purchase);
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
+            messageFacade.confirmConfirmation(message.getChat().getId());
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
         }
     }
 
@@ -117,6 +122,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             purchaseRepository.save(purchase);
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
         }
     }
 
@@ -143,5 +149,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         purchase.setReceiptFileId(fileId);
         purchase.setStatus(Purchase.Status.PURCHASE_DONE);
         purchaseRepository.save(purchase);
+        messageFacade.confirmReceiptUpload(message.getChat().getId());
     }
 }
