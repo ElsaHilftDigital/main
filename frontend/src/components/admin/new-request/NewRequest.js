@@ -42,7 +42,7 @@ const ProgressItem = styled.li`
 
 const Progress = styled.ol`
     list-style: none;
-    margin: 0;
+    margin: 4rem 0 2rem;
     padding: 0;
     display: table;
     table-layout: fixed;
@@ -59,8 +59,20 @@ const NewRequest = () => {
     ));
 
     const EnterCustomer = () => {
+        const [newCustomer, setNewCustomer] = useState(false);
+
         return (<>
-            <SearchBox/>
+            <form>
+                <div className="form-check form-check-inline">
+                    <input className="form-check-input" onChange={() => setNewCustomer(false)} type="radio" id="existing" name="customerType"/>
+                    <label className="form-check-label" for="existing">Bestehender Kunde</label>
+                </div>
+                <div className="form-check form-check-inline">
+                    <input className="form-check-input" onChange={() => setNewCustomer(true)} type="radio" id="new" name="customerType"/>
+                    <label className="form-check-label" for="new">Neuer Kunde</label>
+                </div>
+            </form>
+            {newCustomer ? <></> : <SearchBox/> }
             <form onSubmit={() => setStep(step + 1)}>
                 <button type="submit" className="btn btn-primary float-right">Weiter</button>
             </form>
