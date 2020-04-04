@@ -80,6 +80,7 @@ public class MessageSender {
 
     /**
      * Save the purchase to the repo after calling!
+     * TODO link
      */
     public void broadcastPurchase(Organization organization, Customer customer, Purchase purchase) {
 
@@ -108,6 +109,7 @@ public class MessageSender {
         purchase.setBroadcastMessageId(sentMessage.getId());
     }
 
+    // TODO link
     public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {
 
         if (volunteer.getTelegramChatId() == null) {
@@ -168,6 +170,7 @@ public class MessageSender {
         api.sendMessage(message);
     }
 
+    // TODO link
     public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");

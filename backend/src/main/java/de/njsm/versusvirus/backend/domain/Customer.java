@@ -19,6 +19,7 @@ public class Customer {
     private String phone;
     private String mobile;
     private Address address;
+    private boolean deleted;
 
     public long getId() {
         return id;
@@ -66,5 +67,13 @@ public class Customer {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

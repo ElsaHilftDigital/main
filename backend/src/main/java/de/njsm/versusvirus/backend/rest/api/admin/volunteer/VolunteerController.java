@@ -1,5 +1,6 @@
 package de.njsm.versusvirus.backend.rest.api.admin.volunteer;
 
+import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.service.volunteer.UpdateRequest;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerService;
@@ -46,12 +47,12 @@ public class VolunteerController {
     }
 
     @GetMapping("/{id}/completed-purchases")
-    public List<Object> getCompletedPurchaseList(@PathVariable("id") UUID volunteerId) {
+    public List<PurchaseDTO> getCompletedPurchaseList(@PathVariable("id") UUID volunteerId) {
         return List.of();
     }
 
     @GetMapping("/{id}/open-purchases")
-    public List<Object> getOpenPurchaseList(@PathVariable("id") UUID volunteerId) {
+    public List<PurchaseDTO> getOpenPurchaseList(@PathVariable("id") UUID volunteerId) {
         return List.of();
     }
 }
