@@ -33,7 +33,7 @@ const Header = () => {
             {adminHeader && (
                 <>
                 <Navbar.Brand onClick={navigate("/admin")} className="hover-pointer" >
-                <img src="elsahilft_Baden.jpg" className="mr-3" width="50" height="50" alt="" />
+                <img src="ElsaHilftMehr.png" className="mr-3" width="50" height="50" alt="" />
                 <span className="text-light font-weight-bold">Elsa hilft</span>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -51,7 +51,7 @@ const Header = () => {
             {!adminHeader && (
                 <>
                     <Navbar.Brand onClick={navigate("/")} className="hover-pointer" >
-                    <img src="elsahilft_Baden.jpg" className="mr-3" width="50" height="50" alt="" />
+                    <img src="ElsaHilftMehr.png" className="mr-3" width="50" height="50" alt="" />
                     <span className="text-light font-weight-bold">Elsa hilft</span>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />

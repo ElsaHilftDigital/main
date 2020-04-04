@@ -18,7 +18,7 @@ const AdminLogin = () => {
 
     return (
         <div className="container mt-3 mb-5">
-            <img src="elsahilft_Baden.jpg" className="mr-3" width="200" height="200" alt="" class="center"/>
+            <img src="ElsaHilftMehr.png" className="mr-3" width="200" height="200" alt="" />
 
             <h1>Login</h1>
             {loginError && (
@@ -37,6 +37,7 @@ const AdminLogin = () => {
                 </div>
                 <button type="submit" className="btn btn-primary">Einloggen</button>
             </form>
+            <a href="">Hier neu registrieren als Moderator</a>
         </div>
     );
 };

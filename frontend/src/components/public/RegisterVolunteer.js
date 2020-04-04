@@ -19,8 +19,8 @@ const RegisterVolunteer = () => {
     const registerFormWantsNoCompensation = watch('registerFormWantsNoCompensation');
 
     const onSubmit = data => dispatch(volunteerActions.createVolunteer({
-        firstName: data.registerFormSurname,
-        lastName: data.registerFormName,
+        firstName: data.registerFormFirstname,
+        lastName: data.registerFormLastname,
         phone: data.registerFormPhone,
         email: data.registerFormEmail,
         address: data.registerFormStreet,
@@ -151,14 +151,14 @@ const RegisterVolunteer = () => {
             <form onSubmit={handleSubmit(onSubmit)} >
                 <div className="row">
                     <div className="form-group col-md-6">
-                        <label htmlFor="registerFormSurname">Vorname</label>
-                        <input name="registerFormSurname" ref={register({ required: true })} type="text" className="form-control" id="registerFormSurname" placeholder="Vorname" />
-                        {errors.registerFormSurname && (<span className="text-danger">Vorname wird benötigt</span>)}
+                        <label htmlFor="registerFormFirstname">Vorname</label>
+                        <input name="registerFormFirstname" ref={register({ required: true })} type="text" className="form-control" id="registerFormFirstname" placeholder="Vorname" />
+                        {errors.registerFormFirstname && (<span className="text-danger">Vorname wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
-                        <label htmlFor="registerFormName">Name</label>
-                        <input name="registerFormName" ref={register({ required: true })} type="text" className="form-control" id="registerFormName" placeholder="Name" />
-                        {errors.registerFormName && (<span className="text-danger">Name wird benötigt</span>)}
+                        <label htmlFor="registerFormLastname">Name</label>
+                        <input name="registerFormLastname" ref={register({ required: true })} type="text" className="form-control" id="registerFormLastname" placeholder="Name" />
+                        {errors.registerFormLastname && (<span className="text-danger">Name wird benötigt</span>)}
                     </div>
                 </div>
                 <div className="form-group">
@@ -167,7 +167,7 @@ const RegisterVolunteer = () => {
                     {errors.registerFormPhone && (<span className="text-danger">{!!oldPhoneNumber ? 'Ungültige Telefonnummber' : 'Telefonnummer wird benötigt'}</span>)}
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormEmail">E-mail</label>
+                    <label htmlFor="registerFormEmail">E-Mail</label>
                     <input name="registerFormEmail" ref={register({ required: true })} type="email" className="form-control" id="registerFormEmail" placeholder="elsa@baden.ch" />
                     {errors.registerFormEmail && (<span className="text-danger">E-mail wird benötigt</span>)}
                 </div>
