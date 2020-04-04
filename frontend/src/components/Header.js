@@ -1,6 +1,8 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 
+import Authentication from './Authentication';
+
 const Header = (props) => {
     const currLocation = props.location.pathname;
     const navigate = (route) => () => {
@@ -12,7 +14,7 @@ const Header = (props) => {
     };
 
     return (
-        <Navbar bg="primary" expand="sm">
+        <Navbar sticky="top" bg="primary" expand="sm">
             <Navbar.Brand onClick={navigate("/")} className="hover-pointer" >
                 <img src="elsahilft_Baden.jpg" className="mr-3" width="50" height="50" alt="" />
                 <span className="text-light font-weight-bold">Elsa hilft</span>
@@ -25,6 +27,7 @@ const Header = (props) => {
                     <Nav.Link onClick={navigate("/register")} eventKey="/register" className="text-light font-weight-bold">Registrieren</Nav.Link>
                     <Nav.Link onClick={navigate("/about")} eventKey="/about" className="text-light font-weight-bold">Über Elsa hilft</Nav.Link>
                 </Nav>
+                <Authentication />
             </Navbar.Collapse>
         </Navbar>
     );
