@@ -61,7 +61,7 @@ public class MessageFacade {
         String text;
         if (volunteer.isValidated()) {
             String template = telegramMessages.getConfirmRegistration();
-            String groupChatJoinUrl = BotCommand.START.render(organization.getUrlGroupChat());
+            String groupChatJoinUrl = organization.getUrlGroupChat();
             text = MessageFormat.format(template, volunteer.getFirstName(), groupChatJoinUrl);
         } else {
             String template = telegramMessages.getPreconfirmRegistration();

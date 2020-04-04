@@ -67,7 +67,7 @@ public class Purchase {
 
     // telegram parameters
     private String receiptFileId;
-    private int broadcastMessageId;
+    private Long broadcastMessageId;
 
     public long getId() {
         return id;
@@ -157,11 +157,11 @@ public class Purchase {
         this.receiptFileId = receiptFileId;
     }
 
-    public int getBroadcastMessageId() {
+    public long getBroadcastMessageId() {
         return broadcastMessageId;
     }
 
-    public void setBroadcastMessageId(int broadcastMessageId) {
+    public void setBroadcastMessageId(long broadcastMessageId) {
         this.broadcastMessageId = broadcastMessageId;
     }
 

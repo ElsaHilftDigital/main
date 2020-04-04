@@ -62,3 +62,6 @@ databaseChangeLog:
   - include:
       file: 20200404-1549-add-purchase-applications.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200404-1641-make-telegram-groupchat-id-longer.sql
+      relativeToChangelogFile: true

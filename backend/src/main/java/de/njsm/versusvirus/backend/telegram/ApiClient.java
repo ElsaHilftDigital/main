@@ -30,6 +30,6 @@ interface ApiClient {
                                   @Path("filePath") String filePath);
 
     @POST("/bot{token}/deleteMessage")
-    Call<TelegramResponse<Void>> deleteMessage(@Query("chat_id") int chatId,
-                                               @Query("message_id") int messageId);
+    Call<TelegramResponse<Void>> deleteMessage(@Query("chat_id") long chatId,
+                                               @Query("message_id") long messageId);
 }
