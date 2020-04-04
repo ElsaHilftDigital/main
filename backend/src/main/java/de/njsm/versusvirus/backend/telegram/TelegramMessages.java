@@ -27,6 +27,13 @@ public class TelegramMessages {
     private String unexpectedMessage;
     private String confirmReceiptUpload;
     private String confirmRejection;
+    private String broadcastPurchaseDescription;
+    private String personalPurchaseDescription;
+
+    private String newHelperHasRegistered;
+    private String helpersAppliedForPurchase;
+    private String helperRejectedPurchase;
+    private String receiptHasBeenSubmitted;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -124,10 +131,6 @@ public class TelegramMessages {
         this.noActivePurchases = noActivePurchases;
     }
 
-    public String getThankForOfferingHelpMessage() {
-        return this.thankForOfferingHelp;
-    }
-
     public void setThankForOfferingHelp(String thankForOfferingHelp) {
         this.thankForOfferingHelp = thankForOfferingHelp;
     }
@@ -162,5 +165,61 @@ public class TelegramMessages {
 
     public void setConfirmRejection(String confirmRejection) {
         this.confirmRejection = confirmRejection;
+    }
+
+    public String getBroadcastPurchaseDescription() {
+        return this.broadcastPurchaseDescription;
+    }
+
+    public void setBroadcastPurchaseDescription(String broadcastPurchaseDescription) {
+        this.broadcastPurchaseDescription = broadcastPurchaseDescription;
+    }
+
+    public String getPersonalPurchaseDescription() {
+        return this.personalPurchaseDescription;
+    }
+
+    public void setPersonalPurchaseDescription(String personalPurchaseDescription) {
+        this.personalPurchaseDescription = personalPurchaseDescription;
+    }
+
+    public String getThankForOfferingHelp() {
+        return thankForOfferingHelp;
+    }
+
+    public String getThankForDoingPurchase() {
+        return thankForDoingPurchase;
+    }
+
+    public String getNewHelperHasRegistered() {
+        return newHelperHasRegistered;
+    }
+
+    public void setNewHelperHasRegistered(String newHelperHasRegistered) {
+        this.newHelperHasRegistered = newHelperHasRegistered;
+    }
+
+    public String getHelpersAppliedForPurchase() {
+        return helpersAppliedForPurchase;
+    }
+
+    public void setHelpersAppliedForPurchase(String helpersAppliedForPurchase) {
+        this.helpersAppliedForPurchase = helpersAppliedForPurchase;
+    }
+
+    public String getHelperRejectedPurchase() {
+        return helperRejectedPurchase;
+    }
+
+    public void setHelperRejectedPurchase(String helperRejectedPurchase) {
+        this.helperRejectedPurchase = helperRejectedPurchase;
+    }
+
+    public String getReceiptHasBeenSubmitted() {
+        return receiptHasBeenSubmitted;
+    }
+
+    public void setReceiptHasBeenSubmitted(String receiptHasBeenSubmitted) {
+        this.receiptHasBeenSubmitted = receiptHasBeenSubmitted;
     }
 }
