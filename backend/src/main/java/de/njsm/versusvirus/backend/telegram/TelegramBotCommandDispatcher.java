@@ -44,9 +44,12 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
                     throw new TelegramShouldBeFineException("new helper not found. uuid: " + userId);
                 }
         );
+        var organization = organizationRepository.findById(1).orElseThrow(() -> new TelegramShouldBeFineException("Organization not found"));
+
         volunteer.setTelegramUserId(message.getFrom().getId());
         volunteer.setTelegramChatId(message.getChat().getId());
         volunteerRepository.save(volunteer);
+        messageFacade.confirmRegistration(organization, volunteer);
     }
 
     @Override
