@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Nav, Navbar } from 'react-bootstrap';
 
 import history from '../history';
-import { authenticationSelectors } from '../store/authentication';
-import Authentication from './Authentication';
+import AuthenticationHeader from './AuthenticationHeader';
+import { useAuthentication } from './useAuthentication';
 
 const Header = () => {
-    const currLocation = history.location.pathname;
-    const isLoggedIn = !!useSelector(authenticationSelectors.currentUser);
+    const [ currLocation, setCurrLocation ] = useState(history.location.pathname);
+    const isLoggedIn = !!useAuthentication();
     const [ adminHeader, setAdminHeader ] = useState(!!currLocation.match(/^\/admin.*$/i))
 
     history.listen((location) => {
         setAdminHeader(!!location.pathname.match(/^\/admin.*$/i))
+        setCurrLocation(location.pathname);
     });
 
     const navigate = (route) => () => {
@@ -40,8 +40,10 @@ const Header = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav activeKey={currLocation} className="mr-auto">
                         <Nav.Link onClick={navigate("/admin")} eventKey="/" className="text-light font-weight-bold">Dashboard</Nav.Link>
+                        <Nav.Link onClick={navigate("/admin/customers")} eventKey="/admin/customers" className="text-light font-weight-bold">Kunden</Nav.Link>
+                        <Nav.Link onClick={navigate("/admin/volunteers")} eventKey="/admin/volunteers" className="text-light font-weight-bold">Helfer</Nav.Link>
                     </Nav>
-                    <Authentication />
+                    <AuthenticationHeader />
                 </Navbar.Collapse>
             </>
             )}
@@ -59,7 +61,7 @@ const Header = () => {
                             <Nav.Link onClick={navigate("/register")} eventKey="/register" className="text-light font-weight-bold">Registrieren</Nav.Link>
                             <Nav.Link onClick={navigate("/about")} eventKey="/about" className="text-light font-weight-bold">Über Elsa hilft</Nav.Link>
                         </Nav>
-                        <Authentication />
+                        <AuthenticationHeader />
                     </Navbar.Collapse>
                 </>
             )}
