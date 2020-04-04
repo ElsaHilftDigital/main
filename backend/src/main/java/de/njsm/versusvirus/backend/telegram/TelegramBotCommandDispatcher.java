@@ -71,8 +71,14 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     @Override
     public void handleHelpOffering(Message message, UUID purchaseId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new TelegramShouldBeFineException("purchase not found"));
-        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new TelegramShouldBeFineException("volunteer not found"));
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("purchase not found");
+        });
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("volunteer not found");
+        });
 
         if (purchase.getStatus() != Purchase.Status.NEW && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
             messageFacade.informPurchaseHasBeenAssigned(message.getChat().getId());
@@ -86,9 +92,18 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     @Override
     public void handleConfirmingHelp(Message message, UUID purchaseId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new TelegramShouldBeFineException("purchase not found"));
-        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new TelegramShouldBeFineException("volunteer not found"));
-        var organization = organizationRepository.findById(1).orElseThrow(() -> new TelegramShouldBeFineException("Organization not found"));
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("purchase not found");
+        });
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("volunteer not found");
+        });
+        var organization = organizationRepository.findById(1).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("Organization not found");
+        });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
             messageFacade.blameHackingUser(message.getChat().getId());
@@ -108,8 +123,14 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     @Override
     public void handleRejectingHelp(Message message, UUID purchaseId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new TelegramShouldBeFineException("purchase not found"));
-        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new TelegramShouldBeFineException("volunteer not found"));
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("purchase not found");
+        });
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("volunteer not found");
+        });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
             messageFacade.blameHackingUser(message.getChat().getId());
@@ -128,7 +149,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     @Override
     public void handleReceiptWithoutPurchaseContext(Message message, String fileId) {
-        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new TelegramShouldBeFineException("volunteer not found"));
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("volunteer not found");
+        });
         List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteer(volunteer.getId());
 
         messageFacade.confirmReceiptPurchaseMapping(volunteer, fileId, activePurchases);
@@ -136,8 +160,14 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     @Override
     public void handleReceiptSubmission(Message message, UUID purchaseId, String fileId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new TelegramShouldBeFineException("purchase not found"));
-        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new TelegramShouldBeFineException("volunteer not found"));
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("purchase not found");
+        });
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("volunteer not found");
+        });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
             messageFacade.blameHackingUser(message.getChat().getId());
