@@ -13,6 +13,34 @@ public class Organization {
     private long id;
 
     private String name;
-    private String botToken;
     private int updateOffset;
+    private String urlGroupChat;
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getUpdateOffset() {
+        return updateOffset;
+    }
+
+    public void setUpdateOffset(int updateOffset) {
+        this.updateOffset = updateOffset;
+    }
+
+    public String getUrlGroupChat() {
+        return urlGroupChat;
+    }
+
+    public void setUrlGroupChat(String urlGroupChat) {
+        this.urlGroupChat = urlGroupChat;
+    }
 }
