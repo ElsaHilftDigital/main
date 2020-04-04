@@ -2,6 +2,8 @@ package de.njsm.versusvirus.backend.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -46,6 +48,10 @@ public class Purchase {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private String comments;
+
+    @JoinColumn(name = "purchase_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> purchaseList = new ArrayList<>();
 
     private byte[] receipt;                   // picture of receipt
     private double cost;                      // cost of purchase in "Rappen"
