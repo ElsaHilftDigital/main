@@ -9,7 +9,8 @@ import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
 import de.njsm.versusvirus.backend.telegram.dto.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,8 +31,8 @@ public class TelegramController {
         this.updateService = updateService;
     }
 
-    @GetMapping(TELEGRAM_WEBHOOK)
-    public void receiveTelegramUpdate(Update update) {
+    @PostMapping(TELEGRAM_WEBHOOK)
+    public void receiveTelegramUpdate(@RequestBody Update update) {
         if (update.getMessage() == null) {
             LOG.info("I don't feel responsible for this update");
             return;

@@ -8,11 +8,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/anonymous/volunteers")
-public class VolunteerController {
+public class SignupController {
 
     private final VolunteerService service;
 
-    public VolunteerController(VolunteerService service) {
+    public SignupController(VolunteerService service) {
         this.service = service;
     }
 

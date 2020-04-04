@@ -63,11 +63,11 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
 
-        if (purchase.getStatus() != Purchase.Status.NEW) {
-            // TODO inform already taken
+        if (purchase.getStatus() != Purchase.Status.NEW) {  // TODO check assigned helper
+            messageFacade.informPurchaseHasBeenAssigned(message.getChat().getId());
             return;
         }
-        // TODO assign helper
+        // TODO assign helpers
         purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
         purchaseRepository.save(purchase);
     }
@@ -78,17 +78,16 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
         var organization = organizationRepository.findById(1).orElseThrow(() -> new RuntimeException("Organization not found"));
 
+        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+            messageFacade.blameHackingUser(message.getChat().getId());
+            return;
+        }
+
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
             purchaseRepository.save(purchase);
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
         }
-
-        /*
-
-            if different volunteer than assigned by us -> tell them not to hack
-
-         */
     }
 
     @Override
@@ -96,13 +95,16 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
 
-        /*
+        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+            messageFacade.blameHackingUser(message.getChat().getId());
+            return;
+        }
 
-            if different volunteer than assigned by us -> tell them not to hack
-
-            if not -> reschedule
-
-         */
+        if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
+            purchase.setStatus(Purchase.Status.NEW);
+            purchaseRepository.save(purchase);
+            // TODO write to new helper
+        }
     }
 
     @Override
@@ -117,12 +119,13 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
 
-        /*
+        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+            messageFacade.blameHackingUser(message.getChat().getId());
+            return;
+        }
 
-            if different volunteer than assigned by us -> tell them not to hack
-
-            download picture and assign to purchase
-
-         */
+        byte[] image = telegramApi.getFile(fileId);
+        purchase.setReceipt(image);
+        purchaseRepository.save(purchase);
     }
 }
