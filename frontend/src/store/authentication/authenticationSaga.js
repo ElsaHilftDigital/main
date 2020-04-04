@@ -19,6 +19,20 @@ export function* handleLogin(authApi, action) {
         if (response) {
             history.push('/');
         }
+        yield put(actions.getAuthInstanceSuccess(response));
+    } catch (error) {
+        if (error.response && error.response.data) {
+            yield put(actions.loginError(error.response.data));
+        } else {
+            yield put(actions.loginError(error));
+        }
+    }
+}
+
+export function* handleLogout(authApi) {
+    try {
+        yield call([authApi, authApi.logout]);
+        const response = yield call([authApi, authApi.getAuthInstance]);
         yield put(actions.getAuthInstance(response));
     } catch (error) {
         console.log(error);
@@ -29,5 +43,6 @@ export function* authenticationSaga(authenticationApi) {
     yield all([
         takeLatest(actions.GET_AUTH_INSTANCE, handleGetAuthInstance, authenticationApi.getAuthInstance),
         takeLatest(actions.LOGIN, handleLogin, authenticationApi),
+        takeLatest(actions.LOGOUT, handleLogout, authenticationApi),
     ])
 }

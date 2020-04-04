@@ -7,7 +7,8 @@ import { authenticationActions, authenticationSelectors } from '../store/authent
 const useAuthentication = () => {
     const dispatch = useDispatch();
 
-    const currUsername = useSelector(authenticationSelectors.crrentUserUsername);
+    const currentUser = useSelector(authenticationSelectors.currentUser);
+    const currUsername = currentUser ? currentUser.username : null;
     useEffect(() => {
         dispatch(authenticationActions.getAuthInstance());
     }, [dispatch, currUsername])
@@ -19,18 +20,26 @@ const Authentication = () => {
     const dispatch = useDispatch();
 
     const currentUser = useAuthentication();
-    const isSignedIn = !!currentUser && !currentUser.anonymous;
 
     const signIn = () => {
         history.push('/login');
     };
 
+    const signOut = () => {
+        dispatch(authenticationActions.logout());
+    };
+
     return (
         <>
-            {isSignedIn && (
-                <span className="text-light font-weight-bold">{`Hallo, ${currentUser.username}!`}</span>
+            {currentUser && (
+                <>
+                    <span className="text-light font-weight-bold mr-3">{`Hallo, ${currentUser.username}!`}</span>
+                    <button onClick={signOut} className="btn btn-secondary">
+                        Ausloggen
+                    </button>
+                </>
             )}
-            {!isSignedIn && (
+            {!currentUser && (
                 <button onClick={signIn} className="btn btn-secondary">
                     Einloggen
                 </button>

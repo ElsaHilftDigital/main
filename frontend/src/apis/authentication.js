@@ -10,7 +10,6 @@ export async function getAuthInstance() {
 }
 
 export async function login(auth) {
-    console.log(auth);
     const response = await client.get(`/v1/login`, {
         auth,
     });
@@ -18,7 +17,8 @@ export async function login(auth) {
 }
 
 export async function logout() {
-    //const response = await client.get(`/v1/login`, { auth: {} });
-    //return response.data;
-    return '';
+    await client.get(`/v1/login`, {
+        headers: { 'request-logout': true },
+        auth: {},
+    });
 }

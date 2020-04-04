@@ -14,7 +14,7 @@ const Header = (props) => {
     };
 
     return (
-        <Navbar sticky="top" bg="primary" expand="sm">
+        <Navbar sticky="top" bg="primary" expand="md">
             <Navbar.Brand onClick={navigate("/")} className="hover-pointer" >
                 <img src="elsahilft_Baden.jpg" className="mr-3" width="50" height="50" alt="" />
                 <span className="text-light font-weight-bold">Elsa hilft</span>

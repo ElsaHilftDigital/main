@@ -1,12 +1,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { authenticationActions } from '../store/authentication';
+import { authenticationActions, authenticationSelectors } from '../store/authentication';
 
 const Login = () => {
     const dispatch = useDispatch();
     const { errors, handleSubmit, register } = useForm();
+    const loginError = useSelector(authenticationSelectors.loginError);
 
     const onSubmit = (values) => {
         dispatch(authenticationActions.login({
@@ -18,6 +19,9 @@ const Login = () => {
     return (
         <div className="container mt-3 mb-5">
             <h1>Login</h1>
+            {loginError && (
+                <span className="text-danger">Username/Passwort sind inkorrekt.</span>
+            )}
             <form onSubmit={handleSubmit(onSubmit)} >
                 <div className="form-group">
                     <label htmlFor="loginUsername">Username</label>
