@@ -205,7 +205,7 @@ public class MessageFacade {
     }
 
     public void confirmHelpOfferingReceived(long chatId) {
-        MessageToBeSent m = new MessageToBeSent(chatId, telegramMessages.getThankForOfferingHelpMessage());
+        MessageToBeSent m = new MessageToBeSent(chatId, telegramMessages.getThankForOfferingHelp());
         api.sendMessage(m);
     }
 

@@ -28,17 +28,20 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     private final MessageFacade messageFacade;
 
+    private final AdminMessageFacade adminMessageFacade;
+
     private final TelegramApiWrapper telegramApi;
 
     public TelegramBotCommandDispatcher(OrganizationRepository organizationRepository,
                                         VolunteerRepository volunteerRepository,
                                         PurchaseRepository purchaseRepository,
                                         MessageFacade messageFacade,
-                                        TelegramApiWrapper telegramApi) {
+                                        AdminMessageFacade adminMessageFacade, TelegramApiWrapper telegramApi) {
         this.organizationRepository = organizationRepository;
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;
         this.messageFacade = messageFacade;
+        this.adminMessageFacade = adminMessageFacade;
         this.telegramApi = telegramApi;
     }
 
@@ -79,6 +82,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             messageFacade.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
+        var organization = organizationRepository.findById(1).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("Organization not found");
+        });
 
         if (purchase.getStatus() != Purchase.Status.NEW && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
             messageFacade.informPurchaseHasBeenAssigned(message.getChat().getId());
@@ -88,6 +95,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
         purchaseRepository.save(purchase);
         messageFacade.confirmHelpOfferingReceived(message.getChat().getId());
+        adminMessageFacade.helpersHaveApplied(organization.getTelegramModeratorGroupChatId());
     }
 
     @Override
@@ -132,6 +140,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             messageFacade.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
         });
+        var organization = organizationRepository.findById(1).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("Organization not found");
+        });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
             messageFacade.blameHackingUser(chatId);
@@ -141,8 +153,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.NEW);
             purchase.setAssignedVolunteer(null);
+            purchase.getVolunteerApplications().remove(volunteer.getId());
             purchaseRepository.save(purchase);
             messageFacade.confirmRejection(chatId);
+            adminMessageFacade.helperHasRejected(organization.getTelegramModeratorGroupChatId());
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
             messageFacade.sendUnexpectedMessage(chatId);
@@ -170,6 +184,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             messageFacade.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
+        var organization = organizationRepository.findById(1).orElseThrow(() -> {
+            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("Organization not found");
+        });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
             messageFacade.blameHackingUser(message.getChat().getId());
@@ -182,5 +200,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         purchase.setStatus(Purchase.Status.PURCHASE_DONE);
         purchaseRepository.save(purchase);
         messageFacade.confirmReceiptUpload(message.getChat().getId());
+        adminMessageFacade.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
     }
 }
