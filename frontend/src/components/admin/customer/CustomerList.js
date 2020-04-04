@@ -7,10 +7,14 @@ const CustomerList = (props) => {
 
     return (
         <>
-            <span className="list-header mt-3 mb-3">Kunden</span>
+            <span className="list-header mt-3 mb-2">Kunden</span>
             <ul className="sidebar-nav">
                 {props.customers.map(customer => (
-                    <li key={customer.id} className="nav-link">
+                    <li 
+                        onClick={() => props.updateSelectedCustomer(customer.id)}
+                        key={customer.id} 
+                        className={'nav-item' + (customer.id === props.selectedCustomer ? ' nav-item-active' : '')}
+                    >
                         {customer.name}
                     </li>
                 ))}

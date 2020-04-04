@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import CustomerDetail from './CustomerDetail';
 import CustomerList from './CustomerList';
@@ -31,10 +31,20 @@ const Customer = () => {
      { id: 2, name: 'test2' }, 
      { id: 3, name: 'test3' }];
     const selectedCustomer = { id: 2, name: 'test2' };
+
+    const [ a, setA ] = useState(customers[0].id);
+    const updateSelectedCustomer = (id) => {
+        console.log(id);
+        setA(id);
+    }
     return (
         <div>
             <div className="sidebar">
-                <CustomerList customers={customers} selectedCustomer={2} />
+                <CustomerList 
+                    customers={customers} 
+                    selectedCustomer={a} 
+                    updateSelectedCustomer={updateSelectedCustomer}
+                />
             </div>
             <div className="content">
                 <CustomerDetail selectedCustomer={selectedCustomer} />
