@@ -12,6 +12,7 @@ import AdminHome from './admin/home/AdminHome';
 import Customer from './admin/customer/Customer';
 import Volunteer from './admin/volunteer/Volunteer';
 import NewRequest from './admin/new-request/NewRequest';
+import Purchase from './admin/purchase/Purchase';
 
 
 const App = (props) => {
@@ -25,6 +26,7 @@ const App = (props) => {
                     <Route exact path="/register" component={RegisterVolunteer} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/admin/new-request" component={NewRequest} />
+                    <Route exact path="/admin/purchases" component={Purchase} />
                     <Route exact path="/admin/customers" component={Customer} />
                     <Route exact path="/admin/volunteers" component={Volunteer} />
                     <Route exact path="/admin" component={AdminHome} />

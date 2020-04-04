@@ -106,8 +106,6 @@ const VolunteerDetail = (props) => {
                 </div>
                 <button type="submit" className="btn btn-primary">Speichern</button>
             </form>
-
-
         </div>
     );
 };
