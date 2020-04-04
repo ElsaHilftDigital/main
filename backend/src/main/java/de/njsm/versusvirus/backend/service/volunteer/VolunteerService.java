@@ -2,8 +2,11 @@ package de.njsm.versusvirus.backend.service.volunteer;
 
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
+import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
+import de.njsm.versusvirus.backend.telegram.AdminMessageFacade;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +21,14 @@ public class VolunteerService {
 
     private final VolunteerRepository repository;
 
-    public VolunteerService(VolunteerRepository repository) {
+    private final AdminMessageFacade adminMessageFacade;
+
+    private final OrganizationRepository organizationRepository;
+
+    public VolunteerService(VolunteerRepository repository, AdminMessageFacade adminMessageFacade, OrganizationRepository organizationRepository) {
         this.repository = repository;
+        this.adminMessageFacade = adminMessageFacade;
+        this.organizationRepository = organizationRepository;
     }
 
     public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
@@ -44,7 +53,15 @@ public class VolunteerService {
         volunteer.setWantsCompensation(signupRequest.wantsCompensation);
 
         repository.save(volunteer);
+        notifyModerators();
         return new VolunteerDTO(volunteer);
+    }
+
+    private void notifyModerators() {
+        var organization = organizationRepository.findById(1).orElseThrow(() -> {
+            return new TelegramShouldBeFineException("Organization not found");
+        });
+        adminMessageFacade.newHelperHasRegistered(organization.getTelegramModeratorGroupChatId());
     }
 
     public List<VolunteerDTO> getVolunteers() {
