@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 @Component
 public class MessageFacade {
@@ -47,7 +48,7 @@ public class MessageFacade {
     public void broadcastPurchase(Organization organization, Purchase purchase) {
 
         if (organization.getTelegramGroupChatId() == null) {
-            LOG.warn("Cannot broadcast as group chat is null");
+            LOG.warn("Cannot broadcast as group chat id is null");
             return;
         }
 
@@ -59,15 +60,54 @@ public class MessageFacade {
         api.sendMessage(message);
     }
 
-    public void offerPurchase(/*Purchase, User*/) {
+    public void offerPurchase(Purchase purchase, Volunteer volunteer) {
 
+        if (volunteer.getTelegramChatId() == null) {
+            LOG.warn("Cannot send telegram message as chat id is null");
+            return;
+        }
+
+        String template = MessageTemplates.OFFER_PURCHASE.getTemplate();
+        String acceptCommand = BotCommand.HILFE_BESTAETIGEN.render(purchase.getUuid().toString());
+        String rejectCommand = BotCommand.HILFE_ZURUECKZIEHEN.render(purchase.getUuid().toString());
+        String text = MessageFormat.format(
+                template,
+                purchase.getDescriptionForPersonalChat(),
+                acceptCommand,
+                rejectCommand);
+
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
+        api.sendMessage(message);
     }
 
-    public void confirmReceiptPurchaseMapping(/* User, fileId, List<Purchase>*/) {
+    public void confirmReceiptPurchaseMapping(Volunteer volunteer, String fileId, List<Purchase> purchases) {
+        if (volunteer.getTelegramChatId() == null) {
+            LOG.warn("Cannot send telegram message as chat id is null");
+            return;
+        }
 
+        String template = MessageTemplates.CONFIRM_PURCHASE_MAPPING.getTemplate();
+        String renderedPurchaseList = MessageTemplates.renderPurchaseList(fileId, purchases);
+        String text = MessageFormat.format(
+                template,
+                renderedPurchaseList);
+
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
+        api.sendMessage(message);
     }
 
-    public void informToDeliverPurchase(/* User, Purchase */) {
+    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer) {
+        if (volunteer.getTelegramChatId() == null) {
+            LOG.warn("Cannot send telegram message as chat id is null");
+            return;
+        }
 
+        String template = MessageTemplates.INFORM_TO_DELIVER_PURCHASE.getTemplate();
+        String text = MessageFormat.format(
+                template,
+                purchase.getUuid());
+
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
+        api.sendMessage(message);
     }
 }
