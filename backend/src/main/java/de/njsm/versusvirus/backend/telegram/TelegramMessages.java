@@ -9,12 +9,40 @@ import org.springframework.context.annotation.PropertySource;
 @ConfigurationProperties(prefix = "telegram")
 public class TelegramMessages {
 
+    private String unknownVolunteer;
+    private String unknownVolunteerResignation;
+    private String volunteerResignation;
+
     private String preconfirmRegistration;
     private String confirmRegistration;
     private String broadcastPurchase;
     private String offerPurchase;
     private String confirmPurchaseMapping;
-    private String inforToDeliverPurchase;
+    private String informToDeliverPurchase;
+
+    public String getUnknownVolunteer() {
+        return unknownVolunteer;
+    }
+
+    public void setUnknownVolunteer(String unknownVolunteer) {
+        this.unknownVolunteer = unknownVolunteer;
+    }
+
+    public String getUnknownVolunteerResignation() {
+        return unknownVolunteerResignation;
+    }
+
+    public void setUnknownVolunteerResignation(String unknownVolunteerResignation) {
+        this.unknownVolunteerResignation = unknownVolunteerResignation;
+    }
+
+    public String getVolunteerResignation() {
+        return volunteerResignation;
+    }
+
+    public void setVolunteerResignation(String volunteerResignation) {
+        this.volunteerResignation = volunteerResignation;
+    }
 
     public void setPreconfirmRegistration(String preconfirmRegistration) {
         this.preconfirmRegistration = preconfirmRegistration;
@@ -56,11 +84,11 @@ public class TelegramMessages {
         this.confirmPurchaseMapping = confirmPurchaseMapping;
     }
 
-    public String getInforToDeliverPurchase() {
-        return inforToDeliverPurchase;
+    public String getInformToDeliverPurchase() {
+        return informToDeliverPurchase;
     }
 
-    public void setInforToDeliverPurchase(String inforToDeliverPurchase) {
-        this.inforToDeliverPurchase = inforToDeliverPurchase;
+    public void setInformToDeliverPurchase(String informToDeliverPurchase) {
+        this.informToDeliverPurchase = informToDeliverPurchase;
     }
 }
