@@ -26,6 +26,7 @@ public class TelegramMessages {
     private String thankForDoingPurchase;
     private String unexpectedMessage;
     private String confirmReceiptUpload;
+    private String confirmRejection;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -153,5 +154,13 @@ public class TelegramMessages {
 
     public void setConfirmReceiptUpload(String confirmReceiptUpload) {
         this.confirmReceiptUpload = confirmReceiptUpload;
+    }
+
+    public String getConfirmRejection() {
+        return this.confirmRejection;
+    }
+
+    public void setConfirmRejection(String confirmRejection) {
+        this.confirmRejection = confirmRejection;
     }
 }

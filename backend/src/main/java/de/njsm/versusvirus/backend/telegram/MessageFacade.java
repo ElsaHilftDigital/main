@@ -186,4 +186,9 @@ public class MessageFacade {
         var m = new MessageToBeSent(chatId, telegramMessages.getConfirmReceiptUpload());
         api.sendMessage(m);
     }
+
+    public void confirmRejection(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getConfirmRejection());
+        api.sendMessage(m);
+    }
 }

@@ -123,17 +123,18 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     @Override
     public void handleRejectingHelp(Message message, UUID purchaseId) {
+        long chatId = message.getChat().getId();
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
-            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            messageFacade.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("purchase not found");
         });
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
-            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            messageFacade.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
         });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
-            messageFacade.blameHackingUser(message.getChat().getId());
+            messageFacade.blameHackingUser(chatId);
             return;
         }
 
@@ -141,9 +142,10 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             purchase.setStatus(Purchase.Status.NEW);
             purchase.setAssignedVolunteer(null);
             purchaseRepository.save(purchase);
+            messageFacade.confirmRejection(chatId);
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
-            messageFacade.sendUnexpectedMessage(message.getChat().getId());
+            messageFacade.sendUnexpectedMessage(chatId);
         }
     }
 
