@@ -11,6 +11,12 @@ public class MessageEntity {
 
     private int length;
 
+    private String url;
+
+    private User user;
+
+    private String language;
+
     public MessageEntity(String type, int offset, int length) {
         this.type = type;
         this.offset = offset;
@@ -27,6 +33,18 @@ public class MessageEntity {
 
     public int getLength() {
         return length;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 
     public String extractCommand(String message) {
