@@ -2,7 +2,7 @@ export const GET_AUTH_INSTANCE = 'GET_AUTH_INSTANCE';
 export const GET_AUTH_INSTANCE_SUCCESS = 'GET_AUTH_INSTANCE_SUCCESS';
 export const GET_AUTH_INSTANCE_ERROR = 'GET_AUTH_INSTANCE_ERROR';
 export const LOGIN = 'LOGIN';
-export const LOGOUT = 'LOGOUT';
+//export const LOGOUT = 'LOGOUT';
 
 export const getAuthInstance = () => ({
     type: GET_AUTH_INSTANCE,
@@ -18,12 +18,13 @@ export const getAuthInstanceError = (error, meta) => ({
     error: true,
 });
 
-export const login = () => ({
+export const login = (auth) => ({
     type: LOGIN,
+    payload: auth,
 });
-export const logout = () => ({
-    type: LOGOUT,
-});
+//export const logout = () => ({
+//    type: LOGOUT,
+//});
 
 
 

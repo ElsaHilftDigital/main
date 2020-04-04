@@ -6,6 +6,7 @@ import history from '../history';
 import About from './About';
 import Header from './Header';
 import Home from './Home';
+import Login from './Login';
 import Ping from './Ping';
 import RegisterVolunteer from './RegisterVolunteer';
 
@@ -19,6 +20,7 @@ const App = (props) => {
                 <Route exact path="/ping" component={Ping} />
                 <Route exact path="/about" component={About} />
                 <Route exact path="/register" component={RegisterVolunteer} />
+                <Route exact path="/login" component={Login} />
             </Router>
         </Provider>
     );

@@ -1,5 +1,6 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 
+import history from '../../history';
 import * as actions from './authenticationActions';
 
 export function* handleGetAuthInstance(getAutchInstance) {
@@ -11,20 +12,13 @@ export function* handleGetAuthInstance(getAutchInstance) {
     }
 }
 
-export function* handleLogin(authApi, auth) {
+export function* handleLogin(authApi, action) {
     try {
-        yield call([authApi, authApi.login], auth);
+        yield call([authApi, authApi.login], action.payload);
         const response = yield call([authApi, authApi.getAuthInstance]);
-        yield put(actions.getAuthInstance(response));
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export function* handleLogout(authApi) {
-    try {
-        yield call([authApi, authApi.logout]);
-        const response = yield call([authApi, authApi.getAuthInstance]);
+        if (response) {
+            history.push('/');
+        }
         yield put(actions.getAuthInstance(response));
     } catch (error) {
         console.log(error);
@@ -35,6 +29,5 @@ export function* authenticationSaga(authenticationApi) {
     yield all([
         takeLatest(actions.GET_AUTH_INSTANCE, handleGetAuthInstance, authenticationApi.getAuthInstance),
         takeLatest(actions.LOGIN, handleLogin, authenticationApi),
-        takeLatest(actions.LOGOUT, handleLogout, authenticationApi),
     ])
 }

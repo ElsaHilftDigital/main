@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import history from '../history';
 import { authenticationActions, authenticationSelectors } from '../store/authentication';
 
 const useAuthentication = () => {
@@ -16,23 +17,18 @@ const useAuthentication = () => {
 
 const Authentication = () => {
     const dispatch = useDispatch();
+
     const currentUser = useAuthentication();
     const isSignedIn = !!currentUser && !currentUser.anonymous;
 
     const signIn = () => {
-        dispatch(authenticationActions.login({ username: 'user', password: 'password'}));
-    };
-
-    const signOut = () => {
-        dispatch(authenticationActions.logout());
+        history.push('/login');
     };
 
     return (
         <>
             {isSignedIn && (
-                <button onClick={signOut} className="btn btn-secondary">
-                    Ausloggen
-                </button>
+                <span className="text-light font-weight-bold">{`Hallo, ${currentUser.username}!`}</span>
             )}
             {!isSignedIn && (
                 <button onClick={signIn} className="btn btn-secondary">
