@@ -1,0 +1,2 @@
+---
+elsa_backend_telegram_token: "{{ vault_elsa_backend_telegram_token }}"
