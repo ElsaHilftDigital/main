@@ -1,6 +1,7 @@
 import React from 'react';
 
-const CustomerDetail = () => {
+const CustomerDetail = (props) => {
+    console.log(props);
     return (
         <div>CustomerDetail!</div>
     );

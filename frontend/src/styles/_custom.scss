@@ -4,3 +4,101 @@ $primary: rgb(47,47,134);
 .hover-pointer:hover {
     cursor: pointer;
 }
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+    position: fixed;
+    background-color: lightblue;
+    height: 100%;
+    width: 10rem;
+    overflow: hidden;
+}
+
+.sidebar-nav {
+    overflow-y: scroll;
+    list-style: none;
+    padding: 0;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+/* Make scrollbar nicer */
+/* width */
+::-webkit-scrollbar {
+    width: 3px;
+    background: transparent;
+}
+
+/* track */
+::-webkit-scrollbar-track {
+    background: transparent;
+    border: 4px solid transparent;
+    background-clip: content-box;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(47,47,134);
+    border-radius: 3px;
+    border: 1px solid rgb(47,47,134);
+}
+
+.nav-link {
+    height: 2rm;
+    color: var($primary);
+    filter: grayscale(100%) opacity(0.7);
+}
+
+.list-header {
+    display: flex;
+    font-weight: bold;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+// replace list header on small screens
+.list-header-icon {
+    visibility: hidden;
+}
+
+/*
+ *  Content next to sidebar
+ */
+
+.content {
+    margin-left: 10rem;
+    padding: 1rem;
+}
+
+/* Small screens */
+@media only screen and (max-width: 600px) {
+    .sidebar {
+        width: 5rem;
+    }
+
+    .sidebar:hover {
+        width: 10rem;
+    }
+
+    .list-header {
+        visibility: hidden;
+    }
+
+    .list-header-icon {
+
+        color: rgb(47,47,134);
+        visibility: visible;
+        width: 100%;
+        height: 100%;
+    }
+
+    .content {
+        margin-left: 5rem;
+    }
+}
