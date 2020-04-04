@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.telegram;
 import de.njsm.versusvirus.backend.domain.Organization;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,9 @@ public class MessageFacade {
         api.sendMessage(message);
     }
 
+    /**
+     * Save the purchase to the repo after calling!
+     */
     public void broadcastPurchase(Organization organization, Purchase purchase) {
 
         if (organization.getTelegramGroupChatId() == null) {
@@ -84,7 +88,9 @@ public class MessageFacade {
         String text = MessageFormat.format(template, purchase.getDescriptionForGroupChat(), botCommand);
 
         MessageToBeSent message = new MessageToBeSent(organization.getTelegramGroupChatId(), text);
-        api.sendMessage(message);
+        Message sentMessage = api.sendMessage(message);
+
+        purchase.setBroadcastMessageId(sentMessage.getId());
     }
 
     public void offerPurchase(Purchase purchase, Volunteer volunteer) {
@@ -113,11 +119,16 @@ public class MessageFacade {
             return;
         }
 
-        String template = telegramMessages.getConfirmPurchaseMapping();
-        String renderedPurchaseList = renderPurchaseList(fileId, purchases);
-        String text = MessageFormat.format(
-                template,
-                renderedPurchaseList);
+        String text;
+        if (purchases.size() > 0) {
+            String template = telegramMessages.getConfirmPurchaseMapping();
+            String renderedPurchaseList = renderPurchaseList(fileId, purchases);
+            text = MessageFormat.format(
+                    template,
+                    renderedPurchaseList);
+        } else {
+            text = telegramMessages.getNoActivePurchases();
+        }
 
         MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
         api.sendMessage(message);

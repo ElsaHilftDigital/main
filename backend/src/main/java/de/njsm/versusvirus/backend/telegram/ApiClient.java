@@ -1,9 +1,6 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.telegram.dto.File;
-import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
-import de.njsm.versusvirus.backend.telegram.dto.TelegramResponse;
-import de.njsm.versusvirus.backend.telegram.dto.WebhookRequest;
+import de.njsm.versusvirus.backend.telegram.dto.*;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -18,8 +15,8 @@ interface ApiClient {
                                             @Body WebhookRequest request);
 
     @POST("/bot{token}/sendMessage")
-    Call<TelegramResponse<Void>> sendMessage(@Path("token") String token,
-                                             @Body MessageToBeSent message);
+    Call<TelegramResponse<Message>> sendMessage(@Path("token") String token,
+                                                @Body MessageToBeSent message);
 
     @GET("/bot{token}/getFile")
     Call<TelegramResponse<File>> getFile(@Path("token") String token,

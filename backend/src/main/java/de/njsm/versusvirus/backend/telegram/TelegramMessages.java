@@ -21,6 +21,7 @@ public class TelegramMessages {
     private String offerPurchase;
     private String confirmPurchaseMapping;
     private String informToDeliverPurchase;
+    private String noActivePurchases;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -108,5 +109,13 @@ public class TelegramMessages {
 
     public void setBlameHackingUser(String blameHackingUser) {
         this.blameHackingUser = blameHackingUser;
+    }
+
+    public String getNoActivePurchases() {
+        return this.noActivePurchases;
+    }
+
+    public void setNoActivePurchases(String noActivePurchases) {
+        this.noActivePurchases = noActivePurchases;
     }
 }

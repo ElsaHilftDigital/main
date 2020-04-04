@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -122,8 +123,9 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     @Override
     public void handleReceiptWithoutPurchaseContext(Message message, String fileId) {
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new TelegramShouldBeFineException("volunteer not found"));
+        List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteer(volunteer.getId());
 
-
+        messageFacade.confirmReceiptPurchaseMapping(volunteer, fileId, activePurchases);
     }
 
     @Override
@@ -138,6 +140,8 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
         byte[] image = telegramApi.getFile(fileId);
         purchase.setReceipt(image);
+        purchase.setReceiptFileId(fileId);
+        purchase.setStatus(Purchase.Status.PURCHASE_DONE);
         purchaseRepository.save(purchase);
     }
 }
