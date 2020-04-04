@@ -11,6 +11,12 @@ public class MessageEntity {
 
     private int length;
 
+    public MessageEntity(String type, int offset, int length) {
+        this.type = type;
+        this.offset = offset;
+        this.length = length;
+    }
+
     public String getType() {
         return type;
     }
@@ -24,6 +30,10 @@ public class MessageEntity {
     }
 
     public String extractCommand(String message) {
-        return message.substring(offset, offset + length);
+        int endOfCommandLine = message.indexOf('\n', offset);
+        if (endOfCommandLine == -1) {
+            endOfCommandLine = message.length();
+        }
+        return message.substring(offset, endOfCommandLine);
     }
 }
