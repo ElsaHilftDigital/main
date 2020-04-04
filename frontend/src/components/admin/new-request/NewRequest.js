@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import SearchBox from '../../SearchBox';
+
 const ProgressItem = styled.li`
     position: relative;
     display: table-cell;
@@ -45,7 +47,6 @@ const Progress = styled.ol`
     display: table;
     table-layout: fixed;
     width: 100%;
-    
 `;
 
 const NewRequest = () => {
@@ -59,6 +60,7 @@ const NewRequest = () => {
 
     const EnterCustomer = () => {
         return (<>
+            <SearchBox/>
             <form onSubmit={() => setStep(step + 1)}>
                 <button type="submit" className="btn btn-primary float-right">Weiter</button>
             </form>
@@ -85,7 +87,7 @@ const NewRequest = () => {
     };
     return (
         <div className="container mt-3 mb-5">
-            <h1>Neue Anfrage erfassen</h1>
+            <h1>Auftrag erfassen</h1>
             <Progress>{renderSteps()}</Progress>
             {renderContent()}
         </div>
