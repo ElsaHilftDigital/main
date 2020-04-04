@@ -1,5 +1,6 @@
 package de.njsm.versusvirus.backend;
 
+import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.BotCommand;
 import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.TelegramBotCommandDispatcher;
@@ -68,7 +69,12 @@ public class TelegramController {
                 LOG.info("Not a command for us: {}", rawCommand);
                 continue;
             }
-            command.dispatch(botCommandDispatcher, rawCommand, message);
+
+            try {
+                command.dispatch(botCommandDispatcher, rawCommand, message);
+            } catch (TelegramShouldBeFineException ex) {
+                LOG.warn("", ex);
+            }
         }
     }
 }
