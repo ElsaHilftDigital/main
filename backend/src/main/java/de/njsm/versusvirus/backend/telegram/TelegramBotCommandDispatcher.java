@@ -13,34 +13,37 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     private final VolunteerRepository volunteerRepository;
 
-    public TelegramBotCommandDispatcher(VolunteerRepository volunteerRepository) {
+    private final MessageFacade messageFacade;
+
+    public TelegramBotCommandDispatcher(VolunteerRepository volunteerRepository, MessageFacade messageFacade) {
         this.volunteerRepository = volunteerRepository;
+        this.messageFacade = messageFacade;
     }
 
     @Override
     public void handleNewHelper(Message message, UUID userId) {
-        var volunteer = volunteerRepository.findByUuid(userId).orElseThrow(() -> new RuntimeException("Volunteer not found"));
+        var volunteer = volunteerRepository.findByUuid(userId).orElseThrow(() -> {
+                    messageFacade.directUserToRegistrationForm(message.getChat().getId());
+                    throw new RuntimeException("new helper not found. uuid: " + userId);
+                }
+        );
         volunteer.setTelegramUserId(message.getFrom().getId());
         volunteer.setTelegramChatId(message.getChat().getId());
         volunteerRepository.save(volunteer);
-        /*
-
-            if helper is not known to us -> send to registration form
-
-         */
     }
 
     @Override
     public void handleLeavingHelper(Message message) {
-        /*
-            if helper not known -> no problem :)
-
-            Thank them for their help!
-         */
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+                    messageFacade.resignUnknownVolunteer(message.getChat().getId());
+                    throw new RuntimeException("helper not found. telegram id: " + message.getFrom().getId());
+                }
+        );
+        messageFacade.resignVolunteer(message.getChat().getId());
     }
 
     @Override
-    public void handleHelpOffering(Message message, String purchaseId) {
+    public void handleHelpOffering(Message message, UUID purchaseId) {
         /*
 
             if purchase is assigned -> reply
@@ -51,7 +54,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleConfirmingHelp(Message message, String purchaseId) {
+    public void handleConfirmingHelp(Message message, UUID purchaseId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
@@ -62,7 +65,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleRejectingHelp(Message message, String purchaseId) {
+    public void handleRejectingHelp(Message message, UUID purchaseId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
@@ -73,7 +76,12 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     }
 
     @Override
-    public void handleReceiptSubmission(Message message, String purchaseId, String fileId) {
+    public void handleReceiptWithoutPurchaseContext(Message message, String fileId) {
+
+    }
+
+    @Override
+    public void handleReceiptSubmission(Message message, UUID purchaseId, String fileId) {
         /*
 
             if different volunteer than assigned by us -> tell them not to hack

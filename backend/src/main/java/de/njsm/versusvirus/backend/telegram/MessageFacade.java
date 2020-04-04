@@ -24,6 +24,26 @@ public class MessageFacade {
         this.api = api;
     }
 
+    public void directUserToRegistrationForm(int chatId) {
+        String template = MessageTemplates.UNKNOWN_HELPER.getTemplate();
+        String text = MessageFormat.format(template, "https://versusvirus.njsm.de/#/register");
+
+        MessageToBeSent message = new MessageToBeSent(chatId, text);
+        api.sendMessage(message);
+    }
+    
+    public void resignVolunteer(int chatId) {
+        String text = MessageTemplates.HELPER_RESIGNATION.getTemplate();
+        MessageToBeSent message = new MessageToBeSent(chatId, text);
+        api.sendMessage(message);
+    }
+
+    public void resignUnknownVolunteer(int chatId) {
+        String text = MessageTemplates.UNKNOWN_HELPER_RESIGNATION.getTemplate();
+        MessageToBeSent message = new MessageToBeSent(chatId, text);
+        api.sendMessage(message);
+    }
+
     public void confirmRegistration(Organization organization, Volunteer volunteer) {
 
         if (volunteer.getTelegramChatId() == null) {
