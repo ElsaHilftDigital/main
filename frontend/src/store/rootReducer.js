@@ -6,7 +6,7 @@ import { volunteerReducer } from './volunteer';
 
 const rootReducer = combineReducers({
     authentication: authenticationReducer,
-    customerReducer: customerReducer,
+    customer: customerReducer,
     volunteer: volunteerReducer,
 });
 

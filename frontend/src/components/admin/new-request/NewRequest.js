@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import SearchBox from '../../SearchBox';
+import {useCustomers} from '../useCustomers';
 
 const ProgressItem = styled.li`
     position: relative;
@@ -60,6 +61,7 @@ const NewRequest = () => {
 
     const EnterCustomer = () => {
         const [newCustomer, setNewCustomer] = useState(false);
+        const allCustomers = useCustomers();
 
         return (<>
             <form>
@@ -72,7 +74,7 @@ const NewRequest = () => {
                     <label className="form-check-label" for="new">Neuer Kunde</label>
                 </div>
             </form>
-            {newCustomer ? <></> : <SearchBox/> }
+            {newCustomer ? <>{allCustomers}</> : <SearchBox /> }
             <form onSubmit={() => setStep(step + 1)}>
                 <button type="submit" className="btn btn-primary float-right">Weiter</button>
             </form>

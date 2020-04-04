@@ -3,9 +3,9 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import history from '../../history';
 import * as actions from './customerActions';
 
-export function* handleGetAllCustomers(getAllCustomers) {
+export function* handleGetAllCustomers(getCustomers) {
     try {
-        const customers = yield call(getAllCustomers);
+        const customers = yield call(getCustomers);
         yield put(actions.getAllCustomersSuccess(customers));
     } catch (error) {
         console.log(error);
@@ -17,6 +17,6 @@ export function* handleGetAllCustomers(getAllCustomers) {
 
 export function* customerSaga(customerApi) {
     yield all([
-        takeLatest(actions.GET_ALL_CUSTOMERS, handleGetAllCustomers, customerApi.getAllCustomers),
+        takeLatest(actions.GET_ALL_CUSTOMERS, handleGetAllCustomers, customerApi.getCustomers),
     ])
 }

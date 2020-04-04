@@ -5,6 +5,7 @@ import { customerActions, customerSelectors } from '../../store/customer';
 
 
 export const useCustomers = () => {
+    console.log("asdf   ");
     const dispatch = useDispatch();
 
     useEffect(() => {
