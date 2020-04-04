@@ -1,8 +1,15 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.domain.Organization;
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MessageFacade {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
     private TelegramApiWrapper api;
 
@@ -11,24 +18,24 @@ public class MessageFacade {
         this.api = api;
     }
 
-    public void confirmPreliminaryRegistration(/*User*/) {
-        /*
+    public void confirmRegistration(Organization organization, Volunteer volunteer) {
 
-        if confirmed:
-        confirmRegistration()
+        if (volunteer.getTelegramChatId() == null) {
+            LOG.info("Helper has not yet talked to the bot");
+            return;
+        }
 
-        else:
+        String text;
+        if (volunteer.isValidated()) {
+            String template = MessageTemplates.CONFIRM_REGISTRATION.getTemplate();
+            text = String.format(template, volunteer.getFirstName(), "");
+        } else {
+            String template = MessageTemplates.CONFIRM_PRELIMINARY_REGISTRATION.getTemplate();
+            text = String.format(template, volunteer.getFirstName());
+        }
 
-        "you have been registered and we check your data"
-        -> tell them to wait
-
-         */
-    }
-
-    public void confirmRegistration(/*User*/) {
-        /*
-        You have been successfully registered. Join the group chat here (URL)
-         */
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
+        api.sendMessage(message);
     }
 
     public void broadcastPurchase(/*Purchase*/) {

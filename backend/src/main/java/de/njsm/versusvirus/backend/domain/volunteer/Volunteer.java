@@ -29,6 +29,9 @@ public class Volunteer {
     private boolean wantsCompensation;
     private boolean validated;
 
+    private Integer telegramChatId;
+    private Integer telegramUserId;
+
     public long getId() {
         return id;
     }
@@ -121,6 +124,22 @@ public class Volunteer {
 
     public void setValidated(boolean validated) {
         this.validated = validated;
+    }
+
+    public Integer getTelegramChatId() {
+        return telegramChatId;
+    }
+
+    public void setTelegramChatId(Integer chatId) {
+        this.telegramChatId = chatId;
+    }
+
+    public int getTelegramUserId() {
+        return telegramUserId;
+    }
+
+    public void setTelegramUserId(int userId) {
+        this.telegramUserId = userId;
     }
 }
 
