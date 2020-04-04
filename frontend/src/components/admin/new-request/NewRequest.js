@@ -47,7 +47,6 @@ const Progress = styled.ol`
     display: table;
     table-layout: fixed;
     width: 100%;
-    
 `;
 
 const NewRequest = () => {

@@ -37,6 +37,29 @@ $primary: rgb(47,47,134);
     height: 100%;
 }
 
+.nav-item {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px;
+    color: var($primary);
+    filter: grayscale(100%) opacity(0.7);
+}
+
+
+.nav-item:hover {
+    background-color: $primary;
+    filter: grayscale(0%) opacity(1);
+    color: white;
+}
+
+.nav-item-active {
+    background-color: $primary;
+    filter: grayscale(0%) opacity(1);
+    color: white;
+}
+
 /* Make scrollbar nicer */
 /* width */
 ::-webkit-scrollbar {
@@ -56,12 +79,6 @@ $primary: rgb(47,47,134);
     background: rgb(47,47,134);
     border-radius: 3px;
     border: 1px solid rgb(47,47,134);
-}
-
-.nav-link {
-    height: 2rm;
-    color: var($primary);
-    filter: grayscale(100%) opacity(0.7);
 }
 
 .list-header {
