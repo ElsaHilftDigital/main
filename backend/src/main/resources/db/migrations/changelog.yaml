@@ -24,5 +24,8 @@ databaseChangeLog:
       file: 20200404-0040-volunteer-drop-iban-bankname-not-null-constraints.sql
       relativeToChangelogFile: true
   - include:
+      file: 20200404-0924-volunteer-add-telegram-fields.sql
+      relativeToChangelogFile: true
+  - include:
       file: 20200404-0934-create-purchase.sql
       relativeToChangelogFile: true

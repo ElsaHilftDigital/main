@@ -24,7 +24,6 @@ class TelegramApiWrapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
-
     private String token;
 
     private ApiClient apiClient;
@@ -42,7 +41,7 @@ class TelegramApiWrapper {
     }
 
     public void sendMessage(MessageToBeSent message) {
-        LOG.debug("Sending message to {}", message.getId());
+        LOG.debug("Sending message to {}", message.getChatId());
         Call<TelegramResponse<Void>> call = apiClient.sendMessage(token, message);
         executeQuery(call);
     }
