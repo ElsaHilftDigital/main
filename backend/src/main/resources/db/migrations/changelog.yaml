@@ -38,3 +38,6 @@ databaseChangeLog:
   - include:
       file: 20200404-1053-create-moderator.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200404-1053-add-order-item.sql
+      relativeToChangelogFile: true

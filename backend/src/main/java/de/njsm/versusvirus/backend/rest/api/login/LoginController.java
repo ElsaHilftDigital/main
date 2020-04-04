@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.Optional;
 
 
 @RestController
@@ -12,6 +13,6 @@ public class LoginController {
 
     @RequestMapping()
     public LoginInfoDTO loginState(Principal principal) {
-        return new LoginInfoDTO(principal);
+        return Optional.ofNullable(principal).map(LoginInfoDTO::new).orElse(null);
     }
 }
