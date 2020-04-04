@@ -17,10 +17,37 @@ public class MessageEntity {
 
     private String language;
 
+    public MessageEntity() {
+    }
+
     public MessageEntity(String type, int offset, int length) {
         this.type = type;
         this.offset = offset;
         this.length = length;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getType() {
