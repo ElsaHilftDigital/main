@@ -1,8 +1,11 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.domain.Customer;
+import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Organization;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.slf4j.Logger;
@@ -20,11 +23,13 @@ public class MessageFacade {
 
     private TelegramApiWrapper api;
     private TelegramMessages telegramMessages;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    public MessageFacade(TelegramApiWrapper api, TelegramMessages telegramMessages) {
+    public MessageFacade(TelegramApiWrapper api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
         this.api = api;
         this.telegramMessages = telegramMessages;
+        this.customerRepository = customerRepository;
     }
 
     public void directUserToRegistrationForm(long chatId) {
@@ -76,16 +81,26 @@ public class MessageFacade {
     /**
      * Save the purchase to the repo after calling!
      */
-    public void broadcastPurchase(Organization organization, Purchase purchase) {
+    public void broadcastPurchase(Organization organization, Customer customer, Purchase purchase) {
 
         if (organization.getTelegramGroupChatId() == null) {
             LOG.warn("Cannot broadcast as group chat id is null");
             return;
         }
 
+        String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
+        String purchaseDesc = MessageFormat.format(
+                purchaseDescTemplate,
+                customer.getAddress().getCity(),
+                purchase.getSupermarket(),
+                purchase.getTiming(),
+                purchase.getPurchaseSize().displayName()
+        );
+
+
         String template = telegramMessages.getBroadcastPurchase();
         String botCommand = BotCommand.HILFE_ANBIETEN.render(purchase.getUuid().toString());
-        String text = MessageFormat.format(template, purchase.getDescriptionForGroupChat(), botCommand);
+        String text = MessageFormat.format(template, purchaseDesc, botCommand);
 
         MessageToBeSent message = new MessageToBeSent(organization.getTelegramGroupChatId(), text);
         Message sentMessage = api.sendMessage(message);
@@ -93,19 +108,38 @@ public class MessageFacade {
         purchase.setBroadcastMessageId(sentMessage.getId());
     }
 
-    public void offerPurchase(Purchase purchase, Volunteer volunteer) {
+    public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {
 
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
             return;
         }
 
+        StringBuilder builder = new StringBuilder();
+        for (OrderItem i : purchase.getPurchaseList()) {
+            builder.append("* ");
+            builder.append(i.getPurchaseItem());
+            builder.append("\n");
+        }
+
+        String purchaseDescTemplate = telegramMessages.getPersonalPurchaseDescription();
+        String purchaseDesc = MessageFormat.format(
+                purchaseDescTemplate,
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getAddress().getAddress(),
+                customer.getAddress().getZipCode(),
+                customer.getAddress().getCity(),
+                purchase.getComments(),
+                builder.toString()
+        );
+
         String template = telegramMessages.getOfferPurchase();
         String acceptCommand = BotCommand.HILFE_BESTAETIGEN.render(purchase.getUuid().toString());
         String rejectCommand = BotCommand.HILFE_ZURUECKZIEHEN.render(purchase.getUuid().toString());
         String text = MessageFormat.format(
                 template,
-                purchase.getDescriptionForPersonalChat(),
+                purchaseDesc,
                 acceptCommand,
                 rejectCommand);
 
@@ -149,12 +183,15 @@ public class MessageFacade {
         api.sendMessage(message);
     }
 
-    public static String renderPurchaseList(String fileId, List<Purchase> purchases) {
+    public String renderPurchaseList(String fileId, List<Purchase> purchases) {
         StringBuilder builder = new StringBuilder();
         for (Purchase p : purchases) {
+            Customer customer = customerRepository.findById(p.getCustomer()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
             builder.append("* ");
             builder.append("[");
-            builder.append(p.getSupermarket());
+            builder.append(customer.getFirstName());
+            builder.append(" ");
+            builder.append(customer.getLastName());
             builder.append("](");
             builder.append(BotCommand.QUITTUNG_EINREICHEN.render(fileId, p.getUuid().toString()));
             builder.append(")\n");

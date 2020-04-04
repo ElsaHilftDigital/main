@@ -27,6 +27,8 @@ public class TelegramMessages {
     private String unexpectedMessage;
     private String confirmReceiptUpload;
     private String confirmRejection;
+    private String broadcastPurchaseDescription;
+    private String personalPurchaseDescription;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -162,5 +164,21 @@ public class TelegramMessages {
 
     public void setConfirmRejection(String confirmRejection) {
         this.confirmRejection = confirmRejection;
+    }
+
+    public String getBroadcastPurchaseDescription() {
+        return this.broadcastPurchaseDescription;
+    }
+
+    public void setBroadcastPurchaseDescription(String broadcastPurchaseDescription) {
+        this.broadcastPurchaseDescription = broadcastPurchaseDescription;
+    }
+
+    public String getPersonalPurchaseDescription() {
+        return this.personalPurchaseDescription;
+    }
+
+    public void setPersonalPurchaseDescription(String personalPurchaseDescription) {
+        this.personalPurchaseDescription = personalPurchaseDescription;
     }
 }
