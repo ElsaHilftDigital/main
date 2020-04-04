@@ -4,6 +4,7 @@ import de.njsm.versusvirus.backend.telegram.dto.Message;
 import org.springframework.lang.Nullable;
 
 import java.text.MessageFormat;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -124,7 +125,7 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             String userId = getRegex().matcher(command).group("userId");
-            dispatcher.handleNewHelper(message, userId);
+            dispatcher.handleNewHelper(message, UUID.fromString(userId));
         }
     },
 
