@@ -14,4 +14,6 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     Optional<Purchase> findByUuid(UUID uuid);
 
     List<Purchase> findAllByAssignedVolunteer(long volunteerId);
+
+    List<Purchase> findAllByCustomerAndStatus(Long customer, Purchase.Status status);
 }
