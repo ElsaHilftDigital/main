@@ -14,12 +14,12 @@ public class Purchase {
 
     private UUID uuid;
 
-    public Long getAssignedVolunteer() {
-        return assignedVolunteer;
+    public List<Long> getVolunteerApplications() {
+        return volunteerApplications;
     }
 
-    public void setAssignedVolunteer(Long assignedVolunteer) {
-        this.assignedVolunteer = assignedVolunteer;
+    public void setVolunteerApplications(List<Long> volunteerApplications) {
+        this.volunteerApplications = volunteerApplications;
     }
 
     public enum Status {
@@ -65,10 +65,17 @@ public class Purchase {
     private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
 
     private Long assignedVolunteer;
+    private Long createdByModerator;
+    private Long customer;
+
+    @ElementCollection
+    @CollectionTable(name = "purchase_applications")
+    @Column(name = "volunteer_id")
+    private List<Long> volunteerApplications;
 
     // telegram parameters
     private String receiptFileId;
-    private int broadcastMessageId;
+    private Long broadcastMessageId;
 
     public long getId() {
         return id;
@@ -158,11 +165,11 @@ public class Purchase {
         this.receiptFileId = receiptFileId;
     }
 
-    public int getBroadcastMessageId() {
+    public long getBroadcastMessageId() {
         return broadcastMessageId;
     }
 
-    public void setBroadcastMessageId(int broadcastMessageId) {
+    public void setBroadcastMessageId(long broadcastMessageId) {
         this.broadcastMessageId = broadcastMessageId;
     }
 
@@ -172,5 +179,29 @@ public class Purchase {
 
     public String getDescriptionForPersonalChat() {
         return "";
+    }
+
+    public Long getAssignedVolunteer() {
+        return assignedVolunteer;
+    }
+
+    public void setAssignedVolunteer(Long assignedVolunteer) {
+        this.assignedVolunteer = assignedVolunteer;
+    }
+
+    public Long getCreatedByModerator() {
+        return createdByModerator;
+    }
+
+    public void setCreatedByModerator(Long createdByModerator) {
+        this.createdByModerator = createdByModerator;
+    }
+
+    public Long getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Long customer) {
+        this.customer = customer;
     }
 }

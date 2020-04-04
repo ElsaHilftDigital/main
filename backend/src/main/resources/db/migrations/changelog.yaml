@@ -53,3 +53,18 @@ databaseChangeLog:
   - include:
       file: 20200404-1442-organization-add-moderators.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200404-1503-add-deleted-flag-to-volunteer.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1531-purchase-add-customer-and-moderator.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1549-add-purchase-applications.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1641-make-telegram-groupchat-id-longer.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200404-1848-add-telegram-moderator-group-chat.sql
+      relativeToChangelogFile: true

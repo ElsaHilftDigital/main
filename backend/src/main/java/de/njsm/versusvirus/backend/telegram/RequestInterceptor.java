@@ -1,10 +1,9 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
 
@@ -15,9 +14,23 @@ class RequestInterceptor implements Interceptor {
     @Override public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        LOG.debug("OkHttp: {}", String.format("Sending request %s\n%s",
-                request.url(), request.headers()));
+        LOG.debug("OkHttp Request: {}\n{}",
+                request.url(),
+                request.headers());
 
-        return chain.proceed(request);
+        Response r = chain.proceed(request);
+        ResponseBody b = r.peekBody(1000000L);
+        var type = b.contentType();
+        if (type != null && type.toString().equals(MediaType.APPLICATION_JSON.toString())) {
+            LOG.debug("OkHttp Response: {}\n{}\n{}",
+                    r.code(),
+                    r.headers(),
+                    b.string());
+        } else {
+            LOG.debug("OkHttp Response: {}\n{}",
+                    r.code(),
+                    r.headers());
+        }
+        return r;
     }
 }

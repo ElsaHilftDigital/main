@@ -1,10 +1,7 @@
 package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.TelegramController;
-import de.njsm.versusvirus.backend.telegram.dto.File;
-import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
-import de.njsm.versusvirus.backend.telegram.dto.TelegramResponse;
-import de.njsm.versusvirus.backend.telegram.dto.WebhookRequest;
+import de.njsm.versusvirus.backend.telegram.dto.*;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
@@ -40,13 +37,13 @@ class TelegramApiWrapper {
         registerWebhook();
     }
 
-    public void sendMessage(MessageToBeSent message) {
+    public Message sendMessage(MessageToBeSent message) {
         LOG.debug("Sending message to {}", message.getChatId());
-        Call<TelegramResponse<Void>> call = apiClient.sendMessage(token, message);
-        executeQuery(call);
+        Call<TelegramResponse<Message>> call = apiClient.sendMessage(token, message);
+        return executeQuery(call);
     }
 
-    public void deleteMessage(int chatId, int messageId) {
+    public void deleteMessage(long chatId, long messageId) {
         LOG.debug("Deleting message in chat {}", chatId);
         Call<TelegramResponse<Void>> call = apiClient.deleteMessage(chatId, messageId);
         executeQuery(call);
