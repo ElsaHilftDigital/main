@@ -29,6 +29,16 @@ public class Volunteer {
     private boolean wantsCompensation;
     private boolean validated;
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    private boolean deleted;
+
     private Long telegramChatId;
     private Long telegramUserId;
 

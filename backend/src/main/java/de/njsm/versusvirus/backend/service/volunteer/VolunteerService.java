@@ -3,13 +3,14 @@ package de.njsm.versusvirus.backend.service.volunteer;
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
-import de.njsm.versusvirus.backend.rest.api.anonymous.SignupRequest;
-import de.njsm.versusvirus.backend.rest.api.anonymous.VolunteerDTO;
+import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,4 +47,16 @@ public class VolunteerService {
         return new VolunteerDTO(volunteer);
     }
 
+    public List<VolunteerDTO> getVolunteers() {
+        return repository.findAll()
+                .stream()
+                .map(VolunteerDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public void deleteVolunteer(UUID uuid) {
+        var volunteer = repository.findByUuid(uuid).orElseThrow(NotFoundException::new);
+        volunteer.setDeleted(true);
+        repository.save(volunteer);
+    }
 }

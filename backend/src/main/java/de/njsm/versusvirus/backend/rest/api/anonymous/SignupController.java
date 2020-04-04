@@ -1,5 +1,7 @@
 package de.njsm.versusvirus.backend.rest.api.anonymous;
 
+import de.njsm.versusvirus.backend.service.volunteer.SignupRequest;
+import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
