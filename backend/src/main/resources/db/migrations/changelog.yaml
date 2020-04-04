@@ -53,3 +53,6 @@ databaseChangeLog:
   - include:
       file: 20200404-1442-organization-add-moderators.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200404-1531-purchase-add-customer-and-moderator.sql
+      relativeToChangelogFile: true
