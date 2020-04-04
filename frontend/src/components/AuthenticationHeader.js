@@ -1,22 +1,11 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import history from '../history';
-import { authenticationActions, authenticationSelectors } from '../store/authentication';
+import { authenticationActions } from '../store/authentication';
+import { useAuthentication } from './useAuthentication';
 
-const useAuthentication = () => {
-    const dispatch = useDispatch();
-
-    const currentUser = useSelector(authenticationSelectors.currentUser);
-    const currUsername = currentUser ? currentUser.username : null;
-    useEffect(() => {
-        dispatch(authenticationActions.getAuthInstance());
-    }, [dispatch, currUsername])
-
-    return useSelector(authenticationSelectors.currentUser);
-};
-
-const Authentication = () => {
+const AuthenticationHeader = () => {
     const dispatch = useDispatch();
 
     const currentUser = useAuthentication();
@@ -48,4 +37,4 @@ const Authentication = () => {
     );
 };
 
-export default Authentication;
+export default AuthenticationHeader;

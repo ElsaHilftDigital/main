@@ -14,14 +14,6 @@ public class Purchase {
 
     private UUID uuid;
 
-    public Long getAssignedVolunteer() {
-        return assignedVolunteer;
-    }
-
-    public void setAssignedVolunteer(Long assignedVolunteer) {
-        this.assignedVolunteer = assignedVolunteer;
-    }
-
     public enum Status {
         NEW,
         VOLUNTEER_FOUND,
@@ -65,6 +57,8 @@ public class Purchase {
     private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
 
     private Long assignedVolunteer;
+    private Long createdByModerator;
+    private Long customer;
 
     // telegram parameters
     private String receiptFileId;
@@ -172,5 +166,29 @@ public class Purchase {
 
     public String getDescriptionForPersonalChat() {
         return "";
+    }
+
+    public Long getAssignedVolunteer() {
+        return assignedVolunteer;
+    }
+
+    public void setAssignedVolunteer(Long assignedVolunteer) {
+        this.assignedVolunteer = assignedVolunteer;
+    }
+
+    public Long getCreatedByModerator() {
+        return createdByModerator;
+    }
+
+    public void setCreatedByModerator(Long createdByModerator) {
+        this.createdByModerator = createdByModerator;
+    }
+
+    public Long getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Long customer) {
+        this.customer = customer;
     }
 }
