@@ -16,6 +16,7 @@ public class TelegramMessages {
     private String preconfirmRegistration;
     private String confirmRegistration;
     private String broadcastPurchase;
+    private String purchaseAlreadyTaken;
     private String offerPurchase;
     private String confirmPurchaseMapping;
     private String informToDeliverPurchase;
@@ -90,5 +91,13 @@ public class TelegramMessages {
 
     public void setInformToDeliverPurchase(String informToDeliverPurchase) {
         this.informToDeliverPurchase = informToDeliverPurchase;
+    }
+
+    public String getPurchaseAlreadyTaken() {
+        return purchaseAlreadyTaken;
+    }
+
+    public void setPurchaseAlreadyTaken(String purchaseAlreadyTaken) {
+        this.purchaseAlreadyTaken = purchaseAlreadyTaken;
     }
 }

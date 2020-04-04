@@ -42,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/v1/anonymous/*").permitAll()
+                .antMatchers("/api/v1/telegram/**").permitAll()
                 .antMatchers("/api/v1/login").permitAll()
                 .anyRequest().authenticated();
     }

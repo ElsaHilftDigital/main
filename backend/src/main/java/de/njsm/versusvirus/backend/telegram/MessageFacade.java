@@ -33,7 +33,7 @@ public class MessageFacade {
         MessageToBeSent message = new MessageToBeSent(chatId, text);
         api.sendMessage(message);
     }
-    
+
     public void resignVolunteer(int chatId) {
         String text = telegramMessages.getVolunteerResignation();
         MessageToBeSent message = new MessageToBeSent(chatId, text);
@@ -43,6 +43,11 @@ public class MessageFacade {
     public void resignUnknownVolunteer(int chatId) {
         String text = telegramMessages.getUnknownVolunteerResignation();
         MessageToBeSent message = new MessageToBeSent(chatId, text);
+        api.sendMessage(message);
+    }
+
+    public void informPurchaseHasBeenAssigned(int chatId) {
+        MessageToBeSent message = new MessageToBeSent(chatId, telegramMessages.getPurchaseAlreadyTaken());
         api.sendMessage(message);
     }
 
@@ -109,7 +114,7 @@ public class MessageFacade {
         }
 
         String template = telegramMessages.getConfirmPurchaseMapping();
-        String renderedPurchaseList = MessageTemplates.renderPurchaseList(fileId, purchases);
+        String renderedPurchaseList = renderPurchaseList(fileId, purchases);
         String text = MessageFormat.format(
                 template,
                 renderedPurchaseList);
@@ -131,5 +136,18 @@ public class MessageFacade {
 
         MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
         api.sendMessage(message);
+    }
+
+    public static String renderPurchaseList(String fileId, List<Purchase> purchases) {
+        StringBuilder builder = new StringBuilder();
+        for (Purchase p : purchases) {
+            builder.append("* ");
+            builder.append("[");
+            builder.append(p.getSupermarket());
+            builder.append("](");
+            builder.append(BotCommand.QUITTUNG_EINREICHEN.render(fileId, p.getUuid().toString()));
+            builder.append(")\n");
+        }
+        return builder.toString();
     }
 }

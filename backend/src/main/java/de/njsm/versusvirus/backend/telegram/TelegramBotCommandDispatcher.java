@@ -63,8 +63,8 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
 
-        if (purchase.getStatus() != Purchase.Status.NEW) {
-            // TODO inform already taken
+        if (purchase.getStatus() != Purchase.Status.NEW) {  // TODO check assigned helper
+            messageFacade.informPurchaseHasBeenAssigned(message.getChat().getId());
             return;
         }
         // TODO assign helper
@@ -96,11 +96,15 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
 
+        if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
+            purchase.setStatus(Purchase.Status.NEW);
+            purchaseRepository.save(purchase);
+            // TODO write to new helper
+        }
+
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
-
-            if not -> reschedule
 
          */
     }
@@ -117,11 +121,13 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> new RuntimeException("purchase not found"));
         var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> new RuntimeException("volunteer not found"));
 
+        byte[] image = telegramApi.getFile(fileId);
+        purchase.setReceipt(image);
+        purchaseRepository.save(purchase);
         /*
 
             if different volunteer than assigned by us -> tell them not to hack
 
-            download picture and assign to purchase
 
          */
     }
