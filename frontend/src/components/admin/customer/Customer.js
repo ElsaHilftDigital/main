@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
+import { useCustomers } from '../useCustomers';
 import CustomerDetail from './CustomerDetail';
 import CustomerList from './CustomerList';
 
 const Customer = () => {
+    console.log(useCustomers());
     const customers = [ { id: 1, name: 'test1' },
      { id: 2, name: 'test2' }, 
      { id: 3, name: 'test3' },
