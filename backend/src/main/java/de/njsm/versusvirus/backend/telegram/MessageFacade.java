@@ -1,10 +1,12 @@
 package de.njsm.versusvirus.backend.telegram;
 
-// TODO Make this thing a bean
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class MessageFacade {
 
     private TelegramApiWrapper api;
 
+    @Autowired
     public MessageFacade(TelegramApiWrapper api) {
         this.api = api;
     }

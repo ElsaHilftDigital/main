@@ -22,4 +22,20 @@ public class MessageToBeSent {
         this.parseMode = "Markdown";
         this.disableWebPagePreview = true;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getParseMode() {
+        return parseMode;
+    }
+
+    public boolean isDisableWebPagePreview() {
+        return disableWebPagePreview;
+    }
 }
