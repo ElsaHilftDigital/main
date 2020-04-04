@@ -17,7 +17,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 @Component
-public class MessageFacade {
+public class MessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
@@ -26,7 +26,7 @@ public class MessageFacade {
     private final CustomerRepository customerRepository;
 
     @Autowired
-    public MessageFacade(TelegramApiWrapper api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
+    public MessageSender(TelegramApiWrapper api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
         this.api = api;
         this.telegramMessages = telegramMessages;
         this.customerRepository = customerRepository;
@@ -205,7 +205,7 @@ public class MessageFacade {
     }
 
     public void confirmHelpOfferingReceived(long chatId) {
-        MessageToBeSent m = new MessageToBeSent(chatId, telegramMessages.getThankForOfferingHelpMessage());
+        MessageToBeSent m = new MessageToBeSent(chatId, telegramMessages.getThankForOfferingHelp());
         api.sendMessage(m);
     }
 

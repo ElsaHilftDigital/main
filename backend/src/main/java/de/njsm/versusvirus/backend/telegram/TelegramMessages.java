@@ -30,6 +30,11 @@ public class TelegramMessages {
     private String broadcastPurchaseDescription;
     private String personalPurchaseDescription;
 
+    private String newHelperHasRegistered;
+    private String helpersAppliedForPurchase;
+    private String helperRejectedPurchase;
+    private String receiptHasBeenSubmitted;
+
     public String getUnknownVolunteer() {
         return unknownVolunteer;
     }
@@ -126,10 +131,6 @@ public class TelegramMessages {
         this.noActivePurchases = noActivePurchases;
     }
 
-    public String getThankForOfferingHelpMessage() {
-        return this.thankForOfferingHelp;
-    }
-
     public void setThankForOfferingHelp(String thankForOfferingHelp) {
         this.thankForOfferingHelp = thankForOfferingHelp;
     }
@@ -180,5 +181,45 @@ public class TelegramMessages {
 
     public void setPersonalPurchaseDescription(String personalPurchaseDescription) {
         this.personalPurchaseDescription = personalPurchaseDescription;
+    }
+
+    public String getThankForOfferingHelp() {
+        return thankForOfferingHelp;
+    }
+
+    public String getThankForDoingPurchase() {
+        return thankForDoingPurchase;
+    }
+
+    public String getNewHelperHasRegistered() {
+        return newHelperHasRegistered;
+    }
+
+    public void setNewHelperHasRegistered(String newHelperHasRegistered) {
+        this.newHelperHasRegistered = newHelperHasRegistered;
+    }
+
+    public String getHelpersAppliedForPurchase() {
+        return helpersAppliedForPurchase;
+    }
+
+    public void setHelpersAppliedForPurchase(String helpersAppliedForPurchase) {
+        this.helpersAppliedForPurchase = helpersAppliedForPurchase;
+    }
+
+    public String getHelperRejectedPurchase() {
+        return helperRejectedPurchase;
+    }
+
+    public void setHelperRejectedPurchase(String helperRejectedPurchase) {
+        this.helperRejectedPurchase = helperRejectedPurchase;
+    }
+
+    public String getReceiptHasBeenSubmitted() {
+        return receiptHasBeenSubmitted;
+    }
+
+    public void setReceiptHasBeenSubmitted(String receiptHasBeenSubmitted) {
+        this.receiptHasBeenSubmitted = receiptHasBeenSubmitted;
     }
 }

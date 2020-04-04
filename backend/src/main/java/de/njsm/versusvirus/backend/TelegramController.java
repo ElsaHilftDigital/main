@@ -7,6 +7,7 @@ import de.njsm.versusvirus.backend.telegram.TelegramBotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.UpdateService;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
+import de.njsm.versusvirus.backend.telegram.dto.PhotoSize;
 import de.njsm.versusvirus.backend.telegram.dto.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,11 @@ public class TelegramController {
 
         Message message = update.getMessage();
 
+        PhotoSize[] photos = message.getPhoto();
+        if (photos != null && photos.length > 0) {
+            botCommandDispatcher.handleReceiptWithoutPurchaseContext(message, photos[photos.length-1].getId());
+        }
+
         if (message.getText() == null || message.getText().isEmpty()) {
             LOG.info("No message found");
             return;
@@ -54,11 +60,6 @@ public class TelegramController {
 
         if (message.getEntities() == null) {
             LOG.info("The message didn't contain commands");
-            return;
-        }
-
-        if (message.getPhoto() != null && message.getPhoto().length > 0) {
-            botCommandDispatcher.handleReceiptWithoutPurchaseContext(message, message.getPhoto()[0].getId());
             return;
         }
 
