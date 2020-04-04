@@ -32,6 +32,6 @@ export function* handleGetVolunteer(getVolunteer, action) {
 export function* volunteerSaga(volunteerApi) {
     yield all([
         takeLatest(actions.CREATE_VOLUNTEER, handleCreateVolunteer, volunteerApi.createVolunteer),
-        takeLatest(actions.GET_VOLUNTEER, handleGetVolunteer, volunteerAp.getVolunteeri),
+        takeLatest(actions.GET_VOLUNTEER, handleGetVolunteer, volunteerApi.getVolunteeri),
     ])
 }
