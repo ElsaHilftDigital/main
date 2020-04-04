@@ -1,9 +1,8 @@
 package de.njsm.versusvirus.backend.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Organization {
@@ -13,9 +12,13 @@ public class Organization {
     private long id;
 
     private String name;
-    private int updateOffset;
+    private long updateOffset;
     private String urlGroupChat;
     private Integer telegramGroupChatId;
+
+    @JoinColumn(name = "organization_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Moderator> moderators = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -29,11 +32,11 @@ public class Organization {
         this.name = name;
     }
 
-    public int getUpdateOffset() {
+    public long getUpdateOffset() {
         return updateOffset;
     }
 
-    public void setUpdateOffset(int updateOffset) {
+    public void setUpdateOffset(long updateOffset) {
         this.updateOffset = updateOffset;
     }
 

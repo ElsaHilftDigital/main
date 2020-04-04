@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class MessageToBeSent {
 
     @JsonProperty("chat_id")
-    private int chatId;
+    private long chatId;
 
     private String text;
 
@@ -17,14 +17,14 @@ public class MessageToBeSent {
     @JsonProperty("disable_web_page_preview")
     private boolean disableWebPagePreview;
 
-    public MessageToBeSent(int chatId, String markdownText) {
+    public MessageToBeSent(long chatId, String markdownText) {
         this.chatId = chatId;
         this.text = markdownText;
         this.parseMode = "Markdown";
         this.disableWebPagePreview = true;
     }
 
-    public int getChatId() {
+    public long getChatId() {
         return chatId;
     }
 

@@ -13,11 +13,11 @@ public class UpdateService {
         this.organizationRepository = organizationRepository;
     }
 
-    public int getLatestUpdate() {
-        return organizationRepository.findById(1).map(Organization::getUpdateOffset).orElse(-1);
+    public long getLatestUpdate() {
+        return organizationRepository.findById(1).map(Organization::getUpdateOffset).orElse(-1L);
     }
 
-    public void setLatestUpdate(int value) {
+    public void setLatestUpdate(long value) {
         organizationRepository.findById(1).ifPresent(o -> {
             o.setUpdateOffset(value);
             organizationRepository.save(o);
