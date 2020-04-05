@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {useForm} from 'react-hook-form';
+import {useSelector, useDispatch} from 'react-redux';
 
 import SearchBox from '../../SearchBox';
 import {useCustomers} from '../useCustomers';
@@ -53,7 +54,7 @@ const Progress = styled.ol`
 `;
 
 const NewRequest = () => {
-    const steps = ['Kunde', 'Auftrag'];
+    const steps = ['Kunde', 'Auftrag', 'Bestätigung'];
     const [step, setStep] = useState(0);
     const [customer, setCustomer] = useState(undefined);
     const [newCustomer, setNewCustomer] = useState(false);
@@ -174,7 +175,7 @@ const NewRequest = () => {
 
         const onSubmit = data => {
             setPurchase(data)
-            // TODO Submit
+            setStep(step + 1);
         };
 
         return (<>
@@ -224,6 +225,15 @@ const NewRequest = () => {
         </>);
     };
 
+    const SubmitPurchase = () => {
+        const dispatch = useDispatch();
+        const ongoing = useSelector(customerSelectors.createCustomerRequestOngoing);
+        const createCustomerSuccess = useSelector(customerSelectors.createCustomerSuccess);
+        useEffect(() => dispatch(customerActions.createCustomer(customer)), [dispatch]);
+        return <>
+            {ongoing ? <span>Kunde wird erzeugt...</span> : createCustomerSuccess ? <span>Kunde wurde erzeugt</span> : <span>Fehler beim Erzeugen des Kunden</span>}
+        </>;
+    };
 
     const renderContent = () => {
         switch (step) {
@@ -231,6 +241,8 @@ const NewRequest = () => {
                 return <EnterCustomer/>;
             case 1:
                 return <EnterPurchase/>;
+            case 2:
+                return <SubmitPurchase/>;
         }
     };
     return (
