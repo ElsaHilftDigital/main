@@ -6,7 +6,7 @@ import history from '../history';
 import About from './public/About';
 import Home from './public/Home';
 import Login from './public/Login';
-import RegisterVolunteer from './public/RegisterVolunteer';
+import RegisterVolunteer from './public/registration/RegisterVolunteer';
 import AdminLogin from './admin/home/AdminLogin';
 import Customer from './admin/customer/Customer';
 import Volunteer from './admin/volunteer/Volunteer';

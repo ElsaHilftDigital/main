@@ -25,16 +25,15 @@ export default function volunteerReducer(state = initialState, action) {
         case actions.CREATE_VOLUNTEER_SUCCESS:
             return {
                 ...state,
-                volunteer: payload,
                 createVolunteerRequestOngoing: false,
-                createVolunteerSuccess: true,
+                createVolunteerSuccess: payload,
                 createVolunteerError: null,
             };
         case actions.CREATE_VOLUNTEER_ERROR:
             return {
                 ...state,
                 createVolunteerRequestOngoing: false,
-                createVolunteerSuccess: false,
+                createVolunteerSuccess: null,
                 createVolunteerError: payload,
             };
         case actions.GET_VOLUNTEER:

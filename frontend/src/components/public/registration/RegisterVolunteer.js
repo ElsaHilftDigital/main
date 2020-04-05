@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { electronicFormatIBAN, isValidIBAN } from 'ibantools';
 
-import { volunteerActions } from '../../store/volunteer';
+import { volunteerActions, volunteerSelectors } from '../../../store/volunteer';
+import RegisterVolunteerSuccess from './RegisterVolunteerSuccess';
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 
 const RegisterVolunteer = () => {
     const dispatch = useDispatch();
+
+    const registerVolunteerSuccess = useSelector(volunteerSelectors.createVolunteerSuccess);
+    const [ sentRegistration, setSentRegistration ] = useState(false);
 
     const { errors, handleSubmit, register, setValue, triggerValidation, watch } = useForm();
     const [ oldBirthdayValue, setOldBirthdayValue ] = useState('');
@@ -18,19 +22,22 @@ const RegisterVolunteer = () => {
     const registerFormIban = watch('registerFormIban');
     const registerFormWantsNoCompensation = watch('registerFormWantsNoCompensation');
 
-    const onSubmit = data => dispatch(volunteerActions.createVolunteer({
-        firstName: data.registerFormFirstname,
-        lastName: data.registerFormLastname,
-        phone: data.registerFormPhone,
-        email: data.registerFormEmail,
-        address: data.registerFormStreet,
-        city: data.registerFormOrt,
-        zipCode: data.registerFormPlz,
-        birthDate: getBirthdateAsDate(data.registerFormBirthday.replace(/\s/g, '')),
-        iban: electronicFormatIBAN(data.registerFormIban),
-        bankName: data.registerFormBankName,
-        wantsCompensation: !data.registerFormWantsNoCompensation,
-    }));
+    const onSubmit = data => {
+        dispatch(volunteerActions.createVolunteer({
+            firstName: data.registerFormFirstname,
+            lastName: data.registerFormLastname,
+            phone: data.registerFormPhone,
+            email: data.registerFormEmail,
+            address: data.registerFormStreet,
+            city: data.registerFormOrt,
+            zipCode: data.registerFormPlz,
+            birthDate: getBirthdateAsDate(data.registerFormBirthday.replace(/\s/g, '')),
+            iban: electronicFormatIBAN(data.registerFormIban),
+            bankName: data.registerFormBankName,
+            wantsCompensation: !data.registerFormWantsNoCompensation,
+        }));
+        setSentRegistration(true);
+    }
 
     const formatBirthdate = (e) => {
         if (!e.currentTarget.value) {
@@ -146,6 +153,19 @@ const RegisterVolunteer = () => {
     };
 
     return (
+        <>
+        {sentRegistration && registerVolunteerSuccess && (
+            <RegisterVolunteerSuccess registeredVolunteer={registerVolunteerSuccess} />
+        )}
+        {sentRegistration && !registerVolunteerSuccess && (
+            <div className="d-flex justify-content-center align-items-baseline">
+                <div class="spinner-border text-primary mr-3" role="status">
+                     <span class="sr-only">Loading...</span>
+                </div>
+                <span>Registrierung wird verarbeitet. Bitte warten...</span>
+            </div>
+        )}
+        {!sentRegistration && (
         <div className="view bg" style={{backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
             backgroundPositionX: "right", backgroundPositionY: "bottom", backgroundSize: "auto",
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "10%"}}>
@@ -218,6 +238,8 @@ const RegisterVolunteer = () => {
             </form>
         </div>
         </div>
+        )}
+        </>
     );
 
 };
