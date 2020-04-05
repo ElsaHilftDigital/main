@@ -1,6 +1,9 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+import { purchaseActions } from '../../../store/purchase';
+import { useDispatch } from 'react-redux';
+
 const PurchaseDetail = (props) => {
     const {register, handleSubmit } = useForm({defaultValues: {
         displayFormStatus: props.currentPurchase.status,
@@ -21,6 +24,12 @@ const PurchaseDetail = (props) => {
 
     const onSubmit = (values) => {
         console.log(values)
+    };
+
+    const dispatch = useDispatch();
+
+    const assignVolunteer = uuid => {
+        dispatch(purchaseActions.assignVolunteer(props.currentPurchase.uuid, uuid));
     };
     
     return(
@@ -75,7 +84,7 @@ const PurchaseDetail = (props) => {
                                             <td>{v.firstName}</td>
                                             <td>{v.lastName}</td>
                                             <td></td>
-                                            <td><button type="button" className="btn btn-primary">Bestätigen</button></td>
+                                            <td><button type="button" className="btn btn-primary" onClick={() => assignVolunteer(v.uuid)}>Bestätigen</button></td>
                                         </tr>
                                     })}
                                 </tbody>
