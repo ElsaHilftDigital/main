@@ -10,6 +10,6 @@ export async function createPurchase(purchase) {
 }
 
 export async function getPurchases() {
-    const response = await client.post(`/v1/admin/purchases`);
+    const response = await client.get(`/v1/admin/purchases`);
     return response.data;
 }

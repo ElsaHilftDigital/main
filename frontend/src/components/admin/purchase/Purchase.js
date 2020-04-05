@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState} from 'react';
+import { useSelector } from 'react-redux';
 
 import PurchaseList from './PurchaseList'
 import PurchaseDetail from './PurchaseDetail'
@@ -6,6 +7,7 @@ import { usePurchases } from '../usePurchases';
 
 const Purchase = () => {
     const purchases = usePurchases();
+    const [purchase, setPurchase] = useState(undefined);
 
     const currentPurchase = {
         status: "Neu",
@@ -31,9 +33,15 @@ const Purchase = () => {
     }
     return (
         <div>
-            <h1>Einkäufe</h1>
-            <PurchaseList purchases={purchases}/>
-            <PurchaseDetail currentPurchase={currentPurchase}/>
+            <div className="sidebar">
+                <PurchaseList
+                        purchases={purchases}
+                        updateSelectedPurchase={setPurchase}
+                        selectedPurchase={purchase}/>
+            </div>
+            <div className="content">
+                {purchase && <PurchaseDetail currentPurchase={purchase}/>}
+            </div>
         </div>
     );
 };

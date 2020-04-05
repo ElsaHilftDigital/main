@@ -37,7 +37,7 @@ export function* handleGetAllPurchases(getPurchases) {
 
 export function* purchaseSaga(purchaseApi) {
     yield all([
-        takeLatest(actions.GET_ALL_PURCHASES, handleGetAllCustomers, purchaseApi.getPurchases),
+        takeLatest(actions.GET_ALL_PURCHASES, handleGetAllPurchases, purchaseApi.getPurchases),
         takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi.createPurchase),
     ])
 }
