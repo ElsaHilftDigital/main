@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,7 @@ public class Purchase {
     private List<OrderItem> purchaseList = new ArrayList<>();
 
     private byte[] receipt;                   // picture of receipt
-    private double cost;                      // cost of purchase in "Rappen"
+    private BigDecimal cost;                      // cost of purchase in "Rappen"
     private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
 
     private Long assignedVolunteer;
@@ -167,11 +168,11 @@ public class Purchase {
         this.receipt = receipt;
     }
 
-    public double getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 
@@ -245,5 +246,12 @@ public class Purchase {
 
     public void setPurchaseList(List<OrderItem> purchaseList) {
         this.purchaseList = purchaseList;
+    }
+
+    @PrePersist
+    private void setUuid() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
     }
 }

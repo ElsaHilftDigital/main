@@ -3,7 +3,9 @@ package de.njsm.versusvirus.backend.service.purchase;
 import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,9 +20,9 @@ public class PurchaseDTO {
     public String supermarket;
     public Purchase.PurchaseSize size;
     public String comments;
-    public double cost;
+    public Double cost;
     public boolean expensesPaid;
-    public long assignedVolunteer;
+    public Long assignedVolunteer;
     public long createdByModerator;
     public long customer;
 
@@ -34,7 +36,7 @@ public class PurchaseDTO {
         supermarket = p.getSupermarket();
         size = p.getPurchaseSize();
         comments = p.getComments();
-        cost = p.getCost();
+        cost = Optional.ofNullable(p.getCost()).map(BigDecimal::doubleValue).orElse(null);
         expensesPaid = p.isExpensesPaid();
         assignedVolunteer = p.getAssignedVolunteer();
         createdByModerator = p.getCreatedByModerator();
