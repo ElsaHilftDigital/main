@@ -6,14 +6,14 @@ import AuthenticationHeader from './AuthenticationHeader';
 import { useAuthentication } from './useAuthentication';
 
 const Header = () => {
-    const [ currLocation, setCurrLocation ] = useState(history.location.pathname);
     const isLoggedIn = !!useAuthentication();
-    const [ adminHeader, setAdminHeader ] = useState(!!currLocation.match(/^\/admin.*$/i))
+    const [ currLocation, setCurrLocation ] = useState(history.location.pathname);
 
     history.listen((location) => {
-        setAdminHeader(!!location.pathname.match(/^\/admin.*$/i))
         setCurrLocation(location.pathname);
     });
+
+    const adminHeader = !!currLocation.match(/^\/admin.*$/i);
 
     const navigate = (route) => () => {
         if (route === currLocation) {
@@ -25,7 +25,7 @@ const Header = () => {
 
     if (adminHeader && !isLoggedIn) {
         // redirect to admin login page
-        history.push('/admin'); 
+        navigate('/admin')(); 
         return null;
     }
 
