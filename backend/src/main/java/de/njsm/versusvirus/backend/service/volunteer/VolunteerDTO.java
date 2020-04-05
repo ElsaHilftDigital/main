@@ -21,6 +21,7 @@ public class VolunteerDTO {
     public String bankName;
     public boolean wantsCompensation;
 
+    public boolean validated;
     public String telegramJoinBotChatUrl;
 
     public VolunteerDTO(Volunteer volunteer) {
@@ -36,6 +37,7 @@ public class VolunteerDTO {
         iban = volunteer.getIban();
         bankName = volunteer.getBankName();
         wantsCompensation = volunteer.wantsCompensation();
+        validated = volunteer.isValidated();
         telegramJoinBotChatUrl = BotCommand.START.render(uuid.toString());
     }
 }

@@ -8,6 +8,7 @@ export const initialState = {
     getVolunteerError: null,
     createVolunteerSuccess: null,
     createVolunteerError: null,
+    volunteers: [],
 };
 
 export default function volunteerReducer(state = initialState, action) {
@@ -57,6 +58,18 @@ export default function volunteerReducer(state = initialState, action) {
                 getVolunteerRequestOngoing: false,
                 getVolunteerSuccess: false,
                 getVolunteerError: payload,
+            };
+        case actions.GET_ALL_VOLUNTEERS_SUCCESS:
+            return {
+                ...state,
+                volunteers: payload,
+                volunteer: payload.length ? payload[0] : null,
+            };
+        case actions.SET_CURRENT_VOLUNTEER:
+            const volunteer = state.volunteers.find(volunteer => volunteer.uuid === payload);
+            return {
+                ...state,
+                volunteer: volunteer.length ? volunteer[0] : volunteer,
             };
         default:
             return state;

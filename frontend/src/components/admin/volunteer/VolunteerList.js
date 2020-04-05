@@ -1,10 +1,25 @@
 import React from 'react';
 
-const VolunteerList = () => {
+const VolunteerList = (props) => {
+    if (!props.volunteers.length) {
+        return <>Keine Helfer</>;
+    }
+
     return (
-        <div>
-            VolunteerList!
-        </div>
+        <>
+            <span className="list-header mt-3 mb-2">Helfer</span>
+            <ul className="sidebar-nav">
+                {props.volunteers.map(volunteer => (
+                    <li 
+                        onClick={() => props.onSelectedVolunteerUpdate(volunteer.uuid)}
+                        key={volunteer.uuid} 
+                        className={'nav-item' + (volunteer.uuid === props.selectedVolunteerUuid ? ' nav-item-active' : '')}
+                    >
+                        {volunteer.lastName}
+                    </li>
+                ))}
+            </ul>
+        </>
     );
 };
 

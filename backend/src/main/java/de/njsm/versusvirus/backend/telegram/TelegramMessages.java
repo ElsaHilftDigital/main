@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-@PropertySource("classpath:messages.properties")
+@PropertySource(value = "classpath:messages.properties", encoding = "utf-8")
 @Configuration
 @ConfigurationProperties(prefix = "telegram")
 public class TelegramMessages {

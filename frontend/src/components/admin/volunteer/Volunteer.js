@@ -1,29 +1,46 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { volunteerActions, volunteerSelectors } from '../../../store/volunteer';
+import { useVolunteers } from '../useVolunteers';
 import VolunteerDetail from './VolunteerDetail';
 import VolunteerList from './VolunteerList';
 
 const Volunteer = () => {
-    const currentVolunteer = {
-        firstname: "Elsa",
-        lastname: "Frozen",
-        phone: "0562821111",
-        email: "elsa@baden.ch",
-        street: "Bahnhofstrasse 11",
-        zip: "5400",
-        city: "Baden",
-        birthdate: "05.03.2020",
-        wantsCompensation: true,
-        iban: "CH05 0900 0000 4022 3664 9",
-        bank: "UBS",
-        validated: false,
-        amountPurchases: 0,
-        purchases: ""
-    }
+    const dispatch = useDispatch();
+    const volunteers = useVolunteers();
+    const currentVolunteer = useSelector(volunteerSelectors.getCurrentVolunteer);
+
+    const handleVolunteerUpdate = (values) => {
+        console.log(values);
+    };
+
+    const handleConfirmVolunteer = (uuid) => {
+        dispatch(volunteerActions.confirmVolunteer(uuid));
+    };
+
+    const handleChangeSelectedVolunteer = (uuid) => {
+        dispatch(volunteerActions.setCurrentVolunteer(uuid));
+    };
+
     return (
         <div>
-            <VolunteerList />
-            <VolunteerDetail currentVolunteer={currentVolunteer}/>
+            <div className="sidebar">
+                <VolunteerList 
+                    volunteers={volunteers} 
+                    selectedVolunteerUuid={currentVolunteer ? currentVolunteer.uuid : null}
+                    onSelectedVolunteerUpdate={handleChangeSelectedVolunteer}
+                />
+            </div>
+            <div className="content">
+                {currentVolunteer && (
+                    <VolunteerDetail 
+                        currentVolunteer={currentVolunteer}
+                        onSubmit={handleVolunteerUpdate}
+                        onConfirmVolunteer={handleConfirmVolunteer}
+                    />
+                )}
+            </div>
         </div>
     );
 };
