@@ -36,4 +36,10 @@ public class PurchaseController {
         return purchaseService.create(req);
     }
 
+    @PostMapping("/{id}/assign/{volunteerId}")
+    public void assignVolunteer(@PathVariable("id") UUID purchaseId,
+                                @PathVariable("volunteerId") UUID volunteerId) {
+        purchaseService.assignVolunteer(purchaseId, volunteerId);
+    }
+
 }

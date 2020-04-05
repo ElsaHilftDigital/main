@@ -2,12 +2,11 @@ package de.njsm.versusvirus.backend.service.purchase;
 
 import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
-import de.njsm.versusvirus.backend.repository.CustomerRepository;
-import de.njsm.versusvirus.backend.repository.OrderItemRepository;
-import de.njsm.versusvirus.backend.repository.OrganizationRepository;
-import de.njsm.versusvirus.backend.repository.PurchaseRepository;
+import de.njsm.versusvirus.backend.repository.*;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class PurchaseService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PurchaseService.class);
+
     private final PurchaseRepository purchaseRepository;
 
     private final OrderItemRepository orderItemRepository;
@@ -27,13 +28,16 @@ public class PurchaseService {
 
     private final CustomerRepository customerRepository;
 
+    private final VolunteerRepository volunteerRepository;
+
     private final MessageSender messageSender;
 
-    public PurchaseService(PurchaseRepository purchaseRepository, OrderItemRepository orderItemRepository, OrganizationRepository organizationRepository, CustomerRepository customerRepository, MessageSender messageSender) {
+    public PurchaseService(PurchaseRepository purchaseRepository, OrderItemRepository orderItemRepository, OrganizationRepository organizationRepository, CustomerRepository customerRepository, VolunteerRepository volunteerRepository, MessageSender messageSender) {
         this.purchaseRepository = purchaseRepository;
         this.orderItemRepository = orderItemRepository;
         this.organizationRepository = organizationRepository;
         this.customerRepository = customerRepository;
+        this.volunteerRepository = volunteerRepository;
         this.messageSender = messageSender;
     }
 
@@ -79,5 +83,23 @@ public class PurchaseService {
 
     public Optional<PurchaseDTO> getPurchase(UUID purchaseId) {
         return purchaseRepository.findByUuid(purchaseId).map(PurchaseDTO::new);
+    }
+
+    public void assignVolunteer(UUID purchaseId, UUID volunteerId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        var volunteer = volunteerRepository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
+        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(NotFoundException::new);
+
+        if (!purchase.getVolunteerApplications().contains(volunteer.getId())) {
+            LOG.error("Assigned volunteer who didn't volunteer");
+            return;
+        }
+
+        if (purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
+            LOG.error("This purchase is in the unexpected state " + purchase.getStatus().name());
+            return;
+        }
+
+        messageSender.offerPurchase(purchase, customer, volunteer);
     }
 }
