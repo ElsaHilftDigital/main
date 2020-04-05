@@ -194,6 +194,14 @@ const NewRequest = () => {
                     <input name="supermarket" id="supermarket" type="text" ref={register} className="form-control" placeholder="Geschäft"/>
                 </div>
                 <div className="form-group">
+                    <label htmlFor="purchaseSize">Grösse des Einkaufs</label>
+                    <select ref={register} id="purchaseSize" name="purchaseSize" className="form-control">
+                        <option value="SMALL">Kleiner Einkauf</option>
+                        <option value="MEDIUM">Mittlerer Einkauf</option>
+                        <option value="LARGE">Grosser Einkauf</option>
+                    </select>
+                </div>
+                <div className="form-group">
                     <label htmlFor="paymentMethod">Bezahlmethode</label>
                     <select ref={register} id="paymentMethod" name="paymentMethod" className="form-control">
                         <option value="CASH">Bargeld</option>
