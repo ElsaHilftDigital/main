@@ -232,7 +232,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         }
 
         if (isSuccess) {
-            if (purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
+            if (volunteer.wantsCompensation() && purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
                 purchase.setStatus(Purchase.Status.PAYMENT_PENDING);
             } else {
                 purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
