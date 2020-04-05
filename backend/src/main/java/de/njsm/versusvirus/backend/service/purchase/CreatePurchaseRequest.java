@@ -13,6 +13,5 @@ public class CreatePurchaseRequest {
     public String supermarket;
     public Purchase.PurchaseSize size;
     public String comments;
-    public long createdByModerator;
     public UUID customer;
 }

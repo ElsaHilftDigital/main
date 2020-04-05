@@ -23,4 +23,8 @@ public class Moderator {
     private String email;
     private String login;
     private String password;
+
+    public long getId() {
+        return id;
+    }
 }
