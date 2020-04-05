@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.repository;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,4 +14,6 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
     Optional<Volunteer> findByUuid(UUID uuid);
 
     Optional<Volunteer> findByTelegramUserId(Long id);
+
+    List<Volunteer> findByIdIn(List<Long> ids);
 }
