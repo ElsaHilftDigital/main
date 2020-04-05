@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 
 const PurchaseDetail = (props) => {
-    const {register, handleSubmit, errors} = useForm({defaultValues: {
+    const {register, handleSubmit } = useForm({defaultValues: {
         displayFormStatus: props.currentPurchase.status,
         displayFormCreateDate: props.currentPurchase.createDate,
         displayFormVolunteerLastname: props.currentPurchase.volunteerLastname,
@@ -61,18 +61,22 @@ const PurchaseDetail = (props) => {
                                 <i>Helfer, die sich gemeldet haben:</i>
                             </p>
                             <table className="table table-striped" name="applyingVolunteers">
-                                <tr>
-                                    <th>Vorname</th>
-                                    <th>Nachname</th>
-                                    <th>Link</th>
-                                    <th>Auswahl</th>
-                                </tr>
-                                <tr>
-                                    <td>Anna</td>
-                                    <td>Melting</td>
-                                    <td><a href="">Details</a></td>
-                                    <td><button type="submit" className="btn btn-primary">Bestätigen</button></td>
-                                </tr>
+                                <thead>
+                                    <tr>
+                                        <th>Vorname</th>
+                                        <th>Nachname</th>
+                                        <th>Link</th>
+                                        <th>Auswahl</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Anna</td>
+                                        <td>Melting</td>
+                                        <td><a href="">Details</a></td>
+                                        <td><button type="submit" className="btn btn-primary">Bestätigen</button></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </span>
@@ -122,12 +126,14 @@ const PurchaseDetail = (props) => {
                 <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
                     <table className="table table-striped" name="displayTableOrderItems">
-                        <tr>
-                            <td>5 Tomaten</td>
-                        </tr>
-                        <tr>
-                            <td>13 Dosen Ravioli</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>5 Tomaten</td>
+                            </tr>
+                            <tr>
+                                <td>13 Dosen Ravioli</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
                 <div>
