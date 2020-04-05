@@ -202,7 +202,7 @@ const NewRequest = () => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="timing">Brauch Einkauf bis</label>
+                    <label htmlFor="timing">Braucht Einkauf bis</label>
                     <input name="timing" id="timing" type="text" ref={register} className="form-control" placeholder="Braucht Einkauf bis"/>
                 </div>
                 <div className="form-group">
