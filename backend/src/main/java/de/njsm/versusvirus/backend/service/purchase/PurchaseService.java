@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.service.purchase;
 import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.*;
+import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.slf4j.Logger;
@@ -122,5 +123,13 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
         purchaseRepository.save(purchase);
+    }
+
+    public List<VolunteerDTO> getAvailableVolunteers(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        return volunteerRepository.findByIdIn(purchase.getVolunteerApplications())
+                .stream()
+                .map(VolunteerDTO::new)
+                .collect(Collectors.toList());
     }
 }
