@@ -18,8 +18,8 @@ export function* handleGetAllCustomers(getCustomers) {
 
 export function* handleCreateCustomer(createCustomer, action) {
     try {
-        yield call(createCustomer, action.payload);
-        yield put(actions.createCustomerSuccess());
+        const createdCustomer = yield call(createCustomer, action.payload);
+        yield put(actions.createCustomerSuccess(createdCustomer));
     } catch (error) {
         console.log(error);
         if (error.response && error.response.data) {
