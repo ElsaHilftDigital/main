@@ -92,9 +92,9 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         if (!purchase.getVolunteerApplications().contains(volunteer.getId())) {
             purchase.getVolunteerApplications().add(volunteer.getId());
             purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
-            messageSender.confirmHelpOfferingReceived(message.getChat().getId());
             adminMessageSender.helpersHaveApplied(organization.getTelegramModeratorGroupChatId());
         }
+        messageSender.confirmHelpOfferingReceived(message.getChat().getId());
     }
 
     @Override
