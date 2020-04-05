@@ -10,6 +10,7 @@ import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.AdminMessageSender;
+import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +25,17 @@ public class VolunteerService {
 
     private final VolunteerRepository repository;
 
+    private final MessageSender messageSender;
+
     private final AdminMessageSender adminMessageSender;
 
     private final OrganizationRepository organizationRepository;
 
     private final PurchaseRepository purchaseRepository;
 
-    public VolunteerService(VolunteerRepository repository, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository, PurchaseRepository purchaseRepository) {
+    public VolunteerService(VolunteerRepository repository, MessageSender messageSender, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository, PurchaseRepository purchaseRepository) {
         this.repository = repository;
+        this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.organizationRepository = organizationRepository;
         this.purchaseRepository = purchaseRepository;
@@ -115,5 +119,14 @@ public class VolunteerService {
                 .stream()
                 .map(PurchaseDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    public void validate(UUID volunteerId) {
+        var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
+        var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
+
+        volunteer.setValidated(true);
+        repository.save(volunteer);
+        messageSender.confirmRegistration(organization, volunteer);
     }
 }
