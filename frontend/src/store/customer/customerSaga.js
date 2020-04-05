@@ -37,6 +37,6 @@ export function* handleCreateCustomer(createCustomer, action) {
 export function* customerSaga(customerApi) {
     yield all([
         takeLatest(actions.GET_ALL_CUSTOMERS, handleGetAllCustomers, customerApi.getCustomers),
-        takeEvery(actions.CREATE_CUSTOMER, handleCreateCustomers, customerApi.createCustomer),
+        takeEvery(actions.CREATE_CUSTOMER, handleCreateCustomer, customerApi.createCustomer),
     ])
 }
