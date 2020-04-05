@@ -54,7 +54,7 @@ const Progress = styled.ol`
 
 const NewRequest = () => {
     const steps = ['Kunde', 'Auftrag'];
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0);
     const [customer, setCustomer] = useState(undefined);
     const [newCustomer, setNewCustomer] = useState(false);
     const [purchaseList, setPurchaseList] = useState([]);
