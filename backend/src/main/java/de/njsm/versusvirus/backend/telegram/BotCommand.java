@@ -33,7 +33,8 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             Matcher m = getRegex().matcher(command);
-            m.find();
+            boolean found = m.find();
+            assert found; // verified before
             String purchaseId = m.group("purchaseId");
             dispatcher.handleHelpOffering(message, UUID.fromString(purchaseId));
         }
@@ -58,7 +59,8 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             Matcher m = getRegex().matcher(command);
-            m.find();
+            boolean found = m.find();
+            assert found; // verified before
             String purchaseId = m.group("purchaseId");
             dispatcher.handleConfirmingHelp(message, UUID.fromString(purchaseId));
         }
@@ -83,7 +85,8 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             Matcher m = getRegex().matcher(command);
-            m.find();
+            boolean found = m.find();
+            assert found; // verified before
             String purchaseId = m.group("purchaseId");
             dispatcher.handleRejectingHelp(message, UUID.fromString(purchaseId));
         }
@@ -108,7 +111,8 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             Matcher m = getRegex().matcher(command);
-            m.find();
+            boolean found = m.find();
+            assert found; // verified before
             String purchaseId = m.group("purchaseId");
             String fileId = m.group("fileId");
             dispatcher.handleReceiptSubmission(message, UUID.fromString(purchaseId), fileId);
@@ -134,9 +138,10 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             Matcher m = getRegex().matcher(command);
-            m.find();
+            boolean found = m.find();
+            assert found; // verified before
             String purchaseId = m.group("purchaseId");
-            boolean isSuccess = Boolean.valueOf(m.group("isSuccess"));
+            boolean isSuccess = Boolean.parseBoolean(m.group("isSuccess"));
             dispatcher.handleCompletion(message, UUID.fromString(purchaseId), isSuccess);
         }
     },
@@ -160,7 +165,8 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             Matcher m = getRegex().matcher(command);
-            m.find();
+            boolean found = m.find();
+            assert found; // verified before
             String userId = m.group("userId");
             dispatcher.handleNewHelper(message, UUID.fromString(userId));
         }
@@ -185,7 +191,8 @@ public enum BotCommand {
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
             Matcher m = getRegex().matcher(command);
-            m.find();
+            boolean found = m.find();
+            assert found; // verified before
             dispatcher.handleLeavingHelper(message);
         }
     };

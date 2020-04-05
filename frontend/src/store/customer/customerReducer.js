@@ -4,6 +4,9 @@ export const initialState = {
     getAllCustomersRequestOngoing: false,
     customers: [],
     selectedCustomer: null,
+    createCustomerRequestOngoing: false,
+    createCustomerSuccess: null,
+    createCustomerError: null,
 };
 
 export default function customerReducer(state = initialState, action) {
@@ -20,11 +23,34 @@ export default function customerReducer(state = initialState, action) {
                 ...state,
                 getAllCustomersRequestOngoing: false,
                 customers: payload,
+                selectedCustomer: payload.length ? payload[0] : null,
             };
         case actions.SET_SELECTED_CUSTOMER:
+            const selectedCustomers = state.customers.filter(customer => customer.uuid === payload);
             return {
                 ...state,
-                selectedCustomer: state.customers.filter(customer => customer.id === payload),
+                selectedCustomer: selectedCustomers.length ? selectedCustomers[0] : null,
+            };
+        case actions.CREATE_CUSTOMER:
+            return {
+                ...state,
+                createCustomerRequestOngoing: true,
+                createCustomerSuccess: null,
+                createCustomerError: null,
+            };  
+        case actions.CREATE_CUSTOMER_SUCCESS:
+            return {
+                ...state,
+                createCustomerRequestOngoing: false,
+                createCustomerSuccess: true,
+                createCustomerError: null,
+            };
+        case actions.CREATE_CUSTOMER_ERROR:
+            return {
+                ...state,
+                createCustomerRequestOngoing: false,
+                createCustomerSuccess: false,
+                createCustomerError: payload,
             };
         default:
             return state;

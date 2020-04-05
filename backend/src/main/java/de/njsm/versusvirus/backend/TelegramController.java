@@ -5,10 +5,7 @@ import de.njsm.versusvirus.backend.telegram.BotCommand;
 import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.TelegramBotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.UpdateService;
-import de.njsm.versusvirus.backend.telegram.dto.Message;
-import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
-import de.njsm.versusvirus.backend.telegram.dto.PhotoSize;
-import de.njsm.versusvirus.backend.telegram.dto.Update;
+import de.njsm.versusvirus.backend.telegram.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +44,17 @@ public class TelegramController {
         updateService.setLatestUpdate(update.getId());
 
         Message message = update.getMessage();
+
+        User[] newUsers = message.getNewChatMembers();
+        if (newUsers != null) {
+            for (User u : newUsers) {
+                if (u.getUserName().equals("elsahilftbot")) {
+                    LOG.info("I joined a new chat named '{}' with id {}",
+                            message.getChat().getTitle(),
+                            message.getChat().getId());
+                }
+            }
+        }
 
         PhotoSize[] photos = message.getPhoto();
         if (photos != null && photos.length > 0) {

@@ -30,6 +30,9 @@ public class Message {
 
     private MessageEntity[] entities;
 
+    @JsonProperty("new_chat_members")
+    private User[] newChatMembers;
+
     public long getId() {
         return id;
     }
@@ -64,5 +67,9 @@ public class Message {
 
     public MessageEntity[] getEntities() {
         return entities;
+    }
+
+    public User[] getNewChatMembers() {
+        return newChatMembers;
     }
 }

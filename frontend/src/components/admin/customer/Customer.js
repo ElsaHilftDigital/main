@@ -12,8 +12,8 @@ const Customer = () => {
     const customers = useCustomers();
     const selectedCustomer = useSelector(customerSelectors.getSelectedCustomer);
 
-    const setSelectedCustomer = (id) => {
-        dispatch(customerActions.setSelectedCustomer(id));
+    const setSelectedCustomer = (uuid) => {
+        dispatch(customerActions.setSelectedCustomer(uuid));
     };
     
     return (
