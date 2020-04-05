@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 public class PurchaseDTO {
 
+    public long id;
     public UUID uuid;
     public List<Long> volunteerApplications;
     public List<String> orderItems;
@@ -25,8 +26,10 @@ public class PurchaseDTO {
     public Long assignedVolunteer;
     public long createdByModerator;
     public long customer;
+    public String createDate;
 
     public PurchaseDTO(Purchase p) {
+        id = p.getId();
         uuid = p.getUuid();
         volunteerApplications = p.getVolunteerApplications();
         orderItems = p.getPurchaseList().stream().map(OrderItem::getPurchaseItem).collect(Collectors.toList());
@@ -41,5 +44,6 @@ public class PurchaseDTO {
         assignedVolunteer = p.getAssignedVolunteer();
         createdByModerator = p.getCreatedByModerator();
         customer = p.getCustomer();
+        createDate = p.getCreateTime().toString();
     }
 }
