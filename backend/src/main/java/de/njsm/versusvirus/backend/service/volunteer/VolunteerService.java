@@ -123,7 +123,6 @@ public class VolunteerService {
         var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
 
         volunteer.setValidated(true);
-        repository.save(volunteer);
         messageSender.confirmRegistration(organization, volunteer);
     }
 }
