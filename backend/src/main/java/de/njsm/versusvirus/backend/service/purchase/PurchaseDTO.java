@@ -1,16 +1,16 @@
 package de.njsm.versusvirus.backend.service.purchase;
 
-import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PurchaseDTO {
 
     public UUID uuid;
     public List<Long> volunteerApplications;
-    public List<OrderItem> orderItems;
+    public List<OrderItemDTO> orderItems;
     public Purchase.Status status;
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
@@ -26,7 +26,7 @@ public class PurchaseDTO {
     public PurchaseDTO(Purchase p) {
         uuid = p.getUuid();
         volunteerApplications = p.getVolunteerApplications();
-        orderItems = p.getPurchaseList();
+        orderItems = p.getPurchaseList().stream().map(OrderItemDTO::new).collect(Collectors.toList());
         status = p.getStatus();
         paymentMethod = p.getPaymentMethod();
         timing = p.getTiming();

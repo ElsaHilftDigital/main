@@ -3,6 +3,7 @@ import * as actions from './customerActions';
 export const initialState = {
     getAllCustomersRequestOngoing: false,
     customers: [],
+    selectedCustomer: null,
 };
 
 export default function customerReducer(state = initialState, action) {
@@ -19,6 +20,11 @@ export default function customerReducer(state = initialState, action) {
                 ...state,
                 getAllCustomersRequestOngoing: false,
                 customers: payload,
+            };
+        case actions.SET_SELECTED_CUSTOMER:
+            return {
+                ...state,
+                selectedCustomer: state.customers.filter(customer => customer.id === payload),
             };
         default:
             return state;

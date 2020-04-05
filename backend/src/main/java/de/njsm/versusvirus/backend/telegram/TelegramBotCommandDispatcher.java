@@ -120,6 +120,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
+            purchase.getVolunteerApplications().clear();
             purchaseRepository.save(purchase);
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
             messageSender.confirmConfirmation(message.getChat().getId());
@@ -232,7 +233,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         }
 
         if (isSuccess) {
-            if (purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
+            if (volunteer.wantsCompensation() && purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
                 purchase.setStatus(Purchase.Status.PAYMENT_PENDING);
             } else {
                 purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
