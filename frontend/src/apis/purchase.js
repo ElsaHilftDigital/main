@@ -18,3 +18,8 @@ export async function assignVolunteer(purchase, volunteer) {
     const response = await client.post(`/v1/admin/purchases/${purchase}/assign/${volunteer}`)
     return response.data;
 }
+
+export async function notifyVolunteerToDeliver(uuid) {
+    const response = await client.post(`/v1/admin/purchases/${uuid}/customernotified`)
+    return response.data;
+}

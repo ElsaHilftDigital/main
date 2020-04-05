@@ -17,15 +17,62 @@ public class Purchase {
     private UUID uuid;
 
     public enum Status {
-        NEW,
-        VOLUNTEER_FOUND,
-        VOLUNTEER_ACCEPTED,
-        PURCHASE_DONE,
-        CUSTOMER_NOTIFIED,
-        PURCHASE_IN_DELIVERY,                 // volunteer is on his / her way
-        MONEY_NOT_FOUND,                      // money is not in letter box
-        PAYMENT_PENDING,                      // purchase delivered but not paid yet (other payment method than cash)
-        PURCHASE_COMPLETED                    // purchase and payment completed
+        NEW {
+            @Override
+            public String displayName() {
+                return "Neu";
+            }
+        },
+        VOLUNTEER_FOUND {
+            @Override
+            public String displayName() {
+                return "Helfer gefunden";
+            }
+        },
+        VOLUNTEER_ACCEPTED {
+            @Override
+            public String displayName() {
+                return "Helfer bestätigt";
+            }
+        },
+        PURCHASE_DONE {
+            @Override
+            public String displayName() {
+                return "Einkauf abgeschlossen";
+            }
+        },
+        CUSTOMER_NOTIFIED {
+            @Override
+            public String displayName() {
+                return "Kunde benachrichtigt";
+            }
+        },
+        PURCHASE_IN_DELIVERY {
+            @Override
+            public String displayName() {
+                return "Wird ausgeliefert";
+            }
+        },
+        MONEY_NOT_FOUND {
+            @Override
+            public String displayName() {
+                return "Kein Geld deponiert";
+            }
+        },
+        PAYMENT_PENDING {
+            @Override
+            public String displayName() {
+                return "Ausgeliefert - Zahlung ausstehend";
+            }
+        },
+        PURCHASE_COMPLETED {
+            @Override
+            public String displayName() {
+                return "Abgeschlossen";
+            }
+        };
+
+        public abstract String displayName();
     }
 
     public enum PurchaseSize {

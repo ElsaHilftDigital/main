@@ -14,7 +14,7 @@ public class PurchaseDTO {
     public UUID uuid;
     public List<Long> volunteerApplications;
     public List<String> orderItems;
-    public Purchase.Status status;
+    public String status;
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
     public String supermarket;
@@ -30,7 +30,7 @@ public class PurchaseDTO {
         uuid = p.getUuid();
         volunteerApplications = p.getVolunteerApplications();
         orderItems = p.getPurchaseList().stream().map(OrderItem::getPurchaseItem).collect(Collectors.toList());
-        status = p.getStatus();
+        status = p.getStatus().displayName();
         paymentMethod = p.getPaymentMethod();
         timing = p.getTiming();
         supermarket = p.getSupermarket();

@@ -124,9 +124,10 @@ public class PurchaseService {
     public void customerNotified(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
+        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(NotFoundException::new);
 
         purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
-        messageSender.informToDeliverPurchase(purchase, volunteer);
+        messageSender.informToDeliverPurchase(purchase, volunteer, customer);
     }
 
     public void markCompleted(UUID purchaseId) {
