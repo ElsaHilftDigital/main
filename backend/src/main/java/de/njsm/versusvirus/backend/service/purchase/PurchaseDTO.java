@@ -4,7 +4,6 @@ import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class PurchaseDTO {
     public Long assignedVolunteer;
     public long createdByModerator;
     public long customer;
-    public Instant createDate;
+    public String createDate;
 
     public PurchaseDTO(Purchase p) {
         id = p.getId();
@@ -45,6 +44,6 @@ public class PurchaseDTO {
         assignedVolunteer = p.getAssignedVolunteer();
         createdByModerator = p.getCreatedByModerator();
         customer = p.getCustomer();
-        createDate = p.getCreateTime();
+        createDate = p.getCreateTime().toString();
     }
 }
