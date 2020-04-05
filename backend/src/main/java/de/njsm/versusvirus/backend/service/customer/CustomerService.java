@@ -57,7 +57,6 @@ public class CustomerService {
     public void deleteCustomer(UUID customerId) {
         var customer = customerRepository.findByUuid(customerId).orElseThrow(NotFoundException::new);
         customer.setDeleted(true);
-        customerRepository.save(customer);
     }
 
     public void updateCustomer(UUID customerId, UpdateRequest req) {
@@ -70,8 +69,6 @@ public class CustomerService {
         customer.getAddress().setCity(req.zipCode);
         customer.setPhone(req.phone);
         customer.setMobile(req.mobile);
-
-        customerRepository.save(customer);
     }
 
     public List<PurchaseDTO> getCompletedPurchaseListOf(UUID customerId) {

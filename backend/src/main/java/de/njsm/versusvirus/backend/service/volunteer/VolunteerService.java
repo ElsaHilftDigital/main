@@ -95,14 +95,11 @@ public class VolunteerService {
         volunteer.setIban(updateRequest.iban);
         volunteer.setBankName(updateRequest.bankName);
         volunteer.setWantsCompensation(updateRequest.wantsCompensation);
-
-        repository.save(volunteer);
     }
 
     public void deleteVolunteer(UUID uuid) {
         var volunteer = repository.findByUuid(uuid).orElseThrow(NotFoundException::new);
         volunteer.setDeleted(true);
-        repository.save(volunteer);
     }
 
     public List<PurchaseDTO> getCompletedPurchasesOf(UUID volunteerId) {
@@ -126,7 +123,6 @@ public class VolunteerService {
         var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
 
         volunteer.setValidated(true);
-        repository.save(volunteer);
         messageSender.confirmRegistration(organization, volunteer);
     }
 }
