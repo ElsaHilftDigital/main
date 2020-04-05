@@ -10,7 +10,8 @@ export function* handleGetAllCustomers(getCustomers) {
     } catch (error) {
         console.log(error);
         if (error.response && error.response.status === 401) {
-            history.push('/');
+            // redirect to admin login
+            history.push('/admin');
         }
     }
 }
