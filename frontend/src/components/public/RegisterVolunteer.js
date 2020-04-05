@@ -146,7 +146,10 @@ const RegisterVolunteer = () => {
     };
 
     return (
-        <div className="container mt-3 mb-5">
+        <div className="view bg h-100" style={{padding: "0", backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
+            backgroundPositionX: "right", backgroundPositionY: "bottom", backgroundSize: "auto",
+            backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "10%"}}>
+        <div className="container pt-5 mb-5">
             <h1>Als Helfer/in registrieren</h1>
             <form onSubmit={handleSubmit(onSubmit)} >
                 <div className="row">
@@ -213,6 +216,7 @@ const RegisterVolunteer = () => {
                 )}
                 <button type="submit" className="btn btn-primary">Absenden</button>
             </form>
+        </div>
         </div>
     );
 
