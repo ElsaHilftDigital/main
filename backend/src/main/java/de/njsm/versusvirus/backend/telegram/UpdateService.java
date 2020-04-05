@@ -20,7 +20,6 @@ public class UpdateService {
     public void setLatestUpdate(long value) {
         organizationRepository.findById(1).ifPresent(o -> {
             o.setUpdateOffset(value);
-            organizationRepository.save(o);
         });
     }
 

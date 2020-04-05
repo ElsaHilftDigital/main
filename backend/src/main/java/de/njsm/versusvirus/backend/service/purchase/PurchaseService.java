@@ -49,22 +49,19 @@ public class PurchaseService {
 
     public PurchaseDTO create(Principal principal, CreatePurchaseRequest req) {
         var purchase = new Purchase();
-        var items = new ArrayList<OrderItem>();
         var moderator = moderatorRepository.findByLogin(principal.getName()).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findByUuid(req.customer).orElseThrow(NotFoundException::new);
 
         for (String item : req.orderItems) {
             var orderItem = new OrderItem();
             orderItem.setPurchaseItem(item);
-            orderItemRepository.save(orderItem);
-            items.add(orderItem);
+            purchase.addOrderItem(orderItem);
         }
 
-        purchase.setPurchaseList(items);
         purchase.setPaymentMethod(req.paymentMethod);
         purchase.setTiming(req.timing);
         purchase.setSupermarket(req.supermarket);
-        purchase.setPurchaseSize(req.size);
+        purchase.setPurchaseSize(req.purchaseSize);
         purchase.setComments(req.comments);
         purchase.setCreatedByModerator(moderator.getId());
         purchase.setCustomer(customer.getId());
@@ -76,7 +73,6 @@ public class PurchaseService {
         var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
         messageSender.broadcastPurchase(organization, customer, purchase);
 
-        purchaseRepository.save(purchase);
         return new PurchaseDTO(purchase);
     }
 
@@ -115,14 +111,11 @@ public class PurchaseService {
 
         purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
         messageSender.informToDeliverPurchase(purchase, volunteer);
-
-        purchaseRepository.save(purchase);
     }
 
     public void markCompleted(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
-        purchaseRepository.save(purchase);
     }
 
     public List<VolunteerDTO> getAvailableVolunteers(UUID purchaseId) {
