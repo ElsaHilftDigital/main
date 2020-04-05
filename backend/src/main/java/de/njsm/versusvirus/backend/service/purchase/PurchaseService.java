@@ -126,8 +126,13 @@ public class PurchaseService {
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(NotFoundException::new);
 
-        purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
-        messageSender.informToDeliverPurchase(purchase, volunteer, customer);
+        if (purchase.getStatus() == Purchase.Status.PURCHASE_DONE) {
+
+            purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
+            messageSender.informToDeliverPurchase(purchase, volunteer, customer);
+        } else {
+            LOG.warn("purchase is in wrong state {} to instruct helper for delivery", purchase.getStatus());
+        }
     }
 
     public void markCompleted(UUID purchaseId) {

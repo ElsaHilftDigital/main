@@ -169,7 +169,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
-        List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteer(volunteer.getId());
+        List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteerAndStatus(volunteer.getId(), Purchase.Status.VOLUNTEER_ACCEPTED);
         volunteer.setTelegramFileId(fileId);
         messageSender.confirmReceiptPurchaseMapping(volunteer, activePurchases);
     }
