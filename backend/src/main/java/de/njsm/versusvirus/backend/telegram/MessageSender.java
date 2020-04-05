@@ -117,7 +117,7 @@ public class MessageSender {
 
         StringBuilder purchaseList = new StringBuilder();
         for (OrderItem i : purchase.getPurchaseList()) {
-            purchaseList.append("* ");
+            purchaseList.append("\\* ");
             purchaseList.append(i.getPurchaseItem());
             purchaseList.append("\n");
         }
@@ -196,8 +196,8 @@ public class MessageSender {
         StringBuilder builder = new StringBuilder();
         for (Purchase p : purchases) {
             Customer customer = customerRepository.findById(p.getCustomer()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
-            builder.append("* ");
-            builder.append("[");
+            builder.append("\\* ");
+            builder.append("\\[");
             builder.append(customer.getFirstName());
             builder.append(" ");
             builder.append(customer.getLastName());
