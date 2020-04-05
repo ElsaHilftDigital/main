@@ -1,5 +1,6 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 
+import history from '../../history';
 import * as actions from './volunteerActions';
 import { volunteerActions } from '.';
 
