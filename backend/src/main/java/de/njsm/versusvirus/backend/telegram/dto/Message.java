@@ -33,6 +33,9 @@ public class Message {
     @JsonProperty("new_chat_members")
     private User[] newChatMembers;
 
+    @JsonProperty("group_chat_created")
+    private boolean groupChatCreated;
+
     public long getId() {
         return id;
     }
@@ -71,5 +74,9 @@ public class Message {
 
     public User[] getNewChatMembers() {
         return newChatMembers;
+    }
+
+    public boolean isGroupChatCreated() {
+        return groupChatCreated;
     }
 }

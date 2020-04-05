@@ -45,16 +45,8 @@ public class TelegramController {
 
         Message message = update.getMessage();
 
-        User[] newUsers = message.getNewChatMembers();
-        if (newUsers != null) {
-            for (User u : newUsers) {
-                if (u.getUserName().equals("elsahilftbot")) {
-                    LOG.info("I joined a new chat named '{}' with id {}",
-                            message.getChat().getTitle(),
-                            message.getChat().getId());
-                }
-            }
-        }
+        checkIfIJoinedAnExistingChat(message);
+        checkIfIJoinedANewChat(message.getChat(), message.isGroupChatCreated());
 
         PhotoSize[] photos = message.getPhoto();
         if (photos != null && photos.length > 0) {
@@ -84,6 +76,23 @@ public class TelegramController {
             } catch (TelegramShouldBeFineException ex) {
                 LOG.warn("", ex);
             }
+        }
+    }
+
+    private void checkIfIJoinedAnExistingChat(Message message) {
+        User[] newUsers = message.getNewChatMembers();
+        if (newUsers != null) {
+            for (User u : newUsers) {
+                checkIfIJoinedANewChat(message.getChat(), u.getUserName().equals("elsahilftbot"));
+            }
+        }
+    }
+
+    private void checkIfIJoinedANewChat(Chat chat, boolean groupChatCreated) {
+        if (groupChatCreated) {
+            LOG.info("I joined a new chat named '{}' with id {}",
+                    chat.getTitle(),
+                    chat.getId());
         }
     }
 }

@@ -14,4 +14,5 @@ Find the Telegram chat IDs of both chats and insert them into the DB table
 `organization.telegram_group_chat_id` for the volunteer's group chat and
 `organization.telegram_moderator_group_chat_id` for the moderator group chat.
 Generate a Join Link for the volunteer chat and put it into
-`organization.url_group_chat`.
+`organization.url_group_chat`. You learn these IDs by inviting the bot to the
+group. It will log the group ID and name on joining.
