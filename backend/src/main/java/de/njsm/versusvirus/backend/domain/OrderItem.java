@@ -11,6 +11,9 @@ public class OrderItem {
 
     private String purchaseItem;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Purchase purchase;
+
     public long getId() {
         return id;
     }
@@ -25,5 +28,9 @@ public class OrderItem {
 
     public void setPurchaseItem(String purchaseItem) {
         this.purchaseItem = purchaseItem;
+    }
+
+    public void setPurchase(Purchase purchase) {
+        this.purchase = purchase;
     }
 }

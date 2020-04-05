@@ -56,7 +56,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
         volunteer.setTelegramUserId(message.getFrom().getId());
         volunteer.setTelegramChatId(message.getChat().getId());
-        volunteerRepository.save(volunteer);
         messageSender.confirmRegistration(organization, volunteer);
     }
 
@@ -68,7 +67,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
                 }
         );
         volunteer.setDeleted(true);
-        volunteerRepository.save(volunteer);
         messageSender.resignVolunteer(message.getChat().getId());
     }
 
@@ -93,7 +91,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         }
         purchase.getVolunteerApplications().add(volunteer.getId());
         purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
-        purchaseRepository.save(purchase);
         messageSender.confirmHelpOfferingReceived(message.getChat().getId());
         adminMessageSender.helpersHaveApplied(organization.getTelegramModeratorGroupChatId());
     }
@@ -121,7 +118,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
             purchase.getVolunteerApplications().clear();
-            purchaseRepository.save(purchase);
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
             messageSender.confirmConfirmation(message.getChat().getId());
         } else {
@@ -157,7 +153,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
                 purchase.setStatus(Purchase.Status.NEW);
             }
             purchase.setAssignedVolunteer(null);
-            purchaseRepository.save(purchase);
             messageSender.confirmRejection(chatId);
             adminMessageSender.helperHasRejected(organization.getTelegramModeratorGroupChatId());
         } else {
@@ -201,7 +196,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         purchase.setReceipt(image);
         purchase.setReceiptFileId(fileId);
         purchase.setStatus(Purchase.Status.PURCHASE_DONE);
-        purchaseRepository.save(purchase);
         messageSender.confirmReceiptUpload(message.getChat().getId());
         adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
     }
@@ -243,7 +237,5 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             purchase.setStatus(Purchase.Status.MONEY_NOT_FOUND);
             messageSender.confirmInvestigation(chatId);
         }
-
-        purchaseRepository.save(purchase);
     }
 }
