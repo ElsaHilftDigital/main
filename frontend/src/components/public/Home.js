@@ -1,4 +1,5 @@
 import React from 'react';
+import history from '../../history';
 
 const Home = () => {
     return (
@@ -25,6 +26,7 @@ const Home = () => {
             <p>
                 Ein Projekt der Elsa Benz-von Arx-Stiftung in Zusammenarbeit mit der Stadt Baden und der Unterstützung von hilf-jetzt.ch und vielen weiteren unverzichtbaren Helfenden
             </p>
+            <button type="submit" className="btn btn-primary" onClick={() => history.push("/register")}>Ich möchte mich als Helfer melden</button>
         </div>
     );
 };
