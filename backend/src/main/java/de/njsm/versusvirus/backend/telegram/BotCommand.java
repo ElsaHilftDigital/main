@@ -17,12 +17,12 @@ public enum BotCommand {
     HILFE_ANBIETEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/hilfe_anbieten(?<botname>@elsahilftbot)? (?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? hilfeanbieten_(?<purchaseId>.*)$");
         }
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}hilfe_anbieten={1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=hilfeanbieten_{1}", BASE_URL, purchaseId);
         }
 
         @Override
@@ -43,12 +43,12 @@ public enum BotCommand {
     HILFE_BESTAETIGEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/hilfe_bestaetigen(?<botname>@elsahilftbot)? (?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? hilfebestaetigen_(?<purchaseId>.*)$");
         }
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}hilfe_bestaetigen={1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=hilfebestaetigen_{1}", BASE_URL, purchaseId);
         }
 
         @Override
@@ -69,12 +69,12 @@ public enum BotCommand {
     HILFE_ZURUECKZIEHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/hilfe_zurueckziehen(?<botname>@elsahilftbot)? (?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? hilfezurueckziehen_(?<purchaseId>.*)$");
         }
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}hilfe_zurueckziehen={1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=hilfezurueckziehen_={1}", BASE_URL, purchaseId);
         }
 
         @Override
@@ -95,7 +95,7 @@ public enum BotCommand {
     QUITTUNG_EINREICHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/quittung_einreichen(?<botname>@elsahilftbot)? (?<fileId>[^ ]*) (?<purchaseId>[^ ]*)$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? quittungeinreichen_(?<fileId>[^_]*)_(?<purchaseId>[^_]*)$");
         }
 
         @Override
@@ -105,7 +105,7 @@ public enum BotCommand {
 
         @Override
         public String render(String fileId, String purchaseId) {
-            return MessageFormat.format("{0}quittung_einreichen={1}%20{2}", BASE_URL, fileId, purchaseId);
+            return MessageFormat.format("{0}start=quittungeinreichen_{1}_{2}", BASE_URL, fileId, purchaseId);
         }
 
         @Override
@@ -122,7 +122,7 @@ public enum BotCommand {
     ABSCHLIESSEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/abschliessen(?<botname>@elsahilftbot)? (?<purchaseId>[^ ]*) (?<isSuccess>(true)|(false))$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? abschliessen_(?<purchaseId>[^_]*)_(?<isSuccess>(true)|(false))$");
         }
 
         @Override
@@ -132,7 +132,7 @@ public enum BotCommand {
 
         @Override
         public String render(String isSuccessfulFlag, String purchaseId) {
-            return MessageFormat.format("{0}abschliessen={1}%20{2}", BASE_URL, purchaseId, isSuccessfulFlag);
+            return MessageFormat.format("{0}start=abschliessen_{1}_{2}", BASE_URL, purchaseId, isSuccessfulFlag);
         }
 
         @Override
@@ -175,12 +175,12 @@ public enum BotCommand {
     QUIT {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/quit(?<botname>@elsahilftbot)?$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? quit$");
         }
 
         @Override
         public String render(String unused) {
-            return MessageFormat.format("{0}quit={1}", BASE_URL);
+            return MessageFormat.format("{0}start=quit", BASE_URL);
         }
 
         @Override
