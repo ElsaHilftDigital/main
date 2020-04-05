@@ -1,9 +1,12 @@
 package de.njsm.versusvirus.backend.service.volunteer;
 
+import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
+import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
+import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.AdminMessageSender;
@@ -25,10 +28,13 @@ public class VolunteerService {
 
     private final OrganizationRepository organizationRepository;
 
-    public VolunteerService(VolunteerRepository repository, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository) {
+    private final PurchaseRepository purchaseRepository;
+
+    public VolunteerService(VolunteerRepository repository, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository, PurchaseRepository purchaseRepository) {
         this.repository = repository;
         this.adminMessageSender = adminMessageSender;
         this.organizationRepository = organizationRepository;
+        this.purchaseRepository = purchaseRepository;
     }
 
     public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
@@ -93,5 +99,21 @@ public class VolunteerService {
         var volunteer = repository.findByUuid(uuid).orElseThrow(NotFoundException::new);
         volunteer.setDeleted(true);
         repository.save(volunteer);
+    }
+
+    public List<PurchaseDTO> getCompletedPurchasesOf(UUID volunteerId) {
+        var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
+        return purchaseRepository.findAllByAssignedVolunteerAndStatus(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+                .stream()
+                .map(PurchaseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<PurchaseDTO> getOpenPurchasesOf(UUID volunteerId) {
+        var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
+        return purchaseRepository.findAllByAssignedVolunteerAndStatusNot(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+                .stream()
+                .map(PurchaseDTO::new)
+                .collect(Collectors.toList());
     }
 }

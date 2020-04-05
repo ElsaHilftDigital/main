@@ -48,11 +48,11 @@ public class VolunteerController {
 
     @GetMapping("/{id}/completed-purchases")
     public List<PurchaseDTO> getCompletedPurchaseList(@PathVariable("id") UUID volunteerId) {
-        return List.of();
+        return volunteerService.getCompletedPurchasesOf(volunteerId);
     }
 
     @GetMapping("/{id}/open-purchases")
     public List<PurchaseDTO> getOpenPurchaseList(@PathVariable("id") UUID volunteerId) {
-        return List.of();
+        return volunteerService.getOpenPurchasesOf(volunteerId);
     }
 }
