@@ -44,6 +44,10 @@ export default function purchaseReducer(state = initialState, action) {
                 createPurchaseSuccess: null,
                 createPurchaseError: payload,
             };
+        case actions.ASSIGN_VOLUNTEER:
+            return {
+                ...state
+            };
         default:
             return state;
     }
