@@ -173,7 +173,7 @@ public class MessageSender {
     /**
      * Save the purchase to the repo after calling!
      */
-    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer) {
+    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
             return;
@@ -182,7 +182,7 @@ public class MessageSender {
         String template = telegramMessages.getInformToDeliverPurchase();
         String text = MessageFormat.format(
                 template,
-                purchase.getUuid(),
+                customer.getFirstName() + " " + customer.getLastName(),
                 BotCommand.ABSCHLIESSEN.render("true", purchase.getUuid().toString()),
                 BotCommand.ABSCHLIESSEN.render("false", purchase.getUuid().toString()));
 
