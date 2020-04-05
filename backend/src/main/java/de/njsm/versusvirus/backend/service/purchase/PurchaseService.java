@@ -83,6 +83,19 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
+    public List<PurchaseWithApplicationsDTO> getPurchasesWithApplications() {
+        return purchaseRepository.findAll()
+                .stream()
+                .map(purchase -> {
+                    var volunteers = volunteerRepository.findAllById(purchase.getVolunteerApplications())
+                            .stream()
+                            .map(VolunteerDTO::new)
+                            .collect(Collectors.toList());
+                    return new PurchaseWithApplicationsDTO(purchase, volunteers);
+                })
+                .collect(Collectors.toList());
+    }
+
     public Optional<PurchaseDTO> getPurchase(UUID purchaseId) {
         return purchaseRepository.findByUuid(purchaseId).map(PurchaseDTO::new);
     }

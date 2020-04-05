@@ -70,12 +70,14 @@ const PurchaseDetail = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Anna</td>
-                                        <td>Melting</td>
-                                        <td><a href="">Details</a></td>
-                                        <td><button type="submit" className="btn btn-primary">Bestätigen</button></td>
-                                    </tr>
+                                    {props.currentPurchase.volunteerApplications.map((v) => {
+                                        return <tr key={v.uuid}>
+                                            <td>{v.firstName}</td>
+                                            <td>{v.lastName}</td>
+                                            <td></td>
+                                            <td><button type="button" className="btn btn-primary">Bestätigen</button></td>
+                                        </tr>
+                                    })}
                                 </tbody>
                             </table>
                         </div>
