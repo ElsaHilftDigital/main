@@ -151,9 +151,11 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         }
 
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
-            purchase.setStatus(Purchase.Status.NEW);
-            purchase.setAssignedVolunteer(null);
             purchase.getVolunteerApplications().remove(volunteer.getId());
+            if (purchase.getVolunteerApplications().isEmpty()) {
+                purchase.setStatus(Purchase.Status.NEW);
+            }
+            purchase.setAssignedVolunteer(null);
             purchaseRepository.save(purchase);
             messageSender.confirmRejection(chatId);
             adminMessageSender.helperHasRejected(organization.getTelegramModeratorGroupChatId());
@@ -201,5 +203,46 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         purchaseRepository.save(purchase);
         messageSender.confirmReceiptUpload(message.getChat().getId());
         adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+    }
+
+    @Override
+    public void handleCompletion(Message message, UUID purchaseId, boolean isSuccess) {
+        long chatId = message.getChat().getId();
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
+            messageSender.sendUnexpectedMessage(chatId);
+            return new TelegramShouldBeFineException("purchase not found");
+        });
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+            messageSender.sendUnexpectedMessage(chatId);
+            return new TelegramShouldBeFineException("volunteer not found");
+        });
+        var organization = organizationRepository.findById(1).orElseThrow(() -> {
+            messageSender.sendUnexpectedMessage(chatId);
+            return new TelegramShouldBeFineException("Organization not found");
+        });
+
+        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+            messageSender.blameHackingUser(chatId);
+            return;
+        }
+
+        if (purchase.getStatus() != Purchase.Status.PURCHASE_IN_DELIVERY) {
+            messageSender.sendUnexpectedMessage(chatId);
+            return;
+        }
+
+        if (isSuccess) {
+            if (purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
+                purchase.setStatus(Purchase.Status.PAYMENT_PENDING);
+            } else {
+                purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
+            }
+            messageSender.confirmCompletion(chatId);
+        } else {
+            purchase.setStatus(Purchase.Status.MONEY_NOT_FOUND);
+            messageSender.confirmInvestigation(chatId);
+        }
+
+        purchaseRepository.save(purchase);
     }
 }

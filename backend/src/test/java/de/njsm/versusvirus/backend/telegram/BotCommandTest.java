@@ -30,4 +30,16 @@ public class BotCommandTest {
         m.find();
         assertEquals("xxx", m.group("userId"));
     }
+
+    @Test
+    public void testAbschliessenCommandParsing() {
+        assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/abschliessen@elsahilftbot uuid false"));
+        assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/abschliessen uuid true"));
+
+        Matcher m = BotCommand.ABSCHLIESSEN.getRegex()
+                .matcher("/abschliessen@elsahilftbot uuid true");
+        m.find();
+        assertEquals("uuid", m.group("purchaseId"));
+        assertEquals("true", m.group("isSuccess"));
+    }
 }

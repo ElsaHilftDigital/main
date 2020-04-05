@@ -115,6 +115,32 @@ public enum BotCommand {
         }
     },
 
+    ABSCHLIESSEN {
+        @Override
+        Pattern getRegex() {
+            return Pattern.compile("^/abschliessen(?<botname>@elsahilftbot)? (?<purchaseId>[^ ]*) (?<isSuccess>(true)|(false))$");
+        }
+
+        @Override
+        public String render(String isSuccessfulFlag) {
+            throw new UnsupportedOperationException("I need two values");
+        }
+
+        @Override
+        public String render(String isSuccessfulFlag, String purchaseId) {
+            return MessageFormat.format("{0}abschliessen={1}%20{2}", BASE_URL, purchaseId, isSuccessfulFlag);
+        }
+
+        @Override
+        public void dispatch(BotCommandDispatcher dispatcher, String command, Message message) {
+            Matcher m = getRegex().matcher(command);
+            m.find();
+            String purchaseId = m.group("purchaseId");
+            boolean isSuccess = Boolean.valueOf(m.group("isSuccess"));
+            dispatcher.handleCompletion(message, UUID.fromString(purchaseId), isSuccess);
+        }
+    },
+
     START {
         @Override
         Pattern getRegex() {
