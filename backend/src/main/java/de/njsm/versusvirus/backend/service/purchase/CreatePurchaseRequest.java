@@ -11,7 +11,7 @@ public class CreatePurchaseRequest {
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
     public String supermarket;
-    public Purchase.PurchaseSize size;
+    public Purchase.PurchaseSize purchaseSize;
     public String comments;
     public UUID customer;
 }
