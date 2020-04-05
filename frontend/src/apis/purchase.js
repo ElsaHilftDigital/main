@@ -15,6 +15,6 @@ export async function getPurchases() {
 }
 
 export async function assignVolunteer(purchase, volunteer) {
-    const response = await client.pust(`/v1/admin/purchases/${purchase}/assign/${volunteer}`)
+    const response = await client.post(`/v1/admin/purchases/${purchase}/assign/${volunteer}`)
     return response.data;
 }

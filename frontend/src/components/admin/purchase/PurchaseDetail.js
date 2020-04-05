@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import { purchaseActions } from '../../../store/purchase';
+import { useDispatch } from 'react-redux';
 
 const PurchaseDetail = (props) => {
     const {register, handleSubmit } = useForm({defaultValues: {
@@ -25,8 +26,10 @@ const PurchaseDetail = (props) => {
         console.log(values)
     };
 
+    const dispatch = useDispatch();
+
     const assignVolunteer = uuid => {
-        purchaseActions.assignVolunteer(props.currentPurchase.uuid, uuid);
+        dispatch(purchaseActions.assignVolunteer(props.currentPurchase.uuid, uuid));
     };
     
     return(

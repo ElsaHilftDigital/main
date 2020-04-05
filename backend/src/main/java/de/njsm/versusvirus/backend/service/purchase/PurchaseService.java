@@ -115,6 +115,8 @@ public class PurchaseService {
             return;
         }
 
+        purchase.setAssignedVolunteer(volunteer.getId());
+
         messageSender.offerPurchase(purchase, customer, volunteer);
     }
 

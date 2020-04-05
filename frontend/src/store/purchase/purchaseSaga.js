@@ -2,7 +2,6 @@ import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import history from '../../history';
 import * as actions from './purchaseActions';
-import { handleGetAllCustomers } from '../customer/customerSaga';
 
 export function* handleCreatePurchase(createPurchase, action) {
     try {
@@ -35,10 +34,9 @@ export function* handleGetAllPurchases(getPurchases) {
     }
 }
 
-export function* handleAssignVolunteer(assignVolunteer) {
+export function* handleAssignVolunteer(assignVolunteer, action) {
     try {
-        const uuids = yield call(assignVolunteer);
-        yield put(actions.assignVolunteer(uuids[0], uuids[1]));
+        yield call(assignVolunteer, action.payload[0], action.payload[1]);
     } catch (error) {
         console.log(error);
         if (error.response && error.response.status === 401) {
