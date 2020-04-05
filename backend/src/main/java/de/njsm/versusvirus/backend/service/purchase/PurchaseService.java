@@ -1,5 +1,6 @@
 package de.njsm.versusvirus.backend.service.purchase;
 
+import de.njsm.versusvirus.backend.domain.Customer;
 import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.*;
@@ -92,7 +93,8 @@ public class PurchaseService {
                             .stream()
                             .map(VolunteerDTO::new)
                             .collect(Collectors.toList());
-                    return new PurchaseWithApplicationsDTO(purchase, volunteers);
+                    var customer = customerRepository.findById(purchase.getCustomer()).map(Customer::getUuid).orElse(null);
+                    return new PurchaseWithApplicationsDTO(purchase, customer, volunteers);
                 })
                 .collect(Collectors.toList());
     }

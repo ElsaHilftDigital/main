@@ -27,7 +27,7 @@ public class CustomerController {
         return customerService.getCustomers();
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CustomerDTO> getCustomer(@PathVariable("id") UUID customerId) {
         return customerService.getCustomer(customerId)
                 .map(ResponseEntity::ok)

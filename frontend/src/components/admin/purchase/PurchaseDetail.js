@@ -1,11 +1,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { purchaseActions } from '../../../store/purchase';
-import { useDispatch } from 'react-redux';
+import { useCustomer } from '../useCustomer';
+
 
 const PurchaseDetail = (props) => {
     const { currentPurchase } = props;
+    const customer = useCustomer(currentPurchase.customer);
     const {register, handleSubmit, setValue } = useForm({defaultValues: {
         displayFormStatus: currentPurchase.status,
         displayFormCreateDate: currentPurchase.createDate,
@@ -27,9 +30,9 @@ const PurchaseDetail = (props) => {
     setValue('displayFormCreateDate', currentPurchase.createDate);
     setValue('displayFormVolunteerLastname', currentPurchase.volunteerLastname);
     setValue('displayFormVolunteerFirstname', currentPurchase.volunteerFirstname);
-    setValue('displayFormCity', currentPurchase.customerCity);
-    setValue('displayFormFirstname', currentPurchase.customerFirstname);
-    setValue('displayFormLastname', currentPurchase.customerLastname);
+    setValue('displayFormCity', customer?.city);
+    setValue('displayFormFirstname', customer?.firstName);
+    setValue('displayFormLastname', customer?.lastName);
     setValue('registerFormTiming', currentPurchase.timing);
     setValue('registerFormSupermarket', currentPurchase.supermarket);
     setValue('registerFormPurchaseSize', currentPurchase.purchaseSize);
@@ -67,7 +70,7 @@ const PurchaseDetail = (props) => {
                     <input name="displayFormCreateDate" ref={register({ required: true })} disabled type="tel" className="form-control" id="displayFormCreateDate" />
                 </div>
 
-                {props.currentPurchase.volunteerIsChosen && (
+                {props.currentPurchase.assignedVolunteer && (
                     <span>
                         <div className="row">
                             <div className="form-group col-md-6">
@@ -82,7 +85,7 @@ const PurchaseDetail = (props) => {
                         <div className="form-group mb-2 mb-3"><i><a href="">Für weitere Infos zum Helfer hier klicken</a></i></div>
                     </span>
                 )}
-                {!props.currentPurchase.volunteerIsChosen && (
+                {!props.currentPurchase.assignedVolunteer && (
                     <span>
                         <div className="form-group">
                             <label htmlFor="applyingVolunteers">Helfer wurde noch nicht ausgewählt</label>

@@ -25,10 +25,10 @@ public class PurchaseWithApplicationsDTO {
     public boolean expensesPaid;
     public Long assignedVolunteer;
     public long createdByModerator;
-    public long customer;
+    public UUID customer;
     public String createDate;
 
-    public PurchaseWithApplicationsDTO(Purchase p, List<VolunteerDTO> applications) {
+    public PurchaseWithApplicationsDTO(Purchase p, UUID customer, List<VolunteerDTO> applications) {
         uuid = p.getUuid();
         volunteerApplications = applications;
         orderItems = p.getPurchaseList().stream().map(OrderItem::getPurchaseItem).collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class PurchaseWithApplicationsDTO {
         expensesPaid = p.isExpensesPaid();
         assignedVolunteer = p.getAssignedVolunteer();
         createdByModerator = p.getCreatedByModerator();
-        customer = p.getCustomer();
+        this.customer = customer;
         createDate = p.getCreateTime().toString();
     }
 }

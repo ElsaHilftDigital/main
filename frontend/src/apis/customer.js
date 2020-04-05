@@ -10,7 +10,7 @@ export async function getCustomers() {
 }
 
 export async function getCustomer(uuid) {
-    const response = await client.get(`/v1/admin/customer/${uuid}`);
+    const response = await client.get(`/v1/admin/customers/${uuid}`);
     return response.data;
 }
 
