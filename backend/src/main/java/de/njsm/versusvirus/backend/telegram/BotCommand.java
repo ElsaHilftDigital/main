@@ -74,7 +74,7 @@ public enum BotCommand {
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}start=hilfezurueckziehen_={1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=hilfezurueckziehen_{1}", BASE_URL, purchaseId);
         }
 
         @Override
