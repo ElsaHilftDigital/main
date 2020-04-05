@@ -120,6 +120,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
+            purchase.getVolunteerApplications().clear();
             purchaseRepository.save(purchase);
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
             messageSender.confirmConfirmation(message.getChat().getId());

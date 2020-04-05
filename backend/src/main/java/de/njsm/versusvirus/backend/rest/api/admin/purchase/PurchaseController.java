@@ -3,10 +3,11 @@ package de.njsm.versusvirus.backend.rest.api.admin.purchase;
 import de.njsm.versusvirus.backend.service.purchase.CreatePurchaseRequest;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/purchases")
@@ -16,6 +17,18 @@ public class PurchaseController {
 
     public PurchaseController(PurchaseService purchaseService) {
         this.purchaseService = purchaseService;
+    }
+
+    @RequestMapping()
+    public List<PurchaseDTO> getPurchases() {
+        return purchaseService.getPurchases();
+    }
+
+    @RequestMapping("/{id}")
+    public ResponseEntity<PurchaseDTO> getCustomer(@PathVariable("id") UUID purchaseId) {
+        return purchaseService.getPurchase(purchaseId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping()

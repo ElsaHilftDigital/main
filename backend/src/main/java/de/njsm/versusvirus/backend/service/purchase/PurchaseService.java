@@ -11,6 +11,10 @@ import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PurchaseService {
@@ -64,5 +68,16 @@ public class PurchaseService {
 
         purchaseRepository.save(purchase);
         return new PurchaseDTO(purchase);
+    }
+
+    public List<PurchaseDTO> getPurchases() {
+        return purchaseRepository.findAll()
+                .stream()
+                .map(PurchaseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<PurchaseDTO> getPurchase(UUID purchaseId) {
+        return purchaseRepository.findByUuid(purchaseId).map(PurchaseDTO::new);
     }
 }
