@@ -93,13 +93,13 @@ const NewRequest = () => {
             return <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
                     <div className="form-group col-md-6">
-                        <label htmlFor="firstname">Vorname</label>
-                        <input name="firstname" type="text" ref={register({ required: true })} className="form-control" id="firstname" placeholder="Vorname"/>
+                        <label htmlFor="firstName">Vorname</label>
+                        <input name="firstName" type="text" ref={register({ required: true })} className="form-control" id="firstName" placeholder="Vorname"/>
                         {errors.firstname && (<span className="text-danger">Vorname wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
-                        <label htmlFor="lastname">Nachname</label>
-                        <input name="lastname" type="text" ref={register({ required: true })} className="form-control" id="lastname" placeholder="Nachname"/>
+                        <label htmlFor="lastName">Nachname</label>
+                        <input name="lastName" type="text" ref={register({ required: true })} className="form-control" id="lastName" placeholder="Nachname"/>
                         {errors.lastname && (<span className="text-danger">Nachname wird benötigt</span>)}
                     </div>
                 </div>
@@ -229,7 +229,7 @@ const NewRequest = () => {
         const dispatch = useDispatch();
         const ongoing = useSelector(customerSelectors.createCustomerRequestOngoing);
         const createCustomerSuccess = useSelector(customerSelectors.createCustomerSuccess);
-        useEffect(() => dispatch(customerActions.createCustomer(customer)), [dispatch]);
+        useEffect(() => {dispatch(customerActions.createCustomer(customer))}, [dispatch]);
         return <>
             {ongoing ? <span>Kunde wird erzeugt...</span> : createCustomerSuccess ? <span>Kunde wurde erzeugt</span> : <span>Fehler beim Erzeugen des Kunden</span>}
         </>;
