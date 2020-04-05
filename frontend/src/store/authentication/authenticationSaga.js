@@ -17,7 +17,7 @@ export function* handleLogin(authApi, action) {
         yield call([authApi, authApi.login], action.payload);
         const response = yield call([authApi, authApi.getAuthInstance]);
         if (response) {
-            history.push('/admin/pruchases');
+            history.push('/admin/purchases');
         }
         yield put(actions.getAuthInstanceSuccess(response));
     } catch (error) {

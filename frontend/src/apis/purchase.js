@@ -8,3 +8,8 @@ export async function createPurchase(purchase) {
     const response = await client.post(`/v1/admin/purchases`, purchase);
     return response.data;
 }
+
+export async function getPurchases() {
+    const response = await client.post(`/v1/admin/purchases`);
+    return response.data;
+}

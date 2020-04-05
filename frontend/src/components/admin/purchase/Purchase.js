@@ -2,8 +2,11 @@ import React from 'react';
 
 import PurchaseList from './PurchaseList'
 import PurchaseDetail from './PurchaseDetail'
+import { usePurchases } from '../usePurchases';
 
 const Purchase = () => {
+    const purchases = usePurchases();
+
     const currentPurchase = {
         status: "Neu",
         createDate: "5.4.2020",
@@ -29,7 +32,7 @@ const Purchase = () => {
     return (
         <div>
             <h1>Einkäufe</h1>
-            <PurchaseList />
+            <PurchaseList purchases={purchases}/>
             <PurchaseDetail currentPurchase={currentPurchase}/>
         </div>
     );
