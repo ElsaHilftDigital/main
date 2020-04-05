@@ -22,28 +22,15 @@ export function* handleCreateCustomer(createCustomer, action) {
         yield put(actions.createCustomerSuccess());
     } catch (error) {
         console.log(error);
-        if (error.response && error.response.status === 401) {
-            // redirect to admin login
-            history.push('/admin');
-        }
-        export function* handleGetAllCustomers(getCustomers) {
-    try {
-        const customers = yield call(getCustomers);
-        yield put(actions.getAllCustomersSuccess(customers));
-    } catch (error) {
-        console.log(error);
         if (error.response && error.response.data) {
             yield put(actions.createCustomerError(error.response.data));
         } else {
             yield put(actions.createCustomerError(error));
         }
-        
         if (error.response && error.response.status === 401) {
             // redirect to admin login
             history.push('/admin');
         }
-    }
-}
     }
 }
 
