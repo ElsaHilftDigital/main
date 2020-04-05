@@ -34,6 +34,8 @@ public class TelegramMessages {
     private String helpersAppliedForPurchase;
     private String helperRejectedPurchase;
     private String receiptHasBeenSubmitted;
+    private String confirmInvestigation;
+    private String confirmCompletion;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -221,5 +223,21 @@ public class TelegramMessages {
 
     public void setReceiptHasBeenSubmitted(String receiptHasBeenSubmitted) {
         this.receiptHasBeenSubmitted = receiptHasBeenSubmitted;
+    }
+
+    public String getConfirmInvestigation() {
+        return this.confirmInvestigation;
+    }
+
+    public void setConfirmInvestigation(String confirmInvestigation) {
+        this.confirmInvestigation = confirmInvestigation;
+    }
+
+    public String getConfirmCompletion() {
+        return this.confirmCompletion;
+    }
+
+    public void setConfirmCompletion(String confirmCompletion) {
+        this.confirmCompletion = confirmCompletion;
     }
 }

@@ -54,9 +54,10 @@ const Progress = styled.ol`
 
 const NewRequest = () => {
     const steps = ['Kunde', 'Auftrag'];
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(1);
     const [customer, setCustomer] = useState(undefined);
     const [newCustomer, setNewCustomer] = useState(false);
+    const [purchaseList, setPurchaseList] = useState([]);
 
     const renderSteps = () => steps.map((s, i) => (
         <ProgressItem key={i} isActive={i === step} isCompleted={i < step}>
@@ -72,7 +73,7 @@ const NewRequest = () => {
                 <SearchBox
                         items={allCustomers}
                         loading={customerSelectors.getAllCustomersRequestOngoing}/>
-                <form onSubmit={() => setStep(step + 1)}>
+                <form className="mt-3" onSubmit={() => setStep(step + 1)}>
                     <button type="submit" disabled={!customer || !customer.id} className="btn btn-primary float-right">Weiter</button>
                 </form>
             </>;
@@ -149,7 +150,26 @@ const NewRequest = () => {
     };
 
     const EnterPurchase = () => {
+        const addToPurchaseList = item => setPurchaseList(purchaseList.concat([item]));
+        const removeFromPurchaseList = index => setPurchaseList(purchaseList.filter((_, i) => i !== index));
+        const keyDownHandler = (e) => {
+            if (e.key === "Enter") {
+                const value = e.currentTarget.value;
+                value && addToPurchaseList(value);
+            }
+        };
+
         return (<>
+            <label>Einkaufsliste</label>
+            <ul className="list-group">
+                {purchaseList.map((item, index) => <li className="list-group-item" key={index}>
+                    {item}
+                    <i onClick={() => removeFromPurchaseList(index)} className="fa fa-trash float-right"/>
+                </li>)}
+                <li className="list-group-item">
+                    <input className="border-0" type="text" onKeyDown={keyDownHandler} autoFocus></input>
+                </li>
+            </ul>
             <form onReset={() => setStep(step - 1)}>
                 <button type="reset" className="btn btn-primary float-left">Zurück</button>
                 <button type="submit" className="btn btn-primary float-right">Absenden</button>

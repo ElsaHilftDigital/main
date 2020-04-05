@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useAuthentication } from '../../useAuthentication';
-import Dashboard from './Dashboard';
 import AdminLogin from './AdminLogin';
 import history from '../../../history';
 
