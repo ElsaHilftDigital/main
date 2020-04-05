@@ -47,6 +47,10 @@ const PurchaseDetail = (props) => {
     const assignVolunteer = uuid => {
         dispatch(purchaseActions.assignVolunteer(props.currentPurchase.uuid, uuid));
     };
+
+    const notifyVolunteerToDeliver = () => {
+        dispatch(purchaseActions.notifyVolunteerToDeliver(props.currentPurchase.uuid));
+    };
     
     return(
         <div className="container mt-3 mb-5">
@@ -168,10 +172,7 @@ const PurchaseDetail = (props) => {
                         <button type="submit" className="btn btn-primary m-1">Speichern</button>
                     </p>
                     <p>
-                        <button type="submit" className="btn btn-primary m-1">Einkauf freigeben</button>
-                    </p>
-                    <p>
-                        <button type="submit" className="btn btn-primary m-1">Lieferung freigeben</button>
+                        <button onClick={() => notifyVolunteerToDeliver()} className="btn btn-primary m-1">Lieferung freigeben</button>
                     </p>
                     <p>
                         <button type="submit" className="btn btn-primary m-1">Einkauf erledigt</button>

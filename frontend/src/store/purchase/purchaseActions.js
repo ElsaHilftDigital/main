@@ -4,6 +4,7 @@ export const CREATE_PURCHASE_ERROR = 'CREATE_PURCHASE_ERROR';
 export const GET_ALL_PURCHASES = 'GET_ALL_PURCHASES';
 export const GET_ALL_PURCHASES_SUCCESS = 'GET_ALL_PURCHASES_SUCCESS';
 export const ASSIGN_VOLUNTEER = 'ASSIGN_VOLUNTEER';
+export const NOTIFY_VOLUNTEER_TO_DELIVER = 'NOTIFY_VOLUNTEER_TO_DELIVER';
 
 export const createPurchase = purchase => ({
     type: CREATE_PURCHASE,
@@ -27,4 +28,8 @@ export const getAllPurchasesSuccess = purchases => ({
 export const assignVolunteer = (purchase, volunteer) => ({
     type: ASSIGN_VOLUNTEER,
     payload: [purchase, volunteer],
+});
+export const notifyVolunteerToDeliver = (uuid) => ({
+    type: NOTIFY_VOLUNTEER_TO_DELIVER,
+    payload: uuid,
 });

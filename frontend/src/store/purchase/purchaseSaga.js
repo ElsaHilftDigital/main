@@ -2,6 +2,7 @@ import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import history from '../../history';
 import * as actions from './purchaseActions';
+import { purchaseActions } from '.';
 
 export function* handleCreatePurchase(createPurchase, action) {
     try {
@@ -46,10 +47,24 @@ export function* handleAssignVolunteer(assignVolunteer, action) {
     }
 }
 
+export function* handleNotifyVolunteerToDeliver(notifyVolunteerToDeliver, action) {
+    try {
+        yield call(notifyVolunteerToDeliver, action.payload);
+    } catch (error) {
+        console.log(error);
+        if (error.response && error.response.status === 401) {
+            // redirect to admin login
+            history.push('/admin');
+        }
+    }
+}
+
+
 export function* purchaseSaga(purchaseApi) {
     yield all([
         takeLatest(actions.GET_ALL_PURCHASES, handleGetAllPurchases, purchaseApi.getPurchases),
         takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi.createPurchase),
         takeLatest(actions.ASSIGN_VOLUNTEER, handleAssignVolunteer, purchaseApi.assignVolunteer),
+        takeLatest(actions.NOTIFY_VOLUNTEER_TO_DELIVER, handleNotifyVolunteerToDeliver, purchaseApi.notifyVolunteerToDeliver)
     ])
 }
