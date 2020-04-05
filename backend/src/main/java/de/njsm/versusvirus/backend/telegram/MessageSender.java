@@ -80,7 +80,6 @@ public class MessageSender {
 
     /**
      * Save the purchase to the repo after calling!
-     * TODO link
      */
     public void broadcastPurchase(Organization organization, Customer customer, Purchase purchase) {
 
