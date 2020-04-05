@@ -42,4 +42,9 @@ public class PurchaseController {
         purchaseService.assignVolunteer(purchaseId, volunteerId);
     }
 
+    @PostMapping("/{id}/customernotified")
+    public void customerNotified(@PathVariable("id") UUID purchaseId) {
+        purchaseService.customerNotified(purchaseId);
+    }
+
 }

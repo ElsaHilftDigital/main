@@ -102,4 +102,14 @@ public class PurchaseService {
 
         messageSender.offerPurchase(purchase, customer, volunteer);
     }
+
+    public void customerNotified(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
+
+        purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
+        messageSender.informToDeliverPurchase(purchase, volunteer);
+
+        purchaseRepository.save(purchase);
+    }
 }
