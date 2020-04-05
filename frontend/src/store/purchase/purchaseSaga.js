@@ -1,7 +1,8 @@
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import history from '../../history';
 import * as actions from './purchaseActions';
+import { handleGetAllCustomers } from '../customer/customerSaga';
 
 export function* handleCreatePurchase(createPurchase, action) {
     try {
@@ -21,8 +22,22 @@ export function* handleCreatePurchase(createPurchase, action) {
     }
 }
 
+export function* handleGetAllPurchases(getPurchases) {
+    try {
+        const purchases = yield call(getPurchases);
+        yield put(actions.getAllPurchasesSuccess(purchases));
+    } catch (error) {
+        console.log(error);
+        if (error.response && error.response.status === 401) {
+            // redirect to admin login
+            history.push('/admin');
+        }
+    }
+}
+
 export function* purchaseSaga(purchaseApi) {
     yield all([
+        takeLatest(actions.GET_ALL_PURCHASES, handleGetAllCustomers, purchaseApi.getPurchases),
         takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi.createPurchase),
     ])
 }

@@ -1,6 +1,8 @@
 export const CREATE_PURCHASE = 'CREATE_PURCHASE';
 export const CREATE_PURCHASE_SUCCESS = 'CREATE_PURCHASE_SUCCESS';
 export const CREATE_PURCHASE_ERROR = 'CREATE_PURCHASE_ERROR';
+export const GET_ALL_PURCHASES = 'GET_ALL_PURCHASES';
+export const GET_ALL_PURCHASES_SUCCESS = 'GET_ALL_PURCHASES_SUCCESS';
 
 export const createPurchase = purchase => ({
     type: CREATE_PURCHASE,
@@ -13,4 +15,11 @@ export const createPurchaseSuccess = createdPurchase => ({
 export const createPurchaseError = error => ({
     type: CREATE_PURCHASE_ERROR,
     payload: error,
+});
+export const getAllPurchases = () => ({
+    type: GET_ALL_PURCHASES,
+});
+export const getAllPurchasesSuccess = purchases => ({
+    type: GET_ALL_PURCHASES_SUCCESS,
+    payload: purchases,
 });

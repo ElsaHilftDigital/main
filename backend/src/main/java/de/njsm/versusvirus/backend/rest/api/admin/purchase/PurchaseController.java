@@ -21,13 +21,13 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
-    @RequestMapping()
+    @GetMapping()
     public List<PurchaseDTO> getPurchases() {
         return purchaseService.getPurchases();
     }
 
-    @RequestMapping("/{id}")
-    public ResponseEntity<PurchaseDTO> getCustomer(@PathVariable("id") UUID purchaseId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<PurchaseDTO> getPurchase(@PathVariable("id") UUID purchaseId) {
         return purchaseService.getPurchase(purchaseId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
