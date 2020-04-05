@@ -27,6 +27,10 @@ export function* handleGetVolunteer(getVolunteer, action) {
         } else {
             yield put(actions.getVolunteerError(error));
         }
+        if (error.response && error.response.status === 401) {
+            // redirect to admin login
+            history.push('/admin');
+        }
     }
 }
 
@@ -36,6 +40,10 @@ export function* handleGetAllVolunteers(getAllVolunteers) {
         yield put(actions.getAllVolunteersSuccess(volunteers));
     } catch (error) {
         console.log(error);
+        if (error.response && error.response.status === 401) {
+            // redirect to admin login
+            history.push('/admin');
+        }
     }
 }
 
@@ -45,6 +53,10 @@ export function* handleConfirmVolunteer(volunteerApi, action) {
         yield put(volunteerActions.getVolunteer(action.payload));
     } catch (error) {
         console.log(error);
+        if (error.response && error.response.status === 401) {
+            // redirect to admin login
+            history.push('/admin');
+        }
     }
 }
 
