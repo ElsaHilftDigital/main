@@ -29,6 +29,13 @@ public class Customer {
         return uuid;
     }
 
+    @PrePersist
+    private void setUuid() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+    }
+
     public String getFirstName() {
         return firstName;
     }
