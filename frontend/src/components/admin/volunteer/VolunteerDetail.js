@@ -16,7 +16,7 @@ const VolunteerDetail = (props) => {
     setValue('address', currentVolunteer.address);
     setValue('zipCode', currentVolunteer.zipCode);
     setValue('city', currentVolunteer.city);
-    setValue('birthdate', currentVolunteer.birthdate);
+    setValue('birthDate', currentVolunteer.birthDate);
     setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation);
     setValue('iban', currentVolunteer.iban);
     setValue('bankName', currentVolunteer.bankName);
@@ -75,8 +75,8 @@ const VolunteerDetail = (props) => {
                     </div>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="birthdate">Geburtstag <small>(DD/MM/YYYY)</small></label>
-                    <input name="birthdate" ref={register({ required: true })} type="text" className="form-control" id="birthdate" />
+                    <label htmlFor="birthDate">Geburtstag <small>(DD/MM/YYYY)</small></label>
+                    <input name="birthDate" ref={register({ required: true })} type="text" className="form-control" id="birthDate" />
                 </div>
                 <div className="form-check mb-2">
                     <input name="wantsNoCompensation" ref={register()} type="checkbox" className="form-check-input" id="wantsNoCompensation" />
