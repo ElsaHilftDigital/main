@@ -3,9 +3,11 @@ package de.njsm.versusvirus.backend.rest.api.admin.purchase;
 import de.njsm.versusvirus.backend.service.purchase.CreatePurchaseRequest;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseService;
+import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,8 +34,13 @@ public class PurchaseController {
     }
 
     @PostMapping()
-    public PurchaseDTO createNewPurchase(@RequestBody CreatePurchaseRequest req) {
-        return purchaseService.create(req);
+    public PurchaseDTO createNewPurchase(Principal principal, @RequestBody CreatePurchaseRequest req) {
+        return purchaseService.create(principal, req);
+    }
+
+    @RequestMapping("/{id}/availablevolunteers")
+    public List<VolunteerDTO> getAvailableVolunteers(@PathVariable("id") UUID purchaseId) {
+        return purchaseService.getAvailableVolunteers(purchaseId);
     }
 
     @PostMapping("/{id}/assign/{volunteerId}")
@@ -47,4 +54,8 @@ public class PurchaseController {
         purchaseService.customerNotified(purchaseId);
     }
 
+    @PostMapping("/{id}/markcompleted")
+    public void markCompleted(@PathVariable("id") UUID purchaseId) {
+        purchaseService.markCompleted(purchaseId);
+    }
 }

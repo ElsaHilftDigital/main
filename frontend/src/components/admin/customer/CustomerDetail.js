@@ -1,19 +1,48 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+
 const CustomerDetail = (props) => {
-    const { handleSubmit, register } = useForm();
+    const { selectedCustomer } = props;
+    const { handleSubmit, register, setValue } = useForm({
+        defaultValues: {
+            firstName: selectedCustomer.firstName,
+            lastName: selectedCustomer.lastName,
+            phone: selectedCustomer.phone,
+            mobile: selectedCustomer.mobile,
+            addressStreet: selectedCustomer.address.address,
+            addressZipCode: selectedCustomer.address.zipCode,
+            addressCity: selectedCustomer.address.city,
+            paymentMethod: 'bar',
+            finishedJobs: 'none',
+            openJobs: 'test',
+            openPaymentAmount: '0',
+            shoppingList: 'ravioli',
+        },
+    });
+    setValue('firstName', selectedCustomer.firstName);
+    setValue('lastName', selectedCustomer.lastName);
+    setValue('phone', selectedCustomer.phone);
+    setValue('mobile', selectedCustomer.mobile);
+    setValue('addressStreet', selectedCustomer.address.address);
+    setValue('addressZipCode', selectedCustomer.address.zipCode);
+    setValue('addressCity', selectedCustomer.address.city);
+
 
     const onSubmit = values => {
         console.log(values);
     }
 
+    if (!props.selectedCustomer) {
+        return null;
+    }
+
     return (
         <div className="container mb-5">
-            <h2>Details für Kunde {props.selectedCustomer.name}</h2>
+            <h2 className="mb-3">Details für Kunde {props.selectedCustomer.lastName}</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-lg-6">
                         <div className="form-group row">
                             <label htmlFor="firstName" className="col-sm-3 col-form-label">Vorname</label>
                             <div className="col-sm-9">
@@ -57,7 +86,7 @@ const CustomerDetail = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-lg-6">
                     <div className="form-group row">
                             <label htmlFor="paymentMethod" className="col-sm-4 col-form-label">Zahlungsmittel</label>
                             <div className="col-sm-8">

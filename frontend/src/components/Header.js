@@ -1,19 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 
 import history from '../history';
 import AuthenticationHeader from './AuthenticationHeader';
-import { useAuthentication } from './useAuthentication';
 
-const Header = () => {
-    const isLoggedIn = !!useAuthentication();
-    const [ currLocation, setCurrLocation ] = useState(history.location.pathname);
-
-    history.listen((location) => {
-        setCurrLocation(location.pathname);
-    });
-
-    const adminHeader = !!currLocation.match(/^\/admin.*$/i);
+const Header = (props) => {
+    const currLocation = props.history.location.pathname;
 
     const navigate = (route) => () => {
         if (route === currLocation) {
@@ -23,11 +15,13 @@ const Header = () => {
         history.push(route)
     };
 
-    if (adminHeader && !isLoggedIn) {
-        // redirect to admin login page
-        navigate('/admin')(); 
+    const adminLoginLocation = !!currLocation.match(/^\/admin(\/)?$/i);
+    if (adminLoginLocation) {
+        // don't show header on admin login page
         return null;
     }
+
+    const adminHeader = !!currLocation.match(/^\/admin.*$/i);
 
     return (
         <Navbar sticky="top" bg="primary" expand="md">

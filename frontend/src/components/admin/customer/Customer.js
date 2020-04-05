@@ -12,8 +12,8 @@ const Customer = () => {
     const customers = useCustomers();
     const selectedCustomer = useSelector(customerSelectors.getSelectedCustomer);
 
-    const setSelectedCustomer = (id) => {
-        dispatch(customerActions.setSelectedCustomer(id));
+    const setSelectedCustomer = (uuid) => {
+        dispatch(customerActions.setSelectedCustomer(uuid));
     };
     
     return (
@@ -26,7 +26,11 @@ const Customer = () => {
                 />
             </div>
             <div className="content">
-                <CustomerDetail selectedCustomer={selectedCustomer} />
+                {selectedCustomer && (
+                    <CustomerDetail
+                        selectedCustomer={selectedCustomer} 
+                    />
+                )}
             </div>
         </div>
     );

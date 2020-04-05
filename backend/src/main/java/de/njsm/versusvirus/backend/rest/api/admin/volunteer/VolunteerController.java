@@ -46,6 +46,12 @@ public class VolunteerController {
         volunteerService.deleteVolunteer(volunteerId);
     }
 
+    @PostMapping("/{id}/validate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void validate(@PathVariable("id") UUID volunteerId) {
+        volunteerService.validate(volunteerId);
+    }
+
     @GetMapping("/{id}/completed-purchases")
     public List<PurchaseDTO> getCompletedPurchaseList(@PathVariable("id") UUID volunteerId) {
         return volunteerService.getCompletedPurchasesOf(volunteerId);

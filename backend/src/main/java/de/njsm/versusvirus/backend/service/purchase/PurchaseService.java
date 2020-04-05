@@ -3,12 +3,14 @@ package de.njsm.versusvirus.backend.service.purchase;
 import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.*;
+import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,21 +32,25 @@ public class PurchaseService {
 
     private final VolunteerRepository volunteerRepository;
 
+    private final ModeratorRepository moderatorRepository;
+
     private final MessageSender messageSender;
 
-    public PurchaseService(PurchaseRepository purchaseRepository, OrderItemRepository orderItemRepository, OrganizationRepository organizationRepository, CustomerRepository customerRepository, VolunteerRepository volunteerRepository, MessageSender messageSender) {
+    public PurchaseService(PurchaseRepository purchaseRepository, OrderItemRepository orderItemRepository, OrganizationRepository organizationRepository, CustomerRepository customerRepository, VolunteerRepository volunteerRepository, ModeratorRepository moderatorRepository, MessageSender messageSender) {
         this.purchaseRepository = purchaseRepository;
         this.orderItemRepository = orderItemRepository;
         this.organizationRepository = organizationRepository;
         this.customerRepository = customerRepository;
         this.volunteerRepository = volunteerRepository;
+        this.moderatorRepository = moderatorRepository;
         this.messageSender = messageSender;
     }
 
 
-    public PurchaseDTO create(CreatePurchaseRequest req) {
+    public PurchaseDTO create(Principal principal, CreatePurchaseRequest req) {
         var purchase = new Purchase();
         var items = new ArrayList<OrderItem>();
+        var moderator = moderatorRepository.findByLogin(principal.getName()).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findByUuid(req.customer).orElseThrow(NotFoundException::new);
 
         for (String item : req.orderItems) {
@@ -60,7 +66,7 @@ public class PurchaseService {
         purchase.setSupermarket(req.supermarket);
         purchase.setPurchaseSize(req.size);
         purchase.setComments(req.comments);
-        purchase.setCreatedByModerator(req.createdByModerator); // TODO get from login context
+        purchase.setCreatedByModerator(moderator.getId());
         purchase.setCustomer(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
@@ -111,5 +117,19 @@ public class PurchaseService {
         messageSender.informToDeliverPurchase(purchase, volunteer);
 
         purchaseRepository.save(purchase);
+    }
+
+    public void markCompleted(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
+        purchaseRepository.save(purchase);
+    }
+
+    public List<VolunteerDTO> getAvailableVolunteers(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        return volunteerRepository.findByIdIn(purchase.getVolunteerApplications())
+                .stream()
+                .map(VolunteerDTO::new)
+                .collect(Collectors.toList());
     }
 }

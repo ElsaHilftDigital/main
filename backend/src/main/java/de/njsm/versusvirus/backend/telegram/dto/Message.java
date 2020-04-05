@@ -30,6 +30,12 @@ public class Message {
 
     private MessageEntity[] entities;
 
+    @JsonProperty("new_chat_members")
+    private User[] newChatMembers;
+
+    @JsonProperty("group_chat_created")
+    private boolean groupChatCreated;
+
     public long getId() {
         return id;
     }
@@ -64,5 +70,13 @@ public class Message {
 
     public MessageEntity[] getEntities() {
         return entities;
+    }
+
+    public User[] getNewChatMembers() {
+        return newChatMembers;
+    }
+
+    public boolean isGroupChatCreated() {
+        return groupChatCreated;
     }
 }

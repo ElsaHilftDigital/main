@@ -5,10 +5,7 @@ import de.njsm.versusvirus.backend.telegram.BotCommand;
 import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.TelegramBotCommandDispatcher;
 import de.njsm.versusvirus.backend.telegram.UpdateService;
-import de.njsm.versusvirus.backend.telegram.dto.Message;
-import de.njsm.versusvirus.backend.telegram.dto.MessageEntity;
-import de.njsm.versusvirus.backend.telegram.dto.PhotoSize;
-import de.njsm.versusvirus.backend.telegram.dto.Update;
+import de.njsm.versusvirus.backend.telegram.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +45,9 @@ public class TelegramController {
 
         Message message = update.getMessage();
 
+        checkIfIJoinedAnExistingChat(message);
+        checkIfIJoinedANewChat(message.getChat(), message.isGroupChatCreated());
+
         PhotoSize[] photos = message.getPhoto();
         if (photos != null && photos.length > 0) {
             botCommandDispatcher.handleReceiptWithoutPurchaseContext(message, photos[photos.length-1].getId());
@@ -76,6 +76,23 @@ public class TelegramController {
             } catch (TelegramShouldBeFineException ex) {
                 LOG.warn("", ex);
             }
+        }
+    }
+
+    private void checkIfIJoinedAnExistingChat(Message message) {
+        User[] newUsers = message.getNewChatMembers();
+        if (newUsers != null) {
+            for (User u : newUsers) {
+                checkIfIJoinedANewChat(message.getChat(), u.getUserName().equals("elsahilftbot"));
+            }
+        }
+    }
+
+    private void checkIfIJoinedANewChat(Chat chat, boolean groupChatCreated) {
+        if (groupChatCreated) {
+            LOG.info("I joined a new chat named '{}' with id {}",
+                    chat.getTitle(),
+                    chat.getId());
         }
     }
 }
