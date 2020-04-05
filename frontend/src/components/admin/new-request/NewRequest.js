@@ -58,6 +58,7 @@ const NewRequest = () => {
     const [customer, setCustomer] = useState(undefined);
     const [newCustomer, setNewCustomer] = useState(false);
     const [purchaseList, setPurchaseList] = useState([]);
+    const [purchase, setPurchase] = useState(undefined);
 
     const renderSteps = () => steps.map((s, i) => (
         <ProgressItem key={i} isActive={i === step} isCompleted={i < step}>
@@ -80,7 +81,7 @@ const NewRequest = () => {
         };
 
         const NewCustomer = () => {
-            const { errors, handleSubmit, register, setValue, triggerValidation, watch } = useForm({
+            const { errors, handleSubmit, register } = useForm({
                 defaultValues: customer ?? {}
             });
             const onSubmit = data => {
@@ -150,7 +151,9 @@ const NewRequest = () => {
     };
 
     const EnterPurchase = () => {
-        const { errors, handleSubmit, register, setValue, triggerValidation, watch } = useForm();
+        const { handleSubmit, register } = useForm({
+            defaultValues: purchase ?? {}
+        });
         const addToPurchaseList = item => setPurchaseList(purchaseList.concat([item]));
         const removeFromPurchaseList = index => setPurchaseList(purchaseList.filter((_, i) => i !== index));
         const keyDownHandler = (e) => {
@@ -164,6 +167,16 @@ const NewRequest = () => {
             padding: 0.375rem 0.75rem !important;
         `;
 
+        const onReset = data => {
+            setPurchase(data);
+            setStep(step - 1);
+        };
+
+        const onSubmit = data => {
+            setPurchase(data)
+            // TODO Submit
+        };
+
         return (<>
             <label>Einkaufsliste</label>
             <ul className="list-group mb-3">
@@ -175,7 +188,7 @@ const NewRequest = () => {
                     <input className="border-0" type="text" onKeyDown={keyDownHandler} autoFocus></input>
                 </Li>
             </ul>
-            <form onReset={() => setStep(step - 1)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="form-group">
                     <label htmlFor="supermarket">Geschäft</label>
                     <input name="supermarket" id="supermarket" type="text" ref={register} className="form-control" placeholder="Geschäft"/>
@@ -197,7 +210,7 @@ const NewRequest = () => {
                     <input name="comments" type="text" ref={register} className="form-control" id="comments" placeholder="Bemerkungen"/>
                 </div>
 
-                <button type="reset" className="btn btn-primary float-left">Zurück</button>
+                <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück</button>
                 <button type="submit" className="btn btn-primary float-right">Absenden</button>
             </form>
         </>);
