@@ -3,14 +3,14 @@ import history from '../../history';
 
 const Home = () => {
     return (
-        <div className="view bg h-100" style={{padding: "0", backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
+        <div className="view bg" style={{backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
             backgroundPositionX: "right", backgroundPositionY: "bottom", backgroundSize: "auto",
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "30%"}}>
             <div className="container pt-5 mb-5">
                 <h1>Elsa hilft - Anmeldung als Helfer/in</h1>
 
                 <p>
-                    Willst du der Risikogruppe während der Coronakrise helfen und für sie den Einkauf erledigen?
+                    <br/>Willst du der Risikogruppe während der Coronakrise helfen und für sie den Einkauf erledigen?
                 </p>
                 <p>
                     Willst auch du Elsa unterstützen?<br/>
@@ -24,12 +24,12 @@ const Home = () => {
                     </ul>
 
                     Weitere Informationen findest du hier:
-                    www.baden.ch/elsahilft
+                    <a href="https://www.baden.ch/elsahilft"> www.baden.ch/elsahilft</a>
                 </p>
                 <p>
                     Ein Projekt der Elsa Benz-von Arx-Stiftung in Zusammenarbeit mit der Stadt Baden und der Unterstützung von hilf-jetzt.ch und vielen weiteren unverzichtbaren Helfenden
                 </p>
-                <button type="submit" className="btn btn-primary" onClick={() => history.push("/register")}>Ich möchte mich als Helfer melden</button>
+                <button type="submit" className="btn btn-primary mt-4" onClick={() => history.push("/register")}>Ich möchte mich als Helfer melden</button>
             </div>
         </div>
     );
