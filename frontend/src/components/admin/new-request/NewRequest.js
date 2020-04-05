@@ -242,7 +242,7 @@ const NewRequest = () => {
         return <>{ongoingPurchaseCreate && <div className="spinner-border" role="status"/>}
             {createPurchase
             ? <div className="alert alert-sucess" role="alert">Auftrag erfolgreich erstellt</div>
-            : <div className="alert alert-danger" role="alert">Fehler beim erstellen des Auftrags</div>
+            : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
         }</>;
     };
 
@@ -269,7 +269,7 @@ const NewRequest = () => {
                 <div className="alert alert-success" role="alert">Kunde erfolgreich erstellt</div>
                 {createPurchase
                     ? <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-                    : !ongoingPurchaseCreate && <div className="alert alert-danger" role="alert">Fehler beim erstellen des Auftrags</div>
+                    : !ongoingPurchaseCreate && <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
                 }
             </>
             : !ongoingCustomerCreate && <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Kunden</div>

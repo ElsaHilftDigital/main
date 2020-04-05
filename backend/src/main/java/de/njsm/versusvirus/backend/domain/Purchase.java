@@ -83,8 +83,7 @@ public class Purchase {
     private String comments;
     private Instant createTime;
 
-    @JoinColumn(name = "purchase_id")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> purchaseList = new ArrayList<>();
 
     private byte[] receipt;                   // picture of receipt
@@ -242,6 +241,11 @@ public class Purchase {
 
     public List<OrderItem> getPurchaseList() {
         return purchaseList;
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        purchaseList.add(orderItem);
+        orderItem.setPurchase(this);
     }
 
     public void setPurchaseList(List<OrderItem> purchaseList) {
