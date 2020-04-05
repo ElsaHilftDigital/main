@@ -26,6 +26,7 @@ public class PurchaseWithApplicationsDTO {
     public Long assignedVolunteer;
     public long createdByModerator;
     public long customer;
+    public String createDate;
 
     public PurchaseWithApplicationsDTO(Purchase p, List<VolunteerDTO> applications) {
         uuid = p.getUuid();
@@ -42,5 +43,6 @@ public class PurchaseWithApplicationsDTO {
         assignedVolunteer = p.getAssignedVolunteer();
         createdByModerator = p.getCreatedByModerator();
         customer = p.getCustomer();
+        createDate = p.getCreateTime().toString();
     }
 }
