@@ -24,7 +24,8 @@ const Header = () => {
     };
 
     if (adminHeader && !isLoggedIn) {
-        // no header for mainPage if not logged in 
+        // redirect to admin login page
+        history.push('/admin'); 
         return null;
     }
 
