@@ -6,8 +6,9 @@ export const createPurchase = purchase => ({
     type: CREATE_PURCHASE,
     payload: purchase,
 });
-export const createPurchaseSuccess = () => ({
+export const createPurchaseSuccess = createdPurchase => ({
     type: CREATE_PURCHASE_SUCCESS,
+    payload: createdPurchase,
 });
 export const createPurchaseError = error => ({
     type: CREATE_PURCHASE_ERROR,
