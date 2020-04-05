@@ -42,14 +42,14 @@ export default function customerReducer(state = initialState, action) {
             return {
                 ...state,
                 createCustomerRequestOngoing: false,
-                createCustomerSuccess: true,
+                createCustomerSuccess: payload,
                 createCustomerError: null,
             };
         case actions.CREATE_CUSTOMER_ERROR:
             return {
                 ...state,
                 createCustomerRequestOngoing: false,
-                createCustomerSuccess: false,
+                createCustomerSuccess: null,
                 createCustomerError: payload,
             };
         default:

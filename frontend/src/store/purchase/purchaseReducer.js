@@ -21,14 +21,14 @@ export default function purchaseReducer(state = initialState, action) {
             return {
                 ...state,
                 createPurchaseRequestOngoing: false,
-                createPurchaseSuccess: true,
+                createPurchaseSuccess: payload,
                 createPurchaseError: null,
             };
         case actions.CREATE_PURCHASE_ERROR:
             return {
                 ...state,
                 createPurchaseRequestOngoing: false,
-                createPurchaseSuccess: false,
+                createPurchaseSuccess: null,
                 createPurchaseError: payload,
             };
         default:

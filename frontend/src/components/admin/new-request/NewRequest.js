@@ -6,6 +6,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import SearchBox from '../../SearchBox';
 import {useCustomers} from '../useCustomers';
 import {customerSelectors, customerActions} from '../../../store/customer';
+import {purchaseSelectors, purchaseActions} from '../../../store/purchase';
 
 const ProgressItem = styled.li`
     position: relative;
@@ -227,11 +228,29 @@ const NewRequest = () => {
 
     const SubmitPurchase = () => {
         const dispatch = useDispatch();
-        const ongoing = useSelector(customerSelectors.createCustomerRequestOngoing);
-        const createCustomerSuccess = useSelector(customerSelectors.createCustomerSuccess);
+        const ongoingCustomerCreate = useSelector(customerSelectors.createCustomerRequestOngoing);
+        const customerSuccess = useSelector(customerSelectors.createCustomerSuccess);
         useEffect(() => {dispatch(customerActions.createCustomer(customer))}, [dispatch]);
+        const ongoingPurchaseCreate = useSelector(purchaseSelectors.createPurchaseRequestOngoing);
+        const createPurchaseSuccess = useSelector(purchaseSelectors.createPurchaseSuccess);
+        useEffect(() => {customerSuccess && dispatch(purchaseActions.createPurchase(
+            Object.assign(
+                purchase,
+                {
+                    orderItems: purchaseList,
+                    customer: customerSuccess.uuid
+                }
+            )
+        ))}, [customerSuccess, dispatch]);
         return <>
-            {ongoing ? <span>Kunde wird erzeugt...</span> : createCustomerSuccess ? <span>Kunde wurde erzeugt</span> : <span>Fehler beim Erzeugen des Kunden</span>}
+            {ongoingCustomerCreate ? <span>Kunde wird erzeugt...</span> : 
+                    customerSuccess
+                    ? <span>Kunde wurde erzeugt</span> 
+                    : <span>Fehler beim Erzeugen des Kunden</span>}
+            {ongoingPurchaseCreate ? <span>Auftrag wird erzeugt...</span> :
+                    createPurchaseSuccess
+                    ? <span>Auftrag wurde erzeugt</span>
+                    : <span>Fehler beim Erzeugen des Aufrags</span>}
         </>;
     };
 

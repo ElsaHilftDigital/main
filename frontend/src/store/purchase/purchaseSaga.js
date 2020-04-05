@@ -5,8 +5,8 @@ import * as actions from './purchaseActions';
 
 export function* handleCreatePurchase(createPurchase, action) {
     try {
-        yield call(createPurchase, action.payload);
-        yield put(actions.createPurchaseSuccess());
+        const createdPurchase = yield call(createPurchase, action.payload);
+        yield put(actions.createPurchaseSuccess(createdPurchase));
     } catch (error) {
         console.log(error);
         if (error.response && error.response.data) {

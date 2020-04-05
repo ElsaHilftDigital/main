@@ -26,7 +26,11 @@ const Customer = () => {
                 />
             </div>
             <div className="content">
-                <CustomerDetail selectedCustomer={selectedCustomer} />
+                {selectedCustomer && (
+                    <CustomerDetail
+                        selectedCustomer={selectedCustomer} 
+                    />
+                )}
             </div>
         </div>
     );

@@ -23,8 +23,9 @@ export const createCustomer = (customer) => ({
     type: CREATE_CUSTOMER,
     payload: customer,
 });
-export const createCustomerSuccess = () => ({
+export const createCustomerSuccess = createdCustomer => ({
     type: CREATE_CUSTOMER_SUCCESS,
+    payload: createdCustomer,
 });
 export const createCustomerError = error => ({
     type: CREATE_CUSTOMER_ERROR,

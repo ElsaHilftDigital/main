@@ -1,8 +1,33 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+
 const CustomerDetail = (props) => {
-    const { handleSubmit, register } = useForm();
+    const { selectedCustomer } = props;
+    const { handleSubmit, register, setValue } = useForm({
+        defaultValues: {
+            firstName: selectedCustomer.firstName,
+            lastName: selectedCustomer.lastName,
+            phone: selectedCustomer.phone,
+            mobile: selectedCustomer.mobile,
+            addressStreet: selectedCustomer.address.address,
+            addressZipCode: selectedCustomer.address.zipCode,
+            addressCity: selectedCustomer.address.city,
+            paymentMethod: 'bar',
+            finishedJobs: 'none',
+            openJobs: 'test',
+            openPaymentAmount: '0',
+            shoppingList: 'ravioli',
+        },
+    });
+    setValue('firstName', selectedCustomer.firstName);
+    setValue('lastName', selectedCustomer.lastName);
+    setValue('phone', selectedCustomer.phone);
+    setValue('mobile', selectedCustomer.mobile);
+    setValue('addressStreet', selectedCustomer.address.address);
+    setValue('addressZipCode', selectedCustomer.address.zipCode);
+    setValue('addressCity', selectedCustomer.address.city);
+
 
     const onSubmit = values => {
         console.log(values);
