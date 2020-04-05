@@ -11,11 +11,11 @@ public class BotCommandTest {
 
     @Test
     public void testCommandParsing() {
-        assertTrue(BotCommand.HILFE_ANBIETEN.getRegex().asPredicate().test("/hilfe_anbieten@elsahilftbot xxx"));
-        assertTrue(BotCommand.HILFE_ANBIETEN.getRegex().asPredicate().test("/hilfe_anbieten yxy"));
+        assertTrue(BotCommand.HILFE_ANBIETEN.getRegex().asPredicate().test("/start@elsahilftbot hilfeanbieten_xxx"));
+        assertTrue(BotCommand.HILFE_ANBIETEN.getRegex().asPredicate().test("/start hilfeanbieten_yxy"));
 
         Matcher m = BotCommand.HILFE_ANBIETEN.getRegex()
-                .matcher("/hilfe_anbieten@elsahilftbot xxx");
+                .matcher("/start@elsahilftbot hilfeanbieten_xxx");
         m.find();
         assertEquals("xxx", m.group("purchaseId"));
     }
@@ -33,13 +33,13 @@ public class BotCommandTest {
 
     @Test
     public void testAbschliessenCommandParsing() {
-        assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/abschliessen@elsahilftbot uuid false"));
-        assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/abschliessen uuid true"));
+        assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/start@elsahilftbot abschliessen_uuid_false"));
+        assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/start abschliessen_uuid_true"));
 
         Matcher m = BotCommand.ABSCHLIESSEN.getRegex()
-                .matcher("/abschliessen@elsahilftbot uuid true");
+                .matcher("/start@elsahilftbot abschliessen_uuid_false");
         m.find();
         assertEquals("uuid", m.group("purchaseId"));
-        assertEquals("true", m.group("isSuccess"));
+        assertEquals("false", m.group("isSuccess"));
     }
 }
