@@ -19,7 +19,12 @@ const Purchase = () => {
         // von Kunde
         customerCity: "Baden",
         customerLastname: "Frozen",
-        customerFirstname: "Elsa"
+        customerFirstname: "Elsa",
+
+        // von Helfer
+        volunteerLastname: "Melting",
+        volunteerFirstname: "Anna",
+        volunteerIsChosen: false
     }
     return (
         <div>

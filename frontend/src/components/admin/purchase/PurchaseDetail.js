@@ -5,6 +5,8 @@ const PurchaseDetail = (props) => {
     const {register, handleSubmit, errors} = useForm({defaultValues: {
         displayFormStatus: props.currentPurchase.status,
         displayFormCreateDate: props.currentPurchase.createDate,
+        displayFormVolunteerLastname: props.currentPurchase.volunteerLastname,
+        displayFormVolunteerFirstname: props.currentPurchase.volunteerFirstname,
         displayFormCity: props.currentPurchase.customerCity,
         displayFormFirstname: props.currentPurchase.customerFirstname,
         displayFormLastname: props.currentPurchase.customerLastname,
@@ -35,6 +37,48 @@ const PurchaseDetail = (props) => {
                     <label htmlFor="displayFormCreateDate">Erstellungsdatum</label>
                     <input name="displayFormCreateDate" ref={register({ required: true })} disabled type="tel" className="form-control" id="displayFormCreateDate" />
                 </div>
+
+                {props.currentPurchase.volunteerIsChosen && (
+                    <span>
+                        <div className="row">
+                            <div className="form-group col-md-6">
+                                <label htmlFor="displayFormVolunteerFirstname">Vorname</label>
+                                <input name="displayFormVolunteerFirstname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormVolunteerFirstname" />
+                            </div>
+                            <div className="form-group col-md-6">
+                                <label htmlFor="displayFormVolunteerLastname">Name</label>
+                                <input name="displayFormVolunteerLastname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormVolunteerLastname" />
+                            </div>
+                            </div>
+                        <div className="form-group mb-2 mb-3"><i><a href="">Für weitere Infos zum Helfer hier klicken</a></i></div>
+                    </span>
+                )}
+                {!props.currentPurchase.volunteerIsChosen && (
+                    <span>
+                        <div className="form-group">
+                            <label htmlFor="applyingVolunteers">Helfer wurde noch nicht ausgewählt</label>
+                            <p>
+                                <i>Helfer, die sich gemeldet haben:</i>
+                            </p>
+                            <table className="table table-striped" name="applyingVolunteers">
+                                <tr>
+                                    <th>Vorname</th>
+                                    <th>Nachname</th>
+                                    <th>Link</th>
+                                    <th>Auswahl</th>
+                                </tr>
+                                <tr>
+                                    <td>Anna</td>
+                                    <td>Melting</td>
+                                    <td><a href="">Details</a></td>
+                                    <td><button type="submit" className="btn btn-primary">Bestätigen</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </span>
+                )}
+
+
                 <div className="form-group">
                         <label htmlFor="displayFormCity">Ort</label>
                         <input name="displayFormCity" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormCity" />
@@ -77,7 +121,7 @@ const PurchaseDetail = (props) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
-                    <table className="table table-striped">
+                    <table className="table table-striped" name="displayTableOrderItems">
                         <tr>
                             <td>5 Tomaten</td>
                         </tr>
@@ -86,7 +130,20 @@ const PurchaseDetail = (props) => {
                         </tr>
                     </table>
                 </div>
-                <button type="submit" className="btn btn-primary">Speichern</button>
+                <div>
+                    <p>
+                        <button type="submit" className="btn btn-primary m-1">Speichern</button>
+                    </p>
+                    <p>
+                        <button type="submit" className="btn btn-primary m-1">Einkauf freigeben</button>
+                    </p>
+                    <p>
+                        <button type="submit" className="btn btn-primary m-1">Lieferung freigeben</button>
+                    </p>
+                    <p>
+                        <button type="submit" className="btn btn-primary m-1">Einkauf erledigt</button>
+                    </p>
+                </div>
             </form>
         </div>
     );
