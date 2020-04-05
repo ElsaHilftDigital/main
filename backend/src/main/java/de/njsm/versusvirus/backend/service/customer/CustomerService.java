@@ -48,6 +48,7 @@ public class CustomerService {
         customer.setLastName(req.lastName);
         customer.setPhone(req.phone);
         customer.setMobile(req.mobile);
+        customer.setAddress(address);
 
         customerRepository.save(customer);
         return new CustomerDTO(customer);
