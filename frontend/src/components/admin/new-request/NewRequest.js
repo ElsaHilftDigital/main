@@ -129,8 +129,7 @@ const NewRequest = () => {
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="mobile">Mobile</label>
-                        <input name="mobile" type="text" ref={register({ required: true })} className="form-control" id="mobile" placeholder="Mobile"/>
-                        {errors.mobile && (<span className="text-danger">Mobile wird benötigt</span>)}
+                        <input name="mobile" type="text" ref={register()} className="form-control" id="mobile" placeholder="Mobile"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary float-right">Weiter</button>
