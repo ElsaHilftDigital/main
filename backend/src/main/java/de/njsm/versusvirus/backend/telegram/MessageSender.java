@@ -115,11 +115,11 @@ public class MessageSender {
             return;
         }
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder purchaseList = new StringBuilder();
         for (OrderItem i : purchase.getPurchaseList()) {
-            builder.append("* ");
-            builder.append(i.getPurchaseItem());
-            builder.append("\n");
+            purchaseList.append("* ");
+            purchaseList.append(i.getPurchaseItem());
+            purchaseList.append("\n");
         }
 
         String purchaseDescTemplate = telegramMessages.getPersonalPurchaseDescription();
@@ -131,7 +131,9 @@ public class MessageSender {
                 customer.getAddress().getZipCode(),
                 customer.getAddress().getCity(),
                 purchase.getComments(),
-                builder.toString()
+                purchase.getSupermarket(),
+                purchase.getPaymentMethod().displayName(),
+                purchaseList.toString()
         );
 
         String template = telegramMessages.getOfferPurchase();
