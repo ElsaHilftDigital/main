@@ -2,8 +2,15 @@ import React from 'react';
 
 const CustomerList = (props) => {
     if (!props.customers.length) {
-        return <>Keine Kunden</>;
-    }
+        return (
+            <span>
+                <span className="list-header mt-3 mb-2">Kunden</span>
+                <ul className="sidebar-nav">
+                    Keine Kunden
+                </ul>
+            </span>
+        );
+    };
 
     return (
         <>

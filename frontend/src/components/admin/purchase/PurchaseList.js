@@ -2,8 +2,15 @@ import React from 'react';
 
 const PurchaseList = props => {
     if (!props.purchases.length) {
-        return <>Keine Einkäufe</>;
-    }
+        return (
+            <span>
+                <span className="list-header mt-3 mb-2">Einkäufe</span>
+                <ul className="sidebar-nav">
+                    Keine Einkäufe
+                </ul>
+            </span>
+        );
+    };
 
     return (
         <>

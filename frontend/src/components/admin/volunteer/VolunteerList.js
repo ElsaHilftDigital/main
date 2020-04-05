@@ -2,8 +2,15 @@ import React from 'react';
 
 const VolunteerList = (props) => {
     if (!props.volunteers.length) {
-        return <>Keine Helfer</>;
-    }
+        return (
+            <span>
+                <span className="list-header mt-3 mb-2">Helfer</span>
+                <ul className="sidebar-nav">
+                    Keine Helfer
+                </ul>
+            </span>
+        );
+    };
 
     return (
         <>
