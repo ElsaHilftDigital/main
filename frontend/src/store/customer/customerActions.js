@@ -10,7 +10,7 @@ export const getAllCustomersSuccess = customers => ({
     payload: customers,
 });
 
-export const setSelectedCustomer = (id) => ({
+export const setSelectedCustomer = (uuid) => ({
     type: SET_SELECTED_CUSTOMER,
-    payload: id,
+    payload: uuid,
 })

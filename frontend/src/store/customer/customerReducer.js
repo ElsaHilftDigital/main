@@ -23,9 +23,10 @@ export default function customerReducer(state = initialState, action) {
                 selectedCustomer: payload.length ? payload[0] : null,
             };
         case actions.SET_SELECTED_CUSTOMER:
+            const selectedCustomers = state.customers.filter(customer => customer.uuid === payload);
             return {
                 ...state,
-                selectedCustomer: state.customers.filter(customer => customer.id === payload),
+                selectedCustomer: selectedCustomers.length ? selectedCustomers[0] : null,
             };
         default:
             return state;
