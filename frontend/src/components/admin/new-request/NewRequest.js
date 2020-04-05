@@ -186,7 +186,7 @@ const NewRequest = () => {
                     <i onClick={() => removeFromPurchaseList(index)} style={{margin: 'auto'}} className="fa fa-trash float-right"/>
                 </Li>)}
                 <Li className="list-group-item">
-                    <input className="border-0" type="text" onKeyDown={keyDownHandler} autoFocus></input>
+                    <input className="no-outline" type="text" onKeyDown={keyDownHandler} autoFocus></input>
                 </Li>
             </ul>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -252,7 +252,9 @@ const NewRequest = () => {
         useEffect(() => {dispatch(customerActions.createCustomer(customer))}, [dispatch]);
         const ongoingPurchaseCreate = useSelector(purchaseSelectors.createPurchaseRequestOngoing);
         const createPurchase = useSelector(purchaseSelectors.createPurchaseSuccess);
-        useEffect(() => {customerSuccess && dispatch(purchaseActions.createPurchase(
+        useEffect(() => {
+            console.log('createPurchase', customerSuccess);
+            customerSuccess && dispatch(purchaseActions.createPurchase(
             Object.assign(
                 purchase,
                 {

@@ -102,6 +102,19 @@ $primary: rgb(47,47,134);
     padding: 1rem;
 }
 
+/*
+ * Hide outline
+ */
+.no-outline {
+    border: 0px;
+    border-style: hidden;
+    width: 100%;
+}
+
+.no-outline:focus {
+    outline: none;
+}
+
 /* Small screens */
 @media only screen and (max-width: 600px) {
     .sidebar {
