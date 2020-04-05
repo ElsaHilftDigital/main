@@ -8,6 +8,10 @@ const CustomerDetail = (props) => {
         console.log(values);
     }
 
+    if (!props.selectedCustomer) {
+        return null;
+    }
+
     return (
         <div className="container mb-5">
             <h2>Details für Kunde {props.selectedCustomer.name}</h2>

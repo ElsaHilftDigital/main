@@ -20,6 +20,7 @@ export default function customerReducer(state = initialState, action) {
                 ...state,
                 getAllCustomersRequestOngoing: false,
                 customers: payload,
+                selectedCustomer: payload.length ? payload[0] : null,
             };
         case actions.SET_SELECTED_CUSTOMER:
             return {
