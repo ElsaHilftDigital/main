@@ -1,48 +1,34 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { volunteerActions, volunteerSelectors } from '../../../store/volunteer';
 import { useVolunteers } from '../useVolunteers';
 import VolunteerDetail from './VolunteerDetail';
 import VolunteerList from './VolunteerList';
 
 const Volunteer = () => {
-    //const volunteers = useVolunteers();
-    const currentVolunteer = {
-        uuid: 'uuid',
-        firstName: "Elsa",
-        lastName: "Frozen",
-        phone: "0562821111",
-        email: "elsa@baden.ch",
-        address: "Bahnhofstrasse 11",
-        zipCode: "5400",
-        city: "Baden",
-        birthdate: "05.03.2020",
-        wantsCompensation: true,
-        iban: "CH05 0900 0000 4022 3664 9",
-        bankName: "UBS",
-        telegramJoinBotChatUrl: "test",
-        validated: false,
-        amountPurchases: 0,
-        purchases: ""
-    }
+    const dispatch = useDispatch();
+    const volunteers = useVolunteers();
+    const currentVolunteer = useSelector(volunteerSelectors.getCurrentVolunteer);
 
     const handleVolunteerUpdate = (values) => {
         console.log(values);
     };
 
     const handleConfirmVolunteer = (uuid) => {
-        console.log(uuid);
+        dispatch(volunteerActions.confirmVolunteer(uuid));
     };
 
     const handleChangeSelectedVolunteer = (uuid) => {
-        console.log(uuid);
+        dispatch(volunteerActions.setCurrentVolunteer(uuid));
     };
 
     return (
         <div>
             <div className="sidebar">
                 <VolunteerList 
-                    volunteers={[currentVolunteer]} 
-                    selectedVolunteerUuid={1}
+                    volunteers={volunteers} 
+                    selectedVolunteerUuid={currentVolunteer ? currentVolunteer.uuid : null}
                     onSelectedVolunteerUpdate={handleChangeSelectedVolunteer}
                 />
             </div>

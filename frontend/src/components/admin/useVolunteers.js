@@ -11,5 +11,5 @@ export const useVolunteers = () => {
         dispatch(volunteerActions.getAllVolunteers());
     }, [dispatch])
 
-    return useSelector(volunteerSelectors.getVolunteers);
+    return useSelector(volunteerSelectors.getAllVolunteers);
 };

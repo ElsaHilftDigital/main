@@ -7,6 +7,7 @@ export const CREATE_VOLUNTEER_ERROR = 'CREATE_VOLUNTEER_ERROR';
 export const GET_ALL_VOLUNTEERS = 'GET_ALL_VOLUNTEERS';
 export const GET_ALL_VOLUNTEERS_SUCCESS = 'GET_ALL_VOLUNTEERS_SUCCESS';
 export const CONFIRM_VOLUNTEER = 'CONFIRM_VOLUNTEER';
+export const SET_CURRENT_VOLUNTEER = 'SET_CURRENT_VOLUNTEER';
 
 export const getVolunteer = uuid => ({
     type: GET_VOLUNTEER,
@@ -42,10 +43,15 @@ export const getAllVolunteers = () => ({
     type: GET_ALL_VOLUNTEERS,
 })
 export const getAllVolunteersSuccess = (volunteers) => ({
-    type: GET_ALL_VOLUNTEERS,
+    type: GET_ALL_VOLUNTEERS_SUCCESS,
     payload: volunteers,
 })
 export const confirmVolunteer = (uuid) => ({
     type: CONFIRM_VOLUNTEER,
+    payload: uuid,
+});
+
+export const setCurrentVolunteer = (uuid) => ({
+    type: SET_CURRENT_VOLUNTEER,
     payload: uuid,
 });
