@@ -17,13 +17,13 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="view bg border h-100" style={{padding: "0", backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
+        <div className="view bg h-100" style={{padding: "0", backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
             backgroundPositionX: "right", backgroundPositionY: "bottom", backgroundSize: "auto",
-            backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 98.5%)", paddingBottom: "40%"}}>
+            backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "30%"}}>
 
             <div className="container mt-3 mb-5" >
                 <div className="d-flex flex-column align-items-center">
-                    <img src="ElsaHilftMehrContour.png" className="align-middle" width="200" height="200" alt="" />
+                    <img src="ElsaHilftMehrContour.png" className="align-middle mt-5" width="200" height="200" alt="" />
                 </div>
 
                 <h1 className="mb-4">Login</h1>

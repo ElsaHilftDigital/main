@@ -11,9 +11,9 @@ const PurchaseList = props => {
             <ul className="sidebar-nav">
                 {props.purchases.map(purchase => (
                     <li 
-                        onClick={() => props.updateSelectedVolunteer(purchase.uuid)}
+                        onClick={() => props.updateSelectedPurchase(purchase)}
                         key={purchase.uuid} 
-                        className={'nav-item' + (purchase.uuid === props.selectedPurchase.uuid ? ' nav-item-active' : '')}
+                        className={'nav-item' + (purchase.uuid === props.selectedPurchase?.uuid ? ' nav-item-active' : '')}
                     >
                         {purchase.uuid}
                     </li>
