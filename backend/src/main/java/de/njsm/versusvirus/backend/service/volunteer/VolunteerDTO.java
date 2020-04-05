@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class VolunteerDTO {
 
+    public long id;
     public UUID uuid;
     public String firstName;
     public String lastName;
@@ -25,6 +26,7 @@ public class VolunteerDTO {
     public String telegramJoinBotChatUrl;
 
     public VolunteerDTO(Volunteer volunteer) {
+        id = volunteer.getId();
         uuid = volunteer.getUuid();
         firstName = volunteer.getFirstName();
         lastName = volunteer.getLastName();

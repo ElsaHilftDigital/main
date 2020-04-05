@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class CustomerDTO {
 
+    public long id;
     public UUID uuid;
     public String firstName;
     public String lastName;
@@ -15,6 +16,7 @@ public class CustomerDTO {
     public Address address;
 
     public CustomerDTO(Customer customer) {
+        id = customer.getId();
         uuid = customer.getUuid();
         firstName = customer.getFirstName();
         lastName = customer.getLastName();
