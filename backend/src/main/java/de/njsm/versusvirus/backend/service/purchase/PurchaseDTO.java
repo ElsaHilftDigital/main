@@ -23,4 +23,20 @@ public class PurchaseDTO {
     public long createdByModerator;
     public long customer;
 
+    public PurchaseDTO(Purchase p) {
+        uuid = p.getUuid();
+        volunteerApplications = p.getVolunteerApplications();
+        orderItems = p.getPurchaseList();
+        status = p.getStatus();
+        paymentMethod = p.getPaymentMethod();
+        timing = p.getTiming();
+        supermarket = p.getSupermarket();
+        size = p.getPurchaseSize();
+        comments = p.getComments();
+        cost = p.getCost();
+        expensesPaid = p.isExpensesPaid();
+        assignedVolunteer = p.getAssignedVolunteer();
+        createdByModerator = p.getCreatedByModerator();
+        customer = p.getCustomer();
+    }
 }

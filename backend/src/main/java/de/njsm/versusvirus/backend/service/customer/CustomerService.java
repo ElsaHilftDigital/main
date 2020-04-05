@@ -1,9 +1,11 @@
 package de.njsm.versusvirus.backend.service.customer;
 
 import de.njsm.versusvirus.backend.domain.Customer;
+import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
+import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -71,4 +73,19 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
+    public List<PurchaseDTO> getCompletedPurchaseListOf(UUID customerId) {
+        var customer = customerRepository.findByUuid(customerId).orElseThrow(NotFoundException::new);
+        return purchaseRepository.findAllByCustomerAndStatus(customer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+                .stream()
+                .map(PurchaseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<PurchaseDTO> getOpenPurchaseListOf(UUID customerId) {
+        var customer = customerRepository.findByUuid(customerId).orElseThrow(NotFoundException::new);
+        return purchaseRepository.findAllByCustomerAndStatusNot(customer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+                .stream()
+                .map(PurchaseDTO::new)
+                .collect(Collectors.toList());
+    }
 }

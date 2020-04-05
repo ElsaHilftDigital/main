@@ -54,12 +54,11 @@ public class CustomerController {
 
     @RequestMapping("/{id}/completed-purchases")
     public List<PurchaseDTO> getCompletedPurchaseList(@PathVariable("id") UUID customerId) {
-        //return customerService.getCompletedPurchaseListOf(customerId);
-        return List.of();
+        return customerService.getCompletedPurchaseListOf(customerId);
     }
 
     @RequestMapping("/{id}/open-purchases")
     public List<PurchaseDTO> getOpenPurchaseList(@PathVariable("id") UUID customerId) {
-        return List.of();
+        return customerService.getOpenPurchaseListOf(customerId);
     }
 }
