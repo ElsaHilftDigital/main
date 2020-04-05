@@ -7,6 +7,7 @@ export const initialState = {
     createCustomerRequestOngoing: false,
     createCustomerSuccess: null,
     createCustomerError: null,
+    customer: null,
 };
 
 export default function customerReducer(state = initialState, action) {
@@ -51,6 +52,11 @@ export default function customerReducer(state = initialState, action) {
                 createCustomerRequestOngoing: false,
                 createCustomerSuccess: null,
                 createCustomerError: payload,
+            };
+        case actions.GET_CUSTOMER_SUCCESS:
+            return {
+                ...state,
+                customer: payload,
             };
         default:
             return state;

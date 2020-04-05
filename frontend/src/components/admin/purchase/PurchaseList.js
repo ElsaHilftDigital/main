@@ -1,6 +1,10 @@
 import React from 'react';
 
+import {useCustomers} from '../useCustomers';
+
 const PurchaseList = props => {
+    const customers = useCustomers();
+
     if (!props.purchases.length) {
         return (
             <span>
@@ -16,15 +20,25 @@ const PurchaseList = props => {
         <>
             <span className="list-header mt-3 mb-2">Einkäufe</span>
             <ul className="sidebar-nav">
-                {props.purchases.map(purchase => (
+                {props.purchases.map(purchase => {
+                    const currentCustomer = customers.find(customer => customer.id === purchase.customer);
+                    
+                    console.log(purchase)
+
+                    return (
                     <li 
                         onClick={() => props.updateSelectedPurchase(purchase)}
                         key={purchase.uuid} 
                         className={'nav-item' + (purchase.uuid === props.selectedPurchase?.uuid ? ' nav-item-active' : '')}
                     >
-                        {purchase.uuid}
+                        {
+                            <div className="d-flex flex-column">
+                                <b>{currentCustomer ? currentCustomer.lastName : "Error"}</b>
+                                <i><b>{purchase.status}</b></i>
+                            </div>
+                        }
                     </li>
-                ))}
+                )})}
             </ul>
         </>);
     };
