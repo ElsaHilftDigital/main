@@ -34,7 +34,7 @@ export function* handleLogout(authApi) {
         yield call([authApi, authApi.logout]);
     } catch (error) {
         if (history.location.pathname.match(/^\/admin.*$/i)) {
-            history.push('/');
+            history.push('/admin');
         }
         // logout returns 401 if successful
         try {
