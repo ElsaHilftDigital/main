@@ -41,6 +41,7 @@ public class Volunteer {
 
     private Long telegramChatId;
     private Long telegramUserId;
+    private String telegramFileId;
 
     public long getId() {
         return id;
@@ -150,6 +151,14 @@ public class Volunteer {
 
     public void setTelegramUserId(long userId) {
         this.telegramUserId = userId;
+    }
+
+    public String getTelegramFileId() {
+        return telegramFileId;
+    }
+
+    public void setTelegramFileId(String telegramFileId) {
+        this.telegramFileId = telegramFileId;
     }
 }
 

@@ -149,7 +149,7 @@ public class MessageSender {
         api.sendMessage(message);
     }
 
-    public void confirmReceiptPurchaseMapping(Volunteer volunteer, String fileId, List<Purchase> purchases) {
+    public void confirmReceiptPurchaseMapping(Volunteer volunteer, List<Purchase> purchases) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
             return;
@@ -158,7 +158,7 @@ public class MessageSender {
         String text;
         if (purchases.size() > 0) {
             String template = telegramMessages.getConfirmPurchaseMapping();
-            String renderedPurchaseList = renderPurchaseList(fileId, purchases);
+            String renderedPurchaseList = renderPurchaseList(purchases);
             text = MessageFormat.format(
                     template,
                     renderedPurchaseList);
@@ -192,7 +192,7 @@ public class MessageSender {
         purchase.setStatus(Purchase.Status.PURCHASE_IN_DELIVERY);
     }
 
-    public String renderPurchaseList(String fileId, List<Purchase> purchases) {
+    public String renderPurchaseList(List<Purchase> purchases) {
         StringBuilder builder = new StringBuilder();
         for (Purchase p : purchases) {
             Customer customer = customerRepository.findById(p.getCustomer()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
@@ -202,7 +202,7 @@ public class MessageSender {
             builder.append(" ");
             builder.append(customer.getLastName());
             builder.append("](");
-            builder.append(BotCommand.QUITTUNG_EINREICHEN.render(fileId, p.getUuid().toString()));
+            builder.append(BotCommand.QUITTUNG_EINREICHEN.render(p.getUuid().toString()));
             builder.append(")\n");
         }
         return builder.toString();

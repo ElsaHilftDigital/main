@@ -170,12 +170,12 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             return new TelegramShouldBeFineException("volunteer not found");
         });
         List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteer(volunteer.getId());
-
-        messageSender.confirmReceiptPurchaseMapping(volunteer, fileId, activePurchases);
+        volunteer.setTelegramFileId(fileId);
+        messageSender.confirmReceiptPurchaseMapping(volunteer, activePurchases);
     }
 
     @Override
-    public void handleReceiptSubmission(Message message, UUID purchaseId, String fileId) {
+    public void handleReceiptSubmission(Message message, UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("purchase not found");
@@ -194,12 +194,17 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
             return;
         }
 
-        byte[] image = telegramApi.getFile(fileId);
-        purchase.setReceipt(image);
-        purchase.setReceiptFileId(fileId);
-        purchase.setStatus(Purchase.Status.PURCHASE_DONE);
-        messageSender.confirmReceiptUpload(message.getChat().getId());
-        adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+        if (volunteer.getTelegramFileId() != null) {
+            byte[] image = telegramApi.getFile(volunteer.getTelegramFileId());
+            purchase.setReceipt(image);
+            purchase.setReceiptFileId(volunteer.getTelegramFileId());
+            purchase.setStatus(Purchase.Status.PURCHASE_DONE);
+            volunteer.setTelegramFileId(null);
+            messageSender.confirmReceiptUpload(message.getChat().getId());
+            adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+        } else {
+            messageSender.sendUnexpectedMessage(message.getChat().getId());
+        }
     }
 
     @Override

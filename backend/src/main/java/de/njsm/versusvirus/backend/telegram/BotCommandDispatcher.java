@@ -18,7 +18,7 @@ public interface BotCommandDispatcher {
 
     void handleReceiptWithoutPurchaseContext(Message message, String fileId);
 
-    void handleReceiptSubmission(Message message, UUID purchaseId, String fileId);
+    void handleReceiptSubmission(Message message, UUID purchaseId);
 
     void handleCompletion(Message message, UUID purchaseId, boolean isSuccess);
 }

@@ -95,17 +95,17 @@ public enum BotCommand {
     QUITTUNG_EINREICHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? quittungeinreichen_(?<fileId>[^_]*)_(?<purchaseId>[^_]*)$");
+            return Pattern.compile("^/start(?<botname>@elsahilftbot)? rcpt_(?<purchaseId>[^_]*)$");
         }
 
         @Override
-        public String render(String contextDependentValue) {
-            throw new UnsupportedOperationException("I need two values");
+        public String render(String purchaseId) {
+            return MessageFormat.format("{0}start=rcpt_{2}", BASE_URL, purchaseId);
         }
 
         @Override
-        public String render(String fileId, String purchaseId) {
-            return MessageFormat.format("{0}start=quittungeinreichen_{1}_{2}", BASE_URL, fileId, purchaseId);
+        public String render(String dummy2, String dummy) {
+            throw new UnsupportedOperationException("I need one value");
         }
 
         @Override
@@ -114,8 +114,7 @@ public enum BotCommand {
             boolean found = m.find();
             assert found; // verified before
             String purchaseId = m.group("purchaseId");
-            String fileId = m.group("fileId");
-            dispatcher.handleReceiptSubmission(message, UUID.fromString(purchaseId), fileId);
+            dispatcher.handleReceiptSubmission(message, UUID.fromString(purchaseId));
         }
     },
 

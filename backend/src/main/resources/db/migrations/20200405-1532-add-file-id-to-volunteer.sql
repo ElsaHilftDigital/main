@@ -1,0 +1,1 @@
+alter table volunteer add column telegram_file_id text;
