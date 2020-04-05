@@ -108,7 +108,6 @@ public class MessageSender {
         purchase.setBroadcastMessageId(sentMessage.getId());
     }
 
-    // TODO link
     public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {
 
         if (volunteer.getTelegramChatId() == null) {
@@ -116,11 +115,11 @@ public class MessageSender {
             return;
         }
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder purchaseList = new StringBuilder();
         for (OrderItem i : purchase.getPurchaseList()) {
-            builder.append("* ");
-            builder.append(i.getPurchaseItem());
-            builder.append("\n");
+            purchaseList.append("* ");
+            purchaseList.append(i.getPurchaseItem());
+            purchaseList.append("\n");
         }
 
         String purchaseDescTemplate = telegramMessages.getPersonalPurchaseDescription();
@@ -132,7 +131,9 @@ public class MessageSender {
                 customer.getAddress().getZipCode(),
                 customer.getAddress().getCity(),
                 purchase.getComments(),
-                builder.toString()
+                purchase.getSupermarket(),
+                purchase.getPaymentMethod().displayName(),
+                purchaseList.toString()
         );
 
         String template = telegramMessages.getOfferPurchase();
@@ -169,8 +170,9 @@ public class MessageSender {
         api.sendMessage(message);
     }
 
-    // TODO link
-    // transition purchase to IN_DELIVERY
+    /**
+     * Save the purchase to the repo after calling!
+     */
     public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
@@ -186,6 +188,8 @@ public class MessageSender {
 
         MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
         api.sendMessage(message);
+
+        purchase.setStatus(Purchase.Status.PURCHASE_IN_DELIVERY);
     }
 
     public String renderPurchaseList(String fileId, List<Purchase> purchases) {

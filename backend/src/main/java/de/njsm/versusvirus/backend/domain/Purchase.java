@@ -50,9 +50,25 @@ public class Purchase {
     }
 
     public enum PaymentMethod {
-        CASH,
-        BILL,
-        OTHER
+        CASH {
+            @Override
+            public String displayName() {
+                return "Bargeld";
+            }
+        },
+        BILL {
+            @Override
+            public String displayName() {
+                return "Überweisung";
+            }
+        },
+        OTHER {
+            @Override
+            public String displayName() {
+                return "Andere";
+            }
+        };
+        public abstract String displayName();
     }
 
     @Enumerated(EnumType.STRING)

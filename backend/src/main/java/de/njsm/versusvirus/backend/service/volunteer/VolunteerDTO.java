@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.service.volunteer;
 
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.telegram.BotCommand;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -20,6 +21,8 @@ public class VolunteerDTO {
     public String bankName;
     public boolean wantsCompensation;
 
+    public String telegramJoinBotChatUrl;
+
     public VolunteerDTO(Volunteer volunteer) {
         uuid = volunteer.getUuid();
         firstName = volunteer.getFirstName();
@@ -33,5 +36,6 @@ public class VolunteerDTO {
         iban = volunteer.getIban();
         bankName = volunteer.getBankName();
         wantsCompensation = volunteer.wantsCompensation();
+        telegramJoinBotChatUrl = BotCommand.START.render(uuid.toString());
     }
 }
