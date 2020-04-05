@@ -171,6 +171,7 @@ public class MessageSender {
     }
 
     // TODO link
+    // transition purchase to IN_DELIVERY
     public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
@@ -180,7 +181,9 @@ public class MessageSender {
         String template = telegramMessages.getInformToDeliverPurchase();
         String text = MessageFormat.format(
                 template,
-                purchase.getUuid());
+                purchase.getUuid(),
+                BotCommand.ABSCHLIESSEN.render("true", purchase.getUuid().toString()),
+                BotCommand.ABSCHLIESSEN.render("false", purchase.getUuid().toString()));
 
         MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
         api.sendMessage(message);
@@ -229,6 +232,16 @@ public class MessageSender {
 
     public void confirmRejection(long chatId) {
         var m = new MessageToBeSent(chatId, telegramMessages.getConfirmRejection());
+        api.sendMessage(m);
+    }
+
+    public void confirmCompletion(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getConfirmCompletion());
+        api.sendMessage(m);
+    }
+
+    public void confirmInvestigation(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getConfirmInvestigation());
         api.sendMessage(m);
     }
 }
