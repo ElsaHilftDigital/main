@@ -5,22 +5,38 @@ import { purchaseActions } from '../../../store/purchase';
 import { useDispatch } from 'react-redux';
 
 const PurchaseDetail = (props) => {
-    const {register, handleSubmit } = useForm({defaultValues: {
-        displayFormStatus: props.currentPurchase.status,
-        displayFormCreateDate: props.currentPurchase.createDate,
-        displayFormVolunteerLastname: props.currentPurchase.volunteerLastname,
-        displayFormVolunteerFirstname: props.currentPurchase.volunteerFirstname,
-        displayFormCity: props.currentPurchase.customerCity,
-        displayFormFirstname: props.currentPurchase.customerFirstname,
-        displayFormLastname: props.currentPurchase.customerLastname,
-        registerFormTiming: props.currentPurchase.timing,
-        registerFormSupermarket: props.currentPurchase.supermarket,
-        registerFormPurchaseSize: props.currentPurchase.purchaseSize,
-        registerFormExpensesOpen: props.currentPurchase.expensesPaid,
-        registerFormExpensesOpen: props.currentPurchase.expensesOpen,
-        registerFormPaymentMethod: props.currentPurchase.paymentMethod,
-        registerFormComments: props.currentPurchase.comments
+    const { currentPurchase } = props;
+    const {register, handleSubmit, setValue } = useForm({defaultValues: {
+        displayFormStatus: currentPurchase.status,
+        displayFormCreateDate: currentPurchase.createDate,
+        displayFormVolunteerLastname: currentPurchase.volunteerLastname,
+        displayFormVolunteerFirstname: currentPurchase.volunteerFirstname,
+        displayFormCity: currentPurchase.customerCity,
+        displayFormFirstname: currentPurchase.customerFirstname,
+        displayFormLastname: currentPurchase.customerLastname,
+        registerFormTiming: currentPurchase.timing,
+        registerFormSupermarket: currentPurchase.supermarket,
+        registerFormPurchaseSize: currentPurchase.purchaseSize,
+        registerFormExpensesOpen: currentPurchase.expensesPaid,
+        registerFormExpensesOpen: currentPurchase.expensesOpen,
+        registerFormPaymentMethod: currentPurchase.paymentMethod,
+        registerFormComments: currentPurchase.comments
     }});
+
+    setValue('displayFormStatus', currentPurchase.status);
+    setValue('displayFormCreateDate', currentPurchase.createDate);
+    setValue('displayFormVolunteerLastname', currentPurchase.volunteerLastname);
+    setValue('displayFormVolunteerFirstname', currentPurchase.volunteerFirstname);
+    setValue('displayFormCity', currentPurchase.customerCity);
+    setValue('displayFormFirstname', currentPurchase.customerFirstname);
+    setValue('displayFormLastname', currentPurchase.customerLastname);
+    setValue('registerFormTiming', currentPurchase.timing);
+    setValue('registerFormSupermarket', currentPurchase.supermarket);
+    setValue('registerFormPurchaseSize', currentPurchase.purchaseSize);
+    setValue('registerFormExpensesOpen', currentPurchase.expensesPaid);
+    setValue('registerFormExpensesOpen', currentPurchase.expensesOpen);
+    setValue('registerFormPaymentMethod', currentPurchase.paymentMethod);
+    setValue('registerFormComments', currentPurchase.comments);
 
     const onSubmit = (values) => {
         console.log(values)
