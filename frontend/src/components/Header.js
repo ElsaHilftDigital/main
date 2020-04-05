@@ -56,7 +56,6 @@ const Header = (props) => {
                             <Nav.Link onClick={navigate("/register")} eventKey="/register" className="text-light font-weight-bold">Registrieren</Nav.Link>
                             <Nav.Link onClick={navigate("/about")} eventKey="/about" className="text-light font-weight-bold">Über Elsa hilft</Nav.Link>
                         </Nav>
-                        <AuthenticationHeader />
                     </Navbar.Collapse>
                 </>
             )}
