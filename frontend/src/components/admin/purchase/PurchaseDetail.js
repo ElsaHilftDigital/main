@@ -26,8 +26,10 @@ const PurchaseDetail = (props) => {
         registerFormComments: currentPurchase.comments
     }});
 
+    const date = new Date(props.currentPurchase.createDate);
+
     setValue('displayFormStatus', currentPurchase.status);
-    setValue('displayFormCreateDate', currentPurchase.createDate);
+    setValue('displayFormCreateDate', date.toLocaleString('de-DE'));
     setValue('displayFormVolunteerLastname', currentPurchase.volunteerLastname);
     setValue('displayFormVolunteerFirstname', currentPurchase.volunteerFirstname);
     setValue('displayFormCity', customer?.city);
@@ -57,7 +59,7 @@ const PurchaseDetail = (props) => {
     
     return(
         <div className="container mt-3 mb-5">
-            <h1>Details zum Einkauf vom {props.currentPurchase.createDate} für {props.currentPurchase.customerLastname}</h1>
+            <h1>Details zum Einkauf vom {date.toLocaleString('de-DE')} für {props.currentPurchase.customerLastname}</h1>
             <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
 
             <form onSubmit={handleSubmit(onSubmit)} style={{paddingTop: "1em"}}>
