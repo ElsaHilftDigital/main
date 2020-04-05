@@ -13,7 +13,7 @@ const CustomerList = (props) => {
                     <li 
                         onClick={() => props.updateSelectedCustomer(customer.id)}
                         key={customer.id} 
-                        className={'nav-item' + (customer.id === props.selectedCustomer ? ' nav-item-active' : '')}
+                        className={'nav-item' + (customer.id === props.selectedCustomer.id ? ' nav-item-active' : '')}
                     >
                         {customer.name}
                     </li>
