@@ -226,13 +226,33 @@ const NewRequest = () => {
         </>);
     };
 
-    const SubmitPurchase = () => {
+    const SubmitExistingCustomer = () => {
+        const dispatch = useDispatch();
+        const ongoingPurchaseCreate = useSelector(purchaseSelectors.createPurchaseRequestOngoing);
+        const createPurchase = useSelector(purchaseSelectors.createPurchaseSuccess);
+        useEffect(() => {dispatch(purchaseActions.createPurchase(
+            Object.assign(
+                purchase,
+                {
+                    orderItems: purchaseList,
+                    customer: customer.uuid
+                }
+            )
+        ))}, [dispatch]);
+        return <>{ongoingPurchaseCreate && <div className="spinner-border" role="status"/>}
+            {createPurchase
+            ? <div className="alert alert-sucess" role="alert">Auftrag erfolgreich erstellt</div>
+            : <div className="alert alert-danger" role="alert">Fehler beim erstellen des Auftrags</div>
+        }</>;
+    };
+
+    const SubmitNewCustomer = () => {
         const dispatch = useDispatch();
         const ongoingCustomerCreate = useSelector(customerSelectors.createCustomerRequestOngoing);
         const customerSuccess = useSelector(customerSelectors.createCustomerSuccess);
         useEffect(() => {dispatch(customerActions.createCustomer(customer))}, [dispatch]);
         const ongoingPurchaseCreate = useSelector(purchaseSelectors.createPurchaseRequestOngoing);
-        const createPurchaseSuccess = useSelector(purchaseSelectors.createPurchaseSuccess);
+        const createPurchase = useSelector(purchaseSelectors.createPurchaseSuccess);
         useEffect(() => {customerSuccess && dispatch(purchaseActions.createPurchase(
             Object.assign(
                 purchase,
@@ -243,16 +263,18 @@ const NewRequest = () => {
             )
         ))}, [customerSuccess, dispatch]);
         return <>
-            {ongoingCustomerCreate ? <span>Kunde wird erzeugt...</span> : 
-                    customerSuccess
-                    ? <span>Kunde wurde erzeugt</span> 
-                    : <span>Fehler beim Erzeugen des Kunden</span>}
-            {ongoingPurchaseCreate ? <span>Auftrag wird erzeugt...</span> :
-                    createPurchaseSuccess
-                    ? <span>Auftrag wurde erzeugt</span>
-                    : <span>Fehler beim Erzeugen des Aufrags</span>}
-        </>;
-    };
+            {(ongoingCustomerCreate || ongoingPurchaseCreate) && <div className="spinner-border" role="status"/>}
+            {customerSuccess
+            ? <>
+                <div className="alert alert-success" role="alert">Kunde erfolgreich erstellt</div>
+                {createPurchase
+                    ? <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
+                    : !ongoingPurchaseCreate && <div className="alert alert-danger" role="alert">Fehler beim erstellen des Auftrags</div>
+                }
+            </>
+            : !ongoingCustomerCreate && <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Kunden</div>
+            }</>;
+    }
 
     const renderContent = () => {
         switch (step) {
@@ -261,7 +283,7 @@ const NewRequest = () => {
             case 1:
                 return <EnterPurchase/>;
             case 2:
-                return <SubmitPurchase/>;
+                return newCustomer ? <SubmitNewCustomer/> : <SubmitExistingCustomer/>;
         }
     };
     return (
