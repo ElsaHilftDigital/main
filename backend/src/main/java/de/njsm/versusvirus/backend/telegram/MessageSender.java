@@ -109,7 +109,11 @@ public class MessageSender {
         MessageToBeSent message = new MessageToBeSent(organization.getTelegramGroupChatId(), text);
         Message sentMessage = api.sendMessage(message);
 
-        purchase.setBroadcastMessageId(sentMessage.getId());
+        if (sentMessage != null) {
+            purchase.setBroadcastMessageId(sentMessage.getId());
+        } else {
+            LOG.error("I would have expected to receive my sent message");
+        }
     }
 
     public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {

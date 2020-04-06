@@ -230,6 +230,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
         if (purchase.getStatus() != Purchase.Status.PURCHASE_IN_DELIVERY) {
             messageSender.sendUnexpectedMessage(chatId);
+            LOG.warn("volunteer informed about missing money in purchase in state " + purchase.getStatus());
             return;
         }
 

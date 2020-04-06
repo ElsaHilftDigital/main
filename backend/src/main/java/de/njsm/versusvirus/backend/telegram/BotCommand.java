@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.telegram.dto.Message;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 
 import java.text.MessageFormat;
@@ -17,12 +18,12 @@ public enum BotCommand {
     HILFE_ANBIETEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? hilfeanbieten_(?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + botName + ")? hilfeanbieten_(?<purchaseId>.*)$");
         }
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}start=hilfeanbieten_{1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=hilfeanbieten_{1}", getBaseUrl(), purchaseId);
         }
 
         @Override
@@ -43,12 +44,12 @@ public enum BotCommand {
     HILFE_BESTAETIGEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? hilfebestaetigen_(?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + botName + ")? hilfebestaetigen_(?<purchaseId>.*)$");
         }
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}start=hilfebestaetigen_{1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=hilfebestaetigen_{1}", getBaseUrl(), purchaseId);
         }
 
         @Override
@@ -69,12 +70,12 @@ public enum BotCommand {
     HILFE_ZURUECKZIEHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? hilfezurueckziehen_(?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + botName + ")? hilfezurueckziehen_(?<purchaseId>.*)$");
         }
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}start=hilfezurueckziehen_{1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=hilfezurueckziehen_{1}", getBaseUrl(), purchaseId);
         }
 
         @Override
@@ -95,12 +96,12 @@ public enum BotCommand {
     QUITTUNG_EINREICHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? rcpt_(?<purchaseId>[^_]*)$");
+            return Pattern.compile("^/start(?<botname>@" + botName + ")? rcpt_(?<purchaseId>[^_]*)$");
         }
 
         @Override
         public String render(String purchaseId) {
-            return MessageFormat.format("{0}start=rcpt_{1}", BASE_URL, purchaseId);
+            return MessageFormat.format("{0}start=rcpt_{1}", getBaseUrl(), purchaseId);
         }
 
         @Override
@@ -121,7 +122,7 @@ public enum BotCommand {
     ABSCHLIESSEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? abschliessen_(?<purchaseId>[^_]*)_(?<isSuccess>(true)|(false))$");
+            return Pattern.compile("^/start(?<botname>@" + botName + ")? abschliessen_(?<purchaseId>[^_]*)_(?<isSuccess>(true)|(false))$");
         }
 
         @Override
@@ -131,7 +132,7 @@ public enum BotCommand {
 
         @Override
         public String render(String isSuccessfulFlag, String purchaseId) {
-            return MessageFormat.format("{0}start=abschliessen_{1}_{2}", BASE_URL, purchaseId, isSuccessfulFlag);
+            return MessageFormat.format("{0}start=abschliessen_{1}_{2}", getBaseUrl(), purchaseId, isSuccessfulFlag);
         }
 
         @Override
@@ -148,12 +149,12 @@ public enum BotCommand {
     START {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? (?<userId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + botName + ")? (?<userId>.*)$");
         }
 
         @Override
         public String render(String userId) {
-            return MessageFormat.format("{0}start={1}", BASE_URL, userId);
+            return MessageFormat.format("{0}start={1}", getBaseUrl(), userId);
         }
 
         @Override
@@ -174,12 +175,12 @@ public enum BotCommand {
     QUIT {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? quit$");
+            return Pattern.compile("^/start(?<botname>@" + botName + ")? quit$");
         }
 
         @Override
         public String render(String unused) {
-            return MessageFormat.format("{0}start=quit", BASE_URL);
+            return MessageFormat.format("{0}start=quit", getBaseUrl());
         }
 
         @Override
@@ -196,9 +197,7 @@ public enum BotCommand {
         }
     };
 
-    private static final String BOT_NAME = System.getenv("TELEGRAM_BOT_NAME") == null ? "elsahilftbot" : System.getenv("TELEGRAM_BOT_NAME");
-
-    private static final String BASE_URL = "https://t.me/" + BOT_NAME + "?";
+    String botName;
 
     public abstract String render(String contextDependentValue);
 
@@ -216,5 +215,14 @@ public enum BotCommand {
             }
         }
         return null;
+    }
+
+    @Value("${telegram.bot.name}")
+    public void setBotName(String botName) {
+        this.botName = botName;
+    }
+
+    public String getBaseUrl() {
+        return "https://t.me/" + botName + "?";
     }
 }
