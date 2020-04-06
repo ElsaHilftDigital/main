@@ -54,6 +54,11 @@ const Progress = styled.ol`
     width: 100%;
 `;
 
+const PurchaseListItem = styled.li`
+    padding: 0.375rem 0.75rem !important;
+`;
+
+
 const NewRequest = () => {
     const steps = ['Kunde', 'Auftrag', 'Bestätigung'];
     const [step, setStep] = useState(0);
@@ -70,12 +75,56 @@ const NewRequest = () => {
 
     const EnterCustomer = () => {
         const allCustomers = useCustomers();
-
         const ExistingCustomer = () => {
+            const renderCustomerSuggestion = (customer, searchText) => {
+                return [
+                    <div key="name">{customer.firstName} {customer.lastName}</div>,
+                    <div key="address">{customer.address.address}</div>,
+                    <div key="address2">{customer.address.zipCode} {customer.address.city}</div>,
+                    <div key="phone">{customer.phone}{customer.mobile && ` / ${customer.mobile}`}</div>
+                ];
+            }
             return <>
                 <SearchBox
                         items={allCustomers}
-                        loading={customerSelectors.getAllCustomersRequestOngoing}/>
+                        onChange={setCustomer}
+                        renderItems={renderCustomerSuggestion}/>
+                {customer && <>
+                    <div className="row mt-3">
+                        <div className="form-group col-md-6">
+                            <label htmlFor="firstName">Vorname</label>
+                            <input disabled name="firstName" type="text" className="form-control" id="firstName" value={customer.firstName} />
+                        </div>
+                        <div className="form-group col-md-6">
+                            <label htmlFor="lastName">Nachname</label>
+                            <input disabled name="lastName" type="text" className="form-control" id="lastName" value={customer.lastName}/>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="address">Adresse</label>
+                        <input disabled name="address" type="text" className="form-control" id="address" value={customer.address.address}/>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-md-6">
+                            <label htmlFor="zipCode">PLZ</label>
+                            <input disabled name="zipCode" type="text" className="form-control" id="zipCode" value={customer.address.zipCode}/>
+                        </div>
+                        <div className="form-group col-md-6">
+                            <label htmlFor="city">Ort</label>
+                            <input disabled name="city" type="text" className="form-control" id="city" value={customer.address.city}/>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="form-group col-md-6">
+                            <label htmlFor="phone">Festnetz</label>
+                            <input disabled name="phone" type="text" className="form-control" id="phone" value={customer.phone}/>
+                        </div>
+                        <div className="form-group col-md-6">
+                            <label htmlFor="mobile">Mobile</label>
+                            <input disabled name="mobile" type="text" className="form-control" id="mobile" value={customer.mobile}/>
+                        </div>
+                    </div>
+                </>}
                 <form className="mt-3" onSubmit={() => setStep(step + 1)}>
                     <button type="submit" disabled={!customer || !customer.id} className="btn btn-primary float-right">Weiter</button>
                 </form>
@@ -96,12 +145,12 @@ const NewRequest = () => {
                     <div className="form-group col-md-6">
                         <label htmlFor="firstName">Vorname</label>
                         <input name="firstName" type="text" ref={register({ required: true })} className="form-control" id="firstName" placeholder="Vorname"/>
-                        {errors.firstname && (<span className="text-danger">Vorname wird benötigt</span>)}
+                        {errors.firstName && (<span className="text-danger">Vorname wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="lastName">Nachname</label>
                         <input name="lastName" type="text" ref={register({ required: true })} className="form-control" id="lastName" placeholder="Nachname"/>
-                        {errors.lastname && (<span className="text-danger">Nachname wird benötigt</span>)}
+                        {errors.lastName && (<span className="text-danger">Nachname wird benötigt</span>)}
                     </div>
                 </div>
                 <div className="form-group">
@@ -139,12 +188,18 @@ const NewRequest = () => {
         return (<>
             <form className="mb-3">
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" checked={!newCustomer} onChange={() => setNewCustomer(false)} type="radio" id="existing" name="customerType"/>
-                    <label className="form-check-label" for="existing">Bestehender Kunde</label>
+                    <input className="form-check-input" checked={!newCustomer} onChange={() => {
+                        setNewCustomer(false);
+                        setCustomer(undefined);
+                    }} type="radio" id="existing" name="customerType"/>
+                    <label className="form-check-label" htmlFor="existing">Bestehender Kunde</label>
                 </div>
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" checked={newCustomer} onChange={() => setNewCustomer(true)} type="radio" id="new" name="customerType"/>
-                    <label className="form-check-label" for="new">Neuer Kunde</label>
+                    <input className="form-check-input" checked={newCustomer} onChange={() => {
+                        setNewCustomer(true);
+                        setCustomer(undefined);
+                    }} type="radio" id="new" name="customerType"/>
+                    <label className="form-check-label" htmlFor="new">Neuer Kunde</label>
                 </div>
             </form>
             {newCustomer ? <NewCustomer/> : <ExistingCustomer/> }
@@ -164,10 +219,6 @@ const NewRequest = () => {
             }
         };
 
-        const Li = styled.li`
-            padding: 0.375rem 0.75rem !important;
-        `;
-
         const onReset = data => {
             setPurchase(data);
             setStep(step - 1);
@@ -184,13 +235,13 @@ const NewRequest = () => {
                 <i>Bitte für jedes Produkt eine neue Zeile nutzen. Klicke "Enter" für eine neue Zeile.</i>
             </p>
             <ul className="list-group mb-3">
-                {purchaseList.map((item, index) => <Li className="list-group-item" key={index}>
+                {purchaseList.map((item, index) => <PurchaseListItem className="list-group-item" key={index}>
                     {item}
                     <i onClick={() => removeFromPurchaseList(index)} style={{margin: 'auto'}} className="fa fa-trash float-right"/>
-                </Li>)}
-                <Li className="list-group-item">
+                </PurchaseListItem>)}
+                <PurchaseListItem className="list-group-item">
                     <input className="no-outline" type="text" onKeyDown={keyDownHandler} autoFocus></input>
-                </Li>
+                </PurchaseListItem>
             </ul>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="form-group">
