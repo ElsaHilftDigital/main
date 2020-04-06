@@ -25,7 +25,10 @@ class TelegramApiWrapper {
 
     private ApiClient apiClient;
 
-    TelegramApiWrapper(@Value("${telegram.bot.token}") String token) {
+    private String domain;
+
+    TelegramApiWrapper(@Value("${telegram.bot.token}") String token, @Value("${deployment.domain}") String domain) {
+        this.domain = domain;
         RequestInterceptor logger = new RequestInterceptor();
         apiClient = new Retrofit.Builder()
                 .baseUrl("https://api.telegram.org")
@@ -68,7 +71,7 @@ class TelegramApiWrapper {
 
     private void registerWebhook() {
         LOG.debug("Setting webhook to production");
-        String url = "https://versusvirus.njsm.de/api/v1/" + TelegramController.TELEGRAM_WEBHOOK;
+        String url = "https://" + domain + "/api/v1/" + TelegramController.TELEGRAM_WEBHOOK;
         Call<TelegramResponse<Void>> call = apiClient.setWebhook(token, new WebhookRequest(url));
         executeQuery(call);
     }

@@ -11,6 +11,7 @@ import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -25,16 +26,19 @@ public class MessageSender {
     private TelegramMessages telegramMessages;
     private final CustomerRepository customerRepository;
 
+    private String domain;
+
     @Autowired
-    public MessageSender(TelegramApiWrapper api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
+    public MessageSender(@Value("${deployment.domain}") String domain, TelegramApiWrapper api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
         this.api = api;
         this.telegramMessages = telegramMessages;
         this.customerRepository = customerRepository;
+        this.domain = domain;
     }
 
     public void directUserToRegistrationForm(long chatId) {
         String template = telegramMessages.getUnknownVolunteer();
-        String text = MessageFormat.format(template, "https://versusvirus.njsm.de/#/register");
+        String text = MessageFormat.format(template, "https://" + domain + "/#/register");
 
         MessageToBeSent message = new MessageToBeSent(chatId, text);
         api.sendMessage(message);

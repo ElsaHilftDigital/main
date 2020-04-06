@@ -5,6 +5,7 @@ After=network.target network-online.target nss-lookup.target
 [Service]
 Type=simple
 Environment=TELEGRAM_TOKEN={{ elsa_backend_telegram_token }}
+Environment=DEPLOYMENT_DOMAIN={{ ansible_fqdn }}
 ExecStart=java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4004 \
         -jar /usr/local/lib/elsa-hilft.jar
 User=elsa
