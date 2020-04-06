@@ -17,7 +17,7 @@ public enum BotCommand {
     HILFE_ANBIETEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? hilfeanbieten_(?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? hilfeanbieten_(?<purchaseId>.*)$");
         }
 
         @Override
@@ -43,7 +43,7 @@ public enum BotCommand {
     HILFE_BESTAETIGEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? hilfebestaetigen_(?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? hilfebestaetigen_(?<purchaseId>.*)$");
         }
 
         @Override
@@ -69,7 +69,7 @@ public enum BotCommand {
     HILFE_ZURUECKZIEHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? hilfezurueckziehen_(?<purchaseId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? hilfezurueckziehen_(?<purchaseId>.*)$");
         }
 
         @Override
@@ -95,7 +95,7 @@ public enum BotCommand {
     QUITTUNG_EINREICHEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? rcpt_(?<purchaseId>[^_]*)$");
+            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? rcpt_(?<purchaseId>[^_]*)$");
         }
 
         @Override
@@ -121,7 +121,7 @@ public enum BotCommand {
     ABSCHLIESSEN {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? abschliessen_(?<purchaseId>[^_]*)_(?<isSuccess>(true)|(false))$");
+            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? abschliessen_(?<purchaseId>[^_]*)_(?<isSuccess>(true)|(false))$");
         }
 
         @Override
@@ -148,7 +148,7 @@ public enum BotCommand {
     START {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? (?<userId>.*)$");
+            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? (?<userId>.*)$");
         }
 
         @Override
@@ -174,7 +174,7 @@ public enum BotCommand {
     QUIT {
         @Override
         Pattern getRegex() {
-            return Pattern.compile("^/start(?<botname>@elsahilftbot)? quit$");
+            return Pattern.compile("^/start(?<botname>@" + BOT_NAME + ")? quit$");
         }
 
         @Override
@@ -196,7 +196,9 @@ public enum BotCommand {
         }
     };
 
-    private static final String BASE_URL = "https://t.me/elsahilftbot?";
+    private static final String BOT_NAME = System.getenv("TELEGRAM_BOT_NAME") == null ? "elsahilftbot" : System.getenv("TELEGRAM_BOT_NAME");
+
+    private static final String BASE_URL = "https://t.me/" + BOT_NAME + "?";
 
     public abstract String render(String contextDependentValue);
 
