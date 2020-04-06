@@ -180,6 +180,9 @@ const NewRequest = () => {
 
         return (<>
             <label>Einkaufsliste</label>
+            <p>
+                <i>Bitte für jedes Produkt eine neue Zeile nutzen. Klicke "Enter" für eine neue Zeile.</i>
+            </p>
             <ul className="list-group mb-3">
                 {purchaseList.map((item, index) => <Li className="list-group-item" key={index}>
                     {item}
@@ -240,7 +243,7 @@ const NewRequest = () => {
         ))}, [dispatch]);
         return <>{ongoingPurchaseCreate && <div className="spinner-border" role="status"/>}
             {createPurchase
-            ? <div className="alert alert-sucess" role="alert">Auftrag erfolgreich erstellt</div>
+            ? <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
             : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
         }</>;
     };
