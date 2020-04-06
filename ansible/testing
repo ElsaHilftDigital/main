@@ -1,0 +1,4 @@
+versusvirus-testing.njsm.de ansible_python_interpreter=/usr/bin/python3
+
+[testing]
+versusvirus-testing.njsm.de
