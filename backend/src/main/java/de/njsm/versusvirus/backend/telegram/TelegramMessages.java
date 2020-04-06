@@ -36,6 +36,7 @@ public class TelegramMessages {
     private String receiptHasBeenSubmitted;
     private String confirmInvestigation;
     private String confirmCompletion;
+    private String moneyIsMissing;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -239,5 +240,13 @@ public class TelegramMessages {
 
     public void setConfirmCompletion(String confirmCompletion) {
         this.confirmCompletion = confirmCompletion;
+    }
+
+    public String getMoneyIsMissing() {
+        return this.moneyIsMissing;
+    }
+
+    public void setMoneyIsMissing(String moneyIsMissing) {
+        this.moneyIsMissing = moneyIsMissing;
     }
 }

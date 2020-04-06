@@ -243,6 +243,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         } else {
             purchase.setStatus(Purchase.Status.MONEY_NOT_FOUND);
             messageSender.confirmInvestigation(chatId);
+            adminMessageSender.notifyAboutMissingMoney(organization.getTelegramModeratorGroupChatId());
         }
     }
 }

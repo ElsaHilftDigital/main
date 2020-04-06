@@ -39,4 +39,9 @@ public class AdminMessageSender {
         var m = new MessageToBeSent(chatId, telegramMessages.getReceiptHasBeenSubmitted());
         api.sendMessage(m);
     }
+
+    public void notifyAboutMissingMoney(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getMoneyIsMissing());
+        api.sendMessage(m);
+    }
 }
