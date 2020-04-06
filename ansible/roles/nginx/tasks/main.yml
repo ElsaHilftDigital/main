@@ -16,6 +16,13 @@
     - python-certbot-nginx
   when: webserver_enable_letsencrypt
 
+- name: Check if certificate has been issued
+  become: True
+  stat:
+    path: "/etc/letsencrypt/live/{{ webserver_server_name }}"
+  register: certificate
+  when: webserver_enable_letsencrypt
+
 - name: Set up directories
   become: True
   file:
@@ -34,6 +41,32 @@
 
 - name: Configure nginx
   become: True
+  vars:
+    tls: "{{ webserver_tls is defined or (webserver_enable_letsencrypt and certificate.stat and certificate.stat.isdir is defined) }}"
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload nginx
+
+- name: Start services
+  become: True
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Run certbot
+  become: True
+  command: certbot --nginx --register-unsafely-without-email -n --agree-tos --domains {{ webserver_server_name }}
+  when: webserver_enable_letsencrypt and not certificate.stat.isdir is defined
+
+- name: Configure nginx
+  become: True
+  vars:
+    tls: "{{ webserver_enable_letsencrypt }}"
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
@@ -116,25 +149,6 @@
   notify: Reload nginx
   with_fileglob:
     - "{{ inventory_hostname }}/webserver/sites/*"
-
-- name: Start services
-  become: True
-  service:
-    name: nginx
-    state: started
-    enabled: yes
-
-- name: Check if certificate has been issued
-  become: True
-  stat:
-    path: "/etc/letsencrypt/live/{{ webserver_server_name }}"
-  register: certificate
-  when: webserver_enable_letsencrypt
-
-- name: Run certbot
-  become: True
-  command: certbot --nginx --register-unsafely-without-email
-  when: webserver_enable_letsencrypt and not certificate.stat.isdir is defined
 
 - name: Add cron job for certificate renewal
   become: True
