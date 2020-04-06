@@ -1,0 +1,4 @@
+versusvirus.njsm.de ansible_python_interpreter=/usr/bin/python3
+
+[production]
+versusvirus.njsm.de
