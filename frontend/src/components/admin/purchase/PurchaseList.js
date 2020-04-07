@@ -1,9 +1,8 @@
 import React from 'react';
 
-import {useCustomers} from '../useCustomers';
 
 const PurchaseList = props => {
-    const customers = useCustomers();
+    const customers = props.customers;
 
     if (!props.purchases.length) {
         return (

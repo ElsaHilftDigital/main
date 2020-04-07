@@ -4,9 +4,9 @@ import { handleErrorRedirect, parseError } from '../../config/utils';
 import * as actions from './customerActions';
 
 
-export function* handleGetCustomers(customerApi) {
+export function* handleGetCustomers(getCustomers) {
     try {
-        const customers = yield call([customerApi, getCustomers]);
+        const customers = yield call(getCustomers);
         yield put(actions.getCustomersSuccess(customers));
     } catch (error) {
         console.log(error);
@@ -15,9 +15,9 @@ export function* handleGetCustomers(customerApi) {
     }
 };
 
-export function* handleGetCustomer(customerApi, action) {
+export function* handleGetCustomer(getCustomer, action) {
     try {
-        const customer = yield call([customerApi, getCustomer], action.payload);
+        const customer = yield call(getCustomer, action.payload);
         yield put(actions.getCustomerSuccess(customer));
     } catch (error) {
         console.log(error);
@@ -26,9 +26,9 @@ export function* handleGetCustomer(customerApi, action) {
     }
 };
 
-export function* handleGetCompletedPurchaseList(customerApi, action) {
+export function* handleGetCompletedPurchaseList(getCompletedPurchaseList, action) {
     try {
-        const completedPurchaseList = yield call([customerApi, getCompletedPurchaseList], action.payload);
+        const completedPurchaseList = yield call(getCompletedPurchaseList, action.payload);
         yield put(actions.getCompletedPurchaseListSuccess(completedPurchaseList));
     } catch (error) {
         console.log(error);
@@ -37,9 +37,9 @@ export function* handleGetCompletedPurchaseList(customerApi, action) {
     }
 };
 
-export function* handleGetOpenPurchaseList(customerApi, action) {
+export function* handleGetOpenPurchaseList(getOpenPurchaseList, action) {
     try {
-        const openPurchaseList = yield call([customerApi, getOpenPurchaseList], action.payload);
+        const openPurchaseList = yield call(getOpenPurchaseList, action.payload);
         yield put(actions.getOpenPurchaseListSuccess(openPurchaseList));
     } catch (error) {
         console.log(error);
@@ -48,9 +48,9 @@ export function* handleGetOpenPurchaseList(customerApi, action) {
     }
 };
 
-export function* handleCreateCustomer(customerApi, action) {
+export function* handleCreateCustomer(createCustomer, action) {
     try {
-        const createdCustomer = yield call([customerApi, createCustomer], action.payload);
+        const createdCustomer = yield call(createCustomer, action.payload);
         yield put(actions.createCustomerSuccess(createdCustomer));
     } catch (error) {
         console.log(error);
@@ -59,10 +59,10 @@ export function* handleCreateCustomer(customerApi, action) {
     }
 };
 
-export function* handleUpdateCustomer(customerApi, action) {
+export function* handleUpdateCustomer(updateCustomer, action) {
     try {
         const { uuid, customer } = action.payload;
-        yield call([customerApi, updateCustomer], uuid, customer);
+        yield call(updateCustomer, uuid, customer);
         yield put(actions.updateCustomerSuccess());
     } catch (error) {
         console.log(error);
@@ -71,9 +71,9 @@ export function* handleUpdateCustomer(customerApi, action) {
     }
 };
 
-export function* handleDeleteCustomer(customerApi, action) {
+export function* handleDeleteCustomer(deleteCustomer, action) {
     try {
-        yield call([customerApi, deleteCustomer], action.payload);
+        yield call(deleteCustomer, action.payload);
         yield put(actions.deleteCustomerSuccess());
     } catch (error) {
         console.log(error);
@@ -85,12 +85,12 @@ export function* handleDeleteCustomer(customerApi, action) {
 
 export function* customerSaga(customerApi) {
     yield all([
-        takeLatest(actions.GET_CUSTOMERS, handleGetCustomers, customerApi),
-        takeLatest(actions.GET_CUSTOMER, handleGetCustomer, customerApi),
-        takeLatest(actions.GET_COMPLETED_PURCHASE_LIST, handleGetCompletedPurchaseList, customerApi),
-        takeLatest(actions.GET_OPEN_PURCHASE_LIST, handleGetOpenPurchaseList, customerApi),
-        takeEvery(actions.CREATE_CUSTOMER, handleCreateCustomer, customerApi),
-        takeEvery(actions.UPDATE_CUSTOMER, handleUpdateCustomer, customerApi),
-        takeEvery(actions.DELETE_CUSTOMER, handleDeleteCustomer, customerApi),
+        takeLatest(actions.GET_CUSTOMERS, handleGetCustomers, customerApi.getCustomers),
+        takeLatest(actions.GET_CUSTOMER, handleGetCustomer, customerApi.getCustomer),
+        takeLatest(actions.GET_COMPLETED_PURCHASE_LIST, handleGetCompletedPurchaseList, customerApi.getCompletedPurchaseList),
+        takeLatest(actions.GET_OPEN_PURCHASE_LIST, handleGetOpenPurchaseList, customerApi.getOpenPurchaseList),
+        takeEvery(actions.CREATE_CUSTOMER, handleCreateCustomer, customerApi.createCustomer),
+        takeEvery(actions.UPDATE_CUSTOMER, handleUpdateCustomer, customerApi.updateCustomer),
+        takeEvery(actions.DELETE_CUSTOMER, handleDeleteCustomer, customerApi.deleteCustomer),
     ])
 };

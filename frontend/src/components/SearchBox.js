@@ -14,19 +14,19 @@ const Container = styled.div`
     }
 `;
 
-function debounce(fn, delay) {
-	let timeoutId;
-	return function (t) {
-		clearTimeout(timeoutId);
-		timeoutId = setTimeout(() => fn(t), delay);
-	};
-}
+//function debounce(fn, delay) {
+//	let timeoutId;
+//	return function (t) {
+//		clearTimeout(timeoutId);
+//		timeoutId = setTimeout(() => fn(t), delay);
+//	};
+//}
 
-function compose(fn, mapper) {
-	return function (u) {
-		fn(mapper(u));
-	}
-}
+// function compose(fn, mapper) {
+// 	return function (u) {
+//		fn(mapper(u));
+//	}
+//}
 
 function deduplicate(fn) {
 	let cacheValue;
@@ -42,11 +42,11 @@ const doNothing = () => {};
 
 const SearchBox = (props) => {
     const onChange = useConstant(() => deduplicate(props.onChange ?? doNothing));
-    const debouncedOnChange = useConstant(() => debounce(onChange, 500));
+    //const debouncedOnChange = useConstant(() => debounce(onChange, 500));
 
-    const changeHandler = (e) => {
-		debouncedOnChange(e.target.value);
-	};
+    //const changeHandler = (e) => {
+	//	debouncedOnChange(e.target.value);
+	//};
 
 	const keyDownHandler = (e) => {
 		if (e.key === "Enter") {

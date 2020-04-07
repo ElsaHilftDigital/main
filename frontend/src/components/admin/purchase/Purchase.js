@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 
 import PurchaseList from './PurchaseList'
 import PurchaseDetail from './PurchaseDetail'
-import { usePurchases } from '../usePurchases';
+import { usePurchases } from '../hooks/usePurchases';
 
 const Purchase = () => {
-    const purchases = usePurchases();
+    const { purchases } = usePurchases();
     const [purchase, setPurchase] = useState(undefined);
 
     return (

@@ -4,7 +4,7 @@ import {useForm} from 'react-hook-form';
 import {useSelector, useDispatch} from 'react-redux';
 
 import SearchBox from '../../SearchBox';
-import {useCustomers} from '../useCustomers';
+import {useCustomers} from '../hooks/useCustomers';
 import {customerSelectors, customerActions} from '../../../store/customer';
 import {purchaseSelectors, purchaseActions} from '../../../store/purchase';
 
@@ -69,7 +69,8 @@ const NewRequest = () => {
     ));
 
     const EnterCustomer = () => {
-        const allCustomers = useCustomers();
+        const { customers } = useCustomers();
+        const allCustomers = customers;
 
         const ExistingCustomer = () => {
             return <>
@@ -230,8 +231,8 @@ const NewRequest = () => {
 
     const SubmitExistingCustomer = () => {
         const dispatch = useDispatch();
-        const ongoingPurchaseCreate = useSelector(purchaseSelectors.createPurchaseRequestOngoing);
-        const createPurchase = useSelector(purchaseSelectors.createPurchaseSuccess);
+        const ongoingPurchaseCreate = useSelector(purchaseSelectors.selectCreatePurchaseError);
+        const createPurchase = useSelector(purchaseSelectors.selectCreatePurchaseSuccess);
         useEffect(() => {dispatch(purchaseActions.createPurchase(
             Object.assign(
                 purchase,
@@ -250,8 +251,8 @@ const NewRequest = () => {
 
     const SubmitNewCustomer = () => {
         const dispatch = useDispatch();
-        const ongoingCustomerCreate = useSelector(customerSelectors.createCustomerRequestOngoing);
-        const customerSuccess = useSelector(customerSelectors.createCustomerSuccess);
+        const ongoingCustomerCreate = useSelector(customerSelectors.selectCreateCustomerRequestOngoing);
+        const customerSuccess = useSelector(customerSelectors.selectCreateCustomerSuccess);
         useEffect(() => {dispatch(customerActions.createCustomer(customer))}, [dispatch]);
         const ongoingPurchaseCreate = useSelector(purchaseSelectors.createPurchaseRequestOngoing);
         const createPurchase = useSelector(purchaseSelectors.createPurchaseSuccess);
@@ -288,6 +289,9 @@ const NewRequest = () => {
                 return <EnterPurchase/>;
             case 2:
                 return newCustomer ? <SubmitNewCustomer/> : <SubmitExistingCustomer/>;
+            default:
+                console.log('NewRequest.js: unkonw step');
+                return null;
         }
     };
     return (

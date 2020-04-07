@@ -3,12 +3,23 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { purchaseActions } from '../../../store/purchase';
-import { useCustomer } from '../useCustomer';
+import { useCustomer } from '../hooks/useCustomer';
 
 
 const PurchaseDetail = (props) => {
+    const dispatch = useDispatch();
+
     const { currentPurchase } = props;
     const customer = useCustomer(currentPurchase.customer);
+
+    const assignVolunteer = uuid => {
+        dispatch(purchaseActions.assignVolunteer(props.currentPurchase.uuid, uuid));
+    };
+
+    const notifyVolunteerToDeliver = () => {
+        dispatch(purchaseActions.customerNotified(props.currentPurchase.uuid));
+    };
+
     const {register, handleSubmit, setValue } = useForm({defaultValues: {
         displayFormStatus: currentPurchase.status,
         displayFormCreateDate: currentPurchase.createDate,
@@ -20,7 +31,7 @@ const PurchaseDetail = (props) => {
         registerFormTiming: currentPurchase.timing,
         registerFormSupermarket: currentPurchase.supermarket,
         registerFormPurchaseSize: currentPurchase.purchaseSize,
-        registerFormExpensesOpen: currentPurchase.expensesPaid,
+        registerFormExpensesPaid: currentPurchase.expensesPaid,
         registerFormExpensesOpen: currentPurchase.expensesOpen,
         registerFormPaymentMethod: currentPurchase.paymentMethod,
         registerFormComments: currentPurchase.comments
@@ -45,16 +56,6 @@ const PurchaseDetail = (props) => {
 
     const onSubmit = (values) => {
         console.log(values)
-    };
-
-    const dispatch = useDispatch();
-
-    const assignVolunteer = uuid => {
-        dispatch(purchaseActions.assignVolunteer(props.currentPurchase.uuid, uuid));
-    };
-
-    const notifyVolunteerToDeliver = () => {
-        dispatch(purchaseActions.notifyVolunteerToDeliver(props.currentPurchase.uuid));
     };
     
     return(
@@ -84,7 +85,7 @@ const PurchaseDetail = (props) => {
                                 <input name="displayFormVolunteerLastname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormVolunteerLastname" />
                             </div>
                             </div>
-                        <div className="form-group mb-2 mb-3"><i><a href="">Für weitere Infos zum Helfer hier klicken</a></i></div>
+                        <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Helfer hier klicken</a></i></div>
                     </span>
                 )}
                 {!props.currentPurchase.assignedVolunteer && (
@@ -133,7 +134,7 @@ const PurchaseDetail = (props) => {
                         <input name="displayFormLastname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormLastname" />
                     </div>
                 </div>
-                <div className="form-group mb-2 mb-3"><i><a href="">Für weitere Infos zum Auftraggeber hier klicken</a></i></div>
+                <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Auftraggeber hier klicken</a></i></div>
                 <div className="form-group">
                     <label htmlFor="registerFormTiming">Braucht Einkauf</label>
                     <input name="registerFormTiming" ref={register()} type="text" className="form-control" id="registerFormTiming" placeholder="3.3.2020 19:00" />
@@ -154,7 +155,7 @@ const PurchaseDetail = (props) => {
                     <label htmlFor="registerFormPaymentMethod">Zahlungsmethode</label>
                     <input name="registerFormPaymentMethod" ref={register({ required: true })} type="text" className="form-control" id="registerFormPaymentMethod" />
                 </div>
-                <div className="form-group mb-2 mb-3"><i><a href="">Hier ist der Link zur Quittung, falls vorhanden</a></i></div>
+                <div className="form-group mb-2 mb-3"><i><a href="/">Hier ist der Link zur Quittung, falls vorhanden</a></i></div>
                 <div className="form-group">
                     <label htmlFor="registerFormComments">Kommentare</label>
                     <textarea name="registerFormComments" ref={register()} type="text" className="form-control" id="registerFormComments"></textarea>

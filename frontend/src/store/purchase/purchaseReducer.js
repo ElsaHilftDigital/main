@@ -62,7 +62,7 @@ export default function purchaseReducer(state = initialState, action) {
         case actions.GET_PURCHASE_ERROR:
             return {
                 ...state,
-                getPurchaseError: error,
+                getPurchaseError: payload,
                 getPurchaseRequestOngoing: false,
             };
         // create purchase
@@ -70,7 +70,7 @@ export default function purchaseReducer(state = initialState, action) {
             return {
                 ...state,
                 createPurchaseSuccess: null,
-                createPurchaseSuccess: null,
+                createPurchaseError: null,
                 createPurchaseRequestOngoing: true,
             };
         case actions.CREATE_PURCHASE_SUCCESS:

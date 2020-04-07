@@ -1,12 +1,12 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import { handleErrorRedirect, parseError } from '../../config/utils';
 import * as actions from './volunteerActions';
 
 
-export function* handleGetVolunteers(volunteerApi) {
+export function* handleGetVolunteers(getVolunteers) {
     try {
-        const volunteers = yield call([volunteerApi, getVolunteers]);
+        const volunteers = yield call(getVolunteers);
         yield put(actions.getVolunteersSuccess(volunteers));
     } catch (error) {
         console.log(error);
@@ -15,9 +15,9 @@ export function* handleGetVolunteers(volunteerApi) {
     }
 };
 
-export function* handleGetVolunteer(volunteerApi, action) {
+export function* handleGetVolunteer(getVolunteer, action) {
     try {
-        const volunteer = yield call([volunteerApi, getVolunteer], action.payload);
+        const volunteer = yield call(getVolunteer, action.payload);
         yield put(actions.getVolunteerSuccess(volunteer));
     } catch (error) {
         console.log(error);
@@ -26,9 +26,9 @@ export function* handleGetVolunteer(volunteerApi, action) {
     }
 };
 
-export function* handleCreateVolunteer(volunteerApi, action) {
+export function* handleCreateVolunteer(createVolunteer, action) {
     try {
-        const createdVolunteer = yield call([volunteerApi, createVolunteer], action.payload);
+        const createdVolunteer = yield call(createVolunteer, action.payload);
         yield put(actions.createVolunteerSuccess(createdVolunteer));
     } catch (error) {
         console.log(error);
@@ -37,10 +37,10 @@ export function* handleCreateVolunteer(volunteerApi, action) {
     }
 };
 
-export function* handleUpdateVolunteer(volunteerApi, action) {
+export function* handleUpdateVolunteer(updateVolunteer, action) {
     try {
         const { uuid, volunteer } = action.payload;
-        yield call([volunteerApi, updateVolunteer], uuid, volunteer);
+        yield call(updateVolunteer, uuid, volunteer);
         yield put(actions.updateVolunteerSuccess());
     } catch (error) {
         console.log(error);
@@ -49,9 +49,9 @@ export function* handleUpdateVolunteer(volunteerApi, action) {
     }
 };
 
-export function* handleDeleteVolunteer(volunteerApi, action) {
+export function* handleDeleteVolunteer(deleteVolunteer, action) {
     try {
-        yield call([volunteerApi, deleteVolunteer], action.payload);
+        yield call(deleteVolunteer, action.payload);
         yield put(actions.deleteVolunteerSuccess());
     } catch (error) {
         console.log(error);
@@ -60,9 +60,9 @@ export function* handleDeleteVolunteer(volunteerApi, action) {
     }
 }
 
-export function* handleValidateVolunteer(volunteerApi, action) {
+export function* handleValidateVolunteer(validateVolunteer, action) {
     try {
-        yield call([volunteerApi, validateVolunteer], action.payload);
+        yield call(validateVolunteer, action.payload);
         yield put(actions.validateVolunteerSuccess());
     } catch (error) {
         console.log(error);
@@ -71,9 +71,9 @@ export function* handleValidateVolunteer(volunteerApi, action) {
     }
 }
 
-export function* handleGetCompletedPurchaseList(volunteerApi, action) {
+export function* handleGetCompletedPurchaseList(getCompletedPurchaseList, action) {
     try {
-        const completedPurchaseList = yield call([volunteerApi, getCompletedPurchaseList], action.payload);
+        const completedPurchaseList = yield call(getCompletedPurchaseList, action.payload);
         yield put(actions.getCompletedPurchaseListSuccess(completedPurchaseList));
     } catch (error) {
         console.log(error);
@@ -82,9 +82,9 @@ export function* handleGetCompletedPurchaseList(volunteerApi, action) {
     }
 };
 
-export function* handleGetOpenPurchaseList(volunteerApi, action) {
+export function* handleGetOpenPurchaseList(getOpenPurchaseList, action) {
     try {
-        const openPurchaseList = yield call([volunteerApi, getOpenPurchaseList], action.payload);
+        const openPurchaseList = yield call(getOpenPurchaseList, action.payload);
         yield put(actions.getOpenPurchaseListSuccess(openPurchaseList));
     } catch (error) {
         console.log(error);
@@ -96,13 +96,13 @@ export function* handleGetOpenPurchaseList(volunteerApi, action) {
 
 export function* volunteerSaga(volunteerApi) {
     yield all([
-        takeLatest(actions.GET_VOLUNTEERS, handleGetVolunteers, volunteerApi),
-        takeLatest(actions.GET_VOLUNTEER, handleGetVolunteer, volunteerApi),
-        takeEvery(actions.CREATE_VOLUNTEER, handleCreateVolunteer, volunteerApi),
-        takeEvery(actions.UPDATE_VOLUNTEER, handleUpdateVolunteer, volunteerApi),
-        takeEvery(actions.DELETE_VOLUNTEER, handleDeleteVolunteer, volunteerApi),
-        takeEvery(actions.VALIDATE_VOLUNTEER, handleValidateVolunteer, volunteerApi),
-        takeLatest(actions.GET_COMPLETED_PURCHASE_LIST, handleGetCompletedPurchaseList, volunteersApi),
-        takeLatest(actions.GET_OPEN_PURCHASE_LIST, handleGetOpenPurchaseList, volunteerApi),
+        takeLatest(actions.GET_VOLUNTEERS, handleGetVolunteers, volunteerApi.getVolunteers),
+        takeLatest(actions.GET_VOLUNTEER, handleGetVolunteer, volunteerApi.getVolunteer),
+        takeEvery(actions.CREATE_VOLUNTEER, handleCreateVolunteer, volunteerApi.createVolunteer),
+        takeEvery(actions.UPDATE_VOLUNTEER, handleUpdateVolunteer, volunteerApi.updateVolunteer),
+        takeEvery(actions.DELETE_VOLUNTEER, handleDeleteVolunteer, volunteerApi.deleteVolunteer),
+        takeEvery(actions.VALIDATE_VOLUNTEER, handleValidateVolunteer, volunteerApi.validateVolunteer),
+        takeLatest(actions.GET_COMPLETED_PURCHASE_LIST, handleGetCompletedPurchaseList, volunteerApi.getCompletedPurchaseList),
+        takeLatest(actions.GET_OPEN_PURCHASE_LIST, handleGetOpenPurchaseList, volunteerApi.getOpenPurchaseList),
     ])
 };

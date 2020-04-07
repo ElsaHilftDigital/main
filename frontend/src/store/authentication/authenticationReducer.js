@@ -2,7 +2,7 @@ import * as actions from './authenticationActions';
 
 export const initialState = {
     currentUser: null,
-    authError = null,
+    authError: null,
     loginError: null,
     logoutError: null,
 };

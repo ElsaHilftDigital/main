@@ -2,25 +2,25 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { volunteerActions, volunteerSelectors } from '../../../store/volunteer';
-import { useVolunteers } from '../useVolunteers';
+import { useVolunteers } from '../hooks/useVolunteers';
 import VolunteerDetail from './VolunteerDetail';
 import VolunteerList from './VolunteerList';
 
 const Volunteer = () => {
     const dispatch = useDispatch();
-    const volunteers = useVolunteers();
-    const currentVolunteer = useSelector(volunteerSelectors.getCurrentVolunteer);
+    const { volunteers } = useVolunteers();
+    const selectedVolunteer = useSelector(volunteerSelectors.selectSelectedVolunteer);
 
     const handleVolunteerUpdate = (values) => {
-        console.log(values);
+        dispatch(volunteerActions.updateVolunteer(values));
     };
 
     const handleConfirmVolunteer = (uuid) => {
-        dispatch(volunteerActions.confirmVolunteer(uuid));
+        dispatch(volunteerActions.validateVolunteer(uuid));
     };
 
     const handleChangeSelectedVolunteer = (uuid) => {
-        dispatch(volunteerActions.setCurrentVolunteer(uuid));
+        dispatch(volunteerActions.setSelectedVolunteer(uuid));
     };
 
     return (
@@ -28,14 +28,14 @@ const Volunteer = () => {
             <div className="sidebar">
                 <VolunteerList 
                     volunteers={volunteers} 
-                    selectedVolunteerUuid={currentVolunteer ? currentVolunteer.uuid : null}
+                    selectedVolunteerUuid={selectedVolunteer ? selectedVolunteer.uuid : null}
                     onSelectedVolunteerUpdate={handleChangeSelectedVolunteer}
                 />
             </div>
             <div className="content">
-                {currentVolunteer && (
+                {selectedVolunteer && (
                     <VolunteerDetail 
-                        currentVolunteer={currentVolunteer}
+                        currentVolunteer={selectedVolunteer}
                         onSubmit={handleVolunteerUpdate}
                         onConfirmVolunteer={handleConfirmVolunteer}
                     />

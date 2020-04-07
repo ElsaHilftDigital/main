@@ -4,9 +4,9 @@ import { handleErrorRedirect, parseError } from '../../config/utils';
 import * as actions from './purchaseActions';
 
 
-export function* handleGetPurchases(purchaseApi) {
+export function* handleGetPurchases(getPurchases) {
     try {
-        const purchases = yield call([purchaseApi, getPurchases]);
+        const purchases = yield call(getPurchases);
         yield put(actions.getPurchasesSuccess(purchases));
     } catch (error) {
         console.log(error);
@@ -15,9 +15,9 @@ export function* handleGetPurchases(purchaseApi) {
     }
 };
 
-export function* handleGetPurchase(purchaseApi, action) {
+export function* handleGetPurchase(getPurchase, action) {
     try {
-        const purchase = yield call([purchaseApi, getPurchase], action.payload);
+        const purchase = yield call(getPurchase, action.payload);
         yield put(actions.getPurchaseSuccess(purchase));
     } catch (error) {
         console.log(error);
@@ -26,9 +26,9 @@ export function* handleGetPurchase(purchaseApi, action) {
     }
 }
 
-export function* handleCreatePurchase(purchaseApi, action) {
+export function* handleCreatePurchase(createPurchase, action) {
     try {
-        const createdPurchase = yield call([purchaseApi, createPurchase], action.payload);
+        const createdPurchase = yield call(createPurchase, action.payload);
         yield put(actions.createPurchaseSuccess(createdPurchase));
     } catch (error) {
         console.log(error);
@@ -37,10 +37,10 @@ export function* handleCreatePurchase(purchaseApi, action) {
     }
 }
 
-export function* handleAssignVolunteer(purchaseApi, action) {
+export function* handleAssignVolunteer(assignVolunteer, action) {
     try {
         const { purchaseUuid, volunteerUuid } = action.payload;
-        yield call([purchaseApi, assignVolunteer], purchaseUuid, volunteerUuid);
+        yield call(assignVolunteer, purchaseUuid, volunteerUuid);
         yield put(actions.assignVolunteerSuccess());
     } catch (error) {
         console.log(error);
@@ -49,9 +49,9 @@ export function* handleAssignVolunteer(purchaseApi, action) {
     }
 };
 
-export function* handleCustomerNotified(purhcaseApi, action) {
+export function* handleCustomerNotified(customerNotified, action) {
     try {
-        yield call([purhcaseApi, customerNotified], action.payload);
+        yield call(customerNotified, action.payload);
         yield put(actions.customerNotifiedSuccess());
     } catch (error) {
         console.log(error);
@@ -60,9 +60,9 @@ export function* handleCustomerNotified(purhcaseApi, action) {
     }
 }
 
-export function* handleMarkCompleted(purchaseApi, action) {
+export function* handleMarkCompleted(markCompleted, action) {
     try {
-        yield call([purchaseApi, markCompleted], action.payload);
+        yield call(markCompleted, action.payload);
         yield put(actions.markCompletedSuccess());
     } catch (error) {
         console.log(error);
@@ -74,11 +74,11 @@ export function* handleMarkCompleted(purchaseApi, action) {
 
 export function* purchaseSaga(purchaseApi) {
     yield all([
-        takeLatest(actions.GET_PURCHASES, handleGetPurchases, purchaseApi),
-        takeLatest(actions.GET_PURCHASE, handleGetPurchase, purhcaseApi),
-        takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi),
-        takeEvery(actions.ASSIGN_VOLUNTEER, handleAssignVolunteer, purchaseApi),
-        takeEvery(actions.CUSTOMER_NOTIFIED, handleCustomerNotified, purchaseApi),
-        takeEvery(actions.MARK_COMPLETED, handleMarkCompleted, purchaseApi),
+        takeLatest(actions.GET_PURCHASES, handleGetPurchases, purchaseApi.getPurchases),
+        takeLatest(actions.GET_PURCHASE, handleGetPurchase, purchaseApi.getPurchase),
+        takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi.createPurchase),
+        takeEvery(actions.ASSIGN_VOLUNTEER, handleAssignVolunteer, purchaseApi.assignVolunteer),
+        takeEvery(actions.CUSTOMER_NOTIFIED, handleCustomerNotified, purchaseApi.customerNotified),
+        takeEvery(actions.MARK_COMPLETED, handleMarkCompleted, purchaseApi.markCompleted),
     ])
 };
