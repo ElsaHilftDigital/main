@@ -8,6 +8,7 @@ import de.njsm.versusvirus.backend.telegram.UpdateService;
 import de.njsm.versusvirus.backend.telegram.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +26,12 @@ public class TelegramController {
 
     private final UpdateService updateService;
 
-    public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher, UpdateService updateService) {
+    private final String botName;
+
+    public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher, UpdateService updateService, @Value("${telegram.bot.name}") String botName) {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
+        this.botName = botName;
     }
 
     @PostMapping(TELEGRAM_WEBHOOK)
@@ -83,7 +87,10 @@ public class TelegramController {
         User[] newUsers = message.getNewChatMembers();
         if (newUsers != null) {
             for (User u : newUsers) {
-                checkIfIJoinedANewChat(message.getChat(), u.getUserName().equals("elsahilftbot"));
+                String username = u.getUserName();
+                if (username != null) {
+                    checkIfIJoinedANewChat(message.getChat(), u.getUserName().equals(botName));
+                }
             }
         }
     }

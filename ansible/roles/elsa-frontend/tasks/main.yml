@@ -1,5 +1,9 @@
 ---
 
+- name: Purge old app
+  become: True
+  shell: rm -rf /var/www/html/*
+
 - name: Copy resources
   become: True
   copy:

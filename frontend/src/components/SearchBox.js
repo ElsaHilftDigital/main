@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import useConstant from 'use-constant';
+import {hintContainer, Typeahead, Highlighter} from 'react-bootstrap-typeahead';
 
 const Container = styled.div`
     border: 1px solid #ccd4da !important;
@@ -38,31 +38,29 @@ function deduplicate(fn) {
 	}
 }
 
-const doNothing = () => {};
+const SearchInput = styled.input`
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+`;
 
 const SearchBox = (props) => {
-    const onChange = useConstant(() => deduplicate(props.onChange ?? doNothing));
-    //const debouncedOnChange = useConstant(() => debounce(onChange, 500));
-
-    //const changeHandler = (e) => {
-	//	debouncedOnChange(e.target.value);
-	//};
-
-	const keyDownHandler = (e) => {
-		if (e.key === "Enter") {
-			const value = e.currentTarget.value;
-			onChange(value);
-		}
-    };
-
-    return (
-        <Container className="input-group">
-            <div className="input-group-prepend">
-                <i class="fa fa-search" style={{margin: 'auto 0', zIndex: 1000}}/>
-            </div>
-            <input onChange={onChange} onKeyDown={keyDownHandler} type="search" className="form-control" style={{border: 'none', outline: 'none', boxShadow: 'none'}}/>
-        </Container>
-    );
+	return (<Typeahead
+		id="SearchBox"
+		options={props.items}
+		onChange={(selected) => {
+			props.onChange(selected[0]);
+		}}
+		renderMenuItemChildren={(option, props, index) => {
+			return [
+				<div key="name">{option.firstName} {option.lastName}</div>,
+				<div key="address">{option.address.address}</div>,
+				<div key="address2">{option.address.zipCode} {option.address.city}</div>,
+				<div key="phone">{option.phone}{option.mobile && ` / ${option.mobile}`}</div>
+			];
+		}}
+		labelKey="phone"
+		/>);
 };
 
 export default SearchBox;

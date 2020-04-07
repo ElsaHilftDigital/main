@@ -21,7 +21,7 @@ public class CustomerDTO {
         firstName = customer.getFirstName();
         lastName = customer.getLastName();
         phone = customer.getPhone();
-        mobile = customer.getPhone();
+        mobile = customer.getMobile();
         address = customer.getAddress();
     }
 }

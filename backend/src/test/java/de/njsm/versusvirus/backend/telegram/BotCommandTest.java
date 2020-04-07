@@ -11,6 +11,7 @@ public class BotCommandTest {
 
     @Test
     public void testCommandParsing() {
+        BotCommand.HILFE_ANBIETEN.setBotName("elsahilftbot");
         assertTrue(BotCommand.HILFE_ANBIETEN.getRegex().asPredicate().test("/start@elsahilftbot hilfeanbieten_xxx"));
         assertTrue(BotCommand.HILFE_ANBIETEN.getRegex().asPredicate().test("/start hilfeanbieten_yxy"));
 
@@ -22,6 +23,7 @@ public class BotCommandTest {
 
     @Test
     public void testStartCommandParsing() {
+        BotCommand.START.setBotName("elsahilftbot");
         assertTrue(BotCommand.START.getRegex().asPredicate().test("/start@elsahilftbot xxx"));
         assertTrue(BotCommand.START.getRegex().asPredicate().test("/start yxy"));
 
@@ -33,6 +35,7 @@ public class BotCommandTest {
 
     @Test
     public void testAbschliessenCommandParsing() {
+        BotCommand.ABSCHLIESSEN.setBotName("elsahilftbot");
         assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/start@elsahilftbot abschliessen_uuid_false"));
         assertTrue(BotCommand.ABSCHLIESSEN.getRegex().asPredicate().test("/start abschliessen_uuid_true"));
 
