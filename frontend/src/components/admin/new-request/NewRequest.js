@@ -79,16 +79,53 @@ const NewRequest = () => {
             const renderCustomerSuggestion = (customer, searchText) => {
                 return [
                     <div key="name">{customer.firstName} {customer.lastName}</div>,
-                    <div key="address">{customer.address.address}</div>,
-                    <div key="address2">{customer.address.zipCode} {customer.address.city}</div>,
+                    <div key="address">{customer.address}</div>,
+                    <div key="address2">{customer.zipCode} {customer.city}</div>,
                     <div key="phone">{customer.phone}{customer.mobile && ` / ${customer.mobile}`}</div>
                 ];
+            }
+
+            const searchTerms = rawInput => {
+                const rawTerms = rawInput.trim().split(/\s+/);
+                let terms = [];
+                let isNumber = false;
+                let numberTerm = undefined;
+                for (let i = 0; i < rawTerms.length; i++) {
+                    const term = rawTerms[i].toLowerCase();
+                    if (!isNaN(term)) {
+                        if (isNumber) {
+                            numberTerm += term;
+                        } else {
+                            isNumber = true;
+                            numberTerm = term;
+                        }
+                    } else {
+                        if (isNumber) {
+                            isNumber = false;
+                            terms.push(numberTerm);
+                            terms.push(term);
+                        } else {
+                            terms.push(term);
+                        }
+                    }
+                }
+                if (isNumber) {
+                    terms.push(numberTerm);
+                }
+                return terms;
+            }
+            const matches = (customer, searchText) => {
+                const terms = searchTerms(searchText);
+                const {id, uuid, ...remainder} = customer;
+                const properties = Object.values(remainder).map(s => s.toLowerCase());
+                return terms.every(term => properties.some(prop => prop.includes(term)));
             }
             return <>
                 <SearchBox
                         items={allCustomers}
                         onChange={setCustomer}
-                        renderItems={renderCustomerSuggestion}/>
+                        filter={matches}
+                        renderItem={renderCustomerSuggestion}/>
                 {customer && <>
                     <div className="row mt-3">
                         <div className="form-group col-md-6">

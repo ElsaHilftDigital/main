@@ -57,7 +57,7 @@ public class Customer {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phone = phone.replaceAll("\\s", "");
     }
 
     public String getMobile() {
@@ -65,7 +65,7 @@ public class Customer {
     }
 
     public void setMobile(String mobile) {
-        this.mobile = mobile;
+        this.mobile = mobile.replaceAll("\\s", "");
     }
 
     public Address getAddress() {
