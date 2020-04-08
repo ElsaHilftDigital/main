@@ -23,7 +23,7 @@ const AuthenticationHeader = () => {
             {currentUser && (
                 <>
                     <span className="text-light font-weight-bold mr-3">{`Hallo, ${currentUser.username}!`}</span>
-                    <button onClick={signOut} className="btn" style={{backgroundColor:"rgb(230, 230, 255)"}}>
+                    <button onClick={signOut} disabled className="btn" style={{backgroundColor:"rgb(230, 230, 255)"}}>
                         Ausloggen
                     </button>
                 </>
