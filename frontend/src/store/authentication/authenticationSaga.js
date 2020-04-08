@@ -6,7 +6,7 @@ import * as actions from './authenticationActions';
 
 export function* handleGetAuthInstance(authApi) {
     try {
-        const response = yield call([authApi, authApi]);
+        const response = yield call([authApi, authApi.getAuthInstance]);
         yield put(actions.getAuthInstanceSuccess(response));
     } catch (error) {
         console.log(error);
