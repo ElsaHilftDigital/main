@@ -43,6 +43,7 @@ public class TelegramMessages {
     private String confirmCompletion;
     private String moneyIsMissing;
     private String unexpectedImage;
+    private String forwardedMessage;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -302,5 +303,13 @@ public class TelegramMessages {
 
     public void setYes(String yes) {
         this.yes = yes;
+    }
+
+    public String getForwardedMessage() {
+        return this.forwardedMessage;
+    }
+
+    public void setForwardedMessage(String forwardedMessage) {
+        this.forwardedMessage = forwardedMessage;
     }
 }

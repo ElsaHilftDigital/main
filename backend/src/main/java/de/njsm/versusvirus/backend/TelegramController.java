@@ -1,5 +1,6 @@
 package de.njsm.versusvirus.backend;
 
+import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.*;
 import de.njsm.versusvirus.backend.telegram.dto.*;
@@ -23,18 +24,26 @@ public class TelegramController {
 
     private final UpdateService updateService;
 
+    private final OrganizationRepository organizationRepository;
+
     private final String botName;
 
     private final CallbackDispatcher callbackCommandDispatcher;
 
+    private final MessageSender messageSender;
+
     public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
                               UpdateService updateService,
+                              OrganizationRepository organizationRepository,
                               @Value("${telegram.bot.name") String botName,
-                              CallbackDispatcher callbackCommandDispatcher) {
+                              CallbackDispatcher callbackCommandDispatcher,
+                              MessageSender messageSender) {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
+        this.organizationRepository = organizationRepository;
         this.botName = botName;
         this.callbackCommandDispatcher = callbackCommandDispatcher;
+        this.messageSender = messageSender;
     }
 
     @PostMapping(TELEGRAM_WEBHOOK)
@@ -47,16 +56,14 @@ public class TelegramController {
 
         dispatchCallbackQuery(update);
 
-        if (update.getMessage() == null) {
+        Message message = update.getMessage();
+        if (message == null) {
             LOG.info("No message found");
             return;
         }
 
-        Message message = update.getMessage();
-
         checkIfIJoinedAnExistingChat(message);
         checkIfIJoinedANewChat(message.getChat(), message.isGroupChatCreated());
-
         lookForPhotos(message);
 
         if (message.getText() == null || message.getText().isEmpty()) {
@@ -64,12 +71,24 @@ public class TelegramController {
             return;
         }
 
+        forwardMessageFromPersonalChat(message);
+
         if (message.getEntities() == null) {
             LOG.info("The message didn't contain commands");
             return;
         }
 
         dispatchBotCommands(message);
+    }
+
+    private void forwardMessageFromPersonalChat(Message message) {
+        organizationRepository.findById(1).ifPresent(o -> {
+            if (message.getChat().getId() != o.getTelegramModeratorGroupChatId() &&
+                message.getChat().getId() != o.getTelegramGroupChatId()) {
+                LOG.info("Forwarding message from " + message.getFrom().getUserName());
+                messageSender.forwardVolunteerMessage(o.getTelegramModeratorGroupChatId(), message);
+            }
+        });
     }
 
     private void dispatchCallbackQuery(Update update) {
