@@ -59,4 +59,12 @@ public class PurchaseController {
     public void markCompleted(@PathVariable("id") UUID purchaseId) {
         purchaseService.markCompleted(purchaseId);
     }
+
+    @RequestMapping("/{id}/receipt")
+    public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID purchaseId) {
+        var image = purchaseService.getReceipt(purchaseId);
+        return ResponseEntity.ok()
+                .contentType(org.springframework.http.MediaType.parseMediaType(image.getMimeType()))
+                .body(image.getReceipt());
+    }
 }

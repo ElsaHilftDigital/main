@@ -37,6 +37,7 @@ public class TelegramMessages {
     private String confirmInvestigation;
     private String confirmCompletion;
     private String moneyIsMissing;
+    private String unexpectedImage;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -248,5 +249,13 @@ public class TelegramMessages {
 
     public void setMoneyIsMissing(String moneyIsMissing) {
         this.moneyIsMissing = moneyIsMissing;
+    }
+
+    public String getUnexpectedImage() {
+        return this.unexpectedImage;
+    }
+
+    public void setUnexpectedImage(String unexpectedImage) {
+        this.unexpectedImage = unexpectedImage;
     }
 }

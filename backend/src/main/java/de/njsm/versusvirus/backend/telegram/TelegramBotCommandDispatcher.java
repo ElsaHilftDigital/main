@@ -6,11 +6,17 @@ import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -195,15 +201,29 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         }
 
         if (volunteer.getTelegramFileId() != null) {
-            byte[] image = telegramApi.getFile(volunteer.getTelegramFileId());
-            purchase.setReceipt(image);
-            purchase.setReceiptFileId(volunteer.getTelegramFileId());
-            purchase.setStatus(Purchase.Status.PURCHASE_DONE);
-            volunteer.setTelegramFileId(null);
-            messageSender.confirmReceiptUpload(message.getChat().getId());
-            adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+            var image = telegramApi.getFile(volunteer.getTelegramFileId());
+            MediaType mimetype = detectMimeType(image);
+            if (mimetype != MediaType.OCTET_STREAM) {
+                purchase.setReceipt(image);
+                purchase.setReceiptMimeType(mimetype.toString());
+                purchase.setReceiptFileId(volunteer.getTelegramFileId());
+                purchase.setStatus(Purchase.Status.PURCHASE_DONE);
+                volunteer.setTelegramFileId(null);
+                messageSender.confirmReceiptUpload(message.getChat().getId());
+                adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+            } else {
+                messageSender.sendUnexpectedImage(message.getChat().getId());
+            }
         } else {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
+        }
+    }
+
+    private MediaType detectMimeType(byte[] image) {
+        try {
+            return new TikaConfig().getDetector().detect(new ByteArrayInputStream(image), new Metadata());
+        } catch (IOException | TikaException e) {
+            return MediaType.OCTET_STREAM;
         }
     }
 

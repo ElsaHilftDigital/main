@@ -255,4 +255,9 @@ public class MessageSender {
         var m = new MessageToBeSent(chatId, telegramMessages.getConfirmInvestigation());
         api.sendMessage(m);
     }
+
+    public void sendUnexpectedImage(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getUnexpectedImage());
+        api.sendMessage(m);
+    }
 }

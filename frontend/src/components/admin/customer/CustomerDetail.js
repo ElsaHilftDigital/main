@@ -10,9 +10,9 @@ const CustomerDetail = (props) => {
             lastName: selectedCustomer.lastName,
             phone: selectedCustomer.phone,
             mobile: selectedCustomer.mobile,
-            addressStreet: selectedCustomer.address.address,
-            addressZipCode: selectedCustomer.address.zipCode,
-            addressCity: selectedCustomer.address.city,
+            addressStreet: selectedCustomer.address,
+            addressZipCode: selectedCustomer.zipCode,
+            addressCity: selectedCustomer.city,
             paymentMethod: 'bar',
             finishedJobs: 'none',
             openJobs: 'test',
@@ -24,9 +24,9 @@ const CustomerDetail = (props) => {
     setValue('lastName', selectedCustomer.lastName);
     setValue('phone', selectedCustomer.phone);
     setValue('mobile', selectedCustomer.mobile);
-    setValue('addressStreet', selectedCustomer.address.address);
-    setValue('addressZipCode', selectedCustomer.address.zipCode);
-    setValue('addressCity', selectedCustomer.address.city);
+    setValue('addressStreet', selectedCustomer.address);
+    setValue('addressZipCode', selectedCustomer.zipCode);
+    setValue('addressCity', selectedCustomer.city);
 
 
     const onSubmit = values => {

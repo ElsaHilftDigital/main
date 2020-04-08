@@ -149,4 +149,9 @@ public class PurchaseService {
                 .map(VolunteerDTO::new)
                 .collect(Collectors.toList());
     }
+
+    public ReceiptDTO getReceipt(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType());
+    }
 }

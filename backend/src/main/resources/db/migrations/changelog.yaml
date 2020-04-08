@@ -80,3 +80,6 @@ databaseChangeLog:
   - include:
       file: 20200405-1532-add-file-id-to-volunteer.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200408-1650-add-mime-type-to-purchase-receipt.sql
+      relativeToChangelogFile: true
