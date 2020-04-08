@@ -1,8 +1,12 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.text.MessageFormat;
+import java.util.HashSet;
 
 @Component
 public class AdminMessageSender {
@@ -40,5 +44,51 @@ public class AdminMessageSender {
     public void notifyAboutMissingMoney(long chatId) {
         var m = new MessageToBeSent(chatId, telegramMessages.getMoneyIsMissing());
         api.sendMessage(m);
+    }
+
+    public void forwardVolunteerMessage(long chatId, Message message) {
+        var forwardedMessage = MessageFormat.format(telegramMessages.getForwardedMessage(),
+                message.getFrom().getFirstName(),
+                message.getFrom().getLastName(),
+                message.getText());
+
+        forwardedMessage = escapeMarkdownCharacters(forwardedMessage);
+        var m = new MessageToBeSent(chatId, forwardedMessage);
+        api.sendMessage(m);
+    }
+
+    private static String escapeMarkdownCharacters(String message) {
+        HashSet<Character> escapeableCharacters = getEscapeCharacters();
+        StringBuilder builder = new StringBuilder();
+        for (char c : message.toCharArray()) {
+            if (escapeableCharacters.contains(c)) {
+                builder.append('\\');
+            }
+            builder.append(c);
+        }
+        return builder.toString();
+    }
+
+    private static HashSet<Character> getEscapeCharacters() {
+        HashSet<Character> escapeableCharacters = new HashSet<>();
+        escapeableCharacters.add('_');
+        escapeableCharacters.add('*');
+        escapeableCharacters.add('[');
+        escapeableCharacters.add(']');
+        escapeableCharacters.add('(');
+        escapeableCharacters.add(')');
+        escapeableCharacters.add('~');
+        escapeableCharacters.add('`');
+        escapeableCharacters.add('>');
+        escapeableCharacters.add('#');
+        escapeableCharacters.add('+');
+        escapeableCharacters.add('-');
+        escapeableCharacters.add('=');
+        escapeableCharacters.add('|');
+        escapeableCharacters.add('{');
+        escapeableCharacters.add('}');
+        escapeableCharacters.add('.');
+        escapeableCharacters.add('!');
+        return escapeableCharacters;
     }
 }

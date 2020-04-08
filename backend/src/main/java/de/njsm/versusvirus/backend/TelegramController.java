@@ -30,20 +30,20 @@ public class TelegramController {
 
     private final CallbackDispatcher callbackCommandDispatcher;
 
-    private final MessageSender messageSender;
+    private final AdminMessageSender adminMessageSender;
 
     public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
                               UpdateService updateService,
                               OrganizationRepository organizationRepository,
                               @Value("${telegram.bot.name") String botName,
                               CallbackDispatcher callbackCommandDispatcher,
-                              MessageSender messageSender) {
+                              AdminMessageSender adminMessageSender) {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
         this.organizationRepository = organizationRepository;
         this.botName = botName;
         this.callbackCommandDispatcher = callbackCommandDispatcher;
-        this.messageSender = messageSender;
+        this.adminMessageSender = adminMessageSender;
     }
 
     @PostMapping(TELEGRAM_WEBHOOK)
@@ -86,7 +86,7 @@ public class TelegramController {
             if (message.getChat().getId() != o.getTelegramModeratorGroupChatId() &&
                 message.getChat().getId() != o.getTelegramGroupChatId()) {
                 LOG.info("Forwarding message from " + message.getFrom().getUserName());
-                messageSender.forwardVolunteerMessage(o.getTelegramModeratorGroupChatId(), message);
+                adminMessageSender.forwardVolunteerMessage(o.getTelegramModeratorGroupChatId(), message);
             }
         });
     }
