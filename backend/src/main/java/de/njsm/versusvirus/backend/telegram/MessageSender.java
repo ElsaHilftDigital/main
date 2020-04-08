@@ -259,4 +259,15 @@ public class MessageSender {
         var m = new MessageToBeSent(chatId, telegramMessages.getUnexpectedImage());
         api.sendMessage(m);
     }
+
+    public void forwardVolunteerMessage(long chatId, Message message) {
+        var forwardedMessage = MessageFormat.format(telegramMessages.getForwardedMessage(),
+                message.getFrom().getFirstName(),
+                message.getFrom().getLastName(),
+                message.getFrom().getUserName(),
+                message.getText());
+
+        var m = new MessageToBeSent(chatId, forwardedMessage);
+        api.sendMessage(m);
+    }
 }
