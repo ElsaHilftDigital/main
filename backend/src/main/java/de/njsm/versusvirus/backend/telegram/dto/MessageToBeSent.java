@@ -23,15 +23,12 @@ public class MessageToBeSent {
     public MessageToBeSent(long chatId, String markdownText) {
         this.chatId = chatId;
         this.text = markdownText;
-        this.parseMode = "Markdown";
+        this.parseMode = "MarkdownV2";
         this.disableWebPagePreview = true;
     }
 
     public MessageToBeSent(long chatId, String markdownText, InlineKeyboardButton... buttons) {
-        this.chatId = chatId;
-        this.text = markdownText;
-        this.parseMode = "Markdown";
-        this.disableWebPagePreview = true;
+        this(chatId, markdownText);
         this.buttons = new InlineKeyboardMarkup(buttons);
     }
 
