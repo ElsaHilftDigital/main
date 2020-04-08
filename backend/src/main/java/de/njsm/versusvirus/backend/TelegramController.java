@@ -35,7 +35,7 @@ public class TelegramController {
     public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
                               UpdateService updateService,
                               OrganizationRepository organizationRepository,
-                              @Value("${telegram.bot.name") String botName,
+                              @Value("${telegram.bot.name}") String botName,
                               CallbackDispatcher callbackCommandDispatcher,
                               AdminMessageSender adminMessageSender) {
         this.botCommandDispatcher = botCommandDispatcher;
