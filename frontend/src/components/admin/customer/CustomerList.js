@@ -18,9 +18,9 @@ const CustomerList = (props) => {
             <ul className="sidebar-nav">
                 {props.customers.map(customer => (
                     <li 
-                        onClick={() => props.updateSelectedCustomer(customer.uuid)}
+                        onClick={() => props.updateSelectedCustomer(customer)}
                         key={customer.uuid} 
-                        className={'nav-item' + (customer.uuid === props.selectedCustomer.uuid ? ' nav-item-active' : '')}
+                        className={'nav-item' + (customer.uuid === props.selectedCustomer?.uuid ? ' nav-item-active' : '')}
                     >
                         {customer.lastName}
                     </li>

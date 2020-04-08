@@ -26,8 +26,6 @@ export const DELETE_CUSTOMER = 'DELETE_CUSTOMER';
 export const DELETE_CUSTOMER_SUCCESS = 'DELETE_CUSTOMER_SUCCESS';
 export const DELETE_CUSTOMER_ERROR = 'DELETE_CUSTOMER_ERROR';
 
-export const SET_SELECTED_CUSTOMER = 'SET_SELECTED_CUSTOMER';
-
 
 export const getCustomers = () => ({
     type: GET_CUSTOMERS,
@@ -123,9 +121,4 @@ export const deleteCustomerError = error => ({
     type: DELETE_CUSTOMER_ERROR,
     payload: error,
     error: true,
-});
-
-export const setSelectedCustomer = uuid => ({
-    type: SET_SELECTED_CUSTOMER,
-    payload: uuid,
 });
