@@ -16,13 +16,13 @@ const Home = () => {
                     Willst auch du Elsa unterstützen?<br/>
                     Damit du für Elsa unterwegs sein kannst, musst du mindestens 18 Jahre alt sein, in der Region wohnhaft sein und dich an folgende Hygieneregeln halten:
                 </p>
-                <p>
                     <ul>
                         <li>Kein direkter Kontakt mit dem Empfänger / der Empfängerin der Ware, Einkaufstasche wenn möglich vor Übergabe desinfizieren</li>
                         <li>Achte strengstens auf die Anweisungen des Bundesamtes für Gesundheit, damit du dich nicht selber infizierst: Abstand halten, gründlich Hände waschen, keine Hände schütteln, in Taschentuch oder Armbeuge husten</li>
                         <li>Sobald du Krankheitssymptome (Atembeschwerden, Husten und Fieber) spürst, kannst du ab sofort keine Einsätze mehr übernehmen</li>
                     </ul>
 
+                <p>
                     Weitere Informationen findest du hier:
                     <a href="https://www.baden.ch/elsahilft"> www.baden.ch/elsahilft</a>
                 </p>
