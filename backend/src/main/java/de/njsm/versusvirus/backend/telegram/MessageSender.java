@@ -126,7 +126,8 @@ public class MessageSender {
 
         StringBuilder purchaseList = new StringBuilder();
         for (OrderItem i : purchase.getPurchaseList()) {
-            purchaseList.append("- ");
+            // This is telegram markdownv2 -> escape dashes
+            purchaseList.append("\\- ");
             purchaseList.append(i.getPurchaseItem());
             purchaseList.append("\n");
         }
