@@ -264,7 +264,6 @@ public class MessageSender {
         var forwardedMessage = MessageFormat.format(telegramMessages.getForwardedMessage(),
                 message.getFrom().getFirstName(),
                 message.getFrom().getLastName(),
-                message.getFrom().getUserName(),
                 message.getText());
 
         var m = new MessageToBeSent(chatId, forwardedMessage);
