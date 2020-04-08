@@ -16,6 +16,14 @@ public class Purchase {
 
     private UUID uuid;
 
+    public String getReceiptMimeType() {
+        return receiptMimeType;
+    }
+
+    public void setReceiptMimeType(String receiptMimeType) {
+        this.receiptMimeType = receiptMimeType;
+    }
+
     public enum Status {
         NEW {
             @Override
@@ -134,6 +142,7 @@ public class Purchase {
     private List<OrderItem> purchaseList = new ArrayList<>();
 
     private byte[] receipt;                   // picture of receipt
+    private String receiptMimeType;
     private BigDecimal cost;                      // cost of purchase in "Rappen"
     private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
 

@@ -5,9 +5,12 @@ import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseService;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseWithApplicationsDTO;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
+import org.apache.tika.exception.TikaException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
@@ -58,5 +61,15 @@ public class PurchaseController {
     @PostMapping("/{id}/markcompleted")
     public void markCompleted(@PathVariable("id") UUID purchaseId) {
         purchaseService.markCompleted(purchaseId);
+    }
+
+    @RequestMapping("/{id}/receipt")
+    public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID purchaseId,
+                                                            final HttpServletResponse response) throws TikaException, IOException {
+        var image = purchaseService.getReceipt(purchaseId);
+        response.setContentType(image.getMimeType());
+        return ResponseEntity.ok()
+                .contentType(org.springframework.http.MediaType.parseMediaType(image.getMimeType()))
+                .body(image.getReceipt());
     }
 }
