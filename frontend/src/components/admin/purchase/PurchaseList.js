@@ -22,9 +22,6 @@ const PurchaseList = props => {
             <ul className="sidebar-nav">
                 {props.purchases.map(purchase => {
                     const currentCustomer = customers.find(customer => customer.uuid === purchase.customer);
-                    
-                    console.log(purchase)
-
                     return (
                     <li 
                         onClick={() => props.updateSelectedPurchase(purchase)}
