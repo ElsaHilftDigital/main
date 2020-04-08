@@ -50,9 +50,8 @@ public class AdminMessageSender {
         var forwardedMessage = MessageFormat.format(telegramMessages.getForwardedMessage(),
                 message.getFrom().getFirstName(),
                 message.getFrom().getLastName(),
-                message.getText());
+                escapeMarkdownCharacters(message.getText()));
 
-        forwardedMessage = escapeMarkdownCharacters(forwardedMessage);
         var m = new MessageToBeSent(chatId, forwardedMessage);
         api.sendMessage(m);
     }
