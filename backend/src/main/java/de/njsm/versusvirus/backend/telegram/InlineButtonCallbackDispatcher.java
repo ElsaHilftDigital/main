@@ -75,7 +75,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
             adminMessageSender.helpersHaveApplied(organization.getTelegramModeratorGroupChatId());
         }
-        messageSender.confirmHelpOfferingReceived(message.getChat().getId());
+        messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId());
     }
 
     @Override
