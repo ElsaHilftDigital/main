@@ -18,9 +18,9 @@ const VolunteerList = (props) => {
             <ul className="sidebar-nav">
                 {props.volunteers.map(volunteer => (
                     <li 
-                        onClick={() => props.onSelectedVolunteerUpdate(volunteer.uuid)}
+                        onClick={() => props.onSelectedVolunteerUpdate(volunteer)}
                         key={volunteer.uuid} 
-                        className={'nav-item' + (volunteer.uuid === props.selectedVolunteerUuid ? ' nav-item-active' : '')}
+                        className={'nav-item' + (volunteer.uuid === props.selectedVolunteer?.uuid ? ' nav-item-active' : '')}
                     >
                         {volunteer.lastName}
                     </li>

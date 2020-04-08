@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { volunteerActions, volunteerSelectors } from '../../../store/volunteer';
 import { useVolunteers } from '../hooks/useVolunteers';
@@ -9,7 +9,7 @@ import VolunteerList from './VolunteerList';
 const Volunteer = () => {
     const dispatch = useDispatch();
     const { volunteers } = useVolunteers();
-    const selectedVolunteer = useSelector(volunteerSelectors.selectSelectedVolunteer);
+    const [selectedVolunteer, setSelectedVolunteer] = useState(undefined);
 
     const handleVolunteerUpdate = (values) => {
         dispatch(volunteerActions.updateVolunteer(values));
@@ -19,17 +19,13 @@ const Volunteer = () => {
         dispatch(volunteerActions.validateVolunteer(uuid));
     };
 
-    const handleChangeSelectedVolunteer = (uuid) => {
-        dispatch(volunteerActions.setSelectedVolunteer(uuid));
-    };
-
     return (
         <div>
             <div className="sidebar">
                 <VolunteerList 
                     volunteers={volunteers} 
-                    selectedVolunteerUuid={selectedVolunteer ? selectedVolunteer.uuid : null}
-                    onSelectedVolunteerUpdate={handleChangeSelectedVolunteer}
+                    selectedVolunteer={selectedVolunteer}
+                    onSelectedVolunteerUpdate={setSelectedVolunteer}
                 />
             </div>
             <div className="content">
