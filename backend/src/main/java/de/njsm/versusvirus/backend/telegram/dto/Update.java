@@ -17,6 +17,9 @@ public class Update {
     @JsonProperty("channel_post")
     private Message channelPost;
 
+    @JsonProperty("callback_query")
+    private CallbackQuery callbackQuery;
+
     public long getId() {
         return id;
     }
@@ -31,5 +34,9 @@ public class Update {
 
     public Message getChannelPost() {
         return channelPost;
+    }
+
+    public CallbackQuery getCallbackQuery() {
+        return callbackQuery;
     }
 }

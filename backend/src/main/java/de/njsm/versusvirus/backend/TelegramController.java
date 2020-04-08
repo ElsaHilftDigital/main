@@ -1,10 +1,7 @@
 package de.njsm.versusvirus.backend;
 
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
-import de.njsm.versusvirus.backend.telegram.BotCommand;
-import de.njsm.versusvirus.backend.telegram.BotCommandDispatcher;
-import de.njsm.versusvirus.backend.telegram.TelegramBotCommandDispatcher;
-import de.njsm.versusvirus.backend.telegram.UpdateService;
+import de.njsm.versusvirus.backend.telegram.*;
 import de.njsm.versusvirus.backend.telegram.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,34 +25,39 @@ public class TelegramController {
 
     private final String botName;
 
-    public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher, UpdateService updateService, @Value("${telegram.bot.name}") String botName) {
+    private final CallbackDispatcher callbackCommandDispatcher;
+
+    public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
+                              UpdateService updateService,
+                              @Value("${telegram.bot.name") String botName,
+                              CallbackDispatcher callbackCommandDispatcher) {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
         this.botName = botName;
+        this.callbackCommandDispatcher = callbackCommandDispatcher;
     }
 
     @PostMapping(TELEGRAM_WEBHOOK)
     public void receiveTelegramUpdate(@RequestBody Update update) {
-        if (update.getMessage() == null) {
-            LOG.info("I don't feel responsible for this update");
-            return;
-        }
-
         if (update.getId() <= updateService.getLatestUpdate()) {
             LOG.info("Repost of update " + update.getId());
             return;
         }
         updateService.setLatestUpdate(update.getId());
 
+        dispatchCallbackQuery(update);
+
+        if (update.getMessage() == null) {
+            LOG.info("No message found");
+            return;
+        }
+
         Message message = update.getMessage();
 
         checkIfIJoinedAnExistingChat(message);
         checkIfIJoinedANewChat(message.getChat(), message.isGroupChatCreated());
 
-        PhotoSize[] photos = message.getPhoto();
-        if (photos != null && photos.length > 0) {
-            botCommandDispatcher.handleReceiptWithoutPurchaseContext(message, photos[photos.length-1].getId());
-        }
+        lookForPhotos(message);
 
         if (message.getText() == null || message.getText().isEmpty()) {
             LOG.info("No message found");
@@ -67,19 +69,41 @@ public class TelegramController {
             return;
         }
 
+        dispatchBotCommands(message);
+    }
+
+    private void dispatchCallbackQuery(Update update) {
+        if (update.getCallbackQuery() != null) {
+            CallbackCommand c = CallbackCommand.create(update.getCallbackQuery().getData());
+            if (c != null) {
+                c.dispatch(callbackCommandDispatcher, update.getCallbackQuery().getMessage(), update.getCallbackQuery().getData());
+            } else {
+                LOG.warn("No command found for callback query '{}'", update.getCallbackQuery().getData());
+            }
+        }
+    }
+
+    private void dispatchBotCommands(Message message) {
         for (MessageEntity e : message.getEntities()) {
             String rawCommand = e.extractCommand(message.getText());
-            BotCommand command = BotCommand.create(rawCommand);
+            BotCommand command = BotCommand.create(botName, rawCommand);
             if (command == null) {
                 LOG.info("Not a command for us: {}", rawCommand);
                 continue;
             }
 
             try {
-                command.dispatch(botCommandDispatcher, rawCommand, message);
+                command.dispatch(botCommandDispatcher, rawCommand, botName, message);
             } catch (TelegramShouldBeFineException ex) {
                 LOG.warn("", ex);
             }
+        }
+    }
+
+    private void lookForPhotos(Message message) {
+        PhotoSize[] photos = message.getPhoto();
+        if (photos != null && photos.length > 0) {
+            callbackCommandDispatcher.handleReceiptWithoutPurchaseContext(message, photos[photos.length-1].getId());
         }
     }
 

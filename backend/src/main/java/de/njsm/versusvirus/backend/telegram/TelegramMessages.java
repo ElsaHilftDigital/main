@@ -16,9 +16,12 @@ public class TelegramMessages {
     private String preconfirmRegistration;
     private String confirmRegistration;
     private String broadcastPurchase;
+    private String offerHelp;
     private String purchaseAlreadyTaken;
     private String blameHackingUser;
     private String offerPurchase;
+    private String yes;
+    private String no;
     private String confirmPurchaseMapping;
     private String informToDeliverPurchase;
     private String noActivePurchases;
@@ -34,6 +37,8 @@ public class TelegramMessages {
     private String helpersAppliedForPurchase;
     private String helperRejectedPurchase;
     private String receiptHasBeenSubmitted;
+    private String everythingFound;
+    private String moneyWasMissing;
     private String confirmInvestigation;
     private String confirmCompletion;
     private String moneyIsMissing;
@@ -57,6 +62,22 @@ public class TelegramMessages {
 
     public String getVolunteerResignation() {
         return volunteerResignation;
+    }
+
+    public String getEverythingFound() {
+        return everythingFound;
+    }
+
+    public void setEverythingFound(String everythingFound) {
+        this.everythingFound = everythingFound;
+    }
+
+    public String getMoneyWasMissing() {
+        return moneyWasMissing;
+    }
+
+    public void setMoneyWasMissing(String moneyWasMissing) {
+        this.moneyWasMissing = moneyWasMissing;
     }
 
     public void setVolunteerResignation(String volunteerResignation) {
@@ -257,5 +278,29 @@ public class TelegramMessages {
 
     public void setUnexpectedImage(String unexpectedImage) {
         this.unexpectedImage = unexpectedImage;
+    }
+
+    public String getOfferHelp() {
+        return offerHelp;
+    }
+
+    public void setOfferHelp(String offerHelp) {
+        this.offerHelp = offerHelp;
+    }
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
+    }
+
+    public String getYes() {
+        return yes;
+    }
+
+    public void setYes(String yes) {
+        this.yes = yes;
     }
 }

@@ -6,6 +6,7 @@ import de.njsm.versusvirus.backend.domain.Organization;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
+import de.njsm.versusvirus.backend.telegram.dto.InlineKeyboardButton;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.slf4j.Logger;
@@ -62,7 +63,6 @@ public class MessageSender {
     }
 
     public void confirmRegistration(Organization organization, Volunteer volunteer) {
-
         if (volunteer.getTelegramChatId() == null) {
             LOG.info("Helper has not yet talked to the bot");
             return;
@@ -101,12 +101,13 @@ public class MessageSender {
                 purchase.getPurchaseSize().displayName()
         );
 
-
         String template = telegramMessages.getBroadcastPurchase();
-        String botCommand = BotCommand.HILFE_ANBIETEN.render(purchase.getUuid().toString());
-        String text = MessageFormat.format(template, purchaseDesc, botCommand);
+        String callbackQuery = CallbackCommand.HELP_OFFER.render(purchase.getUuid());
+        String text = MessageFormat.format(template, purchaseDesc);
 
-        MessageToBeSent message = new MessageToBeSent(organization.getTelegramGroupChatId(), text);
+        MessageToBeSent message = new MessageToBeSent(organization.getTelegramGroupChatId(),
+                text,
+                new InlineKeyboardButton(telegramMessages.getOfferHelp(), callbackQuery));
         Message sentMessage = api.sendMessage(message);
 
         if (sentMessage != null) {
@@ -145,15 +146,16 @@ public class MessageSender {
         );
 
         String template = telegramMessages.getOfferPurchase();
-        String acceptCommand = BotCommand.HILFE_BESTAETIGEN.render(purchase.getUuid().toString());
-        String rejectCommand = BotCommand.HILFE_ZURUECKZIEHEN.render(purchase.getUuid().toString());
+        String acceptCommand = CallbackCommand.CONFIRM_HELP.render(purchase.getUuid());
+        String rejectCommand = CallbackCommand.WITHDRAW_HELP.render(purchase.getUuid());
         String text = MessageFormat.format(
                 template,
-                purchaseDesc,
-                acceptCommand,
-                rejectCommand);
+                purchaseDesc);
 
-        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(),
+                text,
+                new InlineKeyboardButton(telegramMessages.getYes(), acceptCommand),
+                new InlineKeyboardButton(telegramMessages.getNo(), rejectCommand));
         api.sendMessage(message);
     }
 
@@ -165,17 +167,26 @@ public class MessageSender {
 
         String text;
         if (purchases.size() > 0) {
-            String template = telegramMessages.getConfirmPurchaseMapping();
-            String renderedPurchaseList = renderPurchaseList(purchases);
-            text = MessageFormat.format(
-                    template,
-                    renderedPurchaseList);
+            text = telegramMessages.getConfirmPurchaseMapping();
         } else {
             text = telegramMessages.getNoActivePurchases();
         }
+        InlineKeyboardButton[] purchaseButtons = renderPurchaseList(purchases);
 
-        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text, purchaseButtons);
         api.sendMessage(message);
+    }
+
+    private InlineKeyboardButton[] renderPurchaseList(List<Purchase> purchases) {
+        InlineKeyboardButton[] result = new InlineKeyboardButton[purchases.size()];
+        int i = 0;
+        for (Purchase p : purchases) {
+            Customer customer = customerRepository.findById(p.getCustomer()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
+            result[i] = new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName(),
+                    CallbackCommand.SUBMIT_RECEIPT.render(p.getUuid()));
+            i++;
+        }
+        return result;
     }
 
     /**
@@ -190,30 +201,18 @@ public class MessageSender {
         String template = telegramMessages.getInformToDeliverPurchase();
         String text = MessageFormat.format(
                 template,
-                customer.getFirstName() + " " + customer.getLastName(),
-                BotCommand.ABSCHLIESSEN.render("true", purchase.getUuid().toString()),
-                BotCommand.ABSCHLIESSEN.render("false", purchase.getUuid().toString()));
+                customer.getFirstName() + " " + customer.getLastName());
 
-        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
+        String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
+        String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
+
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(),
+                text,
+                new InlineKeyboardButton(telegramMessages.getEverythingFound(), finishCommand),
+                new InlineKeyboardButton(telegramMessages.getMoneyWasMissing(), moneyMissingCommand));
         api.sendMessage(message);
 
         purchase.setStatus(Purchase.Status.PURCHASE_IN_DELIVERY);
-    }
-
-    public String renderPurchaseList(List<Purchase> purchases) {
-        StringBuilder builder = new StringBuilder();
-        for (Purchase p : purchases) {
-            Customer customer = customerRepository.findById(p.getCustomer()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
-            builder.append("- ");
-            builder.append("[");
-            builder.append(customer.getFirstName());
-            builder.append(" ");
-            builder.append(customer.getLastName());
-            builder.append("](");
-            builder.append(BotCommand.QUITTUNG_EINREICHEN.render(p.getUuid().toString()));
-            builder.append(")\n");
-        }
-        return builder.toString();
     }
 
     public void blameHackingUser(long chatId) {

@@ -17,11 +17,22 @@ public class MessageToBeSent {
     @JsonProperty("disable_web_page_preview")
     private boolean disableWebPagePreview;
 
+    @JsonProperty("reply_markup")
+    private InlineKeyboardMarkup buttons;
+
     public MessageToBeSent(long chatId, String markdownText) {
         this.chatId = chatId;
         this.text = markdownText;
         this.parseMode = "Markdown";
         this.disableWebPagePreview = true;
+    }
+
+    public MessageToBeSent(long chatId, String markdownText, InlineKeyboardButton... buttons) {
+        this.chatId = chatId;
+        this.text = markdownText;
+        this.parseMode = "Markdown";
+        this.disableWebPagePreview = true;
+        this.buttons = new InlineKeyboardMarkup(buttons);
     }
 
     public long getChatId() {

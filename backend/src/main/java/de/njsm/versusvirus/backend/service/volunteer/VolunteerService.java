@@ -10,6 +10,7 @@ import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.AdminMessageSender;
+import de.njsm.versusvirus.backend.telegram.InviteLinkGenerator;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +34,15 @@ public class VolunteerService {
 
     private final PurchaseRepository purchaseRepository;
 
-    public VolunteerService(VolunteerRepository repository, MessageSender messageSender, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository, PurchaseRepository purchaseRepository) {
+    private final InviteLinkGenerator inviteLinkGenerator;
+
+    public VolunteerService(VolunteerRepository repository, MessageSender messageSender, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository, PurchaseRepository purchaseRepository, InviteLinkGenerator inviteLinkGenerator) {
         this.repository = repository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.organizationRepository = organizationRepository;
         this.purchaseRepository = purchaseRepository;
+        this.inviteLinkGenerator = inviteLinkGenerator;
     }
 
     public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
@@ -64,7 +68,7 @@ public class VolunteerService {
 
         repository.save(volunteer);
         notifyModerators();
-        return new VolunteerDTO(volunteer);
+        return new VolunteerDTO(volunteer, inviteLinkGenerator.getInviteLink(volunteer.getUuid()));
     }
 
     private void notifyModerators() {
