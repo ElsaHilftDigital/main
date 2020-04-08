@@ -21,7 +21,6 @@ const PurchaseList = props => {
             <span className="list-header mt-3 mb-2">Einkäufe</span>
             <ul className="sidebar-nav">
                 {props.purchases.map(purchase => {
-                    console.log(customers);
                     const currentCustomer = customers.find(customer => customer.uuid === purchase.customer);
                     
                     console.log(purchase)
