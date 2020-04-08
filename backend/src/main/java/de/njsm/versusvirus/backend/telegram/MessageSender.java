@@ -205,7 +205,7 @@ public class MessageSender {
         var customerString = AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
         String text = MessageFormat.format(
                 template,
-                customer);
+                customerString);
 
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
         String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
