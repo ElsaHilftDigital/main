@@ -8,7 +8,7 @@ export const useCustomers = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(customerActions.getAllCustomers());
+        dispatch(customerActions.getCustomers());
     }, [dispatch])
 
     return {

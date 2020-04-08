@@ -1,8 +1,9 @@
 import React from 'react';
+import {useCustomers} from '../hooks/useCustomers';
 
 
 const PurchaseList = props => {
-    const customers = props.customers;
+    const {customers} = useCustomers();
 
     if (!props.purchases.length) {
         return (
@@ -20,6 +21,7 @@ const PurchaseList = props => {
             <span className="list-header mt-3 mb-2">Einkäufe</span>
             <ul className="sidebar-nav">
                 {props.purchases.map(purchase => {
+                    console.log(customers);
                     const currentCustomer = customers.find(customer => customer.uuid === purchase.customer);
                     
                     console.log(purchase)
