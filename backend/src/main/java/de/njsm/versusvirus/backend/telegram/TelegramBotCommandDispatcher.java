@@ -212,8 +212,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
                 messageSender.confirmReceiptUpload(message.getChat().getId());
                 adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
             } else {
-                // TODO better error message
-                messageSender.sendUnexpectedMessage(message.getChat().getId());
+                messageSender.sendUnexpectedImage(message.getChat().getId());
             }
         } else {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
