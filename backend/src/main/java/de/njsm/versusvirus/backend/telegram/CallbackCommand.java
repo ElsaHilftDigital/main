@@ -92,7 +92,7 @@ public enum CallbackCommand {
     }
 
     public Pattern getRegex() {
-        return Pattern.compile("^(?<commandIdentifier>....)_(?<data>[-a-f0-9]*)$");
+        return Pattern.compile("^(?<commandIdentifier>" + getCommandIdentifier() + ")_(?<data>[-a-f0-9]*)$");
     }
 
     public void dispatch(CallbackDispatcher dispatcher, Message message, User user, String rawData) {
