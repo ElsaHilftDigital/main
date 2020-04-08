@@ -13,4 +13,8 @@ public class InlineKeyboardMarkup {
             this.buttons[i][0] = buttons[i];
         }
     }
+
+    public InlineKeyboardButton[][] getButtons() {
+        return buttons;
+    }
 }

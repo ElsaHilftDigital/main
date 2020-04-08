@@ -15,4 +15,12 @@ public class InlineKeyboardButton {
         this.text = text;
         this.callbackData = callbackData;
     }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getCallbackData() {
+        return callbackData;
+    }
 }
