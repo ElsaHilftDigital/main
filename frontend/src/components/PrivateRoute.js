@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom';
 
 import { useAuthentication } from './useAuthentication';
 
-const PrivateRoute = ({ children, ...rest }) => {
+const PrivateRoute = props => {
     const isLoggedIn = !!useAuthentication();
 
     const renderRedirect = (location) => {
@@ -15,7 +15,7 @@ const PrivateRoute = ({ children, ...rest }) => {
             renderRedirect('/admin')
         )}
         {isLoggedIn && (
-            <Route {...rest} render={() => children} />
+            <Route {...props} />
         )}
         </>
     );

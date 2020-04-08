@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom';
 
 import { useAuthentication } from './useAuthentication';
 
-const LoginRoute = ({ children, ...rest }) => {
+const LoginRoute = props => {
     const isLoggedIn = !!useAuthentication();
 
     const renderRedirect = (location) => {
@@ -15,7 +15,7 @@ const LoginRoute = ({ children, ...rest }) => {
             renderRedirect('/admin')
         )}
         {!isLoggedIn && (
-            <Route {...rest} render={() => children} />
+            <Route {...props} />
         )}
         </>
     );
