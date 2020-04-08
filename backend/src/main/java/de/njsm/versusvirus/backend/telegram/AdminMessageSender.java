@@ -56,7 +56,7 @@ public class AdminMessageSender {
         api.sendMessage(m);
     }
 
-    private static String escapeMarkdownCharacters(String message) {
+    static String escapeMarkdownCharacters(String message) {
         HashSet<Character> escapeableCharacters = getEscapeCharacters();
         StringBuilder builder = new StringBuilder();
         for (char c : message.toCharArray()) {

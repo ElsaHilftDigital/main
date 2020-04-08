@@ -69,13 +69,14 @@ public class MessageSender {
         }
 
         String text;
+        String escapedFirstName = AdminMessageSender.escapeMarkdownCharacters(volunteer.getFirstName());
         if (volunteer.isValidated()) {
             String template = telegramMessages.getConfirmRegistration();
             String groupChatJoinUrl = organization.getUrlGroupChat();
-            text = MessageFormat.format(template, volunteer.getFirstName(), groupChatJoinUrl);
+            text = MessageFormat.format(template, escapedFirstName, groupChatJoinUrl);
         } else {
             String template = telegramMessages.getPreconfirmRegistration();
-            text = MessageFormat.format(template, volunteer.getFirstName());
+            text = MessageFormat.format(template, escapedFirstName);
         }
 
         MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(), text);
@@ -95,9 +96,9 @@ public class MessageSender {
         String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
-                customer.getAddress().getCity(),
-                purchase.getSupermarket(),
-                purchase.getTiming(),
+                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getSupermarket()),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
                 purchase.getPurchaseSize().displayName()
         );
 
@@ -128,21 +129,22 @@ public class MessageSender {
         for (OrderItem i : purchase.getPurchaseList()) {
             // This is telegram markdownv2 -> escape dashes
             purchaseList.append("\\- ");
-            purchaseList.append(i.getPurchaseItem());
+            var item = AdminMessageSender.escapeMarkdownCharacters(i.getPurchaseItem());
+            purchaseList.append(item);
             purchaseList.append("\n");
         }
 
         String purchaseDescTemplate = telegramMessages.getPersonalPurchaseDescription();
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
-                customer.getFirstName(),
-                customer.getLastName(),
-                customer.getAddress().getAddress(),
-                customer.getAddress().getZipCode(),
-                customer.getAddress().getCity(),
-                purchase.getComments(),
-                purchase.getSupermarket(),
-                purchase.getPaymentMethod().displayName(),
+                AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName()),
+                AdminMessageSender.escapeMarkdownCharacters(customer.getLastName()),
+                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getAddress()),
+                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getZipCode()),
+                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getComments()),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getSupermarket()),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
                 purchaseList.toString()
         );
 
@@ -200,9 +202,10 @@ public class MessageSender {
         }
 
         String template = telegramMessages.getInformToDeliverPurchase();
+        var customerString = AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
         String text = MessageFormat.format(
                 template,
-                customer.getFirstName() + " " + customer.getLastName());
+                customer);
 
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
         String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
