@@ -101,7 +101,7 @@ public enum CallbackCommand {
         assert found; // verified before
         assert m.group("commandIdentifier").equals(getCommandIdentifier());
         String data = m.group("data");
-        dispatchInternally(dispatcher, message, UUID.fromString(rawData));
+        dispatchInternally(dispatcher, message, UUID.fromString(data));
     }
 
     public abstract String getCommandIdentifier();
