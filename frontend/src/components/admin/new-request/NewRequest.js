@@ -343,8 +343,8 @@ const NewRequest = () => {
         const ongoingCustomerCreate = useSelector(customerSelectors.selectCreateCustomerRequestOngoing);
         const customerSuccess = useSelector(customerSelectors.selectCreateCustomerSuccess);
         useEffect(() => {dispatch(customerActions.createCustomer(customer))}, [dispatch]);
-        const ongoingPurchaseCreate = useSelector(purchaseSelectors.createPurchaseRequestOngoing);
-        const createPurchase = useSelector(purchaseSelectors.createPurchaseSuccess);
+        const ongoingPurchaseCreate = useSelector(purchaseSelectors.selectCreatePurchaseRequestOngoing);
+        const createPurchase = useSelector(purchaseSelectors.selectCreatePurchaseSuccess);
         useEffect(() => {
             console.log('createPurchase', customerSuccess);
             customerSuccess && dispatch(purchaseActions.createPurchase(
