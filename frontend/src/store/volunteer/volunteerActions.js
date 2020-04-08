@@ -30,8 +30,6 @@ export const GET_OPEN_PURCHASE_LIST = 'GET_OPEN_PURCHASE_LIST';
 export const GET_OPEN_PURCHASE_LIST_SUCCESS = 'GET_OPEN_PURCHASE_LIST_SUCCESS';
 export const GET_OPEN_PURCHASE_LIST_ERROR = 'GET_OPEN_PURCHASE_LIST_ERROR';
 
-export const SET_SELECTED_VOLUNTEER = 'SET_SELECTED_VOLUNTEER';
-
 
 export const getVolunteers = () => ({
     type: GET_VOLUNTEERS,
@@ -138,9 +136,4 @@ export const getOpenPurchaseListError = error => ({
     type: GET_OPEN_PURCHASE_LIST_ERROR,
     payload: error,
     error: true,
-});
-
-export const setSelectedVolunteer = uuid => ({
-    type: SET_SELECTED_VOLUNTEER,
-    payload: uuid,
 });

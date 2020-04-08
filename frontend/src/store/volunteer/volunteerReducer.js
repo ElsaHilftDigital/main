@@ -187,13 +187,6 @@ export default function volunteerReducer(state = initialState, action) {
                 getOpenPurchaseListError: payload,
                 getCompletedPurchaseListRequestOngoing: false
             };
-        // set selected volunteer
-        case actions.SET_SELECTED_VOLUNTEER:
-            const volunteer = state.volunteers.filter(volunteer => volunteer.uuid === payload);
-            return {
-                ...state,
-                volunteer: volunteer.length ? volunteer[0] : null,
-            };
         default:
             return state;
     }

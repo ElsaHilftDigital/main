@@ -26,5 +26,3 @@ export const selectGetCompletedPurchaseListError = state => state.volunteer.getC
 export const selectCurrentOpenPurchaseList = state => state.volunteer.currentOpenPurchaseList;
 export const selectGetOpenPurchaseListRequestOngoing = state => state.volunteer.getOpenPurchaseListRequestOngoing;
 export const selectGetOpenPurchaseListError = state => state.volunteer.getOpenPurchaseListError;
-
-export const selectSelectedVolunteer = state => state.volunteer.selectedVolunteer;
