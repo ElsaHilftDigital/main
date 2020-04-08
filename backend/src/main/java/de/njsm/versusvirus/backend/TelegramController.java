@@ -73,12 +73,16 @@ public class TelegramController {
     }
 
     private void dispatchCallbackQuery(Update update) {
-        if (update.getCallbackQuery() != null) {
-            CallbackCommand c = CallbackCommand.create(update.getCallbackQuery().getData());
+        CallbackQuery query = update.getCallbackQuery();
+        if (query != null) {
+            CallbackCommand c = CallbackCommand.create(query.getData());
             if (c != null) {
-                c.dispatch(callbackCommandDispatcher, update.getCallbackQuery().getMessage(), update.getCallbackQuery().getData());
+                c.dispatch(callbackCommandDispatcher,
+                        query.getMessage(),
+                        query.getFrom(),
+                        query.getData());
             } else {
-                LOG.warn("No command found for callback query '{}'", update.getCallbackQuery().getData());
+                LOG.warn("No command found for callback query '{}'", query.getData());
             }
         }
     }
@@ -103,7 +107,7 @@ public class TelegramController {
     private void lookForPhotos(Message message) {
         PhotoSize[] photos = message.getPhoto();
         if (photos != null && photos.length > 0) {
-            callbackCommandDispatcher.handleReceiptWithoutPurchaseContext(message, photos[photos.length-1].getId());
+            callbackCommandDispatcher.handleReceiptWithoutPurchaseContext(message, message.getFrom(), photos[photos.length-1].getId());
         }
     }
 

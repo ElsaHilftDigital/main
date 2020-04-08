@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.telegram.dto.Message;
+import de.njsm.versusvirus.backend.telegram.dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
@@ -18,8 +19,8 @@ public enum CallbackCommand {
         }
 
         @Override
-        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, UUID data) {
-            dispatcher.handleHelpOffer(message, data);
+        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data) {
+            dispatcher.handleHelpOffer(message, user, data);
         }
     },
 
@@ -30,8 +31,8 @@ public enum CallbackCommand {
         }
 
         @Override
-        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, UUID data) {
-            dispatcher.handleConfirmingHelp(message, data);
+        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data) {
+            dispatcher.handleConfirmingHelp(message, user, data);
         }
     },
     WITHDRAW_HELP {
@@ -41,8 +42,8 @@ public enum CallbackCommand {
         }
 
         @Override
-        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, UUID data) {
-            dispatcher.handleWithdrawingHelp(message, data);
+        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data) {
+            dispatcher.handleWithdrawingHelp(message, user, data);
         }
     },
     COMPLETE_PURCHASE {
@@ -52,8 +53,8 @@ public enum CallbackCommand {
         }
 
         @Override
-        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, UUID data) {
-            dispatcher.handleCompletion(message, data);
+        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data) {
+            dispatcher.handleCompletion(message, user, data);
         }
     },
     MONEY_MISSING {
@@ -63,8 +64,8 @@ public enum CallbackCommand {
         }
 
         @Override
-        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, UUID data) {
-            dispatcher.handleMoneyNotFound(message, data);
+        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data) {
+            dispatcher.handleMoneyNotFound(message, user, data);
         }
     },
     SUBMIT_RECEIPT {
@@ -74,8 +75,8 @@ public enum CallbackCommand {
         }
 
         @Override
-        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, UUID data) {
-            dispatcher.handleReceiptSubmission(message, data);
+        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data) {
+            dispatcher.handleReceiptSubmission(message, user, data);
         }
     },
     ;
@@ -94,19 +95,19 @@ public enum CallbackCommand {
         return Pattern.compile("^(?<commandIdentifier>....)_(?<data>[-a-f0-9]*)$");
     }
 
-    public void dispatch(CallbackDispatcher dispatcher, Message message, String rawData) {
+    public void dispatch(CallbackDispatcher dispatcher, Message message, User user, String rawData) {
         LOG.info("Handling " + name());
         Matcher m = getRegex().matcher(rawData);
         boolean found = m.find();
         assert found; // verified before
         assert m.group("commandIdentifier").equals(getCommandIdentifier());
         String data = m.group("data");
-        dispatchInternally(dispatcher, message, UUID.fromString(data));
+        dispatchInternally(dispatcher, message, user, UUID.fromString(data));
     }
 
     public abstract String getCommandIdentifier();
 
-    public abstract void dispatchInternally(CallbackDispatcher dispatcher, Message message, UUID data);
+    public abstract void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data);
 
     @Nullable
     public static CallbackCommand create(String command) {
