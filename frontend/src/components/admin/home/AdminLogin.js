@@ -43,7 +43,7 @@ const AdminLogin = () => {
                     </div>
                     <button type="submit" className="btn btn-primary mb-5">Einloggen</button>
                 </form>
-                <a href="">Hier neu registrieren als Moderator</a>
+                <a href="/admin">Hier neu registrieren als Moderator</a>
             </div>
         </div>
     );

@@ -12,8 +12,9 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 const RegisterVolunteer = () => {
     const dispatch = useDispatch();
 
-    const registerVolunteerSuccess = useSelector(volunteerSelectors.createVolunteerSuccess);
-    const [ sentRegistration, setSentRegistration ] = useState(false);
+    const registerVolunteerOngoing = useSelector(volunteerSelectors.selectCreateVolunteerRequestOngoing);
+    const registerVolunteerSuccess = useSelector(volunteerSelectors.selectCreateVolunteerSuccess);
+    const registerVolunteerError = useSelector(volunteerSelectors.selectCreateVolunteerError);
 
     const { errors, handleSubmit, register, setValue, triggerValidation, watch } = useForm();
     const [ oldBirthdayValue, setOldBirthdayValue ] = useState('');
@@ -36,7 +37,6 @@ const RegisterVolunteer = () => {
             bankName: data.registerFormBankName,
             wantsCompensation: !data.registerFormWantsNoCompensation,
         }));
-        setSentRegistration(true);
     }
 
     const formatBirthdate = (e) => {
@@ -154,10 +154,10 @@ const RegisterVolunteer = () => {
 
     return (
         <>
-        {sentRegistration && registerVolunteerSuccess && (
+        {registerVolunteerSuccess && (
             <RegisterVolunteerSuccess registeredVolunteer={registerVolunteerSuccess} />
         )}
-        {sentRegistration && !registerVolunteerSuccess && (
+        {registerVolunteerOngoing && (
             <div className="d-flex justify-content-center align-items-baseline">
                 <div class="spinner-border text-primary mr-3" role="status">
                      <span class="sr-only">Loading...</span>
@@ -165,7 +165,10 @@ const RegisterVolunteer = () => {
                 <span>Registrierung wird verarbeitet. Bitte warten...</span>
             </div>
         )}
-        {!sentRegistration && (
+        {registerVolunteerError && (
+            <div className="alert alert-warning pt-3">Leider ist ein Fehler aufgetreten. Bitte versuche es später erneut.</div>
+        )}
+        {!registerVolunteerSuccess && !registerVolunteerError && !registerVolunteerOngoing && (
         <div className="view bg" style={{backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
             backgroundPositionX: "right", backgroundPositionY: "bottom", backgroundSize: "auto",
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "10%"}}>

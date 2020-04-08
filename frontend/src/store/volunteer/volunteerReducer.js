@@ -1,74 +1,198 @@
 import * as actions from './volunteerActions';
 
 export const initialState = {
-    createVolunteerRequestOngoing: false,
+    volunteers: [],
+    getVolunteersRequestOngoing: false,
+    getVolunteersError: null,
+
+    currentVolunteer: null,
     getVolunteerRequestOngoing: false,
-    volunteer: null,
-    getVolunteerSuccess: null,
-    getVolunteerError: null,
+    getVolunteerError: false,
+
+    createVolunteerRequestOngoing: false,
     createVolunteerSuccess: null,
     createVolunteerError: null,
-    volunteers: [],
+
+    updateVolunteerRequestOngoing: false,
+    updateVolunteerError: null,
+
+    deleteVolunteerRequestOngoing: false,
+    deleteVolunteerError: false,
+
+    validateVolunteerRequestOngoing: false,
+    validateVolunteerError: null,
+
+    currentCompletedPurchaseList: [],
+    getCompletedPurchaseListRequestOngoing: false,
+    getCompletedPurchaseListError: null,
+
+    currentOpenPurchaseList: [],
+    getOpenPurchaseListRequestOngoing: false,
+    getOpenPurchaseListError: null,
+
+    selectedVolunteer: null,
 };
 
 export default function volunteerReducer(state = initialState, action) {
     const { type, payload } = action;
 
     switch(type) {
-        case actions.CREATE_VOLUNTEER:
+        // get volunteers
+        case actions.GET_VOLUNTEERS:
             return {
                 ...state,
-                createVolunteerRequestOngoing: true,
-                createVolunteerSuccess: null,
-                createVolunteerError: null,
+                getVolunteersError: null,
+                getVolunteersRequestOngoing: true,
             };
-        case actions.CREATE_VOLUNTEER_SUCCESS:
+        case actions.GET_VOLUNTEERS_SUCCESS:
             return {
                 ...state,
-                createVolunteerRequestOngoing: false,
-                createVolunteerSuccess: payload,
-                createVolunteerError: null,
+                volunteers: payload,
+                getVolunteersRequestOngoing: false,
             };
-        case actions.CREATE_VOLUNTEER_ERROR:
+        case actions.GET_VOLUNTEERS_ERROR:
             return {
                 ...state,
-                createVolunteerRequestOngoing: false,
-                createVolunteerSuccess: null,
-                createVolunteerError: payload,
+                getVolunteersError: payload,
+                getVolunteersRequestOngoing: false,
             };
+        // get volunteer
         case actions.GET_VOLUNTEER:
             return {
                 ...state,
-                getVolunteerRequestOngoing: true,
-                getVolunteerSuccess: null,
                 getVolunteerError: null,
+                getVolunteerRequestOngoing: true,
             };
         case actions.GET_VOLUNTEER_SUCCESS:
             return {
                 ...state,
-                volunteer: payload,
+                currentVolunteer: payload,
                 getVolunteerRequestOngoing: false,
-                getVolunteerSuccess: true,
-                getVolunteerError: null,
             };
         case actions.GET_VOLUNTEER_ERROR:
             return {
                 ...state,
-                getVolunteerRequestOngoing: false,
-                getVolunteerSuccess: false,
                 getVolunteerError: payload,
+                getVolunteerRequestOngoing: false,
             };
-        case actions.GET_ALL_VOLUNTEERS_SUCCESS:
+        // create volunteer
+        case actions.CREATE_VOLUNTEER:
             return {
                 ...state,
-                volunteers: payload,
-                volunteer: payload.length ? payload[0] : null,
+                createVolunteerSuccess: null,
+                createVolunteerError: null,
+                createVolunteerRequestOngoing: true,
             };
-        case actions.SET_CURRENT_VOLUNTEER:
-            const volunteer = state.volunteers.find(volunteer => volunteer.uuid === payload);
+        case actions.CREATE_VOLUNTEER_SUCCESS:
             return {
                 ...state,
-                volunteer: volunteer.length ? volunteer[0] : volunteer,
+                createVolunteerSuccess: payload,
+                createVolunteerRequestOngoing: false,
+            };
+        case actions.CREATE_VOLUNTEER_ERROR:
+            return {
+                ...state,
+                createVolunteerError: payload,
+                createVolunteerRequestOngoing: false,
+            };
+        // update volunteer
+        case actions.UPDATE_VOLUNTEER: 
+            return {
+                ...state,
+                updateVolunteerError: null,
+                updateVolunteerRequestOngoing: true,
+            };
+        case actions.UPDATE_VOLUNTEER_SUCCESS:
+            return {
+                ...state,
+                updateVolunteerRequestOngoing: false,
+            };
+        case actions.UPDATE_VOLUNTEER_ERROR:
+            return {
+                ...state,
+                updateVolunteerError: payload,
+                updateVolunteerRequestOngoing: false,
+            };
+        // delete volunteer
+        case actions.DELETE_VOLUNTEER: 
+            return {
+                ...state,
+                deleteVolunteerError: null,
+                deleteVolunteerRequestOngoing: true,
+            };
+        case actions.DELETE_VOLUNTEER_SUCCESS:
+            return {
+                ...state,
+                deleteVolunteerRequestOngoing: false,
+            };
+        case actions.DELETE_VOLUNTEER_ERROR:
+            return {
+                ...state,
+                deleteVolunteerError: payload,
+                deleteVolunteerRequestOngoing: false,
+            };
+        // validate volunteer
+        case actions.VALIDATE_VOLUNTEER:
+            return {
+                ...state,
+                validateVolunteerError: null,
+                validateVolunteerRequestOngoing: true,
+            };
+        case actions.VALIDATE_VOLUNTEER_SUCCESS:
+            return {
+                ...state,
+                validateVolunteerRequestOngoing: false,
+            };
+        case actions.VALIDATE_VOLUNTEER_ERROR:
+            return {
+                ...state,
+                validateVolunteerError: payload,
+                validateVolunteerRequestOngoing: false,
+            };
+        // get completed purchase list
+        case actions.GET_COMPLETED_PURCHASE_LIST:
+            return {
+                ...state,
+                getCompletedPurchaseListError: null,
+                getCompletedPurchaseListRequestOngoing: true,
+            };
+        case actions.GET_COMPLETED_PURCHASE_LIST_SUCCESS:
+            return {
+                ...state,
+                currentCompletedPurchaseList: payload,
+                getCompletedPurchaseListRequestOngoing: false,
+            };
+        case actions.GET_COMPLETED_PURCHASE_LIST_ERROR:
+            return {
+                ...state,
+                getCompletedPurchaseListError: payload,
+                getCompletedPurchaseListRequestOngoing: false,
+            };
+        // get open purchase list
+        case actions.GET_OPEN_PURCHASE_LIST:
+            return {
+                ...state,
+                getOpenPurchaseListError: null,
+                getOpenPurchaseListRequestOngoing: true,
+            };
+        case actions.GET_OPEN_PURCHASE_LIST_SUCCESS:
+            return {
+                ...state,
+                currentOpenPurchaseList: payload,
+                getOpenPurchaseListRequestOngoing: false,
+            };
+        case actions.GET_OPEN_PURCHASE_LIST_ERROR:
+            return {
+                ...state,
+                getOpenPurchaseListError: payload,
+                getCompletedPurchaseListRequestOngoing: false
+            };
+        // set selected volunteer
+        case actions.SET_SELECTED_VOLUNTEER:
+            const volunteer = state.volunteers.filter(volunteer => volunteer.uuid === payload);
+            return {
+                ...state,
+                volunteer: volunteer.length ? volunteer[0] : null,
             };
         default:
             return state;

@@ -2,13 +2,20 @@ import * as actions from './authenticationActions';
 
 export const initialState = {
     currentUser: null,
+    authError: null,
     loginError: null,
+    logoutError: null,
 };
 
 export default function authenticationReducer(state = initialState, action) {
     const { type, payload } = action;
 
     switch(type) {
+        case actions.GET_AUTH_INSTANCE: 
+            return {
+                ...state,
+                authError: null,
+            };
         case actions.GET_AUTH_INSTANCE_SUCCESS:
             return {
                 ...state,
@@ -18,6 +25,7 @@ export default function authenticationReducer(state = initialState, action) {
             return {
                 ...state,
                 currentUser: null,
+                authError: payload
             };
         case actions.LOGIN:
             return {
@@ -32,8 +40,13 @@ export default function authenticationReducer(state = initialState, action) {
         case actions.LOGOUT:
             return {
                 ...state,
-                currentUser: null,
-            }
+                logoutError: null,
+            };
+        case actions.LOGOUT_ERROR:
+            return {
+                ...state,
+                logoutError: payload,
+            };
         default:
             return state;
     }
