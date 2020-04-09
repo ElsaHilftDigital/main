@@ -135,6 +135,10 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Organization not found");
         });
+        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(() -> {
+            messageSender.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("Purchase has no customer");
+        });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
             messageSender.blameHackingUser(chatId);
@@ -148,6 +152,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             }
             purchase.setAssignedVolunteer(null);
             messageSender.confirmRejection(chatId);
+            messageSender.updateBroadcastMessage(organization, customer, purchase);
             adminMessageSender.helperHasRejected(organization.getTelegramModeratorGroupChatId());
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed unexpectedly");
