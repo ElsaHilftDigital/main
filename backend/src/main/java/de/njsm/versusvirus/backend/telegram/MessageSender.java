@@ -64,7 +64,8 @@ public class MessageSender {
 
     public void confirmRegistration(Organization organization, Volunteer volunteer) {
         if (volunteer.getTelegramChatId() == null) {
-            LOG.warn("Helper has not yet talked to the bot");
+            LOG.warn("Volunteer {} has not yet talked to the bot",
+                    volunteer.getUuid());
             return;
         }
 
@@ -89,6 +90,13 @@ public class MessageSender {
     public void broadcastPurchase(Organization organization, Customer customer, Purchase purchase) {
         if (organization.getTelegramGroupChatId() == null) {
             LOG.warn("Cannot broadcast as group chat id is null");
+            return;
+        }
+
+        if (purchase.getStatus() != Purchase.Status.NEW) {
+            LOG.warn("Tried to re-publish purchase {} in state {}. Rejected",
+                    purchase.getUuid(),
+                    purchase.getStatus());
             return;
         }
 
@@ -120,6 +128,13 @@ public class MessageSender {
     public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
+            return;
+        }
+
+        if (purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
+            LOG.warn("Tried to re-publish purchase {} in state {}. Rejected",
+                    purchase.getUuid(),
+                    purchase.getStatus());
             return;
         }
 
@@ -196,6 +211,13 @@ public class MessageSender {
     public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
+            return;
+        }
+
+        if (purchase.getStatus() != Purchase.Status.CUSTOMER_NOTIFIED) {
+            LOG.warn("Tried to instruct volunteer of purchase {} to deliver purchase in illegal state {}. Rejected",
+                    purchase.getUuid(),
+                    purchase.getStatus());
             return;
         }
 
