@@ -106,7 +106,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
             messageSender.confirmConfirmation(message.getChat().getId());
         } else {
-            LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
+            LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed unexpectedly");
             messageSender.sendUnexpectedMessage(message.getChat().getId());
         }
     }
@@ -141,7 +141,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.confirmRejection(chatId);
             adminMessageSender.helperHasRejected(organization.getTelegramModeratorGroupChatId());
         } else {
-            LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed again");
+            LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed unexpectedly");
             messageSender.sendUnexpectedMessage(chatId);
         }
     }
@@ -177,6 +177,14 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return;
         }
 
+        if (purchase.getStatus() != Purchase.Status.VOLUNTEER_ACCEPTED) {
+            LOG.warn("volunteer {} wants to confirm purchase in illegal state {}",
+                    volunteer.getUuid(),
+                    purchase.getStatus());
+            messageSender.sendUnexpectedMessage(message.getChat().getId());
+            return;
+        }
+
         if (volunteer.getTelegramFileId() != null) {
             var image = telegramApi.getFile(volunteer.getTelegramFileId());
             MediaType mimetype = detectMimeType(image);
@@ -189,9 +197,13 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 messageSender.confirmReceiptUpload(message.getChat().getId());
                 adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
             } else {
+                LOG.warn("Unable to detect MIME type of file {}", volunteer.getTelegramChatId());
                 messageSender.sendUnexpectedImage(message.getChat().getId());
             }
         } else {
+            LOG.warn("volunteer {} wants to map a receipt to purchase {} without having submitted a receipt",
+                    volunteer.getUuid(),
+                    purchaseId);
             messageSender.sendUnexpectedMessage(message.getChat().getId());
         }
     }
@@ -215,10 +227,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
         });
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            messageSender.sendUnexpectedMessage(chatId);
-            return new TelegramShouldBeFineException("Organization not found");
-        });
 
         if (purchase.getAssignedVolunteer() != volunteer.getId()) {
             messageSender.blameHackingUser(chatId);
@@ -227,7 +235,9 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         if (purchase.getStatus() != Purchase.Status.PURCHASE_IN_DELIVERY) {
             messageSender.sendUnexpectedMessage(chatId);
-            LOG.warn("volunteer informed about missing money in purchase in state " + purchase.getStatus());
+            LOG.warn("volunteer {} informed about missing money in illegal purchase in state {}",
+                    volunteer.getUuid(),
+                    purchase.getStatus());
             return;
         }
 
@@ -262,7 +272,9 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         if (purchase.getStatus() != Purchase.Status.PURCHASE_IN_DELIVERY) {
             messageSender.sendUnexpectedMessage(chatId);
-            LOG.warn("volunteer informed about missing money in purchase in state " + purchase.getStatus());
+            LOG.warn("volunteer {} informed about missing money in illegal purchase in state {}",
+                    volunteer.getUuid(),
+                    purchase.getStatus());
             return;
         }
 
