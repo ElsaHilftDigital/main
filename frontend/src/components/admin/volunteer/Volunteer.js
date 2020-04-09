@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { volunteerActions, volunteerSelectors } from '../../../store/volunteer';
-import { useVolunteers } from '../hooks/useVolunteers';
+import { volunteerActions } from 'store/volunteer';
+import { useVolunteers } from 'hooks/useVolunteers';
 import VolunteerDetail from './VolunteerDetail';
 import VolunteerList from './VolunteerList';
 

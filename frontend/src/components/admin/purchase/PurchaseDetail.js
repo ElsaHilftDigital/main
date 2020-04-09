@@ -1,66 +1,73 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-import { purchaseActions } from '../../../store/purchase';
-import { useCustomer } from '../hooks/useCustomer';
+import { purchaseActions } from 'store/purchase';
+import { useCustomer } from 'hooks/useCustomer';
+import { usePurchase } from 'hooks/usePurchase';
 
 
-const PurchaseDetail = (props) => {
+const PurchaseDetail = () => {
     const dispatch = useDispatch();
+    const { purchaseId } = useParams()
 
-    const { currentPurchase } = props;
-    const customer = useCustomer(currentPurchase.customer);
+    const { purchase } = usePurchase(purchaseId);
+    const { customer } = useCustomer(purchase?.customer);
 
     const assignVolunteer = uuid => {
-        dispatch(purchaseActions.assignVolunteer(props.currentPurchase.uuid, uuid));
+        dispatch(purchaseActions.assignVolunteer(purchase.uuid, uuid));
     };
 
     const notifyVolunteerToDeliver = () => {
-        dispatch(purchaseActions.customerNotified(props.currentPurchase.uuid));
+        dispatch(purchaseActions.customerNotified(purchase.uuid));
     };
 
     const {register, handleSubmit, setValue } = useForm({defaultValues: {
-        displayFormStatus: currentPurchase.status,
-        displayFormCreateDate: currentPurchase.createDate,
-        displayFormVolunteerLastname: currentPurchase.volunteerLastname,
-        displayFormVolunteerFirstname: currentPurchase.volunteerFirstname,
-        displayFormCity: currentPurchase.customerCity,
-        displayFormFirstname: currentPurchase.customerFirstname,
-        displayFormLastname: currentPurchase.customerLastname,
-        registerFormTiming: currentPurchase.timing,
-        registerFormSupermarket: currentPurchase.supermarket,
-        registerFormPurchaseSize: currentPurchase.purchaseSize,
-        registerFormExpensesPaid: currentPurchase.expensesPaid,
-        registerFormExpensesOpen: currentPurchase.expensesOpen,
-        registerFormPaymentMethod: currentPurchase.paymentMethod,
-        registerFormComments: currentPurchase.comments
+        displayFormStatus: purchase?.status,
+        displayFormCreateDate: purchase?.createDate,
+        displayFormVolunteerLastname: purchase?.volunteerLastname,
+        displayFormVolunteerFirstname: purchase?.volunteerFirstname,
+        displayFormCity: purchase?.customerCity,
+        displayFormFirstname: purchase?.customerFirstname,
+        displayFormLastname: purchase?.customerLastname,
+        registerFormTiming: purchase?.timing,
+        registerFormSupermarket: purchase?.supermarket,
+        registerFormPurchaseSize: purchase?.purchaseSize,
+        registerFormExpensesPaid: purchase?.expensesPaid,
+        registerFormExpensesOpen: purchase?.expensesOpen,
+        registerFormPaymentMethod: purchase?.paymentMethod,
+        registerFormComments: purchase?.comments
     }});
 
-    const date = new Date(props.currentPurchase.createDate);
+    const date = new Date(purchase?.createDate);
 
-    setValue('displayFormStatus', currentPurchase.status);
+    setValue('displayFormStatus', purchase?.status);
     setValue('displayFormCreateDate', date.toLocaleString('de-DE'));
-    setValue('displayFormVolunteerLastname', currentPurchase.volunteerLastname);
-    setValue('displayFormVolunteerFirstname', currentPurchase.volunteerFirstname);
+    setValue('displayFormVolunteerLastname', purchase?.volunteerLastname);
+    setValue('displayFormVolunteerFirstname', purchase?.volunteerFirstname);
     setValue('displayFormCity', customer?.city);
     setValue('displayFormFirstname', customer?.firstName);
     setValue('displayFormLastname', customer?.lastName);
-    setValue('registerFormTiming', currentPurchase.timing);
-    setValue('registerFormSupermarket', currentPurchase.supermarket);
-    setValue('registerFormPurchaseSize', currentPurchase.purchaseSize);
-    setValue('registerFormExpensesOpen', currentPurchase.expensesPaid);
-    setValue('registerFormExpensesOpen', currentPurchase.expensesOpen);
-    setValue('registerFormPaymentMethod', currentPurchase.paymentMethod);
-    setValue('registerFormComments', currentPurchase.comments);
+    setValue('registerFormTiming', purchase?.timing);
+    setValue('registerFormSupermarket', purchase?.supermarket);
+    setValue('registerFormPurchaseSize', purchase?.purchaseSize);
+    setValue('registerFormExpensesOpen', purchase?.expensesPaid);
+    setValue('registerFormExpensesOpen', purchase?.expensesOpen);
+    setValue('registerFormPaymentMethod', purchase?.paymentMethod);
+    setValue('registerFormComments', purchase?.comments);
 
     const onSubmit = (values) => {
         console.log(values)
     };
     
-    return(
+    if (!purchase) {
+        return <span>...Loading</span>
+    }
+
+    return (
         <div className="container mt-3 mb-5">
-            <h1>Details zum Einkauf vom {date.toLocaleString('de-DE')} für {props.currentPurchase.customerLastname}</h1>
+            <h1>Details zum Einkauf vom {date.toLocaleString('de-DE')} für {purchase.customerLastname}</h1>
             <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
 
             <form onSubmit={handleSubmit(onSubmit)} style={{paddingTop: "1em"}}>
@@ -73,7 +80,7 @@ const PurchaseDetail = (props) => {
                     <input name="displayFormCreateDate" ref={register({ required: true })} disabled type="tel" className="form-control" id="displayFormCreateDate" />
                 </div>
 
-                {props.currentPurchase.assignedVolunteer && (
+                {purchase.assignedVolunteer && (
                     <span>
                         <div className="row">
                             <div className="form-group col-md-6">
@@ -88,7 +95,7 @@ const PurchaseDetail = (props) => {
                         <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Helfer hier klicken</a></i></div>
                     </span>
                 )}
-                {!props.currentPurchase.assignedVolunteer && (
+                {!purchase.assignedVolunteer && (
                     <span>
                         <div className="form-group">
                             <label htmlFor="applyingVolunteers">Helfer wurde noch nicht ausgewählt</label>
@@ -105,7 +112,7 @@ const PurchaseDetail = (props) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {props.currentPurchase.volunteerApplications.map((v) => {
+                                    {purchase.volunteerApplications.map((v) => {
                                         return <tr key={v.uuid}>
                                             <td>{v.firstName}</td>
                                             <td>{v.lastName}</td>

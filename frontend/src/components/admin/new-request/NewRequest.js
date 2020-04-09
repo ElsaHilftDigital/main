@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import {useForm} from 'react-hook-form';
 import {useSelector, useDispatch} from 'react-redux';
 
-import SearchBox from '../../SearchBox';
-import {useCustomers} from '../hooks/useCustomers';
-import {customerSelectors, customerActions} from '../../../store/customer';
-import {purchaseSelectors, purchaseActions} from '../../../store/purchase';
+import SearchBox from 'components/SearchBox';
+import {useCustomers} from 'hooks/useCustomers';
+import {customerSelectors, customerActions} from 'store/customer';
+import {purchaseSelectors, purchaseActions} from 'store/purchase';
 
 const ProgressItem = styled.li`
     position: relative;

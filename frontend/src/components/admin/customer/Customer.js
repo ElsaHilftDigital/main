@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useCustomers } from '../hooks/useCustomers';
+import { useCustomers } from 'hooks/useCustomers';
 import CustomerDetail from './CustomerDetail';
 import CustomerList from './CustomerList';
 

@@ -11,7 +11,8 @@ import AdminLogin from './admin/home/AdminLogin';
 import Customer from './admin/customer/Customer';
 import Volunteer from './admin/volunteer/Volunteer';
 import NewRequest from './admin/new-request/NewRequest';
-import Purchase from './admin/purchase/Purchase';
+import PurchaseList from './admin/purchase/PurchaseList';
+import PurchaseDetail from './admin/purchase/PurchaseDetail';
 import Header from './Header';
 import PrivateRoute from './PrivateRoute';
 import LoginRoute from './LoginRoute';
@@ -28,7 +29,8 @@ const App = (props) => {
                     <Route exact path="/register" component={RegisterVolunteer} />
                     <Route exact path="/login" component={Login} />
                     <PrivateRoute exact path="/admin/new-request" component={NewRequest} />
-                    <PrivateRoute exact path="/admin/purchases" component={Purchase} />
+                    <PrivateRoute exact path="/admin/purchases" component={PurchaseList}/>
+                    <PrivateRoute exact path="/admin/purchase/:purchaseId" component={PurchaseDetail}/>
                     <PrivateRoute exact path="/admin/customers" component={Customer} />
                     <PrivateRoute exact path="/admin/volunteers" component={Volunteer} />
                     <LoginRoute exact path="/admin" component={AdminLogin} />
