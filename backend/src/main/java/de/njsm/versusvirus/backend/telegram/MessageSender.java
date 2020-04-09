@@ -23,14 +23,14 @@ public class MessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
-    private TelegramApiWrapper api;
+    private TelegramApi api;
     private TelegramMessages telegramMessages;
     private final CustomerRepository customerRepository;
 
     private String domain;
 
     @Autowired
-    public MessageSender(@Value("${deployment.domain}") String domain, TelegramApiWrapper api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
+    public MessageSender(@Value("${deployment.domain}") String domain, TelegramApi api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
         this.api = api;
         this.telegramMessages = telegramMessages;
         this.customerRepository = customerRepository;

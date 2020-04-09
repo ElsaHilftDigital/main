@@ -37,13 +37,13 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private final AdminMessageSender adminMessageSender;
 
-    private final TelegramApiWrapper telegramApi;
+    private final TelegramApi telegramApi;
 
     public InlineButtonCallbackDispatcher(OrganizationRepository organizationRepository,
                                         VolunteerRepository volunteerRepository,
                                         PurchaseRepository purchaseRepository,
                                         MessageSender messageSender,
-                                        AdminMessageSender adminMessageSender, TelegramApiWrapper telegramApi) {
+                                        AdminMessageSender adminMessageSender, TelegramApi telegramApi) {
         this.organizationRepository = organizationRepository;
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;

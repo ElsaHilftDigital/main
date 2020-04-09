@@ -16,7 +16,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.IOException;
 
 @Component
-class TelegramApiWrapper {
+class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
@@ -39,24 +39,28 @@ class TelegramApiWrapper {
         registerWebhook();
     }
 
+    @Override
     public Message sendMessage(MessageToBeSent message) {
         LOG.debug("Sending message to {}", message.getChatId());
         Call<TelegramResponse<Message>> call = apiClient.sendMessage(token, message);
         return executeQuery(call);
     }
 
+    @Override
     public void answerCallbackQuery(CallbackQueryAnswer query) {
         LOG.debug("Answering callback query {}", query.getCallbackQueryId());
         Call<TelegramResponse<Void>> call = apiClient.answerCallbackQuery(token, query);
         executeQuery(call);
     }
 
+    @Override
     public void deleteMessage(long chatId, long messageId) {
         LOG.debug("Deleting message in chat {}", chatId);
         Call<TelegramResponse<Void>> call = apiClient.deleteMessage(token, chatId, messageId);
         executeQuery(call);
     }
 
+    @Override
     public byte[] getFile(String fileId) {
         LOG.debug("Downloading file {}", fileId);
         Call<TelegramResponse<File>> call = apiClient.getFile(token, fileId);

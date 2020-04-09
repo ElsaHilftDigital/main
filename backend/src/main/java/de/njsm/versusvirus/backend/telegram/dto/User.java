@@ -20,6 +20,17 @@ public class User {
     @JsonProperty("username")
     private String userName;
 
+    public User() {
+    }
+
+    public User(long id, boolean isBot, String firstName, String lastName, String userName) {
+        this.id = id;
+        this.isBot = isBot;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+    }
+
     public long getId() {
         return id;
     }

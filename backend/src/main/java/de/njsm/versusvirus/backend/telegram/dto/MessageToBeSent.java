@@ -49,4 +49,8 @@ public class MessageToBeSent {
     public boolean isDisableWebPagePreview() {
         return disableWebPagePreview;
     }
+
+    public InlineKeyboardMarkup getButtons() {
+        return buttons;
+    }
 }

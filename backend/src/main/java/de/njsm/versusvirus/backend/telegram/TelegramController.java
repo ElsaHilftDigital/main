@@ -31,21 +31,22 @@ public class TelegramController {
 
     private final AdminMessageSender adminMessageSender;
 
-    private final TelegramApiWrapper telegramApiWrapper;
+    private final CallbackQueryReplyer callbackQueryReplyer;
 
     public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
                               UpdateService updateService,
                               OrganizationRepository organizationRepository,
                               @Value("${telegram.bot.name}") String botName,
                               CallbackDispatcher callbackCommandDispatcher,
-                              AdminMessageSender adminMessageSender, TelegramApiWrapper telegramApiWrapper) {
+                              AdminMessageSender adminMessageSender,
+                              CallbackQueryReplyer callbackQueryReplyer) {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
         this.organizationRepository = organizationRepository;
         this.botName = botName;
         this.callbackCommandDispatcher = callbackCommandDispatcher;
         this.adminMessageSender = adminMessageSender;
-        this.telegramApiWrapper = telegramApiWrapper;
+        this.callbackQueryReplyer = callbackQueryReplyer;
     }
 
     @PostMapping(TELEGRAM_WEBHOOK)
@@ -102,7 +103,7 @@ public class TelegramController {
                         query.getMessage(),
                         query.getFrom(),
                         query.getData());
-                telegramApiWrapper.answerCallbackQuery(new CallbackQueryAnswer(query));
+                callbackQueryReplyer.answerCallbackQuery(new CallbackQueryAnswer(query));
             } else {
                 LOG.warn("No command found for callback query '{}'", query.getData());
             }

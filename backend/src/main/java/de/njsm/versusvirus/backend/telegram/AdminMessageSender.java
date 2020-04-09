@@ -11,12 +11,12 @@ import java.util.HashSet;
 @Component
 public class AdminMessageSender {
 
-    private TelegramApiWrapper api;
+    private TelegramApi api;
 
     private TelegramMessages telegramMessages;
 
     @Autowired
-    public AdminMessageSender(TelegramApiWrapper api, TelegramMessages telegramMessages) {
+    public AdminMessageSender(TelegramApi api, TelegramMessages telegramMessages) {
         this.api = api;
         this.telegramMessages = telegramMessages;
     }

@@ -36,6 +36,16 @@ public class Message {
     @JsonProperty("group_chat_created")
     private boolean groupChatCreated;
 
+    public Message() {
+    }
+
+    public Message(long id, User from, int date, String text) {
+        this.id = id;
+        this.from = from;
+        this.date = date;
+        this.text = text;
+    }
+
     public long getId() {
         return id;
     }
