@@ -6,6 +6,7 @@ import de.njsm.versusvirus.backend.domain.Organization;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
+import de.njsm.versusvirus.backend.telegram.dto.EditedMessage;
 import de.njsm.versusvirus.backend.telegram.dto.InlineKeyboardButton;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
@@ -97,6 +98,35 @@ public class MessageSender {
             return;
         }
 
+        MessageToBeSent message = composeBroadcastMessage(organization, customer, purchase);
+        Message sentMessage = api.sendMessage(message);
+        purchase.setStatus(Purchase.Status.PUBLISHED);
+
+        if (sentMessage != null) {
+            purchase.setBroadcastMessageId(sentMessage.getId());
+        } else {
+            LOG.error("I would have expected to receive my sent message");
+        }
+    }
+
+    public void updateBroadcastMessage(Organization organization, Customer customer, Purchase purchase) {
+        if (organization.getTelegramGroupChatId() == null) {
+            LOG.warn("Cannot broadcast as group chat id is null");
+            return;
+        }
+
+        if (purchase.getStatus() != Purchase.Status.PUBLISHED) {
+            LOG.warn("Tried to edit purchase {} in state {}. Rejected",
+                    purchase.getUuid(),
+                    purchase.getStatus());
+            return;
+        }
+
+        MessageToBeSent message = composeBroadcastMessage(organization, customer, purchase);
+        api.editMessage(new EditedMessage(message, purchase.getBroadcastMessageId()));
+    }
+
+    private MessageToBeSent composeBroadcastMessage(Organization organization, Customer customer, Purchase purchase) {
         String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
@@ -108,19 +138,11 @@ public class MessageSender {
 
         String template = telegramMessages.getBroadcastPurchase();
         String callbackQuery = CallbackCommand.HELP_OFFER.render(purchase.getUuid());
-        String text = MessageFormat.format(template, purchaseDesc);
+        String text = MessageFormat.format(template, purchaseDesc, purchase.getVolunteerApplications().size());
 
-        MessageToBeSent message = new MessageToBeSent(organization.getTelegramGroupChatId(),
+        return new MessageToBeSent(organization.getTelegramGroupChatId(),
                 text,
                 new InlineKeyboardButton(telegramMessages.getOfferHelp(), callbackQuery));
-        Message sentMessage = api.sendMessage(message);
-        purchase.setStatus(Purchase.Status.PUBLISHED);
-
-        if (sentMessage != null) {
-            purchase.setBroadcastMessageId(sentMessage.getId());
-        } else {
-            LOG.error("I would have expected to receive my sent message");
-        }
     }
 
     public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {

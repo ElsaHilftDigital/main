@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.domain.Purchase;
+import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
@@ -39,17 +40,20 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private final TelegramApi telegramApi;
 
+    private final CustomerRepository customerRepository;
+
     public InlineButtonCallbackDispatcher(OrganizationRepository organizationRepository,
-                                        VolunteerRepository volunteerRepository,
-                                        PurchaseRepository purchaseRepository,
-                                        MessageSender messageSender,
-                                        AdminMessageSender adminMessageSender, TelegramApi telegramApi) {
+                                          VolunteerRepository volunteerRepository,
+                                          PurchaseRepository purchaseRepository,
+                                          MessageSender messageSender,
+                                          AdminMessageSender adminMessageSender, TelegramApi telegramApi, CustomerRepository customerRepository) {
         this.organizationRepository = organizationRepository;
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.telegramApi = telegramApi;
+        this.customerRepository = customerRepository;
     }
 
 
@@ -67,6 +71,10 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Organization not found");
         });
+        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(() -> {
+            messageSender.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("Purchase has no customer");
+        });
 
         if (purchase.getStatus() != Purchase.Status.PUBLISHED && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
             messageSender.informPurchaseHasBeenAssigned(message.getChat().getId());
@@ -77,6 +85,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
             adminMessageSender.helpersHaveApplied(organization.getTelegramModeratorGroupChatId());
         }
+        messageSender.updateBroadcastMessage(organization, customer, purchase);
         messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId());
     }
 

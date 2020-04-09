@@ -18,6 +18,10 @@ interface ApiClient {
     Call<TelegramResponse<Message>> sendMessage(@Path("token") String token,
                                                 @Body MessageToBeSent message);
 
+    @POST("/bot{token}/editMessageText")
+    Call<TelegramResponse<Message>> editMessageText(@Path("token") String token,
+                                                    @Body EditedMessage message);
+
     @POST("/bot{token}/answerCallbackQuery")
     Call<TelegramResponse<Void>> answerCallbackQuery(@Path("token") String token,
                                                      @Body CallbackQueryAnswer answer);

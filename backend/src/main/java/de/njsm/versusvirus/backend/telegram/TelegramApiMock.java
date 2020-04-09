@@ -29,6 +29,24 @@ public class TelegramApiMock implements TelegramApi {
         return new Message(1409, mockSelf, (int) Instant.now().getEpochSecond(), message.getText());
     }
 
+    @Override
+    public Message editMessage(EditedMessage message) {
+        String buttons;
+        if (message.getButtons() != null) {
+            buttons = renderButtons(message.getButtons());
+        } else {
+            buttons = "";
+        }
+
+        LOG.info("Editing message in chat {}\n{}\n{}",
+                message.getChatId(),
+                message.getText(),
+                buttons);
+
+        User mockSelf = new User(1409, true, "Mock", "Bot", "mockbot");
+        return new Message(1409, mockSelf, (int) Instant.now().getEpochSecond(), message.getText());
+    }
+
     private String renderButtons(InlineKeyboardMarkup buttons) {
         StringBuilder buttonRenderer = new StringBuilder();
         for (InlineKeyboardButton[] row : buttons.getButtons()) {

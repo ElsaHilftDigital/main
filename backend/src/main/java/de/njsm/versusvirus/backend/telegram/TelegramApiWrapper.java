@@ -46,6 +46,12 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
         return executeQuery(call);
     }
 
+    public Message editMessage(EditedMessage message) {
+        LOG.debug("Editing message to {}", message.getChatId());
+        Call<TelegramResponse<Message>> call = apiClient.editMessageText(token, message);
+        return executeQuery(call);
+    }
+
     @Override
     public void answerCallbackQuery(CallbackQueryAnswer query) {
         LOG.debug("Answering callback query {}", query.getCallbackQueryId());
