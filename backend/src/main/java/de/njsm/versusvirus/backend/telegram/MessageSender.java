@@ -115,7 +115,7 @@ public class MessageSender {
             return;
         }
 
-        if (purchase.getStatus() != Purchase.Status.PUBLISHED) {
+        if (purchase.getStatus() != Purchase.Status.PUBLISHED && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
             LOG.warn("Tried to edit purchase {} in state {}. Rejected",
                     purchase.getUuid(),
                     purchase.getStatus());
@@ -232,7 +232,7 @@ public class MessageSender {
         }
 
         if (purchase.getStatus() != Purchase.Status.CUSTOMER_NOTIFIED) {
-            LOG.warn("Tried to instruct volunteer of purchase {} to deliver purchase in illegal state {}. Rejected",
+            LOG.warn("Tried to instruct volunteer of purchase {} to deliver purchase in state {}. Rejected",
                     purchase.getUuid(),
                     purchase.getStatus());
             return;
