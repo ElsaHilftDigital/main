@@ -1,8 +1,7 @@
-package de.njsm.versusvirus.backend;
+package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
-import de.njsm.versusvirus.backend.telegram.*;
 import de.njsm.versusvirus.backend.telegram.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,18 +31,21 @@ public class TelegramController {
 
     private final AdminMessageSender adminMessageSender;
 
+    private final TelegramApiWrapper telegramApiWrapper;
+
     public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
                               UpdateService updateService,
                               OrganizationRepository organizationRepository,
                               @Value("${telegram.bot.name}") String botName,
                               CallbackDispatcher callbackCommandDispatcher,
-                              AdminMessageSender adminMessageSender) {
+                              AdminMessageSender adminMessageSender, TelegramApiWrapper telegramApiWrapper) {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
         this.organizationRepository = organizationRepository;
         this.botName = botName;
         this.callbackCommandDispatcher = callbackCommandDispatcher;
         this.adminMessageSender = adminMessageSender;
+        this.telegramApiWrapper = telegramApiWrapper;
     }
 
     @PostMapping(TELEGRAM_WEBHOOK)
@@ -100,6 +102,7 @@ public class TelegramController {
                         query.getMessage(),
                         query.getFrom(),
                         query.getData());
+                telegramApiWrapper.answerCallbackQuery(new CallbackQueryAnswer(query));
             } else {
                 LOG.warn("No command found for callback query '{}'", query.getData());
             }

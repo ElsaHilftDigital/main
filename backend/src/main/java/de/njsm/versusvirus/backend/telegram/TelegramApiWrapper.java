@@ -1,6 +1,5 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.TelegramController;
 import de.njsm.versusvirus.backend.telegram.dto.*;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -44,6 +43,12 @@ class TelegramApiWrapper {
         LOG.debug("Sending message to {}", message.getChatId());
         Call<TelegramResponse<Message>> call = apiClient.sendMessage(token, message);
         return executeQuery(call);
+    }
+
+    public void answerCallbackQuery(CallbackQueryAnswer query) {
+        LOG.debug("Answering callback query {}", query.getCallbackQueryId());
+        Call<TelegramResponse<Void>> call = apiClient.answerCallbackQuery(token, query);
+        executeQuery(call);
     }
 
     public void deleteMessage(long chatId, long messageId) {

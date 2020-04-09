@@ -10,6 +10,10 @@ public class CallbackQuery {
 
     private Message message;
 
+    public String getId() {
+        return id;
+    }
+
     public User getFrom() {
         return from;
     }
