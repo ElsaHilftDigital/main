@@ -1,11 +1,13 @@
 package de.njsm.versusvirus.backend.domain;
 
 import de.njsm.versusvirus.backend.domain.common.Address;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Where(clause = "not deleted")
 public class Customer {
 
     @Id

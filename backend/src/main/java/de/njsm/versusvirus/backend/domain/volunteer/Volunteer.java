@@ -1,12 +1,14 @@
 package de.njsm.versusvirus.backend.domain.volunteer;
 
 import de.njsm.versusvirus.backend.domain.common.Address;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
+@Where(clause = "not deleted")
 public class Volunteer {
 
     @Id
