@@ -53,7 +53,7 @@ class TelegramApiWrapper {
 
     public void deleteMessage(long chatId, long messageId) {
         LOG.debug("Deleting message in chat {}", chatId);
-        Call<TelegramResponse<Void>> call = apiClient.deleteMessage(chatId, messageId);
+        Call<TelegramResponse<Void>> call = apiClient.deleteMessage(token, chatId, messageId);
         executeQuery(call);
     }
 

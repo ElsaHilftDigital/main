@@ -64,7 +64,7 @@ public class MessageSender {
 
     public void confirmRegistration(Organization organization, Volunteer volunteer) {
         if (volunteer.getTelegramChatId() == null) {
-            LOG.info("Helper has not yet talked to the bot");
+            LOG.warn("Helper has not yet talked to the bot");
             return;
         }
 
@@ -87,7 +87,6 @@ public class MessageSender {
      * Save the purchase to the repo after calling!
      */
     public void broadcastPurchase(Organization organization, Customer customer, Purchase purchase) {
-
         if (organization.getTelegramGroupChatId() == null) {
             LOG.warn("Cannot broadcast as group chat id is null");
             return;
@@ -119,7 +118,6 @@ public class MessageSender {
     }
 
     public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {
-
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
             return;
