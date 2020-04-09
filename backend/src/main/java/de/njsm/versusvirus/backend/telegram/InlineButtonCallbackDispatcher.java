@@ -241,7 +241,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return;
         }
 
-        if (volunteer.wantsCompensation() && purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
+        if (purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
             purchase.setStatus(Purchase.Status.PAYMENT_PENDING);
         } else {
             purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
