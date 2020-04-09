@@ -1,0 +1,84 @@
+import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
+
+import { handleErrorRedirect, parseError } from '../../config/utils';
+import * as actions from './purchaseActions';
+
+
+export function* handleGetPurchases(getPurchases) {
+    try {
+        const purchases = yield call(getPurchases);
+        yield put(actions.getPurchasesSuccess(purchases));
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.getPurchasesError(parseError(error)));
+    }
+};
+
+export function* handleGetPurchase(getPurchase, action) {
+    try {
+        const purchase = yield call(getPurchase, action.payload);
+        yield put(actions.getPurchaseSuccess(purchase));
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.getPurchaseError(parseError(error)));
+    }
+}
+
+export function* handleCreatePurchase(createPurchase, action) {
+    try {
+        const createdPurchase = yield call(createPurchase, action.payload);
+        yield put(actions.createPurchaseSuccess(createdPurchase));
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.createPurchaseError(parseError(error)));
+    }
+}
+
+export function* handleAssignVolunteer(assignVolunteer, action) {
+    try {
+        const { purchaseUuid, volunteerUuid } = action.payload;
+        yield call(assignVolunteer, purchaseUuid, volunteerUuid);
+        yield put(actions.assignVolunteerSuccess());
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.assignVolunteerError(parseError(error)));
+    }
+};
+
+export function* handleCustomerNotified(customerNotified, action) {
+    try {
+        yield call(customerNotified, action.payload);
+        yield put(actions.customerNotifiedSuccess());
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.customerNotifiedError(parseError(error)));
+    }
+}
+
+export function* handleMarkCompleted(markCompleted, action) {
+    try {
+        yield call(markCompleted, action.payload);
+        yield put(actions.markCompletedSuccess());
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.customerNotifiedError(parseError(error)));
+    }
+}
+
+
+export function* purchaseSaga(purchaseApi) {
+    yield all([
+        takeLatest(actions.GET_PURCHASES, handleGetPurchases, purchaseApi.getPurchases),
+        takeLatest(actions.GET_PURCHASE, handleGetPurchase, purchaseApi.getPurchase),
+        takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi.createPurchase),
+        takeEvery(actions.ASSIGN_VOLUNTEER, handleAssignVolunteer, purchaseApi.assignVolunteer),
+        takeEvery(actions.CUSTOMER_NOTIFIED, handleCustomerNotified, purchaseApi.customerNotified),
+        takeEvery(actions.MARK_COMPLETED, handleMarkCompleted, purchaseApi.markCompleted),
+    ])
+};

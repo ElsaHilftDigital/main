@@ -1,0 +1,144 @@
+// Override default variables
+$primary: rgb(47,47,134);
+
+.hover-pointer:hover {
+    cursor: pointer;
+}
+
+/*
+ * Alignment
+ */
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+    position: fixed;
+    background-color: hsl(240, 100%, 97%);
+    height: 100%;
+    width: 10rem;
+    overflow: hidden;
+}
+
+.sidebar-nav {
+    overflow-y: scroll;
+    list-style: none;
+    padding: 0;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.nav-item {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px;
+    color: var($primary);
+    filter: grayscale(100%) opacity(0.7);
+}
+
+
+.nav-item:hover {
+    background-color: $primary;
+    filter: grayscale(0%) opacity(1);
+    color: white;
+}
+
+.nav-item-active {
+    background-color: $primary;
+    filter: grayscale(0%) opacity(1);
+    color: white;
+}
+
+/* Make scrollbar nicer */
+/* width */
+::-webkit-scrollbar {
+    width: 3px;
+    background: transparent;
+}
+
+/* track */
+::-webkit-scrollbar-track {
+    background: transparent;
+    border: 4px solid transparent;
+    background-clip: content-box;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(47,47,134);
+    border-radius: 3px;
+    border: 1px solid rgb(47,47,134);
+}
+
+.list-header {
+    display: flex;
+    font-weight: bold;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+// replace list header on small screens
+.list-header-icon {
+    visibility: hidden;
+}
+
+/*
+ *  Content next to sidebar
+ */
+
+.content {
+    margin-left: 10rem;
+    padding: 1rem;
+}
+
+/*
+ * Hide outline
+ */
+.no-outline {
+    border: 0px;
+    border-style: hidden;
+    width: 100%;
+}
+
+.no-outline:focus {
+    outline: none;
+}
+
+/* Small screens */
+@media only screen and (max-width: 600px) {
+    .sidebar {
+        width: 5rem;
+    }
+
+    .sidebar:hover {
+        width: 10rem;
+        z-index: 100;
+    }
+
+    .list-header {
+        visibility: hidden;
+    }
+
+    .list-header-icon {
+
+        color: rgb(47,47,134);
+        visibility: visible;
+        width: 100%;
+        height: 100%;
+    }
+
+    .content {
+        margin-left: 5rem;
+    }
+}
