@@ -3,10 +3,14 @@ package de.njsm.versusvirus.backend.telegram;
 import de.njsm.versusvirus.backend.telegram.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
-public class TelegramApiMock implements TelegramApi {
+@Component
+@Profile("dev")
+public class TelegramApiMock implements TelegramApi, CallbackQueryReplyer {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiMock.class);
 
@@ -72,5 +76,9 @@ public class TelegramApiMock implements TelegramApi {
     public byte[] getFile(String fileId) {
         LOG.info("Sorry, the mock has no image to serve");
         return new byte[0];
+    }
+
+    @Override
+    public void answerCallbackQuery(CallbackQueryAnswer query) {
     }
 }
