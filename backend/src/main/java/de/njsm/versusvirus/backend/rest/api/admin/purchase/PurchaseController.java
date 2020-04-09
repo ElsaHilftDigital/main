@@ -39,6 +39,11 @@ public class PurchaseController {
         return purchaseService.create(principal, req);
     }
 
+    @PostMapping("/{id}/publish")
+    public void publishPurchase(@PathVariable("id") UUID purchase) {
+        purchaseService.publishPurchase(purchase);
+    }
+
     @RequestMapping("/{id}/availablevolunteers")
     public List<VolunteerDTO> getAvailableVolunteers(@PathVariable("id") UUID purchaseId) {
         return purchaseService.getAvailableVolunteers(purchaseId);

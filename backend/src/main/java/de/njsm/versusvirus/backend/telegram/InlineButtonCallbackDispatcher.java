@@ -68,7 +68,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return new TelegramShouldBeFineException("Organization not found");
         });
 
-        if (purchase.getStatus() != Purchase.Status.NEW && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
+        if (purchase.getStatus() != Purchase.Status.PUBLISHED && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
             messageSender.informPurchaseHasBeenAssigned(message.getChat().getId());
             return;
         }
@@ -135,7 +135,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.getVolunteerApplications().remove(volunteer.getId());
             if (purchase.getVolunteerApplications().isEmpty()) {
-                purchase.setStatus(Purchase.Status.NEW);
+                purchase.setStatus(Purchase.Status.PUBLISHED);
             }
             purchase.setAssignedVolunteer(null);
             messageSender.confirmRejection(chatId);

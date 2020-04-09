@@ -48,8 +48,18 @@ public class PurchaseService {
         this.messageSender = messageSender;
     }
 
+    public PurchaseDTO createAndPublish(Principal principal, CreatePurchaseRequest req) {
+        Purchase purchase = createPurchase(principal, req);
+        publishPurchase(purchase.getUuid());
+        return new PurchaseDTO(purchase);
+    }
 
     public PurchaseDTO create(Principal principal, CreatePurchaseRequest req) {
+        Purchase purchase = createPurchase(principal, req);
+        return new PurchaseDTO(purchase);
+    }
+
+    private Purchase createPurchase(Principal principal, CreatePurchaseRequest req) {
         var purchase = new Purchase();
         var moderator = moderatorRepository.findByLogin(principal.getName()).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findByUuid(req.customer).orElseThrow(NotFoundException::new);
@@ -71,11 +81,14 @@ public class PurchaseService {
         purchase.setCreateTime();
 
         purchaseRepository.save(purchase);
+        return purchase;
+    }
 
+    public void publishPurchase(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
+        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(NotFoundException::new);
         messageSender.broadcastPurchase(organization, customer, purchase);
-
-        return new PurchaseDTO(purchase);
     }
 
     public List<PurchaseDTO> getPurchases() {

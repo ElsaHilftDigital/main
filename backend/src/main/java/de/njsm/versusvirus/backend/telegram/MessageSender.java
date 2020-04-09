@@ -84,9 +84,6 @@ public class MessageSender {
         api.sendMessage(message);
     }
 
-    /**
-     * Save the purchase to the repo after calling!
-     */
     public void broadcastPurchase(Organization organization, Customer customer, Purchase purchase) {
         if (organization.getTelegramGroupChatId() == null) {
             LOG.warn("Cannot broadcast as group chat id is null");
@@ -117,6 +114,7 @@ public class MessageSender {
                 text,
                 new InlineKeyboardButton(telegramMessages.getOfferHelp(), callbackQuery));
         Message sentMessage = api.sendMessage(message);
+        purchase.setStatus(Purchase.Status.PUBLISHED);
 
         if (sentMessage != null) {
             purchase.setBroadcastMessageId(sentMessage.getId());
@@ -205,9 +203,6 @@ public class MessageSender {
         return result;
     }
 
-    /**
-     * Save the purchase to the repo after calling!
-     */
     public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");

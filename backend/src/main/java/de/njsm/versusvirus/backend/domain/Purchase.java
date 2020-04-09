@@ -31,6 +31,12 @@ public class Purchase {
                 return "Neu";
             }
         },
+        PUBLISHED {
+            @Override
+            public String displayName() {
+                return "Veröffentlicht";
+            }
+        },
         VOLUNTEER_FOUND {
             @Override
             public String displayName() {
