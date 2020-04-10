@@ -24,6 +24,31 @@ function offer-help() {
 }
 
 
+function confirm-help() {
+  echo
+}
+
+
+function withdraw-help() {
+  echo
+}
+
+
+function upload-receipt() {
+  echo
+}
+
+
+function confirm-receipt-mapping() {
+  echo
+}
+
+
+function send-arbitrary-message() {
+  echo
+}
+
+
 function send() {
   echo -n Sending data
   echo "$DATA" | jq
@@ -46,6 +71,11 @@ else
     echo "Actions:"
     echo "register-as-volunteer <uuid>    Execute /start command after registration, takes volunteer uuid"
     echo "offer-help <uuid>               Press the button below broadcast purchase message, takes purchase uuid"
+    echo "confirm-help <uuid>             "
+    echo "withdraw-help <uuid>            "
+    echo "upload-receipt                  "
+    echo "confirm-receipt-mapping <uuid>  "
+    echo "send-arbitrary-message <text>   "
     exit 1
 fi
 

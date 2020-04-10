@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.service.volunteer;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.mail.OurMailSender;
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
@@ -36,13 +37,22 @@ public class VolunteerService {
 
     private final InviteLinkGenerator inviteLinkGenerator;
 
-    public VolunteerService(VolunteerRepository repository, MessageSender messageSender, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository, PurchaseRepository purchaseRepository, InviteLinkGenerator inviteLinkGenerator) {
+    private final OurMailSender mailSender;
+
+    public VolunteerService(VolunteerRepository repository,
+                            MessageSender messageSender,
+                            AdminMessageSender adminMessageSender,
+                            OrganizationRepository organizationRepository,
+                            PurchaseRepository purchaseRepository,
+                            InviteLinkGenerator inviteLinkGenerator,
+                            OurMailSender mailSender) {
         this.repository = repository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.organizationRepository = organizationRepository;
         this.purchaseRepository = purchaseRepository;
         this.inviteLinkGenerator = inviteLinkGenerator;
+        this.mailSender = mailSender;
     }
 
     public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
@@ -67,8 +77,11 @@ public class VolunteerService {
         volunteer.setWantsCompensation(signupRequest.wantsCompensation);
 
         repository.save(volunteer);
+
+        String inviteLink = inviteLinkGenerator.getInviteLink(volunteer.getUuid());
         notifyModerators();
-        return new VolunteerDTO(volunteer, inviteLinkGenerator.getInviteLink(volunteer.getUuid()));
+        mailSender.sendRegistrationMail(volunteer, inviteLink);
+        return new VolunteerDTO(volunteer, inviteLink);
     }
 
     private void notifyModerators() {

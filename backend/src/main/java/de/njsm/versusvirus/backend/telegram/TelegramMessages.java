@@ -44,6 +44,7 @@ public class TelegramMessages {
     private String moneyIsMissing;
     private String unexpectedImage;
     private String forwardedMessage;
+    private String registrationEmail;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -311,5 +312,13 @@ public class TelegramMessages {
 
     public void setForwardedMessage(String forwardedMessage) {
         this.forwardedMessage = forwardedMessage;
+    }
+
+    public String getRegistrationEmail() {
+        return this.registrationEmail;
+    }
+
+    public void setRegistrationEmail(String registrationEmail) {
+        this.registrationEmail = registrationEmail;
     }
 }
