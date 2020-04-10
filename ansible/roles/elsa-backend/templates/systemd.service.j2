@@ -8,7 +8,7 @@ Environment=TELEGRAM_TOKEN={{ elsa_backend_telegram_token }}
 Environment=TELEGRAM_BOT_NAME={{ elsa_backend_bot_name }}
 Environment=DEPLOYMENT_DOMAIN={{ ansible_fqdn }}
 ExecStart=java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4004 \
-        -jar /usr/local/lib/elsa-hilft.jar --spring.profiles.active={{ spring_profile }}
+        -jar /usr/local/lib/elsa-hilft.jar --spring.profiles.active={{ elsa_backend_spring_profile }}
 User=elsa
 Group=elsa
 WorkingDirectory=/var/lib/elsa

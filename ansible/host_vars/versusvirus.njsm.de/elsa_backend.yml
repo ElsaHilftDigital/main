@@ -1,4 +1,4 @@
 ---
 elsa_backend_telegram_token: "{{ vault_elsa_backend_telegram_token }}"
 elsa_backend_bot_name: elsahilftbot
-spring_profile: "prod"
+elsa_backend_spring_profile: "prod"
