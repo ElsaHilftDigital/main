@@ -10,7 +10,6 @@ import NewRequest from './admin/new-request/NewRequest';
 import PurchaseList from './admin/purchase/PurchaseList';
 import PurchaseDetail from './admin/purchase/PurchaseDetail';
 import Header from './Header';
-import PrivateRoute from './PrivateRoute';
 
 
 const App = (props) => {
@@ -18,14 +17,14 @@ const App = (props) => {
         <Provider store={props.store}>
             <Router history={history}>
                 <Route path="/" component={Header} />
-                <Redirect exact from="/" to="/new-request"/>
                 <Switch>
-                    <Route exact path="/login" component={AdminLogin} />
-                    <PrivateRoute exact path="/new-request" component={NewRequest} />
-                    <PrivateRoute exact path="/purchases" component={PurchaseList}/>
-                    <PrivateRoute exact path="/purchase/:purchaseId" component={PurchaseDetail}/>
-                    <PrivateRoute exact path="/customers" component={Customer} />
-                    <PrivateRoute exact path="/volunteers" component={Volunteer} />
+                    <Route exact path="/login"><AdminLogin/></Route>
+                    <Route exact path="/new-request"><NewRequest/></Route>
+                    <Route exact path="/purchases"><PurchaseList/></Route>
+                    <Route exact path="/purchase/:purchaseId"><PurchaseDetail/></Route>
+                    <Route exact path="/customers"><Customer/></Route>
+                    <Route exact path="/volunteers"><Volunteer/></Route>
+                    <Redirect to="/purchases"/>
                 </Switch>
             </Router>
         </Provider>

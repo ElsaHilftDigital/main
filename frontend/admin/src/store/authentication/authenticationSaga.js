@@ -2,6 +2,7 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 
 import { parseError } from '../../config/utils';
 import * as actions from './authenticationActions';
+import history from '../../history';
 
 export function* handleGetAuthInstance(authApi) {
     try {
@@ -17,6 +18,7 @@ export function* handleLogin(authApi, action) {
     try {
         yield call([authApi, authApi.login], action.payload);
         yield put(actions.getAuthInstance());
+        history.push('/');
     } catch (error) {
         console.log(error);
         yield put(actions.loginError(parseError(error)));

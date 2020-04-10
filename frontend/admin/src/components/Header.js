@@ -1,5 +1,6 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
+import { matchPath } from 'react-router-dom';
 
 import history from '../history';
 
@@ -14,15 +15,13 @@ const Header = (props) => {
         history.push(route)
     };
 
-    const isLogin = !!currLocation.match(/^\/login(\/)?$/i);
-    if (isLogin) {
-        // don't show header on admin login page
+    if (!!matchPath(history.location.pathname, "/login")) {
         return null;
     }
 
     return (
         <Navbar sticky="top" bg="primary" expand="md">
-            <Navbar.Brand onClick={navigate("/admin")} className="hover-pointer" >
+            <Navbar.Brand onClick={navigate("/")} className="hover-pointer" >
             <img src="ElsaHilftMehr.png" className="mr-3" width="50" height="50" alt="" />
             <span className="text-light font-weight-bold">Elsa hilft</span>
             </Navbar.Brand>
