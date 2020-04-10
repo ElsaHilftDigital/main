@@ -124,6 +124,12 @@ public class Purchase {
                 return "Überweisung";
             }
         },
+        TWINT {
+            @Override
+            public String displayName() {
+                return "TWINT";
+            }
+        },
         OTHER {
             @Override
             public String displayName() {

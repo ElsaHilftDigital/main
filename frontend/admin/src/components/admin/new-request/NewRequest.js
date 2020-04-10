@@ -300,6 +300,7 @@ const NewRequest = () => {
                     <select ref={register} id="paymentMethod" name="paymentMethod" className="form-control">
                         <option value="CASH">Bargeld</option>
                         <option value="BILL">Rechnung</option>
+                        <option value="TWINT">TWINT</option>
                         <option value="OTHER">Andere</option>
                     </select>
                 </div>
