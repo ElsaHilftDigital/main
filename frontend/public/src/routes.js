@@ -1,1 +1,0 @@
-export const purchaseDetails = (purchaseId) => `/admin/purchase/${purchaseId}`;
