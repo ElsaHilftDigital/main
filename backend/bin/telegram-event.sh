@@ -18,6 +18,12 @@ function register-as-volunteer() {
 }
 
 
+function offer-help() {
+  DATA='{"update_id":'$ID',"callback_query":{"id":1,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"data":"aaaa_'"$1"'","message":{"chat":{"id":0,"type":"group"}}}}'
+  send "$DATA"
+}
+
+
 function send() {
   echo -n Sending data
   echo "$DATA" | jq
@@ -38,7 +44,8 @@ else
     echo "Usage: $0 <action>"
     echo ""
     echo "Actions:"
-    echo "register-as-volunteer <uuid>    Execute /start command after registration"
+    echo "register-as-volunteer <uuid>    Execute /start command after registration, takes volunteer uuid"
+    echo "offer-help <uuid>               Press the button below broadcast purchase message, takes purchase uuid"
     exit 1
 fi
 
