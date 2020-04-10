@@ -16,7 +16,7 @@
 - name: Copy Admin Frontend
   become: True
   copy:
-    src: "{{ playbook_dir }}/../frontend/admin/build"
+    src: "{{ playbook_dir }}/../frontend/admin/build/"
     dest: /var/www/html/admin
     owner: root
     group: root
