@@ -10,7 +10,7 @@ import java.time.Instant;
 
 @Component
 @Profile("dev")
-public class TelegramApiMock implements TelegramApi, CallbackQueryReplyer {
+public class TelegramApiMock implements TelegramApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiMock.class);
 
@@ -76,9 +76,5 @@ public class TelegramApiMock implements TelegramApi, CallbackQueryReplyer {
     public byte[] getFile(String fileId) {
         LOG.info("Sorry, the mock has no image to serve");
         return new byte[0];
-    }
-
-    @Override
-    public void answerCallbackQuery(CallbackQueryAnswer query) {
     }
 }
