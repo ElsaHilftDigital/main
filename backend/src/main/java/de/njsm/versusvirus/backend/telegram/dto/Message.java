@@ -1,5 +1,6 @@
 package de.njsm.versusvirus.backend.telegram.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -88,5 +89,60 @@ public class Message {
 
     public boolean isGroupChatCreated() {
         return groupChatCreated;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setFrom(User from) {
+        this.from = from;
+    }
+
+    public void setDate(int date) {
+        this.date = date;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
+    public void setForwardFrom(User forwardFrom) {
+        this.forwardFrom = forwardFrom;
+    }
+
+    public void setForwardFromChat(Chat forwardFromChat) {
+        this.forwardFromChat = forwardFromChat;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setPhoto(PhotoSize[] photo) {
+        this.photo = photo;
+    }
+
+    public void setEntities(MessageEntity[] entities) {
+        this.entities = entities;
+    }
+
+    public void setNewChatMembers(User[] newChatMembers) {
+        this.newChatMembers = newChatMembers;
+    }
+
+    public void setGroupChatCreated(boolean groupChatCreated) {
+        this.groupChatCreated = groupChatCreated;
+    }
+
+    @JsonIgnore
+    public String getPurgedText() {
+        String text = getText();
+        if (entities != null) {
+            for (MessageEntity e : entities) {
+                text = text.replace(e.extractCommand(getText()), "");
+            }
+        }
+        return text;
     }
 }

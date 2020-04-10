@@ -2,6 +2,8 @@ package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +12,8 @@ import java.util.HashSet;
 
 @Component
 public class AdminMessageSender {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AdminMessageSender.class);
 
     private TelegramApi api;
 
@@ -47,6 +51,12 @@ public class AdminMessageSender {
     }
 
     public void forwardVolunteerMessage(long chatId, Message message) {
+        String purgedMessageText = message.getPurgedText();
+        if (purgedMessageText.isEmpty()) {
+            LOG.info("Not forwarding text '{}'", message.getText());
+            return;
+        }
+
         var forwardedMessage = MessageFormat.format(telegramMessages.getForwardedMessage(),
                 message.getFrom().getFirstName() != null ? message.getFrom().getFirstName() : "",
                 message.getFrom().getLastName() != null ? message.getFrom().getLastName() : "",
