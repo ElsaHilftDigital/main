@@ -4,7 +4,6 @@ export const initialState = {
     currentUser: null,
     authError: null,
     loginError: null,
-    logoutError: null,
 };
 
 export default function authenticationReducer(state = initialState, action) {
@@ -36,16 +35,6 @@ export default function authenticationReducer(state = initialState, action) {
             return {
                 ...state,
                 loginError: payload,
-            };
-        case actions.LOGOUT:
-            return {
-                ...state,
-                logoutError: null,
-            };
-        case actions.LOGOUT_ERROR:
-            return {
-                ...state,
-                logoutError: payload,
             };
         default:
             return state;

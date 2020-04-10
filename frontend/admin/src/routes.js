@@ -1,1 +1,1 @@
-export const purchaseDetails = (purchaseId) => `/admin/purchase/${purchaseId}`;
+export const purchaseDetails = (purchaseId) => `/purchase/${purchaseId}`;

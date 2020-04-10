@@ -11,6 +11,6 @@ export const parseError = e => {
 export const handleErrorRedirect = error => {
     if (error.response && error.response.status === 401) {
         // redirect to admin login
-        history.push('/admin');
+        history.push('/login');
     }
 }

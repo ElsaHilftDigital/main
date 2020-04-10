@@ -7,12 +7,12 @@ const PrivateRoute = props => {
     const isLoggedIn = !!useAuthentication();
 
     const renderRedirect = (location) => {
-        return <Redirect to={{ pathname: '/admin', state: { from: location }}} />;
+        return <Redirect to={{ pathname: '/login', state: { from: location }}} />;
     };
     return (
         <>
         {!isLoggedIn && (
-            renderRedirect('/admin')
+            renderRedirect('/login')
         )}
         {isLoggedIn && (
             <Route {...props} />

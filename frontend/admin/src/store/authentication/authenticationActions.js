@@ -29,15 +29,3 @@ export const loginError = error => ({
     payload: error,
     error: true,
 });
-
-export const logout = () => ({
-    type: LOGOUT,
-});
-export const logoutError = error => ({
-    type: LOGOUT_ERROR,
-    payload: error,
-    error: true,
-})
-
-
-
