@@ -17,7 +17,7 @@
   become: True
   copy:
     src: "{{ playbook_dir }}/../frontend/admin/build"
-    dest: /var/www/html/admin/
+    dest: /var/www/html/admin
     owner: root
     group: root
     mode: 0444
