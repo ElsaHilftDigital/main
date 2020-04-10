@@ -247,10 +247,21 @@ public class MessageSender {
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
         String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
 
+        InlineKeyboardButton[] buttons;
+        if (purchase.getPaymentMethod() != Purchase.PaymentMethod.CASH) {
+            buttons = new InlineKeyboardButton[] {
+                    new InlineKeyboardButton(telegramMessages.getEverythingFound(), finishCommand),
+            };
+        } else {
+            buttons = new InlineKeyboardButton[] {
+                    new InlineKeyboardButton(telegramMessages.getEverythingFound(), finishCommand),
+                    new InlineKeyboardButton(telegramMessages.getMoneyWasMissing(), moneyMissingCommand),
+            };
+        }
+
         MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(),
                 text,
-                new InlineKeyboardButton(telegramMessages.getEverythingFound(), finishCommand),
-                new InlineKeyboardButton(telegramMessages.getMoneyWasMissing(), moneyMissingCommand));
+                buttons);
         api.sendMessage(message);
 
         purchase.setStatus(Purchase.Status.PURCHASE_IN_DELIVERY);
