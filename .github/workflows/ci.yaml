@@ -12,6 +12,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: 'deployment pending'
+      uses: 'chrnorm/deployment-action@releases/v1'
+      id: deployment
+      with:
+        token: '${{ github.token }}'
+        environment: 'production'
+        target_url: 'https://gcp.elsa-hilft.ch'
     - uses: actions/checkout@v2
     - uses: actions/cache@v1
       with:
@@ -44,6 +51,29 @@ jobs:
         docker push docker.pkg.github.com/elsahilftdigital/main/backend:$git_hash
       env:
         GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}
+    - name: Deploy
+      run: |
+        export git_hash=$(git rev-parse --short "$GITHUB_SHA")
+        curl --user "pusher:${SECRET}" --silent --show-error --fail -X POST -d "{\"name\": \"docker.pkg.github.com/elsahilftdigital/main/backend\", \"tag\": \"${git_hash}\"}" 'https://gcp.elsa-hilft.ch/v1/webhooks/native'
+      env:
+        SECRET: ${{ secrets.KEEL_SECRET }}
+    - name: Update deployment status (success)
+      if: success()
+      uses: chrnorm/deployment-status@releases/v1
+      with:
+        token: "${{ github.token }}"
+        target_url: 'https://gcp.elsa-hilft.ch'
+        state: "success"
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+    - name: Update deployment status (failure)
+      if: failure()
+      uses: chrnorm/deployment-status@releases/v1
+      with:
+        token: "${{ github.token }}"
+        target_url: 'https://gcp.elsa-hilft.ch'
+        state: "failure"
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
   public-ui:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -63,6 +93,7 @@ jobs:
       run: |
         cd frontend/public
         npm install
+        export REACT_APP_BACKEND_URL=https://gcp.elsa-hilft.ch/api
         npm run build
     - name: Publish public frontend to GCS
       uses: actions-hub/gcloud@master
@@ -91,6 +122,7 @@ jobs:
       run: |
         cd frontend/admin
         npm install
+        export REACT_APP_BACKEND_URL=https://gcp.elsa-hilft.ch/api
         npm run build
     - name: Publish admin frontend to GCS
       uses: actions-hub/gcloud@master
