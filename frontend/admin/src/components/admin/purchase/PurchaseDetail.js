@@ -63,7 +63,7 @@ const PurchaseDetail = () => {
                 {purchase.status === "Neu" && <Button
                     onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <Button
-                    onClick={() => history.push("/" + purchase.uuid + "/receipt")}>Quittung ansehen</Button>}
+                    onClick={() => history.push("/purchase/" + purchase.uuid + "/receipt")}>Quittung ansehen</Button>}
             </div>
             <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
 

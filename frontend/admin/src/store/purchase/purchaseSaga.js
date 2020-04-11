@@ -73,8 +73,9 @@ export function* handleCustomerNotified(customerNotified, action) {
 
 export function* handlePublishPurchase(publishPurchase, action) {
     try {
-        yield call(publishPurchase, action.payload);
+        const purchase = yield call(publishPurchase, action.payload);
         yield put(actions.publishPurchaseSuccess());
+        yield put(actions.getPurchaseSuccess(purchase));
     } catch (error) {
         console.log(error);
         handleErrorRedirect(error);

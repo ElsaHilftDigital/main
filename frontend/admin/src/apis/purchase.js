@@ -40,8 +40,9 @@ export async function customerNotified(uuid) {
 };
 
 export async function publishPurchase(uuid) {
-    const response = await client.get(`/purchases/${uuid}/publish`);
-    return response;
+    await client.post(`/purchases/${uuid}/publish`);
+    const response = await client.get(`/purchases/${uuid}`);
+    return response.data;
 };
 
 export async function markCompleted(uuid) {
