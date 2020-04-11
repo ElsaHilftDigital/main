@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 public class Purchase {
@@ -29,7 +30,7 @@ public class Purchase {
         DateTimeFormatter format = DateTimeFormatter.ISO_DATE;
         return String.format("date,shops,cost\n%s,%s,%s\n",
                 format.format(createTime),
-                supermarket,
+                purchaseSupermarketList.stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(" ")),
                 cost);
     }
 
@@ -151,7 +152,6 @@ public class Purchase {
     @Enumerated(EnumType.STRING)
     private Status status;
     private String timing;                    // timing to deliver purchase "after" or "before" certain time
-    private String supermarket;               // preferred supermarket
     @Enumerated(EnumType.STRING)
     private PurchaseSize purchaseSize;        // depending on number of purchase items
     @Enumerated(EnumType.STRING)
@@ -160,7 +160,7 @@ public class Purchase {
     private Instant createTime;
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> purchaseList = new ArrayList<>();
+    private List<PurchaseSupermarket> purchaseSupermarketList = new ArrayList<>();
 
     private byte[] receipt;                   // picture of receipt
     private String receiptMimeType;
@@ -202,14 +202,6 @@ public class Purchase {
 
     public void setTiming(String timing) {
         this.timing = timing;
-    }
-
-    public String getSupermarket() {
-        return supermarket;
-    }
-
-    public void setSupermarket(String supermarket) {
-        this.supermarket = supermarket;
     }
 
     public PurchaseSize getPurchaseSize() {
@@ -316,17 +308,17 @@ public class Purchase {
         this.volunteerApplications = volunteerApplications;
     }
 
-    public List<OrderItem> getPurchaseList() {
-        return purchaseList;
+    public List<PurchaseSupermarket> getPurchaseSupermarketList() {
+        return purchaseSupermarketList;
     }
 
-    public void addOrderItem(OrderItem orderItem) {
-        purchaseList.add(orderItem);
-        orderItem.setPurchase(this);
+    public void addSupermarket(PurchaseSupermarket supermarket) {
+        purchaseSupermarketList.add(supermarket);
+        supermarket.setPurchase(this);
     }
 
-    public void setPurchaseList(List<OrderItem> purchaseList) {
-        this.purchaseList = purchaseList;
+    public void setPurchaseList(List<PurchaseSupermarket> purchaseList) {
+        this.purchaseSupermarketList = purchaseList;
     }
 
     @PrePersist

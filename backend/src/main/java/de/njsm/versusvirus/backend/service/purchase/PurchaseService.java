@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.service.purchase;
 import de.njsm.versusvirus.backend.domain.Customer;
 import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
+import de.njsm.versusvirus.backend.domain.PurchaseSupermarket;
 import de.njsm.versusvirus.backend.repository.*;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
@@ -64,15 +65,21 @@ public class PurchaseService {
         var moderator = moderatorRepository.findByLogin(principal.getName()).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findByUuid(req.customer).orElseThrow(NotFoundException::new);
 
-        for (String item : req.orderItems) {
-            var orderItem = new OrderItem();
-            orderItem.setPurchaseItem(item);
-            purchase.addOrderItem(orderItem);
+        for (PurchaseSupermarketDTO market : req.supermarkets) {
+            var persistentMarket = new PurchaseSupermarket();
+            persistentMarket.setName(market.name);
+            for (String orderItemName : market.orderItems) {
+                var orderItem = new OrderItem();
+                orderItem.setPurchaseItem(orderItemName);
+                orderItem.setPurchaseSupermarket(persistentMarket);
+                persistentMarket.addOrderItem(orderItem);
+            }
+            persistentMarket.setPurchase(purchase);
+            purchase.addSupermarket(persistentMarket);
         }
 
         purchase.setPaymentMethod(req.paymentMethod);
         purchase.setTiming(req.timing);
-        purchase.setSupermarket(req.supermarket);
         purchase.setPurchaseSize(req.purchaseSize);
         purchase.setComments(req.comments);
         purchase.setCreatedByModerator(moderator.getId());

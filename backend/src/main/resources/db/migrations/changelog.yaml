@@ -86,3 +86,6 @@ databaseChangeLog:
   - include:
       file: 20200410-1007-add-dev-organization-values.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200411-0904-multiple-supermarkets-per-purchase.sql
+      relativeToChangelogFile: true
