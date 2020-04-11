@@ -292,11 +292,11 @@ public class Purchase {
         this.createdByModerator = createdByModerator;
     }
 
-    public Long getCustomer() {
+    public Long getCustomerId() {
         return customer;
     }
 
-    public void setCustomer(Long customer) {
+    public void setCustomerId(Long customer) {
         this.customer = customer;
     }
 

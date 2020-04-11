@@ -71,7 +71,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Organization not found");
         });
-        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(() -> {
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Purchase has no customer");
         });
@@ -135,7 +135,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Organization not found");
         });
-        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(() -> {
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Purchase has no customer");
         });

@@ -1,9 +1,6 @@
 package de.njsm.versusvirus.backend.rest.api.admin.purchase;
 
-import de.njsm.versusvirus.backend.service.purchase.CreatePurchaseRequest;
-import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
-import de.njsm.versusvirus.backend.service.purchase.PurchaseService;
-import de.njsm.versusvirus.backend.service.purchase.PurchaseWithApplicationsDTO;
+import de.njsm.versusvirus.backend.service.purchase.*;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +21,8 @@ public class PurchaseController {
     }
 
     @GetMapping()
-    public List<PurchaseWithApplicationsDTO> getPurchases() {
-        return purchaseService.getPurchasesWithApplications();
+    public List<PurchaseListItemDTO> getPurchases() {
+        return purchaseService.getPurchases();
     }
 
     @GetMapping("/{id}")

@@ -218,7 +218,7 @@ public class MessageSender {
         InlineKeyboardButton[] result = new InlineKeyboardButton[purchases.size()];
         int i = 0;
         for (Purchase p : purchases) {
-            Customer customer = customerRepository.findById(p.getCustomer()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
+            Customer customer = customerRepository.findById(p.getCustomerId()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
             result[i] = new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName(),
                     CallbackCommand.SUBMIT_RECEIPT.render(p.getUuid()));
             i++;

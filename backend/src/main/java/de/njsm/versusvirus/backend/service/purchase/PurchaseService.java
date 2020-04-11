@@ -1,8 +1,11 @@
 package de.njsm.versusvirus.backend.service.purchase;
 
+import com.google.common.collect.Streams;
 import de.njsm.versusvirus.backend.domain.Customer;
+import de.njsm.versusvirus.backend.domain.Moderator;
 import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.*;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
@@ -14,8 +17,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,7 +81,7 @@ public class PurchaseService {
         purchase.setPurchaseSize(req.purchaseSize);
         purchase.setComments(req.comments);
         purchase.setCreatedByModerator(moderator.getId());
-        purchase.setCustomer(customer.getId());
+        purchase.setCustomerId(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
 
@@ -87,14 +92,34 @@ public class PurchaseService {
     public void publishPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
-        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(NotFoundException::new);
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
         messageSender.broadcastPurchase(organization, customer, purchase);
     }
 
-    public List<PurchaseDTO> getPurchases() {
-        return purchaseRepository.findAll()
+    public List<PurchaseListItemDTO> getPurchases() {
+        var purchases = purchaseRepository.findAll();
+        var customers = customerRepository.findAllById(purchases.stream().map(Purchase::getCustomerId).collect(Collectors.toSet()))
+                .stream().collect(Collectors.toMap(Customer::getId, Function.identity()));
+        var volunteers = volunteerRepository.findAllById(
+                purchases.stream()
+                        .map(Purchase::getAssignedVolunteer)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet()))
                 .stream()
-                .map(PurchaseDTO::new)
+                .collect(Collectors.toMap(Volunteer::getId, Function.identity()));
+        var moderators = moderatorRepository.findAllById(
+                Streams.concat(
+                        purchases.stream().map(Purchase::getCreatedByModerator))
+                        .collect(Collectors.toSet()))
+                .stream()
+                .collect(Collectors.toMap(Moderator::getId, Function.identity()));
+        return purchases.stream()
+                .map(purchase -> new PurchaseListItemDTO(
+                        purchase,
+                        customers.get(purchase.getCustomerId()),
+                        volunteers.get(purchase.getAssignedVolunteer()),
+                        null,
+                        moderators.get(purchase.getCreatedByModerator())))
                 .collect(Collectors.toList());
     }
 
@@ -106,7 +131,7 @@ public class PurchaseService {
                             .stream()
                             .map(VolunteerDTO::new)
                             .collect(Collectors.toList());
-                    var customer = customerRepository.findById(purchase.getCustomer()).map(Customer::getUuid).orElse(null);
+                    var customer = customerRepository.findById(purchase.getCustomerId()).map(Customer::getUuid).orElse(null);
                     return new PurchaseWithApplicationsDTO(purchase, customer, volunteers);
                 })
                 .collect(Collectors.toList());
@@ -119,7 +144,7 @@ public class PurchaseService {
     public void assignVolunteer(UUID purchaseId, UUID volunteerId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
-        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(NotFoundException::new);
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
 
         if (!purchase.getVolunteerApplications().contains(volunteer.getId())) {
             LOG.error("Assigned volunteer who didn't volunteer");
@@ -139,7 +164,7 @@ public class PurchaseService {
     public void customerNotified(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
-        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(NotFoundException::new);
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
 
         if (purchase.getStatus() == Purchase.Status.PURCHASE_DONE) {
 
@@ -157,7 +182,7 @@ public class PurchaseService {
 
     public List<VolunteerDTO> getAvailableVolunteers(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        return volunteerRepository.findByIdIn(purchase.getVolunteerApplications())
+        return volunteerRepository.findAllById(purchase.getVolunteerApplications())
                 .stream()
                 .map(VolunteerDTO::new)
                 .collect(Collectors.toList());
