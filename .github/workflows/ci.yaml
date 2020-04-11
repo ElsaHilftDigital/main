@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ testing-ci ]
+    branches: [ testing ]
   pull_request:
-    branches: [ testing-ci ]
+    branches: [ testing ]
 
 jobs:
   java:
