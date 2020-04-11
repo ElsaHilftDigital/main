@@ -48,6 +48,10 @@ const PurchaseDetail = () => {
         dispatch(purchaseActions.customerNotified(purchase.uuid));
     };
 
+    const publishPurchaseSearchHelper = () => {
+        dispatch(purchaseActions.publishPurchase(purchase.uuid));
+    };
+
     const onSubmit = (values) => {
         console.log(values)
     };
