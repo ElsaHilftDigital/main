@@ -7,6 +7,7 @@ import history from '../../../history';
 import { purchaseActions } from 'store/purchase';
 import { useCustomer } from 'hooks/useCustomer';
 import { usePurchase } from 'hooks/usePurchase';
+import { formatDateTime, formatDate } from 'config/utils';
 
 
 const PurchaseDetail = () => {
@@ -16,6 +17,28 @@ const PurchaseDetail = () => {
     const { purchase } = usePurchase(purchaseId);
     const { customer } = useCustomer(purchase?.customer);
 
+    const {register, handleSubmit, setValue } = useForm();
+
+    if (!purchase) {
+        return <span>...Loading</span>
+    }
+
+    setValue('displayFormStatus', purchase.status);
+    setValue('displayFormCreateDate', formatDateTime(purchase.createDate));
+    setValue('displayFormVolunteerLastname', purchase.volunteerLastname);
+    setValue('displayFormVolunteerFirstname', purchase.volunteerFirstname);
+    setValue('displayFormCity', customer?.city);
+    setValue('displayFormFirstname', customer?.firstName);
+    setValue('displayFormLastname', customer?.lastName);
+    setValue('registerFormTiming', purchase.timing);
+    setValue('registerFormSupermarket', purchase.supermarket);
+    setValue('registerFormPurchaseSize', purchase.purchaseSize);
+    setValue('registerFormExpensesOpen', purchase.expensesPaid);
+    setValue('registerFormExpensesOpen', purchase.expensesOpen);
+    setValue('registerFormCost', purchase.cost);
+    setValue('registerFormPaymentMethod', purchase.paymentMethod);
+    setValue('registerFormComments', purchase.comments);
+
     const assignVolunteer = uuid => {
         dispatch(purchaseActions.assignVolunteer(purchase.uuid, uuid));
     };
@@ -24,54 +47,14 @@ const PurchaseDetail = () => {
         dispatch(purchaseActions.customerNotified(purchase.uuid));
     };
 
-    const {register, handleSubmit, setValue } = useForm({defaultValues: {
-        displayFormStatus: purchase?.status,
-        displayFormCreateDate: purchase?.createDate,
-        displayFormVolunteerLastname: purchase?.volunteerLastname,
-        displayFormVolunteerFirstname: purchase?.volunteerFirstname,
-        displayFormCity: purchase?.customerCity,
-        displayFormFirstname: purchase?.customerFirstname,
-        displayFormLastname: purchase?.customerLastname,
-        registerFormTiming: purchase?.timing,
-        registerFormSupermarket: purchase?.supermarket,
-        registerFormPurchaseSize: purchase?.purchaseSize,
-        registerFormExpensesPaid: purchase?.expensesPaid,
-        registerFormExpensesOpen: purchase?.expensesOpen,
-        registerFormCost: purchase?.cost,
-        registerFormPaymentMethod: purchase?.paymentMethod,
-        registerFormComments: purchase?.comments
-    }});
-
-    const date = new Date(purchase?.createDate);
-
-    setValue('displayFormStatus', purchase?.status);
-    setValue('displayFormCreateDate', date.toLocaleString('de-DE'));
-    setValue('displayFormVolunteerLastname', purchase?.volunteerLastname);
-    setValue('displayFormVolunteerFirstname', purchase?.volunteerFirstname);
-    setValue('displayFormCity', customer?.city);
-    setValue('displayFormFirstname', customer?.firstName);
-    setValue('displayFormLastname', customer?.lastName);
-    setValue('registerFormTiming', purchase?.timing);
-    setValue('registerFormSupermarket', purchase?.supermarket);
-    setValue('registerFormPurchaseSize', purchase?.purchaseSize);
-    setValue('registerFormExpensesOpen', purchase?.expensesPaid);
-    setValue('registerFormExpensesOpen', purchase?.expensesOpen);
-    setValue('registerFormCost', purchase?.cost);
-    setValue('registerFormPaymentMethod', purchase?.paymentMethod);
-    setValue('registerFormComments', purchase?.comments);
-
     const onSubmit = (values) => {
         console.log(values)
     };
-    
-    if (!purchase) {
-        return <span>...Loading</span>
-    }
 
     return (
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
-                <h1>Details zum Einkauf vom {date.toLocaleDateString('de-DE')} für {purchase.customer}</h1>
+                <h1>Details zum Einkauf vom {formatDate(purchase.createDate)} für {purchase.customer}</h1>
                 {(
                     <button 
                         onClick={() => history.push("/" + purchase.uuid + "/receipt")} 

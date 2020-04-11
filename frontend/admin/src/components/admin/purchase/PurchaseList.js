@@ -1,10 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Container, Form, ListGroup, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { usePurchases } from 'hooks/usePurchases';
 import * as routes from 'routes';
+import { formatDate } from 'config/utils';
 
+
+const DateCol = styled(Col)`
+    position: sticky;
+    top: 5rem;
+    height: calc(100vh - 5rem);
+    padding-left: 0;
+    padding-right: 0;
+    flex: 0 1;
+`;
+
+const PurchaseListCol = styled(Col)`
+`
+
+const FlexRow = styled(Row)`
+    flex-wrap: nowrap !important;
+`;
+
+const DateListGroup = styled(ListGroup)`
+    max-height: calc(100vh - 5rem);
+    display: block !important;
+    overflow-y: auto;
+`;
+
+const Title = styled.h1`
+    padding: 1rem;
+`;
 
 const PurchaseList = props => {
     const { purchases } = usePurchases();
@@ -20,13 +48,7 @@ const PurchaseList = props => {
         );
     };
 
-    return (
-        <Container fluid>
-            <ListGroup variant="flush">
-                {purchases.map(p => <PurchaseListItem purchase={p} key={p.uuid} />)}
-            </ListGroup>
-        </Container>
-    )
+    return <PurchaseListInternal purchases={purchases}/>;
 };
 
 const PurchaseListItem = (props) => {
@@ -116,6 +138,37 @@ const PurchaseListItem = (props) => {
             </Col>
         </Row>
     </ListGroup.Item>;
+};
+
+const PurchaseListInternal = (props) => {
+    const {purchases} = props;
+
+    const toDate = timestamp => new Date(timestamp).setUTCHours(0, 0, 0, 0);
+
+    const purchaseDates = Array.from(new Set(purchases.map(purchase => toDate(purchase.createdAt)))).sort().reverse();
+    const purchasesByDate = new Map(purchaseDates.map(date => [date, []]));
+
+    purchases.forEach(purchase => purchasesByDate.get(toDate(purchase.createdAt)).push(purchase));
+
+    const [selectedDate, setSelectedDate] = useState(purchaseDates[0]);
+
+    return (
+        <Container fluid>
+            <FlexRow>
+                <DateCol md="auto">
+                    <Title>Datum</Title>
+                    <DateListGroup variant="flush">
+                        {purchaseDates.map(date => <ListGroup.Item action active={date === selectedDate} onClick={() => setSelectedDate(date)}>{formatDate(date)}</ListGroup.Item>)}
+                    </DateListGroup>
+                </DateCol>
+                <PurchaseListCol>
+                    <ListGroup variant="flush">
+                        {purchasesByDate.get(selectedDate).map(p => <PurchaseListItem purchase={p} key={p.uuid} />)}
+                    </ListGroup>
+                </PurchaseListCol>
+            </FlexRow>
+        </Container>
+    )
 };
 
 export default PurchaseList;
