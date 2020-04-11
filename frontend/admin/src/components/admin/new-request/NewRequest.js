@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {useForm} from 'react-hook-form';
 import {useSelector, useDispatch} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import SearchBox from 'components/SearchBox';
 import {useCustomers} from 'hooks/useCustomers';
 import {customerSelectors, customerActions} from 'store/customer';
 import {purchaseSelectors, purchaseActions} from 'store/purchase';
+import * as routes from 'routes';
 
 const ProgressItem = styled.li`
     position: relative;
@@ -314,14 +316,14 @@ const NewRequest = () => {
                 </div>
 
                 <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück</button>
-                <button type="submit" className="btn btn-primary float-right">Absenden</button>
+                <button type="submit" className="btn btn-primary float-right">Speichern</button>
             </form>
         </>);
     };
 
     const SubmitExistingCustomer = () => {
         const dispatch = useDispatch();
-        const ongoingPurchaseCreate = useSelector(purchaseSelectors.selectCreatePurchaseError);
+        const ongoingPurchaseCreate = useSelector(purchaseSelectors.selectCreatePurchaseRequestOngoing);
         const createPurchase = useSelector(purchaseSelectors.selectCreatePurchaseSuccess);
         useEffect(() => {dispatch(purchaseActions.createPurchase(
             Object.assign(
@@ -332,11 +334,20 @@ const NewRequest = () => {
                 }
             )
         ))}, [dispatch]);
-        return <>{ongoingPurchaseCreate && <div className="spinner-border" role="status"/>}
-            {createPurchase
-            ? <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-            : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
-        }</>;
+        return <>
+            {ongoingPurchaseCreate && <div className="spinner-border" role="status"/>}
+            {!ongoingPurchaseCreate && 
+                <>
+                    {createPurchase
+                        ? <>
+                            <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
+                            <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag Bitte Auftrag freigeben.</Link>
+                        </>
+                        : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
+                    }
+                </>
+            }
+        </>;
     };
 
     const SubmitNewCustomer = () => {
@@ -363,7 +374,10 @@ const NewRequest = () => {
             ? <>
                 <div className="alert alert-success" role="alert">Kunde erfolgreich erstellt</div>
                 {createPurchase
-                    ? <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
+                    ? <>
+                        <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
+                        <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag freigeben.</Link>
+                    </>
                     : !ongoingPurchaseCreate && <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
                 }
             </>
@@ -380,7 +394,7 @@ const NewRequest = () => {
             case 2:
                 return newCustomer ? <SubmitNewCustomer/> : <SubmitExistingCustomer/>;
             default:
-                console.log('NewRequest.js: unkonw step');
+                console.log('NewRequest.js: unknown step');
                 return null;
         }
     };
