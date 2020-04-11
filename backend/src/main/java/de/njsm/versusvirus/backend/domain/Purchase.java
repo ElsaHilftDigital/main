@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,14 @@ public class Purchase {
 
     public void setReceiptMimeType(String receiptMimeType) {
         this.receiptMimeType = receiptMimeType;
+    }
+
+    public String renderToCsv() {
+        DateTimeFormatter format = DateTimeFormatter.ISO_DATE;
+        return String.format("date,shops,cost\n%s,%s,%s\n",
+                format.format(createTime),
+                supermarket,
+                cost);
     }
 
     public enum Status {

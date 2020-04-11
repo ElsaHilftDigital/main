@@ -167,4 +167,9 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType());
     }
+
+    public String export(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        return purchase.renderToCsv();
+    }
 }

@@ -8,6 +8,7 @@ import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
@@ -71,5 +72,14 @@ public class PurchaseController {
         return ResponseEntity.ok()
                 .contentType(org.springframework.http.MediaType.parseMediaType(image.getMimeType()))
                 .body(image.getReceipt());
+    }
+
+    @GetMapping("/{id}/export")
+    public String export(@PathVariable("id") UUID purchaseId,
+                         HttpServletResponse response) {
+        var result = purchaseService.export(purchaseId);
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"purchase-" + purchaseId + ".csv\"");
+        return result;
     }
 }
