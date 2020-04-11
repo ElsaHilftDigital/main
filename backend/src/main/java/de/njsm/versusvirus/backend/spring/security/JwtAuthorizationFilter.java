@@ -9,42 +9,27 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtTokenService tokenService;
-    private final UserDetailsService userDetailsService;
 
-    public JwtAuthorizationFilter(JwtTokenService tokenService, ModeratorUserDetailsService userDetailsService) {
+    public JwtAuthorizationFilter(JwtTokenService tokenService) {
         this.tokenService = tokenService;
-        this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = getToken(request);
-        if (token != null) {
-            var username = tokenService.getUsername(token);
-            if (username != null) {
-                var authentication = new UsernamePasswordAuthenticationToken(username, token, null);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }
+        var authentication = tokenService.getAuthentication(request);
+        authentication.ifPresent(SecurityContextHolder.getContext()::setAuthentication);
         filterChain.doFilter(request, response);
-    }
-
-    private String getToken(HttpServletRequest request) {
-        var authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader == null) {
-            return null;
-        }
-        if (!authorizationHeader.startsWith("Bearer ")) {
-            return null;
-        }
-        return authorizationHeader.substring(7);
     }
 }

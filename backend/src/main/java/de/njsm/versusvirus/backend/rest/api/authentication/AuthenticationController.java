@@ -24,19 +24,13 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService tokenService;
-    private final String cookieName;
-    private final boolean secureCookie;
 
     public AuthenticationController(
             AuthenticationManager authenticationManager,
-            JwtTokenService tokenService,
-            @Value("${jwt.cookie.name}") String cookieName,
-            @Value("${jwt.cookie.secure}") boolean secureCookie
+            JwtTokenService tokenService
     ) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
-        this.cookieName = cookieName;
-        this.secureCookie = secureCookie;
     }
 
     @PostMapping("/login")
@@ -49,14 +43,7 @@ public class AuthenticationController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        var token = tokenService.generateToken(request.username);
-        var authCookie = ResponseCookie.from(cookieName, token)
-                .secure(secureCookie)
-                .httpOnly(true)
-                .path("/")
-                .maxAge(Duration.ofHours(12).minusMinutes(1))
-                .sameSite(SameSiteCookies.STRICT.getValue())
-                .build();
+        var authCookie = tokenService.generateAuthCookie(request.username);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authCookie.toString())
                 .build();
