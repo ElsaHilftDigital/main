@@ -79,6 +79,17 @@ public enum CallbackCommand {
             dispatcher.handleReceiptSubmission(message, user, data);
         }
     },
+    CONFIRM_DELETION {
+        @Override
+        public String getCommandIdentifier() {
+            return "aaag";
+        }
+
+        @Override
+        public void dispatchInternally(CallbackDispatcher dispatcher, Message message, User user, UUID data) {
+            dispatcher.handleVolunteerDeletion(message, user, data);
+        }
+    },
     ;
 
     private static final Logger LOG = LoggerFactory.getLogger(CallbackCommand.class);

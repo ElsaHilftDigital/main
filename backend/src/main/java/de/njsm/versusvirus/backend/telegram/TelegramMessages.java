@@ -11,6 +11,7 @@ public class TelegramMessages {
 
     private String unknownVolunteer;
     private String unknownVolunteerResignation;
+    private String volunteerResignationWarning;
     private String volunteerResignation;
 
     private String preconfirmRegistration;
@@ -320,5 +321,13 @@ public class TelegramMessages {
 
     public void setRegistrationEmail(String registrationEmail) {
         this.registrationEmail = registrationEmail;
+    }
+
+    public String getVolunteerResignationWarning() {
+        return volunteerResignationWarning;
+    }
+
+    public void setVolunteerResignationWarning(String volunteerResignationWarning) {
+        this.volunteerResignationWarning = volunteerResignationWarning;
     }
 }

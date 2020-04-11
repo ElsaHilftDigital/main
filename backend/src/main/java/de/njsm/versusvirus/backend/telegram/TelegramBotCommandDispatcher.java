@@ -43,12 +43,6 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     @Override
     public void handleLeavingHelper(Message message) {
-        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
-                    messageSender.resignUnknownVolunteer(message.getChat().getId());
-                    throw new TelegramShouldBeFineException("helper not found. telegram id: " + message.getFrom().getId());
-                }
-        );
-        volunteer.setDeleted(true);
-        messageSender.resignVolunteer(message.getChat().getId());
+        messageSender.warnVolunteerFromResignation(message.getChat().getId());
     }
 }

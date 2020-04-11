@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class MessageSender {
@@ -309,6 +310,12 @@ public class MessageSender {
 
     public void sendUnexpectedImage(long chatId) {
         var m = new MessageToBeSent(chatId, telegramMessages.getUnexpectedImage());
+        api.sendMessage(m);
+    }
+
+    public void warnVolunteerFromResignation(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getVolunteerResignationWarning(),
+                new InlineKeyboardButton("Account löschen", CallbackCommand.CONFIRM_DELETION.render(UUID.randomUUID())));
         api.sendMessage(m);
     }
 }

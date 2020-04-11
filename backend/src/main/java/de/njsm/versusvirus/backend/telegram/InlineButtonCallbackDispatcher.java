@@ -296,4 +296,15 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         messageSender.confirmInvestigation(chatId);
         adminMessageSender.notifyAboutMissingMoney(organization.getTelegramModeratorGroupChatId());
     }
+
+    @Override
+    public void handleVolunteerDeletion(Message message, User user, UUID data) {
+        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+                    messageSender.resignUnknownVolunteer(message.getChat().getId());
+                    throw new TelegramShouldBeFineException("helper not found. telegram id: " + message.getFrom().getId());
+                }
+        );
+        volunteer.setDeleted(true);
+        messageSender.resignVolunteer(message.getChat().getId());
+    }
 }

@@ -20,4 +20,6 @@ public interface CallbackDispatcher {
     void handleCompletion(Message message, User user, UUID purchaseId);
 
     void handleMoneyNotFound(Message message, User user, UUID purchaseId);
+
+    void handleVolunteerDeletion(Message message, User user, UUID data);
 }
