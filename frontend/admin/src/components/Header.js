@@ -1,8 +1,14 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 import { matchPath } from 'react-router-dom';
+import styled from 'styled-components';
 
 import history from '../history';
+
+
+const StyledNavbar = styled(Navbar)`
+    min-height: 5rem;
+`;
 
 const Header = (props) => {
     const currLocation = props.history.location.pathname;
@@ -20,7 +26,7 @@ const Header = (props) => {
     }
 
     return (
-        <Navbar sticky="top" bg="primary" expand="md">
+        <StyledNavbar sticky="top" bg="primary" expand="md">
             <Navbar.Brand onClick={navigate("/")} className="hover-pointer" >
             <img src="ElsaHilftMehr.png" className="mr-3" width="50" height="50" alt="" />
             <span className="text-light font-weight-bold">Elsa hilft</span>
@@ -34,7 +40,7 @@ const Header = (props) => {
                     <Nav.Link onClick={navigate("/volunteers")} eventKey="/volunteers" className="text-light font-weight-bold">Helfer</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
-        </Navbar>
+        </StyledNavbar>
     );
 };
 

@@ -14,3 +14,13 @@ export const handleErrorRedirect = error => {
         history.push('/login');
     }
 }
+
+export const formatDate = timestamp => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('de-DE');
+}
+
+export const formatDateTime = timestamp => {
+    const date = new Date(timestamp);
+    return date.toLocaleString('de-DE');
+}
