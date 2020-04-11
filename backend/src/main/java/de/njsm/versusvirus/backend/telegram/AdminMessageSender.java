@@ -1,5 +1,6 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.slf4j.Logger;
@@ -50,16 +51,20 @@ public class AdminMessageSender {
         api.sendMessage(m);
     }
 
-    public void forwardVolunteerMessage(long chatId, Message message) {
+    public void forwardVolunteerMessage(long chatId, Message message, Volunteer v) {
         String purgedMessageText = message.getPurgedText();
         if (purgedMessageText.isEmpty()) {
             LOG.info("Not forwarding text '{}'", message.getText());
             return;
         }
 
+        var firstName = message.getFrom().getFirstName() != null ? message.getFrom().getFirstName() : "";
+        var lastName = message.getFrom().getLastName() != null ? message.getFrom().getLastName() : "";
+
         var forwardedMessage = MessageFormat.format(telegramMessages.getForwardedMessage(),
-                message.getFrom().getFirstName() != null ? message.getFrom().getFirstName() : "",
-                message.getFrom().getLastName() != null ? message.getFrom().getLastName() : "",
+                escapeMarkdownCharacters(firstName),
+                escapeMarkdownCharacters(lastName),
+                escapeMarkdownCharacters(v.getPhone()),
                 escapeMarkdownCharacters(message.getText()));
 
         var m = new MessageToBeSent(chatId, forwardedMessage);

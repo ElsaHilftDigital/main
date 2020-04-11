@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
+import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.*;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class TelegramController {
 
     private final OrganizationRepository organizationRepository;
 
+    private final VolunteerRepository volunteerRepository;
+
     private final String botName;
 
     private final CallbackDispatcher callbackCommandDispatcher;
@@ -36,6 +39,7 @@ public class TelegramController {
     public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
                               UpdateService updateService,
                               OrganizationRepository organizationRepository,
+                              VolunteerRepository volunteerRepository,
                               @Value("${telegram.bot.name}") String botName,
                               CallbackDispatcher callbackCommandDispatcher,
                               AdminMessageSender adminMessageSender,
@@ -43,6 +47,7 @@ public class TelegramController {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
         this.organizationRepository = organizationRepository;
+        this.volunteerRepository = volunteerRepository;
         this.botName = botName;
         this.callbackCommandDispatcher = callbackCommandDispatcher;
         this.adminMessageSender = adminMessageSender;
@@ -86,11 +91,13 @@ public class TelegramController {
 
     private void forwardMessageFromPersonalChat(Message message) {
         organizationRepository.findById(1).ifPresent(o -> {
-            if (message.getChat().getId() != o.getTelegramModeratorGroupChatId() &&
-                message.getChat().getId() != o.getTelegramGroupChatId()) {
-                LOG.info("Forwarding message from " + message.getFrom().getUserName());
-                adminMessageSender.forwardVolunteerMessage(o.getTelegramModeratorGroupChatId(), message);
-            }
+            volunteerRepository.findByTelegramUserId(message.getFrom().getId()).ifPresent(v -> {
+                if (message.getChat().getId() != o.getTelegramModeratorGroupChatId() &&
+                    message.getChat().getId() != o.getTelegramGroupChatId()) {
+                    LOG.info("Forwarding message from " + message.getFrom().getUserName());
+                    adminMessageSender.forwardVolunteerMessage(o.getTelegramModeratorGroupChatId(), message, v);
+                }
+            });
         });
     }
 
