@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import history from '../../../history';
 
 import { purchaseActions } from 'store/purchase';
 import { useCustomer } from 'hooks/useCustomer';
@@ -36,6 +37,7 @@ const PurchaseDetail = () => {
         registerFormPurchaseSize: purchase?.purchaseSize,
         registerFormExpensesPaid: purchase?.expensesPaid,
         registerFormExpensesOpen: purchase?.expensesOpen,
+        registerFormCost: purchase?.cost,
         registerFormPaymentMethod: purchase?.paymentMethod,
         registerFormComments: purchase?.comments
     }});
@@ -54,6 +56,7 @@ const PurchaseDetail = () => {
     setValue('registerFormPurchaseSize', purchase?.purchaseSize);
     setValue('registerFormExpensesOpen', purchase?.expensesPaid);
     setValue('registerFormExpensesOpen', purchase?.expensesOpen);
+    setValue('registerFormCost', purchase?.cost);
     setValue('registerFormPaymentMethod', purchase?.paymentMethod);
     setValue('registerFormComments', purchase?.comments);
 
@@ -67,7 +70,14 @@ const PurchaseDetail = () => {
 
     return (
         <div className="container mt-3 mb-5">
-            <h1>Details zum Einkauf vom {date.toLocaleString('de-DE')} für {purchase.customerLastname}</h1>
+            <div className="d-flex justify-content-between align-items-bottom">
+                <h1>Details zum Einkauf vom {date.toLocaleDateString('de-DE')} für {purchase.customer}</h1>
+                {(
+                    <button 
+                        onClick={() => history.push("/" + purchase.uuid + "/receipt")} 
+                        className="btn btn-primary">Quittung ansehen</button>
+                )}
+            </div>
             <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
 
             <form onSubmit={handleSubmit(onSubmit)} style={{paddingTop: "1em"}}>
@@ -157,6 +167,10 @@ const PurchaseDetail = () => {
                 <div className="form-group">
                     <label htmlFor="registerFormExpensesOpen">Offene Entschädigungen</label>
                     <input name="registerFormExpensesOpen" ref={register()} type="text" className="form-control" id="registerFormExpensesOpen" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="registerFormCost">Kosten</label>
+                    <input name="registerFormCost" ref={register({})} type="text" className="form-control" id="registerFormCost" />
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormPaymentMethod">Zahlungsmethode</label>

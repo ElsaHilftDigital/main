@@ -6,6 +6,10 @@ export const selectCurrentPurchase = state => state.purchase.currentPurchase;
 export const selectGetPurchaseRequestOngoing = state => state.purchase.getPurchaseRequestOngoing;
 export const selectGetPurchaseError = state => state.purchase.getPurchaseError;
 
+export const selectCurrentPurchaseReceipt = state => state.purchase.currentPurchaseReceipt;
+export const selectGetPurchaseReceiptRequestOngoing = state => state.purchase.getPurchaseReceiptRequestOngoing;
+export const selectGetPurchaseReceiptError = state => state.purchase.getPurchaseReceiptError;
+
 export const selectCreatePurchaseRequestOngoing = state => state.purchase.createPurchaseRequestOngoing;
 export const selectCreatePurchaseSuccess = state => state.purchase.createPurchaseSuccess;
 export const selectCreatePurchaseError = state => state.purchase.createPurchaseError;

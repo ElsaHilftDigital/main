@@ -2,12 +2,16 @@ import * as actions from './purchaseActions';
 
 export const initialState = {
     purchases: [],
-    getPruchasesRequestOngoing: false,
+    getPurchasesRequestOngoing: false,
     getPurchasesError: null,
 
     currentPurchase: null,
     getPurchaseRequestOngoing: false,
     getPurchaseError: null,
+
+    currentPurchaseReceipt: null,
+    getPurchaseReceiptRequestOngoing: false,
+    getPurchaseReceiptError: null,
 
     createPurchaseRequestOngoing: false,
     createPurchaseSuccess: null,
@@ -32,13 +36,13 @@ export default function purchaseReducer(state = initialState, action) {
             return {
                 ...state,
                 getPurchasesError: null,
-                getPruchasesRequestOngoing: true,
+                getPurchasesRequestOngoing: true,
             };
         case actions.GET_PURCHASES_SUCCESS:
             return {
                 ...state,
                 purchases: payload,
-                getPruchasesRequestOngoing: false,
+                getPurchasesRequestOngoing: false,
             };
         case actions.GET_PURCHASES_ERROR:
             return {
@@ -64,6 +68,25 @@ export default function purchaseReducer(state = initialState, action) {
                 ...state,
                 getPurchaseError: payload,
                 getPurchaseRequestOngoing: false,
+            };
+        // get purchase receipt
+        case actions.GET_PURCHASE_RECEIPT:
+            return {
+                ...state,
+                getPurchaseReceiptError: null,
+                getPurchaseReceiptRequestOngoing: true,
+            };
+        case actions.GET_PURCHASE_RECEIPT_SUCCESS:
+            return {
+                ...state,
+                currentPurchaseReceipt: payload,
+                getPurchaseReceiptRequestOngoing: false,
+            };
+        case actions.GET_PURCHASE_RECEIPT_ERROR:
+            return {
+                ...state,
+                getPurchaseReceiptError: payload,
+                getPurchaseReceiptRequestOngoing: false,
             };
         // create purchase
         case actions.CREATE_PURCHASE:

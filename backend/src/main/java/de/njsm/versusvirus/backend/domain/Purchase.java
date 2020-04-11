@@ -164,7 +164,7 @@ public class Purchase {
 
     private byte[] receipt;                   // picture of receipt
     private String receiptMimeType;
-    private BigDecimal cost;                      // cost of purchase in "Rappen"
+    private BigDecimal cost;                  // cost of purchase in "Rappen"
     private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
 
     private Long assignedVolunteer;

@@ -6,6 +6,10 @@ export const GET_PURCHASE = 'GET_PURCHASE';
 export const GET_PURCHASE_SUCCESS = 'GET_PURCHASE_SUCCESS';
 export const GET_PURCHASE_ERROR = 'GET_PURCHASE_ERROR';
 
+export const GET_PURCHASE_RECEIPT = 'GET_RECEIPT_PURCHASE';
+export const GET_PURCHASE_RECEIPT_SUCCESS = 'GET_PURCHASE_RECEIPT_SUCCESS';
+export const GET_PURCHASE_RECEIPT_ERROR = 'GET_PURCHASE_RECEIPT_ERROR';
+
 export const CREATE_PURCHASE = 'CREATE_PURCHASE';
 export const CREATE_PURCHASE_SUCCESS = 'CREATE_PURCHASE_SUCCESS';
 export const CREATE_PURCHASE_ERROR = 'CREATE_PURCHASE_ERROR';
@@ -50,6 +54,20 @@ export const getPurchaseSuccess = purchase => ({
 });
 export const getPurchaseError = error => ({
     type: GET_PURCHASE_ERROR,
+    payload: error,
+    error: true,
+});
+
+export const getPurchaseReceipt = uuid => ({
+    type: GET_PURCHASE_RECEIPT,
+    payload: uuid,
+});
+export const getPurchaseReceiptSuccess = receipt => ({
+    type: GET_PURCHASE_RECEIPT_SUCCESS,
+    payload: receipt,
+});
+export const getPurchaseReceiptError = error => ({
+    type: GET_PURCHASE_RECEIPT_ERROR,
     payload: error,
     error: true,
 });
