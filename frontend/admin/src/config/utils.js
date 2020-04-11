@@ -24,3 +24,5 @@ export const formatDateTime = timestamp => {
     const date = new Date(timestamp);
     return date.toLocaleString('de-DE');
 }
+
+export const formatBoolean = value => value ? "Ja" : "Nein";
