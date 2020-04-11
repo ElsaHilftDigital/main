@@ -26,6 +26,10 @@ export const CUSTOMER_NOTIFIED = 'CUSTOMER_NOTIFIED';
 export const CUSTOMER_NOTIFIED_SUCCESS = 'CUSTOMER_NOTIFIED_SUCCESS';
 export const CUSTOMER_NOTIFIED_ERROR = 'CUSTOMER_NOTIFIED_ERROR';
 
+export const PUBLISH_PURCHASE = 'PUBLISH_PURCHASE';
+export const PUBLISH_PURCHASE_SUCCESS = 'PUBLISH_PURCHASE_SUCCESS';
+export const PUBLISH_PURCHASE_ERROR = 'PUBLISH_PURCHASE_ERROR';
+
 export const MARK_COMPLETED = 'MARK_COMPLETED';
 export const MARK_COMPLETED_SUCCESS = 'MARK_COMPLETED_SUCCESS';
 export const MARK_COMPLETED_ERROR = 'MARK_COMPLETED_ERROR';
@@ -122,6 +126,19 @@ export const customerNotifiedSuccess = () => ({
 })
 export const customerNotifiedError = error => ({
     type: CUSTOMER_NOTIFIED_ERROR,
+    payload: error,
+    error: true,
+});
+
+export const publishPurchase = uuid => ({
+    type: PUBLISH_PURCHASE,
+    payload: uuid,
+});
+export const publishPurchaseSuccess = () => ({
+    type: PUBLISH_PURCHASE_SUCCESS,
+});
+export const publishPurchaseError = error => ({
+    type: PUBLISH_PURCHASE_ERROR,
     payload: error,
     error: true,
 });

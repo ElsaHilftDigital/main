@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import history from '../../../history';
+import { Button } from 'react-bootstrap';
 
 import { purchaseActions } from 'store/purchase';
 import { useCustomer } from 'hooks/useCustomer';
@@ -22,6 +23,10 @@ const PurchaseDetail = () => {
 
     const notifyVolunteerToDeliver = () => {
         dispatch(purchaseActions.customerNotified(purchase.uuid));
+    };
+
+    const publishPurchaseSearchHelper = () => {
+        dispatch(purchaseActions.publishPurchase(purchase.uuid));
     };
 
     const {register, handleSubmit, setValue } = useForm({defaultValues: {
@@ -62,7 +67,7 @@ const PurchaseDetail = () => {
 
     const onSubmit = (values) => {
         console.log(values)
-    };
+    };    
     
     if (!purchase) {
         return <span>...Loading</span>
@@ -72,11 +77,10 @@ const PurchaseDetail = () => {
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
                 <h1>Details zum Einkauf vom {date.toLocaleDateString('de-DE')} für {purchase.customer}</h1>
-                {(
-                    <button 
-                        onClick={() => history.push("/" + purchase.uuid + "/receipt")} 
-                        className="btn btn-primary">Quittung ansehen</button>
-                )}
+                {purchase.status === "Neu" && <Button
+                    onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
+                {purchase.status === "Einkauf abgeschlossen" && <Button 
+                    onClick={() => history.push("/" + purchase.uuid + "/receipt")}>Quittung ansehen</Button>}
             </div>
             <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
 

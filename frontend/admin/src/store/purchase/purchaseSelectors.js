@@ -20,5 +20,8 @@ export const selectAssignVolunteerError = state => state.purchase.assignVoluntee
 export const selectCustomerNotifiedRequestOngoing = state => state.purchase.customerNotifiedRequestOngoing;
 export const selectCustomerNotifiedError = state => state.purchase.customerNotifierError;
 
+export const selectPublishPurchaseRequestOngoing = state => state.purchase.publishPurchasedRequestOngoing;
+export const selectPublishPurchaseError = state => state.purchase.publishPurchasedError;
+
 export const selectMarkCompleteRequestOngoing = state => state.purchase.markCompletedRequestOngoing;
 export const selectMarkCompleteError = state => state.purchase.markCompletedError;

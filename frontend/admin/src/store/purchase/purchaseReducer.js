@@ -144,6 +144,24 @@ export default function purchaseReducer(state = initialState, action) {
                 customerNotifierError: payload,
                 customerNotifiedRequestOngoing: false,
             };
+        // get purchase
+        case actions.PUBLISH_PURCHASE:
+            return {
+                ...state,
+                publishPurchaseError: null,
+                publishPurchaseRequestOngoing: true,
+            };
+        case actions.PUBLISH_PURCHASE_SUCCESS:
+            return {
+                ...state,
+                publishPurchaseRequestOngoing: false,
+            };
+        case actions.PUBLISH_PURCHASE_ERROR:
+            return {
+                ...state,
+                publishPurchaseError: payload,
+                publishPurchaseRequestOngoing: false,
+            };
         // mark completed
         case actions.MARK_COMPLETED:
             return {

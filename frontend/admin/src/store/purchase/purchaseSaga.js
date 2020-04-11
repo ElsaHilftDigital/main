@@ -71,6 +71,17 @@ export function* handleCustomerNotified(customerNotified, action) {
     }
 }
 
+export function* handlePublishPurchase(publishPurchase, action) {
+    try {
+        yield call(publishPurchase, action.payload);
+        yield put(actions.publishPurchaseSuccess());
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.publishPurchaseError(parseError(error)));
+    }
+};
+
 export function* handleMarkCompleted(markCompleted, action) {
     try {
         yield call(markCompleted, action.payload);
@@ -91,6 +102,7 @@ export function* purchaseSaga(purchaseApi) {
         takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi.createPurchase),
         takeEvery(actions.ASSIGN_VOLUNTEER, handleAssignVolunteer, purchaseApi.assignVolunteer),
         takeEvery(actions.CUSTOMER_NOTIFIED, handleCustomerNotified, purchaseApi.customerNotified),
+        takeEvery(actions.PUBLISH_PURCHASE, handlePublishPurchase, purchaseApi.publishPurchase),
         takeEvery(actions.MARK_COMPLETED, handleMarkCompleted, purchaseApi.markCompleted),
     ])
 };

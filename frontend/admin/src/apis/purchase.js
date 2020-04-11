@@ -39,6 +39,11 @@ export async function customerNotified(uuid) {
     return response.data;
 };
 
+export async function publishPurchase(uuid) {
+    const response = await client.get(`/purchases/${uuid}/publish`);
+    return response;
+};
+
 export async function markCompleted(uuid) {
     const response = await client.post(`/purchases/${uuid}/markcompleted`);
     return response;
