@@ -36,17 +36,13 @@ const PurchaseDetailInternal = (props) => {
             displayFormLastname: purchase.customer.lastName,
             registerFormTiming: purchase.timing,
             registerFormSupermarket: purchase.supermarket,
-            registerFormPurchaseSize: purchase.size,
             registerFormExpensesPaid: purchase.expensesPaid,
             registerFormCost: purchase.cost,
-            registerFormPaymentMethod: purchase.paymentMethod,
             registerFormComments: purchase.comments,
         }
     });
 
-    console.log(purchase?.status)
-
-    const assignVolunteer = uuid => {
+    const assignVolunteer = (uuid) => {
         dispatch(purchaseActions.assignVolunteer(purchase.uuid, uuid));
     };
 
@@ -58,14 +54,19 @@ const PurchaseDetailInternal = (props) => {
         dispatch(purchaseActions.publishPurchase(purchase.uuid));
     };
 
-    const onSubmit = (values) => {
-        console.log(values)
+    const markPurchaseAsCompleted = () => {
+        dispatch(purchaseActions.markCompleted(purchase.uuid));
+    }
+
+    const onSubmit = (data) => {
+        console.log(data)
+        // update purchase missing
     };
 
     return (
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
-                <h1>Details zum Einkauf vom {formatDate(purchase.createDate)} für TODO</h1>
+                <h1>Details zum Einkauf vom {formatDate(purchase.createdAt)} für {purchase.customer.lastName}</h1>
                 {purchase.status === "Neu" && <Button
                     onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <Button
@@ -155,15 +156,25 @@ const PurchaseDetailInternal = (props) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormPurchaseSize">Grösse des Einkaufs</label>
-                    <input name="registerFormPurchaseSize" ref={register({ required: true })} type="text" className="form-control" id="registerFormPurchaseSize" />
+                    <select ref={register()} id="registerFormPurchaseSize" name="purchaseSize" className="form-control" defaultValue={purchase.size} >
+                        <option value="SMALL">Kleiner Einkauf</option>
+                        <option value="MEDIUM">Mittlerer Einkauf</option>
+                        <option value="LARGE">Grosser Einkauf</option>
+                    </select>
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormCost">Kosten</label>
                     <input name="registerFormCost" ref={register({})} type="text" className="form-control" id="registerFormCost" />
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="registerFormPaymentMethod">Zahlungsmethode</label>
-                    <input name="registerFormPaymentMethod" ref={register({ required: true })} type="text" className="form-control" id="registerFormPaymentMethod" />
+                    <select ref={register} id="registerFormPaymentMethod" name="registerFormPaymentMethod" className="form-control" defaultValue={purchase.paymentMethod}>
+                        <option value="CASH">Bargeld</option>
+                        <option value="BILL">Rechnung</option>
+                        <option value="TWINT">TWINT</option>
+                        <option value="OTHER">Andere</option>
+                    </select>
                 </div>
                 <div className="form-group mb-2 mb-3"><i><a href="/">Hier ist der Link zur Quittung, falls vorhanden</a></i></div>
                 <div className="form-group">
@@ -190,7 +201,7 @@ const PurchaseDetailInternal = (props) => {
                         <button onClick={() => notifyVolunteerToDeliver()} className="btn btn-primary m-1">Lieferung freigeben</button>
                     </p>
                     <p>
-                        <button type="submit" className="btn btn-primary m-1">Einkauf erledigt</button>
+                        <button onClick={() => { if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) markPurchaseAsCompleted() } } className="btn btn-primary m-1">Einkauf erledigt</button>
                     </p>
                 </div>
             </form>
