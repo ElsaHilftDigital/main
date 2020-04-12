@@ -43,7 +43,7 @@ const PurchaseListInternal = (props) => {
     const purchaseDateIndicators = useMemo(() => purchaseDates.map(date => {
         const index = purchasesByDate.get(date).reduce((acc, current) => Math.min(acc, indicators.indexOf(current.statusIndicator)), indicators.length);
         return indicators[index];
-    }), [purchaseDates, purchasesByDate]);
+    }), [purchaseDates, purchasesByDate, indicators]);
 
 
     const [selectedDate, setSelectedDate] = useState(purchaseDates[0]);

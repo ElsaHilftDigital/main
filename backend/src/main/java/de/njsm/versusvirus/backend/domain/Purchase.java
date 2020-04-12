@@ -19,6 +19,51 @@ public class Purchase {
 
     private UUID uuid;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    private String timing;                    // timing to deliver purchase "after" or "before" certain time
+
+    private String supermarket;               // preferred supermarket
+
+    @Enumerated(EnumType.STRING)
+    private PurchaseSize purchaseSize;        // depending on number of purchase items
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    private String comments;
+
+    private Instant createTime;
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> purchaseList = new ArrayList<>();
+
+    private byte[] receipt;                   // picture of receipt
+
+    private String receiptMimeType;
+
+    private BigDecimal cost;                  // cost of purchase in "Rappen"
+
+    private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
+
+    private Long assignedVolunteer;
+
+    private Long createdByModerator;
+
+    private Long responsibleModeratorId;
+
+    private Long customer;
+
+    @ElementCollection
+    @CollectionTable(name = "purchase_applications")
+    @Column(name = "volunteer_id")
+    private List<Long> volunteerApplications;
+
+    // telegram parameters
+    private String receiptFileId;
+    private Long broadcastMessageId;
+
     public String getReceiptMimeType() {
         return receiptMimeType;
     }
@@ -155,38 +200,6 @@ public class Purchase {
         };
         public abstract String displayName();
     }
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
-    private String timing;                    // timing to deliver purchase "after" or "before" certain time
-    private String supermarket;               // preferred supermarket
-    @Enumerated(EnumType.STRING)
-    private PurchaseSize purchaseSize;        // depending on number of purchase items
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-    private String comments;
-    private Instant createTime;
-
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> purchaseList = new ArrayList<>();
-
-    private byte[] receipt;                   // picture of receipt
-    private String receiptMimeType;
-    private BigDecimal cost;                  // cost of purchase in "Rappen"
-    private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
-
-    private Long assignedVolunteer;
-    private Long createdByModerator;
-    private Long customer;
-
-    @ElementCollection
-    @CollectionTable(name = "purchase_applications")
-    @Column(name = "volunteer_id")
-    private List<Long> volunteerApplications;
-
-    // telegram parameters
-    private String receiptFileId;
-    private Long broadcastMessageId;
 
     public long getId() {
         return id;

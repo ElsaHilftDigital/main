@@ -11,6 +11,9 @@ Environment=SMTP_HOST=
 Environment=SMTP_PORT=
 Environment=SMTP_USER=
 Environment=SMTP_PASSWORD=
+Environment=DATABASE_USER=db
+Environment=DATABASE_PASSWORD=db
+Environment=DATABASE_URL=jdbc:postgresql://localhost:5434/db
 ExecStart=java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4004 \
         -jar /usr/local/lib/elsa-hilft.jar --spring.profiles.active={{ elsa_backend_spring_profile }}
 User=elsa
