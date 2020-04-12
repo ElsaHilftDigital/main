@@ -48,7 +48,7 @@ spec:
                 name: telegram
                 key: name
           - name: DEPLOYMENT_DOMAIN
-            value: gcp.elsa-hilft.ch
+            value: elsa-hilft.ch
           - name: SMTP_HOST
             valueFrom:
               secretKeyRef:
