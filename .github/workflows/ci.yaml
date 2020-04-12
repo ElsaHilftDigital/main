@@ -93,7 +93,7 @@ jobs:
       run: |
         cd frontend/public
         npm install
-        export REACT_APP_BACKEND_URL=https://gcp.elsa-hilft.ch/api
+        export REACT_APP_BACKEND_URL=https://elsa-hilft.ch/api
         npm run build
     - name: Publish public frontend to GCS
       uses: actions-hub/gcloud@master
@@ -102,7 +102,7 @@ jobs:
         APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         CLI: gsutil
       with:
-        args: -m rsync -d -r frontend/public/build gs://elsa-hilft-digital-production/public
+        args: -m rsync -d -r frontend/public/build gs://elsa-hilft.ch
   admin-ui:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -122,7 +122,7 @@ jobs:
       run: |
         cd frontend/admin
         npm install
-        export REACT_APP_BACKEND_URL=https://gcp.elsa-hilft.ch/api
+        export REACT_APP_BACKEND_URL=https://admin.elsa-hilft.ch/api
         npm run build
     - name: Publish admin frontend to GCS
       uses: actions-hub/gcloud@master
@@ -131,4 +131,4 @@ jobs:
         APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         CLI: gsutil
       with:
-        args: -m rsync -d -r frontend/admin/build gs://elsa-hilft-digital-production/admin
+        args: -m rsync -d -r frontend/admin/build gs://admin.elsa-hilft.ch
