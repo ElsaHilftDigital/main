@@ -14,7 +14,7 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
 
     Optional<Volunteer> findByUuid(UUID uuid);
 
-    Optional<Volunteer> findByTelegramUserId(Long id);
+    Optional<Volunteer> findByTelegramUserIdAndDeleted(Long telegramUserId, boolean deleted);
 
     @Override
     default List<Volunteer> findAllById(Iterable<Long> ids) {
