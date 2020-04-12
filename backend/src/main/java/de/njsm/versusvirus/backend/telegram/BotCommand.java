@@ -22,11 +22,17 @@ public enum BotCommand {
 
         @Override
         public void dispatch(BotCommandDispatcher dispatcher, String command, String botName, Message message) {
-            Matcher m = getRegex(botName).matcher(command);
-            boolean found = m.find();
-            assert found; // verified before
-            String userId = m.group("userId");
-            dispatcher.handleNewHelper(message, UUID.fromString(userId));
+            try {
+                Matcher m = getRegex(botName).matcher(command);
+                boolean found = m.find();
+                assert found; // verified before
+                String userId = m.group("userId");
+                dispatcher.handleNewHelper(message, UUID.fromString(userId));
+            } catch (Exception e) {
+                // This catch is temporary just so that we can print out message details
+                LOG.error("Could not dispatch telegram message properly: command: " + command + ", botName: " + botName + ", message: " + message);
+                throw e; // Retrow since we don't actually handle the error
+            }
         }
     },
 
