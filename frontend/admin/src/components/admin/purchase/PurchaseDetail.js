@@ -6,7 +6,6 @@ import history from '../../../history';
 import { Button } from 'react-bootstrap';
 
 import { purchaseActions } from 'store/purchase';
-import { useCustomer } from 'hooks/useCustomer';
 import { usePurchase } from 'hooks/usePurchase';
 import { formatDateTime, formatDate } from 'config/utils';
 
