@@ -88,7 +88,7 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
 
     private void registerWebhook() {
         LOG.debug("Setting webhook to production");
-        String url = "https://" + domain + "/api/v1/" + TelegramController.TELEGRAM_WEBHOOK;
+        String url = "https://" + domain + "/api/v1" + TelegramController.TELEGRAM_WEBHOOK;
         Call<TelegramResponse<Void>> call = apiClient.setWebhook(token, new WebhookRequest(url));
         executeQuery(call);
     }
