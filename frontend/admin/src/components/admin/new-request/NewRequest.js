@@ -167,7 +167,7 @@ const NewRequest = () => {
                     </div>
                 </>}
                 <form className="mt-3" onSubmit={() => setStep(step + 1)}>
-                    <button type="submit" disabled={!customer || !customer.id} className="btn btn-primary float-right">Weiter</button>
+                    <button type="submit" disabled={!customer || !customer.uuid} className="btn btn-primary float-right">Weiter</button>
                 </form>
             </>;
         };
