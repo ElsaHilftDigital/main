@@ -143,16 +143,16 @@ const NewRequest = () => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="address">Adresse</label>
-                        <input disabled name="address" type="text" className="form-control" id="address" value={customer.address.address}/>
+                        <input disabled name="address" type="text" className="form-control" id="address" value={customer.address}/>
                     </div>
                     <div className="row">
                         <div className="form-group col-md-6">
                             <label htmlFor="zipCode">PLZ</label>
-                            <input disabled name="zipCode" type="text" className="form-control" id="zipCode" value={customer.address.zipCode}/>
+                            <input disabled name="zipCode" type="text" className="form-control" id="zipCode" value={customer.zipCode}/>
                         </div>
                         <div className="form-group col-md-6">
                             <label htmlFor="city">Ort</label>
-                            <input disabled name="city" type="text" className="form-control" id="city" value={customer.address.city}/>
+                            <input disabled name="city" type="text" className="form-control" id="city" value={customer.city}/>
                         </div>
                     </div>
                     <div className="row">
