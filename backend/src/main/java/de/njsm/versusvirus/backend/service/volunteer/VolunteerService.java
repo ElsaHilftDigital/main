@@ -8,14 +8,20 @@ import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
+import de.njsm.versusvirus.backend.spring.web.InternalServerErrorException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.AdminMessageSender;
 import de.njsm.versusvirus.backend.telegram.InviteLinkGenerator;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -141,5 +147,29 @@ public class VolunteerService {
 
         volunteer.setValidated(true);
         messageSender.confirmRegistration(organization, volunteer);
+    }
+
+    public void importVolunteers(String upload) {
+        Iterable<CSVRecord> records;
+        try {
+            records = CSVFormat.DEFAULT.parse(new StringReader(upload));
+        } catch (IOException e) {
+            throw new InternalServerErrorException(e);
+        }
+        for (CSVRecord record : records) {
+            SignupRequest req = new SignupRequest();
+            req.firstName = record.get("firstname");
+            req.lastName = record.get("lastname");
+            req.phone = record.get("phone");
+            req.email = record.get("email");
+            req.address = record.get("address");
+            req.city = record.get("city");
+            req.zipCode = record.get("zipcode");
+            req.birthDate = LocalDate.now();
+            req.iban = record.get("iban");
+            req.bankName = record.get("bankname");
+            req.wantsCompensation = true;
+            signup(req);
+        }
     }
 }
