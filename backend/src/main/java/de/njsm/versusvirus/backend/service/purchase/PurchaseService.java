@@ -127,7 +127,7 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var assignedVolunteer = Optional.ofNullable(purchase.getAssignedVolunteer()).flatMap(volunteerRepository::findById).orElse(null);
         var volunteerApplications = volunteerRepository.findAllById(purchase.getVolunteerApplications());
-        var customer = customerRepository.findById(purchase.getId()).get();
+        var customer = customerRepository.findById(purchase.getCustomerId()).get();
         return new FetchedPurchaseDTO(purchase, assignedVolunteer, volunteerApplications, customer, null, null);
     }
 

@@ -8,7 +8,7 @@ import * as routes from 'routes';
 import { formatBoolean, formatDate, formatDateTime } from 'config/utils';
 
 
-const PurchaseList = props => {
+const PurchaseList = () => {
     const { purchases } = usePurchases();
 
     if (!purchases?.length) {

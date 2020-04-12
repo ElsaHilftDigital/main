@@ -6,38 +6,45 @@ import history from '../../../history';
 import { Button } from 'react-bootstrap';
 
 import { purchaseActions } from 'store/purchase';
-import { useCustomer } from 'hooks/useCustomer';
 import { usePurchase } from 'hooks/usePurchase';
-import { formatDateTime, formatDate } from 'config/utils';
+import { formatDate } from 'config/utils';
 
 
 const PurchaseDetail = () => {
-    const dispatch = useDispatch();
-    const { purchaseId } = useParams()
-
+    const { purchaseId } = useParams();
     const { purchase } = usePurchase(purchaseId);
 
-    const {register, handleSubmit, setValue } = useForm();
-
     if (!purchase) {
-        return <span>...Loading</span>
+        return <span>...Loading</span>;
     }
 
-    setValue('displayFormStatus', purchase.status);
-    setValue('displayFormCreateDate', formatDateTime(purchase.createDate));
-    setValue('displayFormVolunteerLastname', purchase.volunteerLastname);
-    setValue('displayFormVolunteerFirstname', purchase.volunteerFirstname);
-    setValue('displayFormCity', purchase.customer.city);
-    setValue('displayFormFirstname', purchase.customer.firstName);
-    setValue('displayFormLastname', purchase.customer.lastName);
-    setValue('registerFormTiming', purchase.timing);
-    setValue('registerFormSupermarket', purchase.supermarket);
-    setValue('registerFormPurchaseSize', purchase.purchaseSize);
-    setValue('registerFormExpensesOpen', purchase.expensesPaid);
-    setValue('registerFormExpensesOpen', purchase.expensesOpen);
-    setValue('registerFormCost', purchase.cost);
-    setValue('registerFormPaymentMethod', purchase.paymentMethod);
-    setValue('registerFormComments', purchase.comments);
+    return <PurchaseDetailInternal purchase={purchase} />;
+};
+
+const PurchaseDetailInternal = (props) => {
+    const { purchase } = props;
+    const dispatch = useDispatch();
+
+    const {register, handleSubmit } = useForm({
+        defaultValues: {
+            displayFormStatus: purchase.status,
+            displayFormCreateDate: formatDate(purchase.createdAt),
+            displayFormVolunteerLastname: purchase.assignedVolunteer?.lastname,
+            displayFormVolunteerFirstname: purchase.assignedVolunteer?.firstName,
+            displayFormCity: purchase.customer.city,
+            displayFormFirstname: purchase.customer.firstName,
+            displayFormLastname: purchase.customer.lastName,
+            registerFormTiming: purchase.timing,
+            registerFormSupermarket: purchase.supermarket,
+            registerFormPurchaseSize: purchase.size,
+            registerFormExpensesPaid: purchase.expensesPaid,
+            registerFormCost: purchase.cost,
+            registerFormPaymentMethod: purchase.paymentMethod,
+            registerFormComments: purchase.comments,
+        }
+    });
+
+    console.log(purchase?.status)
 
     const assignVolunteer = uuid => {
         dispatch(purchaseActions.assignVolunteer(purchase.uuid, uuid));
@@ -151,10 +158,6 @@ const PurchaseDetail = () => {
                     <input name="registerFormPurchaseSize" ref={register({ required: true })} type="text" className="form-control" id="registerFormPurchaseSize" />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormExpensesOpen">Offene Entschädigungen</label>
-                    <input name="registerFormExpensesOpen" ref={register()} type="text" className="form-control" id="registerFormExpensesOpen" />
-                </div>
-                <div className="form-group">
                     <label htmlFor="registerFormCost">Kosten</label>
                     <input name="registerFormCost" ref={register({})} type="text" className="form-control" id="registerFormCost" />
                 </div>
@@ -171,8 +174,8 @@ const PurchaseDetail = () => {
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
                     <table className="table table-striped" name="displayTableOrderItems">
                         <tbody>
-                            {purchase.orderItems.map((item) => {
-                                return <tr>
+                            {purchase.orderItems.map((item, index) => {
+                                return <tr key={index}>
                                     <td>{item}</td>
                                 </tr>
                             })}
