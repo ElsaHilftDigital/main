@@ -108,6 +108,8 @@ const StatusIndicator = (props) => {
                 return 'warning';
             case "GREEN":
                 return 'success';
+            default:
+                return 'error';
         }
     })(props.value);
     if (props.bottom) {

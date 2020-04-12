@@ -26,8 +26,8 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PurchaseDTO> getPurchase(@PathVariable("id") UUID purchaseId) {
-        return purchaseService.getPurchase(purchaseId)
+    public ResponseEntity<PurchaseWithApplicationsDTO> getPurchase(@PathVariable("id") UUID purchaseId) {
+        return purchaseService.getPurchaseWithApplications(purchaseId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

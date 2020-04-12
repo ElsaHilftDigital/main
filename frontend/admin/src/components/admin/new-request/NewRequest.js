@@ -370,19 +370,26 @@ const NewRequest = () => {
         ))}, [customerSuccess, dispatch]);
         return <>
             {(ongoingCustomerCreate || ongoingPurchaseCreate) && <div className="spinner-border" role="status"/>}
-            {customerSuccess
-            ? <>
-                <div className="alert alert-success" role="alert">Kunde erfolgreich erstellt</div>
-                {createPurchase
-                    ? <>
-                        <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-                        <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag freigeben.</Link>
-                    </>
-                    : !ongoingPurchaseCreate && <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
-                }
-            </>
-            : !ongoingCustomerCreate && <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Kunden</div>
-            }</>;
+            {!ongoingCustomerCreate &&
+                <>
+                    {customerSuccess
+                    ? <div className="alert alert-success" role="alert">Kunde erfolgreich erstellt</div>
+                    : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Kunden</div>
+                    }
+                </>
+            }
+            {!ongoingPurchaseCreate &&
+                <>
+                    {createPurchase
+                        ? <>
+                            <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
+                            <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag freigeben.</Link>
+                        </>
+                        : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
+                    }
+                </>
+            }
+        </>;
     }
 
     const renderContent = () => {

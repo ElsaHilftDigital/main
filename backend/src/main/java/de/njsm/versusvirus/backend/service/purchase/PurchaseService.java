@@ -141,6 +141,17 @@ public class PurchaseService {
         return purchaseRepository.findByUuid(purchaseId).map(PurchaseDTO::new);
     }
 
+    public Optional<PurchaseWithApplicationsDTO> getPurchaseWithApplications(UUID purchaseId) {
+        return purchaseRepository.findByUuid(purchaseId).map(purchase -> {
+            var volunteers = volunteerRepository.findAllById(purchase.getVolunteerApplications())
+                    .stream()
+                    .map(VolunteerDTO::new)
+                    .collect(Collectors.toList());
+            var customer = customerRepository.findById(purchase.getCustomerId()).map(Customer::getUuid).orElse(null);
+            return new PurchaseWithApplicationsDTO(purchase, customer, volunteers);
+        });
+    }
+
     public void assignVolunteer(UUID purchaseId, UUID volunteerId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);

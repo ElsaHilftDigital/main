@@ -141,11 +141,11 @@ const PurchaseDetail = () => {
                 <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Auftraggeber hier klicken</a></i></div>
                 <div className="form-group">
                     <label htmlFor="registerFormTiming">Braucht Einkauf</label>
-                    <input name="registerFormTiming" ref={register()} type="text" className="form-control" id="registerFormTiming" placeholder="3.3.2020 19:00" />
+                    <input name="registerFormTiming" ref={register()} type="text" className="form-control" id="registerFormTiming" />
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormSupermarket">Supermarkt</label>
-                    <input name="registerFormSupermarket" ref={register()} type="text" className="form-control" id="registerFormSupermarket" placeholder="Hauptrasse 1" />
+                    <input name="registerFormSupermarket" ref={register()} type="text" className="form-control" id="registerFormSupermarket" />
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormPurchaseSize">Grösse des Einkaufs</label>
@@ -172,12 +172,11 @@ const PurchaseDetail = () => {
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
                     <table className="table table-striped" name="displayTableOrderItems">
                         <tbody>
-                            <tr>
-                                <td>5 Tomaten</td>
-                            </tr>
-                            <tr>
-                                <td>13 Dosen Ravioli</td>
-                            </tr>
+                            {purchase.orderItems.map((item) => {
+                                return <tr>
+                                    <td>{item}</td>
+                                </tr>
+                            })}
                         </tbody>
                     </table>
                 </div>
