@@ -16,7 +16,6 @@ const PurchaseDetail = () => {
     const { purchaseId } = useParams()
 
     const { purchase } = usePurchase(purchaseId);
-    const { customer } = useCustomer(purchase?.customer);
 
     const {register, handleSubmit, setValue } = useForm();
 
@@ -28,9 +27,9 @@ const PurchaseDetail = () => {
     setValue('displayFormCreateDate', formatDateTime(purchase.createDate));
     setValue('displayFormVolunteerLastname', purchase.volunteerLastname);
     setValue('displayFormVolunteerFirstname', purchase.volunteerFirstname);
-    setValue('displayFormCity', customer?.city);
-    setValue('displayFormFirstname', customer?.firstName);
-    setValue('displayFormLastname', customer?.lastName);
+    setValue('displayFormCity', purchase.customer.city);
+    setValue('displayFormFirstname', purchase.customer.firstName);
+    setValue('displayFormLastname', purchase.customer.lastName);
     setValue('registerFormTiming', purchase.timing);
     setValue('registerFormSupermarket', purchase.supermarket);
     setValue('registerFormPurchaseSize', purchase.purchaseSize);
@@ -59,7 +58,7 @@ const PurchaseDetail = () => {
     return (
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
-                <h1>Details zum Einkauf vom {formatDate(purchase.createDate)} für {purchase.customer}</h1>
+                <h1>Details zum Einkauf vom {formatDate(purchase.createDate)} für TODO</h1>
                 {purchase.status === "Neu" && <Button
                     onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <Button
