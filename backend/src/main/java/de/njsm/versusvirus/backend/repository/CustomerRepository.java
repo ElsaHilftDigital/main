@@ -18,14 +18,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Optional<Customer> findByUuid(UUID uuid);
 
-    default List<Customer> findAllById(Iterable<Long> ids) {
-        if (ids.iterator().hasNext()) {
-            return _findAllByIdInternal(ids);
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    @Query(value = "select * from customer where id in :ids", nativeQuery = true)
-    List<Customer> _findAllByIdInternal(@Param("ids") Iterable<Long> ids);
+    @Override
+    @Query("SELECT c FROM Customer c WHERE c.deleted = FALSE")
+    List<Customer> findAll();
 }
