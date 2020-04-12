@@ -123,33 +123,16 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
-    public List<PurchaseWithApplicationsDTO> getPurchasesWithApplications() {
-        return purchaseRepository.findAll()
-                .stream()
-                .map(purchase -> {
-                    var volunteers = volunteerRepository.findAllById(purchase.getVolunteerApplications())
-                            .stream()
-                            .map(VolunteerDTO::new)
-                            .collect(Collectors.toList());
-                    var customer = customerRepository.findById(purchase.getCustomerId()).map(Customer::getUuid).orElse(null);
-                    return new PurchaseWithApplicationsDTO(purchase, customer, volunteers);
-                })
-                .collect(Collectors.toList());
+    public FetchedPurchaseDTO getFetchedPurchase(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        var assignedVolunteer = Optional.ofNullable(purchase.getAssignedVolunteer()).flatMap(volunteerRepository::findById).orElse(null);
+        var volunteerApplications = volunteerRepository.findAllById(purchase.getVolunteerApplications());
+        var customer = customerRepository.findById(purchase.getId()).get();
+        return new FetchedPurchaseDTO(purchase, assignedVolunteer, volunteerApplications, customer, null, null);
     }
 
     public Optional<PurchaseDTO> getPurchase(UUID purchaseId) {
         return purchaseRepository.findByUuid(purchaseId).map(PurchaseDTO::new);
-    }
-
-    public Optional<PurchaseWithApplicationsDTO> getPurchaseWithApplications(UUID purchaseId) {
-        return purchaseRepository.findByUuid(purchaseId).map(purchase -> {
-            var volunteers = volunteerRepository.findAllById(purchase.getVolunteerApplications())
-                    .stream()
-                    .map(VolunteerDTO::new)
-                    .collect(Collectors.toList());
-            var customer = customerRepository.findById(purchase.getCustomerId()).map(Customer::getUuid).orElse(null);
-            return new PurchaseWithApplicationsDTO(purchase, customer, volunteers);
-        });
     }
 
     public void assignVolunteer(UUID purchaseId, UUID volunteerId) {
