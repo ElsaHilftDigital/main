@@ -43,8 +43,8 @@ public class PurchaseListItemDTO {
         this.amount = "TODO"; // TODO
         this.paid = false;    // TODO
         this.deadline = purchase.getTiming();
-        this.responsible = "TODO"; // TODO
-        this.createdBy = "TODO"; // TODO
+        this.responsible = responsibleModerator.getName();
+        this.createdBy = createdBy.getName();
         this.createdAt = purchase.getCreateTime();
     }
 }

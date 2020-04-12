@@ -28,8 +28,8 @@ public class FetchedPurchaseDTO {
     public String comments;
     public Double cost;
     public boolean expensesPaid;
-    public Void createdBy; // TODO
-    public Void responsible; // TODO
+    public String createdBy;
+    public String responsible;
     public CustomerDTO customer;
     public Instant createdAt;
 
@@ -52,6 +52,8 @@ public class FetchedPurchaseDTO {
         this.cost = Optional.ofNullable(purchase.getCost()).map(BigDecimal::doubleValue).orElse(null);
         this.customer = new CustomerDTO(customer);
         this.expensesPaid = purchase.isExpensesPaid();
+        this.createdBy = createdBy.getName();
+        this.responsible = responsible.getName();
         this.createdAt = purchase.getCreateTime();
     }
 }

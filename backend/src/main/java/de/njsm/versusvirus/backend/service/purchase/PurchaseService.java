@@ -1,6 +1,5 @@
 package de.njsm.versusvirus.backend.service.purchase;
 
-import com.google.common.collect.Streams;
 import de.njsm.versusvirus.backend.domain.Customer;
 import de.njsm.versusvirus.backend.domain.Moderator;
 import de.njsm.versusvirus.backend.domain.OrderItem;
@@ -22,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -51,12 +51,6 @@ public class PurchaseService {
         this.volunteerRepository = volunteerRepository;
         this.moderatorRepository = moderatorRepository;
         this.messageSender = messageSender;
-    }
-
-    public PurchaseDTO createAndPublish(Principal principal, CreatePurchaseRequest req) {
-        Purchase purchase = createPurchase(principal, req);
-        publishPurchase(purchase.getUuid());
-        return new PurchaseDTO(purchase);
     }
 
     public PurchaseDTO create(Principal principal, CreatePurchaseRequest req) {
@@ -108,8 +102,9 @@ public class PurchaseService {
                 .stream()
                 .collect(Collectors.toMap(Volunteer::getId, Function.identity()));
         var moderators = moderatorRepository.findAllById(
-                Streams.concat(
-                        purchases.stream().map(Purchase::getCreatedByModerator))
+                Stream.concat(
+                        purchases.stream().map(Purchase::getCreatedByModerator),
+                        purchases.stream().map(Purchase::getResponsibleModeratorId))
                         .collect(Collectors.toSet()))
                 .stream()
                 .collect(Collectors.toMap(Moderator::getId, Function.identity()));
@@ -118,7 +113,7 @@ public class PurchaseService {
                         purchase,
                         customers.get(purchase.getCustomerId()),
                         volunteers.get(purchase.getAssignedVolunteer()),
-                        null,
+                        moderators.get(purchase.getResponsibleModeratorId()),
                         moderators.get(purchase.getCreatedByModerator())))
                 .collect(Collectors.toList());
     }
@@ -127,8 +122,13 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var assignedVolunteer = Optional.ofNullable(purchase.getAssignedVolunteer()).flatMap(volunteerRepository::findById).orElse(null);
         var volunteerApplications = volunteerRepository.findAllById(purchase.getVolunteerApplications());
+
+        // The following entities are loaded from not-null foreign keys, they should never fail
         var customer = customerRepository.findById(purchase.getCustomerId()).get();
-        return new FetchedPurchaseDTO(purchase, assignedVolunteer, volunteerApplications, customer, null, null);
+        var createdBy = moderatorRepository.findById(purchase.getCreatedByModerator()).get();
+        var responsible = moderatorRepository.findById(purchase.getResponsibleModeratorId()).get();
+
+        return new FetchedPurchaseDTO(purchase, assignedVolunteer, volunteerApplications, customer, createdBy, responsible);
     }
 
     public Optional<PurchaseDTO> getPurchase(UUID purchaseId) {
