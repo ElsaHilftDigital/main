@@ -195,6 +195,8 @@ public class PurchaseService {
 
     public String export(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        return purchase.renderToCsv();
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
+        var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
+        return purchase.renderToCsv(customer, volunteer);
     }
 }

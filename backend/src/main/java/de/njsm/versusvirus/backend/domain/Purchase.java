@@ -1,5 +1,7 @@
 package de.njsm.versusvirus.backend.domain;
 
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -25,12 +27,18 @@ public class Purchase {
         this.receiptMimeType = receiptMimeType;
     }
 
-    public String renderToCsv() {
+    public String renderToCsv(Customer customer, Volunteer volunteer) {
         DateTimeFormatter format = DateTimeFormatter.ISO_DATE;
-        return String.format("date,shops,cost\n%s,%s,%s\n",
+        return String.format("date,customer,address,city,shops,cost,volunteer,volunteer phone,volunteer iban\n%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                 format.format(createTime),
+                customer.getFirstName() + " " + customer.getLastName(),
+                customer.getAddress().getAddress(),
+                customer.getAddress().getZipCode() + " " + customer.getAddress().getCity(),
                 supermarket,
-                cost);
+                cost,
+                volunteer.getFirstName() + " " + volunteer.getLastName(),
+                volunteer.getPhone(),
+                volunteer.getIban());
     }
 
     public enum Status {
