@@ -86,7 +86,11 @@ spec:
   - host: admin.elsa-hilft.ch
     http:
       paths:
-      - path: /(.*)$
+      - path: /(.+)$
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+      - path: /admin/(.+)$
         backend:
           serviceName: google-storage-buckets
           servicePort: 443
@@ -114,6 +118,10 @@ spec:
     http:
       paths:
       - path: /
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+      - path: /admin
         backend:
           serviceName: google-storage-buckets
           servicePort: 443
