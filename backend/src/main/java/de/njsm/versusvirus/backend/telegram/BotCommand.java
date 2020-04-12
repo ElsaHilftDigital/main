@@ -29,9 +29,8 @@ public enum BotCommand {
                 String userId = m.group("userId");
                 dispatcher.handleNewHelper(message, UUID.fromString(userId));
             } catch (Exception e) {
-                // This catch is temporary just so that we can print out message details
-                LOG.error("Could not dispatch telegram message properly: command: " + command + ", botName: " + botName + ", message: " + message);
-                throw e; // Retrow since we don't actually handle the error
+                LOG.error("Could not dispatch telegram message properly: command: " + command + ", botName: " + botName + ", message: " + message, e);
+                // Swallow exception and message because otherwise we will get it _forever_
             }
         }
     },
