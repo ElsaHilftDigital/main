@@ -5,6 +5,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 import SearchBox from 'components/SearchBox';
+import PurchaseList from 'components/PurchaseList';
 import {useCustomers} from 'hooks/useCustomers';
 import {customerSelectors, customerActions} from 'store/customer';
 import {purchaseSelectors, purchaseActions} from 'store/purchase';
@@ -55,15 +56,6 @@ const Progress = styled.ol`
     table-layout: fixed;
     width: 100%;
 `;
-
-const PurchaseListItem = styled.li`
-    padding: 0.375rem 0.75rem !important;
-`;
-
-const SupermarketListItem = styled.li`
-    padding: 0.375rem 0.75rem !important;
-`;
-
 
 const NewRequest = () => {
     const steps = ['Kunde', 'Auftrag', 'Bestätigung'];
@@ -251,75 +243,10 @@ const NewRequest = () => {
         </>);
     };
 
-    const EnterPurchaseList = (props) => {
-        const { supermarket, onUpdate } = props;
-
-        const addToPurchaseList = (item) => {
-            onUpdate(
-                Object.assign({}, supermarket, {
-                    orderItems: supermarket.orderItems.concat([item])
-                })
-            )            
-        };
-        const removeFromPurchaseList = (index) => {
-            onUpdate(
-                Object.assign({}, supermarket, {
-                    orderItems: supermarket.orderItems.filter((_, i) => i !== index)
-                })
-            )
-        }
-        const keyDownHandler = (e) => {
-            if (e.key === "Enter") {
-                const value = e.currentTarget.value;
-                value && addToPurchaseList(value);
-            }
-        };
-
-        return (<>
-            <label><b>Einkaufsliste für {supermarket.name}</b></label>
-            <p>
-                <i>Bitte jedes Produkt mit "Enter" bestätigen.</i>
-            </p>
-            <ul className="list-group mb-3">
-                {supermarket.orderItems.map((item, index) => <PurchaseListItem className="list-group-item" key={index}>
-                    {item}
-                    <i onClick={() => removeFromPurchaseList(index)} style={{margin: 'auto'}} className="fa fa-trash float-right"/>
-                </PurchaseListItem>)}
-                <PurchaseListItem className="list-group-item">
-                    <input className="no-outline" type="text" onKeyDown={keyDownHandler} autoFocus placeholder="Neues Einkaufsitem"></input>
-                </PurchaseListItem>
-            </ul>
-        </>);
-    }
-
     const EnterPurchase = () => {
         const { handleSubmit, register } = useForm({
             defaultValues: purchase ?? {}
         });
-        const addToSupermarketList = supermarket => setSupermarketList(supermarketList.concat([supermarket]));
-        const updateSupermarket = (supermarket) => (newSupermarket) => setSupermarketList(
-            supermarketList.map(currentSupermarket => {
-                if (currentSupermarket === supermarket) {
-                    return newSupermarket
-                }
-                else {
-                    return currentSupermarket
-                }
-            }
-        ));
-        const removeFromSupermarketList = index => setSupermarketList(supermarketList.filter((_, i) => i !== index));
-        const keyDownHandler = (e) => {
-            if (e.key === "Enter") {
-                const value = e.currentTarget.value;
-                value && addToSupermarketList(
-                    {
-                        name: value,
-                        orderItems: [],
-                    }
-                );
-            }
-        };
-
         const onReset = data => {
             setPurchase(data);
             setStep(step - 1);
@@ -335,15 +262,7 @@ const NewRequest = () => {
             <p>
                 <i>Bitte für jeden Supermarkt mit "Enter" bestätigen.</i>
             </p>
-            <ul className="list-group mb-3">
-                {supermarketList.map((supermarket, index) => <SupermarketListItem className="list-group-item" key={index}>
-                    <i onClick={() => removeFromSupermarketList(index)} style={{margin: 'auto'}} className="fa fa-trash float-right"/>
-                    <EnterPurchaseList supermarket={supermarket} onUpdate={updateSupermarket(supermarket)}/>
-                </SupermarketListItem>)}
-                <SupermarketListItem className="list-group-item">
-                    <input className="no-outline" type="text" onKeyDown={keyDownHandler} placeholder="Eingabe neuer Supermarkt"></input>
-                </SupermarketListItem>
-            </ul>
+            <PurchaseList value={supermarketList} setValue={setSupermarketList}/>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="form-group">
                     <label htmlFor="purchaseSize">Grösse des Einkaufs</label>
