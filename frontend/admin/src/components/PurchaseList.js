@@ -10,7 +10,7 @@ const SupermarketListItem = styled.li`
 `;
 
 const PurchaseList = (props) => {
-    const { value, setValue } = props;
+    const { value, setValue, autoFocus } = props;
 
     const addToSupermarketList = supermarket => setValue(value.concat([supermarket]));
     const updateSupermarket = (supermarket) => (newSupermarket) => setValue(
@@ -39,7 +39,7 @@ const PurchaseList = (props) => {
     return <ul className="list-group mb-3">
         {value.map((supermarket, index) => <SupermarketListItem className="list-group-item" key={index}>
             <i onClick={() => removeFromSupermarketList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />
-            <SinglePurchaseList supermarket={supermarket} onUpdate={updateSupermarket(supermarket)} />
+            <SinglePurchaseList autoFocus={autoFocus} supermarket={supermarket} onUpdate={updateSupermarket(supermarket)} />
         </SupermarketListItem>)}
         <SupermarketListItem className="list-group-item">
             <input className="no-outline" type="text" onKeyDown={keyDownHandler} placeholder="Eingabe neuer Supermarkt"></input>
@@ -48,7 +48,7 @@ const PurchaseList = (props) => {
 }
 
 const SinglePurchaseList = (props) => {
-    const { supermarket, onUpdate } = props;
+    const { supermarket, onUpdate, autoFocus } = props;
 
     const addToPurchaseList = (item) => {
         onUpdate(
@@ -84,7 +84,7 @@ const SinglePurchaseList = (props) => {
                 <i onClick={() => removeFromPurchaseList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />
             </PurchaseListItem>)}
             <PurchaseListItem className="list-group-item">
-                <input className="no-outline" type="text" onKeyPress={keyPressHandler} autoFocus placeholder="Neues Einkaufsitem"></input>
+                <input className="no-outline" type="text" onKeyPress={keyPressHandler} autoFocus={autoFocus} placeholder="Neues Einkaufsitem"></input>
             </PurchaseListItem>
         </ul>
     </>);
