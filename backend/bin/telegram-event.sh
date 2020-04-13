@@ -25,27 +25,44 @@ function offer-help() {
 
 
 function confirm-help() {
-  echo
+  DATA='{"update_id":'$ID',"callback_query":{"id":1,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"data":"aaab_'"$1"'","message":{"chat":{"id":0,"type":"private"}}}}'
+  send "$DATA"
 }
 
 
 function withdraw-help() {
-  echo
+  DATA='{"update_id":'$ID',"callback_query":{"id":1,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"data":"aaac_'"$1"'","message":{"chat":{"id":0,"type":"private"}}}}'
+  send "$DATA"
 }
 
 
 function upload-receipt() {
-  echo
+  DATA='{"update_id": '$ID',"message":{"message_id":0,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"date":'"$(date +%s)"',"chat":{"id":1409,"type":"private"},"text":"",photo:[{"file_id":"fileid","file_unique_id":"fileuniqueid","width":5,"height":5,"file_size":25}]}}'
+  send "$DATA"
 }
 
 
 function confirm-receipt-mapping() {
-  echo
+  DATA='{"update_id":'$ID',"callback_query":{"id":1,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"data":"aaaf_'"$1"'","message":{"chat":{"id":0,"type":"private"}}}}'
+  send "$DATA"
+}
+
+
+function complete-purchase() {
+  DATA='{"update_id":'$ID',"callback_query":{"id":1,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"data":"aaad_'"$1"'","message":{"chat":{"id":0,"type":"private"}}}}'
+  send "$DATA"
+}
+
+
+function money-was-missing() {
+  DATA='{"update_id":'$ID',"callback_query":{"id":1,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"data":"aaae_'"$1"'","message":{"chat":{"id":0,"type":"private"}}}}'
+  send "$DATA"
 }
 
 
 function send-arbitrary-message() {
-  echo
+  DATA='{"update_id": '$ID',"message":{"message_id":0,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"date":'"$(date +%s)"',"chat":{"id":1409,"type":"private"},"text":"'"$1"'"}}'
+  send "$DATA"
 }
 
 
@@ -71,11 +88,13 @@ else
     echo "Actions:"
     echo "register-as-volunteer <uuid>    Execute /start command after registration, takes volunteer uuid"
     echo "offer-help <uuid>               Press the button below broadcast purchase message, takes purchase uuid"
-    echo "confirm-help <uuid>             "
-    echo "withdraw-help <uuid>            "
-    echo "upload-receipt                  "
-    echo "confirm-receipt-mapping <uuid>  "
-    echo "send-arbitrary-message <text>   "
+    echo "confirm-help <uuid>             Really do the purchase (private chat), takes purchase uuid"
+    echo "withdraw-help <uuid>            Not do the purchase (private chat), takes purchase uuid"
+    echo "upload-receipt                  Upload a receipt"
+    echo "confirm-receipt-mapping <uuid>  Map a purchase to the receipt, takes purchase uuid"
+    echo "complete-purchase <uuid>        Mark the purchase as done, takes purchase uuid"
+    echo "money-was-missing <uuid>        Mark the purchase as money-was-missing, takes purchase uuid"
+    echo "send-arbitrary-message <text>   Send a text to the bot"
     exit 1
 fi
 

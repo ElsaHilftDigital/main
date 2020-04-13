@@ -1,76 +1,134 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import history from '../../../history';
+import { Button } from 'react-bootstrap';
+import Toast from 'react-bootstrap/Toast';
 
 import { purchaseActions } from 'store/purchase';
-import { useCustomer } from 'hooks/useCustomer';
 import { usePurchase } from 'hooks/usePurchase';
+import { formatDate } from 'config/utils';
 
 
 const PurchaseDetail = () => {
-    const dispatch = useDispatch();
-    const { purchaseId } = useParams()
-
+    const { purchaseId } = useParams();
     const { purchase } = usePurchase(purchaseId);
-    const { customer } = useCustomer(purchase?.customer);
 
-    const assignVolunteer = uuid => {
+    if (!purchase) {
+        return <span>...Loading</span>;
+    }
+
+    return <PurchaseDetailInternal purchase={purchase} />;
+};
+
+const PurchaseDetailInternal = (props) => {
+    const { purchase } = props;
+    const dispatch = useDispatch();
+
+    const {register, handleSubmit } = useForm({
+        defaultValues: {
+            displayFormStatus: purchase.status,
+            displayFormCreateDate: formatDate(purchase.createdAt),
+            displayFormVolunteerLastname: purchase.assignedVolunteer?.lastname,
+            displayFormVolunteerFirstname: purchase.assignedVolunteer?.firstName,
+            displayFormCity: purchase.customer.city,
+            displayFormFirstname: purchase.customer.firstName,
+            displayFormLastname: purchase.customer.lastName,
+            registerFormTiming: purchase.timing,
+            registerFormSupermarket: purchase.supermarket,
+            registerFormExpensesPaid: purchase.expensesPaid,
+            registerFormCost: purchase.cost,
+            registerFormComments: purchase.comments,
+        }
+    });
+
+    const [showSaveToast, setShowSaveToast] = useState(false);
+    const [showDeliverToast, setShowDeliverToast] = useState(false);
+    const [showAssignVolunteerToast, setShowAssignVolunteerToast] = useState(false);
+    const [showSearchHelperToast, setShowSearchHelperToast] = useState(false);
+    const [showCompleteToast, setShowCompleteToast] = useState(false);
+
+    const publishPurchaseSearchHelper = () => {
+        dispatch(purchaseActions.publishPurchase(purchase.uuid));
+        setShowSearchHelperToast(true);
+    };
+
+    const assignVolunteer = (uuid) => {
         dispatch(purchaseActions.assignVolunteer(purchase.uuid, uuid));
+        setShowAssignVolunteerToast(true);
     };
 
     const notifyVolunteerToDeliver = () => {
         dispatch(purchaseActions.customerNotified(purchase.uuid));
+        setShowDeliverToast(true);
     };
 
-    const {register, handleSubmit, setValue } = useForm({defaultValues: {
-        displayFormStatus: purchase?.status,
-        displayFormCreateDate: purchase?.createDate,
-        displayFormVolunteerLastname: purchase?.volunteerLastname,
-        displayFormVolunteerFirstname: purchase?.volunteerFirstname,
-        displayFormCity: purchase?.customerCity,
-        displayFormFirstname: purchase?.customerFirstname,
-        displayFormLastname: purchase?.customerLastname,
-        registerFormTiming: purchase?.timing,
-        registerFormSupermarket: purchase?.supermarket,
-        registerFormPurchaseSize: purchase?.purchaseSize,
-        registerFormExpensesPaid: purchase?.expensesPaid,
-        registerFormExpensesOpen: purchase?.expensesOpen,
-        registerFormPaymentMethod: purchase?.paymentMethod,
-        registerFormComments: purchase?.comments
-    }});
-
-    const date = new Date(purchase?.createDate);
-
-    setValue('displayFormStatus', purchase?.status);
-    setValue('displayFormCreateDate', date.toLocaleString('de-DE'));
-    setValue('displayFormVolunteerLastname', purchase?.volunteerLastname);
-    setValue('displayFormVolunteerFirstname', purchase?.volunteerFirstname);
-    setValue('displayFormCity', customer?.city);
-    setValue('displayFormFirstname', customer?.firstName);
-    setValue('displayFormLastname', customer?.lastName);
-    setValue('registerFormTiming', purchase?.timing);
-    setValue('registerFormSupermarket', purchase?.supermarket);
-    setValue('registerFormPurchaseSize', purchase?.purchaseSize);
-    setValue('registerFormExpensesOpen', purchase?.expensesPaid);
-    setValue('registerFormExpensesOpen', purchase?.expensesOpen);
-    setValue('registerFormPaymentMethod', purchase?.paymentMethod);
-    setValue('registerFormComments', purchase?.comments);
-
-    const onSubmit = (values) => {
-        console.log(values)
-    };
-    
-    if (!purchase) {
-        return <span>...Loading</span>
+    const markPurchaseAsCompleted = () => {
+        dispatch(purchaseActions.markCompleted(purchase.uuid));
+        setShowCompleteToast(true)
     }
 
-    return (
-        <div className="container mt-3 mb-5">
-            <h1>Details zum Einkauf vom {date.toLocaleString('de-DE')} für {purchase.customerLastname}</h1>
-            <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
+    const onSubmit = (data) => {
+        // update purchase missing
+        setShowSaveToast(true);
+        console.log(data);
+    };
 
-            <form onSubmit={handleSubmit(onSubmit)} style={{paddingTop: "1em"}}>
+    return (<>
+        <div class="position-absolute w-100 d-flex flex-column p-4">
+            <Toast className="mt-2 mb-2" onClose={() => setShowSearchHelperToast(false)} show={showSearchHelperToast} delay={3000} autohide>
+                <Toast.Header>
+                <strong className="mr-auto">Einkauf freigeben</strong>
+                </Toast.Header>
+                <Toast.Body>Einkauf wurde an Helfer-Gruppenchat gesendet.</Toast.Body>
+            </Toast>
+            <Toast className="mt-2 mb-2" onClose={() => setShowAssignVolunteerToast(false)} show={showAssignVolunteerToast} delay={3000} autohide>
+                <Toast.Header>
+                <strong className="mr-auto">Helferzuordnung</strong>
+                </Toast.Header>
+                <Toast.Body>Der Helfer wurde zugeordnet.</Toast.Body>
+            </Toast>
+            <Toast className="mt-2 mb-2" onClose={() => setShowDeliverToast(false)} show={showDeliverToast} delay={3000} autohide>
+                <Toast.Header>
+                <strong className="mr-auto">Lieferung freigeben</strong>
+                </Toast.Header>
+                <Toast.Body>Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann.</Toast.Body>
+            </Toast>
+            <Toast className="mt-2 mb-2" onClose={() => setShowCompleteToast(false)} show={showCompleteToast} delay={3000} autohide>
+                <Toast.Header>
+                <strong className="mr-auto">Einkauf abgeschlossen</strong>
+                </Toast.Header>
+                <Toast.Body>Der Einkauf wurde manuell abgeschlossen.</Toast.Body>
+            </Toast>
+        </div>
+
+
+        <div className="container mt-3 mb-5">
+            <div className="flex-grow-0 justify-content-between align-items-bottom mb-3">
+                <h1>Details zum Einkauf vom {formatDate(purchase.createdAt)} für {purchase.customer.lastName}</h1>
+                <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
+                
+            </div>
+            <div className="flex-grow-0">
+                {purchase.status === "Neu" &&
+                    <Button className="m-3"
+                        onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
+                {purchase.status === "Einkauf abgeschlossen" && <>
+                    <Button className="m-3"
+                        onClick={() => history.push("/purchase/" + purchase.uuid + "/receipt")}>Quittung ansehen</Button>
+                    <Button className="m-3"
+                        onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
+                </>}
+                {(purchase.status === "Kein Geld deponiert" || purchase.status === "Ausgeliefert - Zahlung ausstehend") &&
+                    <Button
+                        onClick={() => { if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) markPurchaseAsCompleted() } }
+                        className="btn btn-primary m-1">Einkauf erledigt</Button>
+                }
+            </div>
+            
+
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
                 <div className="form-group">
                     <label htmlFor="displayFormStatus">Status</label>
                     <input name="displayFormStatus" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormStatus" />
@@ -144,23 +202,33 @@ const PurchaseDetail = () => {
                 <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Auftraggeber hier klicken</a></i></div>
                 <div className="form-group">
                     <label htmlFor="registerFormTiming">Braucht Einkauf</label>
-                    <input name="registerFormTiming" ref={register()} type="text" className="form-control" id="registerFormTiming" placeholder="3.3.2020 19:00" />
+                    <input name="registerFormTiming" ref={register()} type="text" className="form-control" id="registerFormTiming" />
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormSupermarket">Supermarkt</label>
-                    <input name="registerFormSupermarket" ref={register()} type="text" className="form-control" id="registerFormSupermarket" placeholder="Hauptrasse 1" />
+                    <input name="registerFormSupermarket" ref={register()} type="text" className="form-control" id="registerFormSupermarket" />
                 </div>
                 <div className="form-group">
                     <label htmlFor="registerFormPurchaseSize">Grösse des Einkaufs</label>
-                    <input name="registerFormPurchaseSize" ref={register({ required: true })} type="text" className="form-control" id="registerFormPurchaseSize" />
+                    <select ref={register()} id="registerFormPurchaseSize" name="purchaseSize" className="form-control" defaultValue={purchase.size} >
+                        <option value="SMALL">Kleiner Einkauf</option>
+                        <option value="MEDIUM">Mittlerer Einkauf</option>
+                        <option value="LARGE">Grosser Einkauf</option>
+                    </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormExpensesOpen">Offene Entschädigungen</label>
-                    <input name="registerFormExpensesOpen" ref={register()} type="text" className="form-control" id="registerFormExpensesOpen" />
+                    <label htmlFor="registerFormCost">Kosten</label>
+                    <input name="registerFormCost" ref={register({})} type="text" className="form-control" id="registerFormCost" />
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="registerFormPaymentMethod">Zahlungsmethode</label>
-                    <input name="registerFormPaymentMethod" ref={register({ required: true })} type="text" className="form-control" id="registerFormPaymentMethod" />
+                    <select ref={register} id="registerFormPaymentMethod" name="registerFormPaymentMethod" className="form-control" defaultValue={purchase.paymentMethod}>
+                        <option value="CASH">Bargeld</option>
+                        <option value="BILL">Rechnung</option>
+                        <option value="TWINT">TWINT</option>
+                        <option value="OTHER">Andere</option>
+                    </select>
                 </div>
                 <div className="form-group mb-2 mb-3"><i><a href="/">Hier ist der Link zur Quittung, falls vorhanden</a></i></div>
                 <div className="form-group">
@@ -171,29 +239,28 @@ const PurchaseDetail = () => {
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
                     <table className="table table-striped" name="displayTableOrderItems">
                         <tbody>
-                            <tr>
-                                <td>5 Tomaten</td>
-                            </tr>
-                            <tr>
-                                <td>13 Dosen Ravioli</td>
-                            </tr>
+                            {purchase.orderItems.map((item, index) => {
+                                return <tr key={index}>
+                                    <td>{item}</td>
+                                </tr>
+                            })}
                         </tbody>
                     </table>
                 </div>
                 <div>
-                    <p>
+                    <div className="justify-content-between align-items-bottom">
                         <button type="submit" className="btn btn-primary m-1">Speichern</button>
-                    </p>
-                    <p>
-                        <button onClick={() => notifyVolunteerToDeliver()} className="btn btn-primary m-1">Lieferung freigeben</button>
-                    </p>
-                    <p>
-                        <button type="submit" className="btn btn-primary m-1">Einkauf erledigt</button>
-                    </p>
+                        <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
+                            <Toast.Header>
+                            <strong className="mr-auto">Einkauf speichern</strong>
+                            </Toast.Header>
+                            <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
+                        </Toast>
+                    </div>
                 </div>
             </form>
         </div>
-    );
+    </>);
 };
 
 export default PurchaseDetail;

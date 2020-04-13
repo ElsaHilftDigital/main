@@ -40,7 +40,7 @@ public class PurchaseDTO {
         expensesPaid = p.isExpensesPaid();
         assignedVolunteer = p.getAssignedVolunteer();
         createdByModerator = p.getCreatedByModerator();
-        customer = p.getCustomer();
+        customer = p.getCustomerId();
         createDate = p.getCreateTime().toString();
     }
 }

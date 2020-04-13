@@ -9,11 +9,7 @@ import java.util.UUID;
 
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
-    Optional<Purchase> findById(long id);
-
     Optional<Purchase> findByUuid(UUID uuid);
-
-    List<Purchase> findAllByAssignedVolunteer(long volunteerId);
 
     List<Purchase> findAllByCustomerAndStatus(Long customer, Purchase.Status status);
 

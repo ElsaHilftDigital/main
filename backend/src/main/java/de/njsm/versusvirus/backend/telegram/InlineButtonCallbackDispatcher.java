@@ -63,7 +63,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("purchase not found");
         });
-        var volunteer = volunteerRepository.findByTelegramUserId(user.getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
@@ -71,7 +71,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Organization not found");
         });
-        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(() -> {
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Purchase has no customer");
         });
@@ -95,7 +95,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("purchase not found");
         });
-        var volunteer = volunteerRepository.findByTelegramUserId(user.getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
@@ -127,7 +127,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("purchase not found");
         });
-        var volunteer = volunteerRepository.findByTelegramUserId(user.getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
         });
@@ -135,7 +135,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Organization not found");
         });
-        var customer = customerRepository.findById(purchase.getCustomer()).orElseThrow(() -> {
+        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("Purchase has no customer");
         });
@@ -162,7 +162,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     @Override
     public void handleReceiptWithoutPurchaseContext(Message message, User user, String fileId) {
-        var volunteer = volunteerRepository.findByTelegramUserId(user.getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
@@ -177,7 +177,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("purchase not found");
         });
-        var volunteer = volunteerRepository.findByTelegramUserId(user.getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
@@ -237,7 +237,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("purchase not found");
         });
-        var volunteer = volunteerRepository.findByTelegramUserId(user.getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
         });
@@ -270,7 +270,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("purchase not found");
         });
-        var volunteer = volunteerRepository.findByTelegramUserId(user.getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
         });
@@ -299,7 +299,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     @Override
     public void handleVolunteerDeletion(Message message, User user, UUID data) {
-        var volunteer = volunteerRepository.findByTelegramUserId(message.getFrom().getId()).orElseThrow(() -> {
+        var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(message.getFrom().getId(), false).orElseThrow(() -> {
                     messageSender.resignUnknownVolunteer(message.getChat().getId());
                     throw new TelegramShouldBeFineException("helper not found. telegram id: " + message.getFrom().getId());
                 }

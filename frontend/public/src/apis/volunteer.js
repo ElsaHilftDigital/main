@@ -2,7 +2,6 @@ import axios from 'axios';
 
 import { BACKEND_URL } from '../config/constants';
 
-const adminClient = axios.create({ baseURL: `${BACKEND_URL}/v1/admin`});
 const anonymousClient = axios.create({ baseURL: `${BACKEND_URL}/v1/anonymous`});
 
 

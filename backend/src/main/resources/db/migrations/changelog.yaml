@@ -89,3 +89,9 @@ databaseChangeLog:
   - include:
       file: 20200411-0904-multiple-supermarkets-per-purchase.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200412-2003-add-responsible-moderator.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20200412-2020-add-missing-foreign-key-constraints.sql
+      relativeToChangelogFile: true

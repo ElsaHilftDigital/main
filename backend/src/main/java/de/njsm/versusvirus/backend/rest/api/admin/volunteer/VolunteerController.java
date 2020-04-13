@@ -61,4 +61,9 @@ public class VolunteerController {
     public List<PurchaseDTO> getOpenPurchaseList(@PathVariable("id") UUID volunteerId) {
         return volunteerService.getOpenPurchasesOf(volunteerId);
     }
+
+    @PostMapping("/import")
+    public void importVolunteers(@RequestBody String upload) {
+        volunteerService.importVolunteers(upload);
+    }
 }

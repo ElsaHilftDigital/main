@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Where(clause = "not deleted")
 public class Volunteer {
 
     @Id

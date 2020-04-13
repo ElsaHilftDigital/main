@@ -26,6 +26,17 @@ export function* handleGetPurchase(getPurchase, action) {
     }
 }
 
+export function* handleGetPurchaseReceipt(getPurchaseReceipt, action) {
+    try {
+        const receipt = yield call(getPurchaseReceipt, action.payload);
+        yield put(actions.getPurchaseReceiptSuccess(receipt));
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.getPurchaseReceiptError(parseError(error)));
+    }
+}
+
 export function* handleCreatePurchase(createPurchase, action) {
     try {
         const createdPurchase = yield call(createPurchase, action.payload);
@@ -60,6 +71,18 @@ export function* handleCustomerNotified(customerNotified, action) {
     }
 }
 
+export function* handlePublishPurchase(publishPurchase, action) {
+    try {
+        const purchase = yield call(publishPurchase, action.payload);
+        yield put(actions.publishPurchaseSuccess());
+        yield put(actions.getPurchaseSuccess(purchase));
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.publishPurchaseError(parseError(error)));
+    }
+};
+
 export function* handleMarkCompleted(markCompleted, action) {
     try {
         yield call(markCompleted, action.payload);
@@ -76,9 +99,11 @@ export function* purchaseSaga(purchaseApi) {
     yield all([
         takeLatest(actions.GET_PURCHASES, handleGetPurchases, purchaseApi.getPurchases),
         takeLatest(actions.GET_PURCHASE, handleGetPurchase, purchaseApi.getPurchase),
+        takeLatest(actions.GET_PURCHASE_RECEIPT, handleGetPurchaseReceipt, purchaseApi.getPurchaseReceipt),
         takeEvery(actions.CREATE_PURCHASE, handleCreatePurchase, purchaseApi.createPurchase),
         takeEvery(actions.ASSIGN_VOLUNTEER, handleAssignVolunteer, purchaseApi.assignVolunteer),
         takeEvery(actions.CUSTOMER_NOTIFIED, handleCustomerNotified, purchaseApi.customerNotified),
+        takeEvery(actions.PUBLISH_PURCHASE, handlePublishPurchase, purchaseApi.publishPurchase),
         takeEvery(actions.MARK_COMPLETED, handleMarkCompleted, purchaseApi.markCompleted),
     ])
 };

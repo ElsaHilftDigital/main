@@ -6,6 +6,10 @@ export const GET_PURCHASE = 'GET_PURCHASE';
 export const GET_PURCHASE_SUCCESS = 'GET_PURCHASE_SUCCESS';
 export const GET_PURCHASE_ERROR = 'GET_PURCHASE_ERROR';
 
+export const GET_PURCHASE_RECEIPT = 'GET_RECEIPT_PURCHASE';
+export const GET_PURCHASE_RECEIPT_SUCCESS = 'GET_PURCHASE_RECEIPT_SUCCESS';
+export const GET_PURCHASE_RECEIPT_ERROR = 'GET_PURCHASE_RECEIPT_ERROR';
+
 export const CREATE_PURCHASE = 'CREATE_PURCHASE';
 export const CREATE_PURCHASE_SUCCESS = 'CREATE_PURCHASE_SUCCESS';
 export const CREATE_PURCHASE_ERROR = 'CREATE_PURCHASE_ERROR';
@@ -21,6 +25,10 @@ export const ASSIGN_VOLUNTEER_ERROR = 'ASSIGN_VOLUNTEER_ERROR';
 export const CUSTOMER_NOTIFIED = 'CUSTOMER_NOTIFIED';
 export const CUSTOMER_NOTIFIED_SUCCESS = 'CUSTOMER_NOTIFIED_SUCCESS';
 export const CUSTOMER_NOTIFIED_ERROR = 'CUSTOMER_NOTIFIED_ERROR';
+
+export const PUBLISH_PURCHASE = 'PUBLISH_PURCHASE';
+export const PUBLISH_PURCHASE_SUCCESS = 'PUBLISH_PURCHASE_SUCCESS';
+export const PUBLISH_PURCHASE_ERROR = 'PUBLISH_PURCHASE_ERROR';
 
 export const MARK_COMPLETED = 'MARK_COMPLETED';
 export const MARK_COMPLETED_SUCCESS = 'MARK_COMPLETED_SUCCESS';
@@ -50,6 +58,20 @@ export const getPurchaseSuccess = purchase => ({
 });
 export const getPurchaseError = error => ({
     type: GET_PURCHASE_ERROR,
+    payload: error,
+    error: true,
+});
+
+export const getPurchaseReceipt = uuid => ({
+    type: GET_PURCHASE_RECEIPT,
+    payload: uuid,
+});
+export const getPurchaseReceiptSuccess = receipt => ({
+    type: GET_PURCHASE_RECEIPT_SUCCESS,
+    payload: receipt,
+});
+export const getPurchaseReceiptError = error => ({
+    type: GET_PURCHASE_RECEIPT_ERROR,
     payload: error,
     error: true,
 });
@@ -104,6 +126,19 @@ export const customerNotifiedSuccess = () => ({
 })
 export const customerNotifiedError = error => ({
     type: CUSTOMER_NOTIFIED_ERROR,
+    payload: error,
+    error: true,
+});
+
+export const publishPurchase = uuid => ({
+    type: PUBLISH_PURCHASE,
+    payload: uuid,
+});
+export const publishPurchaseSuccess = () => ({
+    type: PUBLISH_PURCHASE_SUCCESS,
+});
+export const publishPurchaseError = error => ({
+    type: PUBLISH_PURCHASE_ERROR,
     payload: error,
     error: true,
 });

@@ -91,7 +91,7 @@ public class TelegramController {
 
     private void forwardMessageFromPersonalChat(Message message) {
         organizationRepository.findById(1).ifPresent(o -> {
-            volunteerRepository.findByTelegramUserId(message.getFrom().getId()).ifPresent(v -> {
+            volunteerRepository.findByTelegramUserIdAndDeleted(message.getFrom().getId(), false).ifPresent(v -> {
                 if (message.getChat().getId() != o.getTelegramModeratorGroupChatId() &&
                     message.getChat().getId() != o.getTelegramGroupChatId()) {
                     LOG.info("Forwarding message from " + message.getFrom().getUserName());

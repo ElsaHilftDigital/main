@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: elsahilft-digital-production
+  annotations:
+    keel.sh/policy: 'glob:*'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: backend
+      imagePullSecrets:
+        - name: github-pull-token
+      containers:
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command: ["/cloud_sql_proxy",
+                    "-instances=elsa-hilft-digital:europe-west6:elsa-hilft-prod-db=tcp:5432"]
+          securityContext:
+            runAsUser: 2  # non-root user
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+        - name: backend
+          image: 'docker.pkg.github.com/elsahilftdigital/main/backend:c1535fd'
+          ports:
+            - containerPort: 4000
+          securityContext:
+            allowPrivilegeEscalation: false
+          env:
+          - name: TELEGRAM_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: telegram
+                key: token
+          - name: TELEGRAM_BOT_NAME
+            valueFrom:
+              secretKeyRef:
+                name: telegram
+                key: name
+          - name: DEPLOYMENT_DOMAIN
+            value: elsa-hilft.ch
+          - name: SMTP_HOST
+            valueFrom:
+              secretKeyRef:
+                name: mail
+                key: host
+          - name: SMTP_PORT
+            valueFrom:
+              secretKeyRef:
+                name: mail
+                key: port
+          - name: SMTP_USER
+            valueFrom:
+              secretKeyRef:
+                name: mail
+                key: user
+          - name: SMTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mail
+                key: password
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: url
+          - name: DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: user
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: password
+          - name: SPRING_PROFILES_ACTIVE
+            value: production
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: elsahilft-digital-production
+  labels:
+    name: backend-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 4000
+      protocol: TCP
+  selector:
+    app: backend
+  type: ClusterIP

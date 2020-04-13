@@ -1,5 +1,7 @@
 package de.njsm.versusvirus.backend.domain;
 
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -18,6 +20,52 @@ public class Purchase {
 
     private UUID uuid;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    private String timing;                    // timing to deliver purchase "after" or "before" certain time
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseSupermarket> purchaseSupermarketList = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private PurchaseSize purchaseSize;        // depending on number of purchase items
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    private String comments;
+
+    private Instant createTime;
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> purchaseList = new ArrayList<>();
+
+    private byte[] receipt;                   // picture of receipt
+
+    private String receiptMimeType;
+
+    private BigDecimal cost;                  // cost of purchase in "Rappen"
+
+    private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
+
+    private Long assignedVolunteer;
+
+    private Long createdByModerator;
+
+    private Long responsibleModeratorId;
+
+    private Long customer;
+
+    @ElementCollection
+    @CollectionTable(name = "purchase_applications")
+    @Column(name = "volunteer_id")
+    private List<Long> volunteerApplications;
+
+    // telegram parameters
+    private String receiptFileId;
+    private Long broadcastMessageId;
+
     public String getReceiptMimeType() {
         return receiptMimeType;
     }
@@ -26,12 +74,19 @@ public class Purchase {
         this.receiptMimeType = receiptMimeType;
     }
 
-    public String renderToCsv() {
+    public String renderToCsv(Customer customer, Volunteer volunteer) {
         DateTimeFormatter format = DateTimeFormatter.ISO_DATE;
-        return String.format("date,shops,cost\n%s,%s,%s\n",
+        return String.format("date,customer,address,city,shops,cost,volunteer,volunteer phone,volunteer iban\n%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                 format.format(createTime),
+                customer.getFirstName() + " " + customer.getLastName(),
+                customer.getAddress().getAddress(),
+                customer.getAddress().getZipCode() + " " + customer.getAddress().getCity(),
                 purchaseSupermarketList.stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(" ")),
-                cost);
+                cost,
+                volunteer.getFirstName() + " " + volunteer.getLastName(),
+                volunteer.getPhone(),
+                volunteer.getIban()
+        );
     }
 
     public enum Status {
@@ -149,37 +204,6 @@ public class Purchase {
         public abstract String displayName();
     }
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-    private String timing;                    // timing to deliver purchase "after" or "before" certain time
-    @Enumerated(EnumType.STRING)
-    private PurchaseSize purchaseSize;        // depending on number of purchase items
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-    private String comments;
-    private Instant createTime;
-
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseSupermarket> purchaseSupermarketList = new ArrayList<>();
-
-    private byte[] receipt;                   // picture of receipt
-    private String receiptMimeType;
-    private BigDecimal cost;                      // cost of purchase in "Rappen"
-    private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
-
-    private Long assignedVolunteer;
-    private Long createdByModerator;
-    private Long customer;
-
-    @ElementCollection
-    @CollectionTable(name = "purchase_applications")
-    @Column(name = "volunteer_id")
-    private List<Long> volunteerApplications;
-
-    // telegram parameters
-    private String receiptFileId;
-    private Long broadcastMessageId;
-
     public long getId() {
         return id;
     }
@@ -284,11 +308,11 @@ public class Purchase {
         this.createdByModerator = createdByModerator;
     }
 
-    public Long getCustomer() {
+    public Long getCustomerId() {
         return customer;
     }
 
-    public void setCustomer(Long customer) {
+    public void setCustomerId(Long customer) {
         this.customer = customer;
     }
 
@@ -319,6 +343,10 @@ public class Purchase {
 
     public void setPurchaseList(List<PurchaseSupermarket> purchaseList) {
         this.purchaseSupermarketList = purchaseList;
+    }
+
+    public Long getResponsibleModeratorId() {
+        return responsibleModeratorId;
     }
 
     @PrePersist
