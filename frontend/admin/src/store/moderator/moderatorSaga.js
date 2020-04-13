@@ -1,4 +1,4 @@
-import { all, call, put, takeLatest, takeEvery } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 
 import { handleErrorRedirect, parseError } from '../../config/utils';
 import * as actions from './moderatorActions';
