@@ -28,13 +28,6 @@ const PurchaseDetailInternal = (props) => {
 
     const {register, handleSubmit } = useForm({
         defaultValues: {
-            displayFormStatus: purchase.status,
-            displayFormCreateDate: formatDate(purchase.createdAt),
-            displayFormVolunteerLastname: purchase.assignedVolunteer?.lastname,
-            displayFormVolunteerFirstname: purchase.assignedVolunteer?.firstName,
-            displayFormCity: purchase.customer.city,
-            displayFormFirstname: purchase.customer.firstName,
-            displayFormLastname: purchase.customer.lastName,
             registerFormTiming: purchase.timing,
             registerFormExpensesPaid: purchase.expensesPaid,
             registerFormCost: purchase.cost,
@@ -69,7 +62,6 @@ const PurchaseDetailInternal = (props) => {
     }
 
     const onSubmit = (data) => {
-        // update purchase missing
         setShowSaveToast(true);
         console.log(data);
     };
@@ -139,32 +131,29 @@ const PurchaseDetailInternal = (props) => {
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="displayFormStatus">Status</label>
-                        <input name="displayFormStatus" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormStatus" />
+                        <input name="displayFormStatus" disabled type="text" className="form-control" id="displayFormStatus" value={purchase.status}/>
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="selectModerators">Verantwortlicher Moderator</label>
                         <select ref={register()} id="selectModerators" name="selectModerators" className="form-control" defaultValue={purchase.responsible} >
-                            <option value="SMALL">Kleiner Einkauf</option>
-                            <option value="MEDIUM">Mittlerer Einkauf</option>
-                            <option value="LARGE">Grosser Einkauf</option>
                         </select>
                     </div>
 
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayFormCreateDate">Erstellungsdatum</label>
-                    <input name="displayFormCreateDate" ref={register({ required: true })} disabled type="tel" className="form-control" id="displayFormCreateDate" />
+                    <input name="displayFormCreateDate" disabled type="tel" className="form-control" id="displayFormCreateDate" value={formatDate(purchase.createdAt)}/>
                 </div>   
                 {purchase.assignedVolunteer && (
                     <span>
                         <div className="row">
                             <div className="form-group col-md-6">
                                 <label htmlFor="displayFormVolunteerFirstname">Vorname</label>
-                                <input name="displayFormVolunteerFirstname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormVolunteerFirstname" />
+                                <input name="displayFormVolunteerFirstname" disabled type="text" className="form-control" id="displayFormVolunteerFirstname" value={purchase.assignVolunteer.firstName}/>
                             </div>
                             <div className="form-group col-md-6">
                                 <label htmlFor="displayFormVolunteerLastname">Name</label>
-                                <input name="displayFormVolunteerLastname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormVolunteerLastname" />
+                                <input name="displayFormVolunteerLastname" disabled type="text" className="form-control" id="displayFormVolunteerLastname" value={purchase.assignVolunteer.lastName}/>
                             </div>
                             </div>
                         <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Helfer hier klicken</a></i></div>
@@ -204,16 +193,16 @@ const PurchaseDetailInternal = (props) => {
 
                 <div className="form-group">
                         <label htmlFor="displayFormCity">Ort</label>
-                        <input name="displayFormCity" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormCity" />
+                        <input name="displayFormCity" disabled type="text" className="form-control" id="displayFormCity" value={purchase.customer.city}/>
                     </div>          
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="displayFormFirstname">Vorname</label>
-                        <input name="displayFormFirstname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormFirstname" />
+                        <input name="displayFormFirstname" disabled type="text" className="form-control" id="displayFormFirstname" value={purchase.customer.firstName}/>
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="displayFormLastname">Name</label>
-                        <input name="displayFormLastname" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormLastname" />
+                        <input name="displayFormLastname" disabled type="text" className="form-control" id="displayFormLastname" value={purchase.customer.lastName}/>
                     </div>
                 </div>
                 <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Auftraggeber hier klicken</a></i></div>
