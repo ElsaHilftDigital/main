@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import history from '../../../history';
+import { useParams, Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 
 import { purchaseActions } from 'store/purchase';
 import { usePurchase } from 'hooks/usePurchase';
 import { formatDate } from 'config/utils';
+import * as routes from 'routes';
 
 
 const PurchaseDetail = () => {
@@ -36,7 +36,6 @@ const PurchaseDetailInternal = (props) => {
             displayFormFirstname: purchase.customer.firstName,
             displayFormLastname: purchase.customer.lastName,
             registerFormTiming: purchase.timing,
-            registerFormSupermarket: purchase.supermarket,
             registerFormExpensesPaid: purchase.expensesPaid,
             registerFormCost: purchase.cost,
             registerFormComments: purchase.comments,
@@ -76,31 +75,39 @@ const PurchaseDetailInternal = (props) => {
     };
 
     return (<>
-        <div class="position-absolute w-100 d-flex flex-column p-4">
-            <Toast className="mt-2 mb-2" onClose={() => setShowSearchHelperToast(false)} show={showSearchHelperToast} delay={3000} autohide>
-                <Toast.Header>
-                <strong className="mr-auto">Einkauf freigeben</strong>
-                </Toast.Header>
-                <Toast.Body>Einkauf wurde an Helfer-Gruppenchat gesendet.</Toast.Body>
-            </Toast>
-            <Toast className="mt-2 mb-2" onClose={() => setShowAssignVolunteerToast(false)} show={showAssignVolunteerToast} delay={3000} autohide>
-                <Toast.Header>
-                <strong className="mr-auto">Helferzuordnung</strong>
-                </Toast.Header>
-                <Toast.Body>Der Helfer wurde zugeordnet.</Toast.Body>
-            </Toast>
-            <Toast className="mt-2 mb-2" onClose={() => setShowDeliverToast(false)} show={showDeliverToast} delay={3000} autohide>
-                <Toast.Header>
-                <strong className="mr-auto">Lieferung freigeben</strong>
-                </Toast.Header>
-                <Toast.Body>Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann.</Toast.Body>
-            </Toast>
-            <Toast className="mt-2 mb-2" onClose={() => setShowCompleteToast(false)} show={showCompleteToast} delay={3000} autohide>
-                <Toast.Header>
-                <strong className="mr-auto">Einkauf abgeschlossen</strong>
-                </Toast.Header>
-                <Toast.Body>Der Einkauf wurde manuell abgeschlossen.</Toast.Body>
-            </Toast>
+        <div className="position-absolute d-flex flex-column">
+            {showSearchHelperToast &&
+                <Toast className="mt-2 mb-2" onClose={() => setShowSearchHelperToast(false)} show={showSearchHelperToast} delay={3000} autohide>
+                    <Toast.Header>
+                    <strong className="mr-auto">Einkauf freigeben</strong>
+                    </Toast.Header>
+                    <Toast.Body>Einkauf wurde an Helfer-Gruppenchat gesendet.</Toast.Body>
+                </Toast>
+            }
+            {showAssignVolunteerToast &&
+                <Toast className="mt-2 mb-2" onClose={() => setShowAssignVolunteerToast(false)} show={showAssignVolunteerToast} delay={3000} autohide>
+                    <Toast.Header>
+                    <strong className="mr-auto">Helferzuordnung</strong>
+                    </Toast.Header>
+                    <Toast.Body>Der Helfer wurde zugeordnet.</Toast.Body>
+                </Toast>
+            }
+            {showDeliverToast &&
+                <Toast className="mt-2 mb-2" onClose={() => setShowDeliverToast(false)} show={showDeliverToast} delay={3000} autohide>
+                    <Toast.Header>
+                    <strong className="mr-auto">Lieferung freigeben</strong>
+                    </Toast.Header>
+                    <Toast.Body>Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann.</Toast.Body>
+                </Toast>
+            }
+            {showCompleteToast &&
+                <Toast className="mt-2 mb-2" onClose={() => setShowCompleteToast(false)} show={showCompleteToast} delay={3000} autohide>
+                    <Toast.Header>
+                    <strong className="mr-auto">Einkauf abgeschlossen</strong>
+                    </Toast.Header>
+                    <Toast.Body>Der Einkauf wurde manuell abgeschlossen.</Toast.Body>
+                </Toast>
+            }
         </div>
 
 
@@ -110,13 +117,14 @@ const PurchaseDetailInternal = (props) => {
                 <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
                 
             </div>
+
             <div className="flex-grow-0">
                 {purchase.status === "Neu" &&
                     <Button className="m-3"
                         onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <>
                     <Button className="m-3"
-                        onClick={() => history.push("/purchase/" + purchase.uuid + "/receipt")}>Quittung ansehen</Button>
+                        onClick={() => routes.purchaseDetails(purchase.uuid)}>Quittung ansehen</Button>
                     <Button className="m-3"
                         onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
                 </>}
@@ -125,8 +133,7 @@ const PurchaseDetailInternal = (props) => {
                         onClick={() => { if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) markPurchaseAsCompleted() } }
                         className="btn btn-primary m-1">Einkauf erledigt</Button>
                 }
-            </div>
-            
+            </div>         
 
             <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
                 <div className="form-group">
@@ -136,8 +143,7 @@ const PurchaseDetailInternal = (props) => {
                 <div className="form-group">
                     <label htmlFor="displayFormCreateDate">Erstellungsdatum</label>
                     <input name="displayFormCreateDate" ref={register({ required: true })} disabled type="tel" className="form-control" id="displayFormCreateDate" />
-                </div>
-
+                </div>   
                 {purchase.assignedVolunteer && (
                     <span>
                         <div className="row">
@@ -205,10 +211,6 @@ const PurchaseDetailInternal = (props) => {
                     <input name="registerFormTiming" ref={register()} type="text" className="form-control" id="registerFormTiming" />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormSupermarket">Supermarkt</label>
-                    <input name="registerFormSupermarket" ref={register()} type="text" className="form-control" id="registerFormSupermarket" />
-                </div>
-                <div className="form-group">
                     <label htmlFor="registerFormPurchaseSize">Grösse des Einkaufs</label>
                     <select ref={register()} id="registerFormPurchaseSize" name="purchaseSize" className="form-control" defaultValue={purchase.size} >
                         <option value="SMALL">Kleiner Einkauf</option>
@@ -230,26 +232,35 @@ const PurchaseDetailInternal = (props) => {
                         <option value="OTHER">Andere</option>
                     </select>
                 </div>
-                <div className="form-group mb-2 mb-3"><i><a href="/">Hier ist der Link zur Quittung, falls vorhanden</a></i></div>
+                <div className="form-group">
+                    <Link to={routes.purchaseDetails(purchase.uuid)}>Hier ist der Link zur Quittung, falls vorhanden</Link>
+                </div>
                 <div className="form-group">
                     <label htmlFor="registerFormComments">Kommentare</label>
                     <textarea name="registerFormComments" ref={register()} type="text" className="form-control" id="registerFormComments"></textarea>
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
-                    <table className="table table-striped" name="displayTableOrderItems">
-                        <tbody>
-                            {purchase.orderItems.map((item, index) => {
-                                return <tr key={index}>
-                                    <td>{item}</td>
-                                </tr>
-                            })}
-                        </tbody>
-                    </table>
+                    <ul className="list-group" name="displayTableOrderItems">
+                        {purchase.supermarkets.map((supermarket, index) => {
+                            return <>
+                                <li className="list-group-item" key={index}>
+                                    <b>Einkaufsliste {supermarket.name}:</b>
+                                </li>
+                                {supermarket.orderItems.map((item, itemIndex) => {
+                                    return <>
+                                        <li className="list-group-item" key={itemIndex}>
+                                            {item}
+                                        </li>
+                                    </>
+                                })}
+                            </>
+                        })}
+                    </ul>
                 </div>
                 <div>
                     <div className="justify-content-between align-items-bottom">
-                        <button type="submit" className="btn btn-primary m-1">Speichern</button>
+                        <Button type="submit">Speichern</Button>
                         <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
                             <Toast.Header>
                             <strong className="mr-auto">Einkauf speichern</strong>

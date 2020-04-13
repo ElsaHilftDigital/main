@@ -386,7 +386,7 @@ const NewRequest = () => {
                 purchase,
                 {
                     supermarkets: supermarketList,
-                    customer: customer.uuid
+                    customer: customer.uuid,
                 }
             )
         ))}, [dispatch]);
@@ -420,7 +420,7 @@ const NewRequest = () => {
                 purchase,
                 {
                     supermarkets: supermarketList,
-                    customer: customerSuccess.uuid
+                    customer: customerSuccess.uuid,
                 }
             )
         ))}, [customerSuccess, dispatch]);

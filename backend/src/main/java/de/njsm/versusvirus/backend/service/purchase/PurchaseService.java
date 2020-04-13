@@ -86,6 +86,9 @@ public class PurchaseService {
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
 
+        // ToDo: set according to FE
+        purchase.setResponsibleModeratorId(moderator.getId());
+
         purchaseRepository.save(purchase);
         return purchase;
     }

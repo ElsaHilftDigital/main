@@ -11,6 +11,10 @@ public class PurchaseSupermarketDTO {
     public String name;
     public List<String> orderItems;
 
+    public PurchaseSupermarketDTO() {
+
+    }
+
     public PurchaseSupermarketDTO(PurchaseSupermarket market) {
         this.name = market.getName();
         this.orderItems = market.getPurchaseList().stream().map(OrderItem::getPurchaseItem).collect(Collectors.toList());

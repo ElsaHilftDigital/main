@@ -346,6 +346,10 @@ public class Purchase {
         return responsibleModeratorId;
     }
 
+    public void setResponsibleModeratorId(Long responsibleModeratorId) {
+        this.responsibleModeratorId = responsibleModeratorId;
+    }
+
     @PrePersist
     private void setUuid() {
         if (uuid == null) {
