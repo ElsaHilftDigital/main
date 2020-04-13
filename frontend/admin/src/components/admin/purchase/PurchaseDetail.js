@@ -261,12 +261,14 @@ const PurchaseDetailInternal = (props) => {
                 <div>
                     <div className="justify-content-between align-items-bottom">
                         <Button type="submit">Speichern</Button>
-                        <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
-                            <Toast.Header>
-                            <strong className="mr-auto">Einkauf speichern</strong>
-                            </Toast.Header>
-                            <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
-                        </Toast>
+                        {showSaveToast &&
+                            <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
+                                <Toast.Header>
+                                <strong className="mr-auto">Einkauf speichern</strong>
+                                </Toast.Header>
+                                <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
+                            </Toast>
+                        }
                     </div>
                 </div>
             </form>

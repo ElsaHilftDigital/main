@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import Toast from 'react-bootstrap/Toast';
 
 import { customerActions } from 'store/customer';
 import { useDispatch } from 'react-redux';
@@ -24,9 +25,11 @@ const CustomerDetail = (props) => {
             shoppingList: 'ravioli',
         },
     });
+    const [showSaveToast, setShowSaveToast] = useState(false);
 
     const onSubmit = values => {
         dispatch(customerActions.updateCustomer(selectedCustomer.uuid, values));
+        setShowSaveToast(true);
     }
 
     if (!props.selectedCustomer) {
@@ -116,6 +119,14 @@ const CustomerDetail = (props) => {
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary">Speichern</button>
+                {showSaveToast &&
+                    <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
+                        <Toast.Header>
+                        <strong className="mr-auto">Kunde speichern</strong>
+                        </Toast.Header>
+                        <Toast.Body>Auftraggeber wurde gespeichert</Toast.Body>
+                    </Toast>
+                }
             </form>
         </div>
     );

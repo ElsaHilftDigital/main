@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import Toast from 'react-bootstrap/Toast';
 
 import { volunteerActions } from 'store/volunteer';
 import { formatDate, parseDate } from 'config/utils';
@@ -8,6 +9,8 @@ import { formatDate, parseDate } from 'config/utils';
 const VolunteerDetail = (props) => {
     const { currentVolunteer } = props;
     const dispatch = useDispatch();
+
+    const [showSaveToast, setShowSaveToast] = useState(false);
 
     const handleConfirmVolunteer = (uuid) => {
         dispatch(volunteerActions.validateVolunteer(uuid));
@@ -19,6 +22,7 @@ const VolunteerDetail = (props) => {
                 ...values,
                 birthDate: parseDate(values.birthDate)
             }));
+        setShowSaveToast(true);
     };
 
     const { register, handleSubmit, errors, watch } = useForm({
@@ -122,6 +126,14 @@ const VolunteerDetail = (props) => {
                     </table>
                 </div>
                 <button type="submit" className="btn btn-primary">Speichern</button>
+                {showSaveToast &&
+                    <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
+                        <Toast.Header>
+                        <strong className="mr-auto">Helfer speichern</strong>
+                        </Toast.Header>
+                        <Toast.Body>Helfer wurde gespeichert</Toast.Body>
+                    </Toast>
+                }
             </form>
         </div>
     );
