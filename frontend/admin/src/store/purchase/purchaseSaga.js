@@ -48,6 +48,18 @@ export function* handleCreatePurchase(createPurchase, action) {
     }
 }
 
+export function* handleUpdatePurchase(updatePurchase, action) {
+    try {
+        const { uuid, purchase } = action.payload;
+        yield call(updatePurchase, uuid, purchase);
+        yield put(actions.updateSuccess());
+    } catch (error) {
+        console.log(error);
+        handleErrorRedirect(error);
+        yield put(actions.UPDATE_PURCHASE_ERROR(parseError(error)));
+    }
+}
+
 export function* handleAssignVolunteer(assignVolunteer, action) {
     try {
         const { purchaseUuid, volunteerUuid } = action.payload;
@@ -105,5 +117,6 @@ export function* purchaseSaga(purchaseApi) {
         takeEvery(actions.CUSTOMER_NOTIFIED, handleCustomerNotified, purchaseApi.customerNotified),
         takeEvery(actions.PUBLISH_PURCHASE, handlePublishPurchase, purchaseApi.publishPurchase),
         takeEvery(actions.MARK_COMPLETED, handleMarkCompleted, purchaseApi.markCompleted),
+        takeEvery(actions.UPDATE_PURCHASE, handleUpdatePurchase, purchaseApi.updatePurchase),
     ])
 };

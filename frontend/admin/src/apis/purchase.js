@@ -24,6 +24,11 @@ export async function createPurchase(purchase) {
     return response.data;
 };
 
+export async function updatePurchase(uuid, update) {
+    const response = await client.post(`/purchases/${uuid}`, update);
+    return response.data;
+};
+
 export async function getAvailableVolunteers(uuid) {
     const response = await client.get(`/purchases/${uuid}/availablevolunteers`);
     return response.data;

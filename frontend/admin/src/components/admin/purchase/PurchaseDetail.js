@@ -58,8 +58,8 @@ const PurchaseDetailInternal = (props) => {
 
     const onSubmit = (data) => {
         const updatedPurchase = Object.assign({}, purchase, data);
+        dispatch(purchaseActions.update(purchase.uuid, updatedPurchase));
         setShowSaveToast(true);
-        console.log(updatedPurchase);
     };
 
     return (<>

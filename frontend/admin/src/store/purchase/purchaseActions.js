@@ -14,6 +14,10 @@ export const CREATE_PURCHASE = 'CREATE_PURCHASE';
 export const CREATE_PURCHASE_SUCCESS = 'CREATE_PURCHASE_SUCCESS';
 export const CREATE_PURCHASE_ERROR = 'CREATE_PURCHASE_ERROR';
 
+export const UPDATE_PURCHASE = 'UPDATE_PURCHASE';
+export const UPDATE_PURCHASE_SUCCESS = 'UPDATE_PURCHASE_SUCCESS';
+export const UPDATE_PURCHASE_ERROR = 'UPDATE_PURCHASE_ERROR';
+
 export const GET_AVAILABLE_VOLUNTEERS = 'GET_AVAILABLE_VOLUNTEERS';
 export const GET_AVAILABLE_VOLUNTEERS_SUCCESS = 'GET_AVAILABLE_VOLUNTEERS_SUCCESS';
 export const GET_AVAILABLE_VOLUNTEERS_ERROR = 'GET_AVAILABLE_VOLUNTEERS_ERROR';
@@ -86,6 +90,19 @@ export const createPurchaseSuccess = createdPurchase => ({
 });
 export const createPurchaseError = error => ({
     type: CREATE_PURCHASE_ERROR,
+    payload: error,
+    error: true,
+});
+
+export const update = (uuid, purchase) => ({
+    type: UPDATE_PURCHASE,
+    payload: {uuid, purchase},
+});
+export const updateSuccess = () => ({
+    type: UPDATE_PURCHASE_SUCCESS,
+});
+export const updateError = error => ({
+    type: UPDATE_PURCHASE_ERROR,
     payload: error,
     error: true,
 });

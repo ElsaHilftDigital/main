@@ -14,6 +14,9 @@ export const selectCreatePurchaseRequestOngoing = state => state.purchase.create
 export const selectCreatePurchaseSuccess = state => state.purchase.createPurchaseSuccess;
 export const selectCreatePurchaseError = state => state.purchase.createPurchaseError;
 
+export const selectUpdatePurchaseRequestOngoing = state => state.purchase.updatePurchaseRequestOngoing;
+export const selectUpdatePurchaseError = state => state.purchase.updatePurchaseError;
+
 export const selectAssignVolunteerRequestOngoing = state => state.purchase.assignVolunteerRequestOngoing;
 export const selectAssignVolunteerError = state => state.purchase.assignVolunteerError;
 

@@ -17,6 +17,9 @@ export const initialState = {
     createPurchaseSuccess: null,
     createPurchaseError: null,
 
+    updatePurchaseRequestOngoing: false,
+    updatePurchaseError: null,
+
     assignVolunteerRequestOngoing: false,
     assignVolunteerError: null,
 
@@ -107,6 +110,24 @@ export default function purchaseReducer(state = initialState, action) {
                 ...state,
                 createPurchaseError: payload,
                 createPurchaseRequestOngoing: false,
+            };
+        // update
+        case actions.UPDATE_PURCHASE:
+            return {
+                ...state,
+                updatePurchaseRequestOngoing: true,
+                updatePurchaseError: null,
+            };
+        case actions.UPDATE_PURCHASE_SUCCESS:
+            return {
+                ...state,
+                updatePurchaseRequestOngoing: false,
+            };
+        case actions.UPDATE_PURCHASE_ERROR:
+            return {
+                ...state,
+                updatePurchaseRequestOngoing: false,
+                updatePurchaseError: payload,
             };
         // assign volunteer
         case actions.ASSIGN_VOLUNTEER:
