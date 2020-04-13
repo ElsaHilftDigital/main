@@ -42,7 +42,7 @@ public class CustomerController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCustomer(@PathVariable("id") UUID customerId,
-                                               @RequestBody UpdateRequest req) {
+                               @RequestBody UpdateRequest req) {
         customerService.updateCustomer(customerId, req);
     }
 

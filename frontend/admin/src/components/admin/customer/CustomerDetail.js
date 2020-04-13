@@ -1,18 +1,22 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+import { customerActions } from 'store/customer';
+import { useDispatch } from 'react-redux';
+
 
 const CustomerDetail = (props) => {
+    const dispatch = useDispatch();
     const { selectedCustomer } = props;
-    const { handleSubmit, register, setValue } = useForm({
+    const { handleSubmit, register } = useForm({
         defaultValues: {
             firstName: selectedCustomer.firstName,
             lastName: selectedCustomer.lastName,
             phone: selectedCustomer.phone,
             mobile: selectedCustomer.mobile,
-            addressStreet: selectedCustomer.address,
-            addressZipCode: selectedCustomer.zipCode,
-            addressCity: selectedCustomer.city,
+            address: selectedCustomer.address,
+            zipCode: selectedCustomer.zipCode,
+            city: selectedCustomer.city,
             paymentMethod: 'bar',
             finishedJobs: 'none',
             openJobs: 'test',
@@ -20,17 +24,9 @@ const CustomerDetail = (props) => {
             shoppingList: 'ravioli',
         },
     });
-    setValue('firstName', selectedCustomer.firstName);
-    setValue('lastName', selectedCustomer.lastName);
-    setValue('phone', selectedCustomer.phone);
-    setValue('mobile', selectedCustomer.mobile);
-    setValue('addressStreet', selectedCustomer.address);
-    setValue('addressZipCode', selectedCustomer.zipCode);
-    setValue('addressCity', selectedCustomer.city);
-
 
     const onSubmit = values => {
-        console.log(values);
+        dispatch(customerActions.updateCustomer(selectedCustomer.uuid, values));
     }
 
     if (!props.selectedCustomer) {
@@ -68,21 +64,21 @@ const CustomerDetail = (props) => {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="addressStreet" className="col-sm-3 col-form-label">Strasse</label>
+                            <label htmlFor="address" className="col-sm-3 col-form-label">Strasse</label>
                             <div className="col-sm-9">
-                                <input name="addressStreet" ref={register()} type="text" className="form-control" id="addressStreet" />
+                                <input name="address" ref={register()} type="text" className="form-control" id="addressStreet" />
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="addressZipCode" className="col-sm-3 col-form-label">PLZ</label>
+                            <label htmlFor="zipCode" className="col-sm-3 col-form-label">PLZ</label>
                             <div className="col-sm-9">
-                                <input name="addressZipCode" ref={register()} type="text" className="form-control" id="addressZipCode" />
+                                <input name="zipCode" ref={register()} type="text" className="form-control" id="addressZipCode" />
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="addressCity" className="col-sm-3 col-form-label">Ort</label>
+                            <label htmlFor="city" className="col-sm-3 col-form-label">Ort</label>
                             <div className="col-sm-9">
-                                <input name="addressCity" ref={register()} type="text" className="form-control" id="addressCity" />
+                                <input name="city" ref={register()} type="text" className="form-control" id="addressCity" />
                             </div>
                         </div>
                     </div>
