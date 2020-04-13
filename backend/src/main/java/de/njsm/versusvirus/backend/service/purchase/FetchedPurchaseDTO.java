@@ -19,11 +19,10 @@ public class FetchedPurchaseDTO {
     public UUID uuid;
     public VolunteerDTO assignedVolunteer;
     public List<VolunteerDTO> volunteerApplications;
-    public List<String> orderItems;
+    public List<PurchaseSupermarketDTO> supermarkets;
     public String status;
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
-    public String supermarket;
     public Purchase.PurchaseSize size;
     public String comments;
     public Double cost;
@@ -42,11 +41,10 @@ public class FetchedPurchaseDTO {
         this.uuid = purchase.getUuid();
         this.assignedVolunteer = Optional.ofNullable(assignedVolunteer).map(VolunteerDTO::new).orElse(null);
         this.volunteerApplications = volunteerApplications.stream().map(VolunteerDTO::new).collect(Collectors.toList());
-        this.orderItems = purchase.getPurchaseList().stream().map(OrderItem::getPurchaseItem).collect(Collectors.toList());
+        this.supermarkets = purchase.getPurchaseSupermarketList().stream().map(PurchaseSupermarketDTO::new).collect(Collectors.toList());
         this.status = purchase.getStatus().displayName();
         this.paymentMethod = purchase.getPaymentMethod();
         this.timing = purchase.getTiming();
-        this.supermarket = purchase.getSupermarket();
         this.size = purchase.getPurchaseSize();
         this.comments = purchase.getComments();
         this.cost = Optional.ofNullable(purchase.getCost()).map(BigDecimal::doubleValue).orElse(null);

@@ -13,6 +13,6 @@ public class PurchaseSupermarketDTO {
 
     public PurchaseSupermarketDTO(PurchaseSupermarket market) {
         this.name = market.getName();
-        this.orderItems = market.getPurchaseSupermarketList().stream().map(OrderItem::getPurchaseItem).collect(Collectors.toList());
+        this.orderItems = market.getPurchaseList().stream().map(OrderItem::getPurchaseItem).collect(Collectors.toList());
     }
 }

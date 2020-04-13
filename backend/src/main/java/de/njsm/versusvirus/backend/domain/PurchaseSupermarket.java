@@ -17,7 +17,7 @@ public class PurchaseSupermarket {
     private Purchase purchase;
 
     @OneToMany(mappedBy = "purchaseSupermarket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> purchaseSupermarketList = new ArrayList<>();
+    private List<OrderItem> purchaseList = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -43,12 +43,12 @@ public class PurchaseSupermarket {
         this.purchase = purchaseSupermarket;
     }
 
-    public List<OrderItem> getPurchaseSupermarketList() {
-        return purchaseSupermarketList;
+    public List<OrderItem> getPurchaseList() {
+        return purchaseList;
     }
 
-    public void addOrderItem(OrderItem supermarket) {
-        purchaseSupermarketList.add(supermarket);
-        supermarket.setPurchaseSupermarket(this);
+    public void addOrderItem(OrderItem purchaseItem) {
+        purchaseList.add(purchaseItem);
+        purchaseItem.setPurchaseSupermarket(this);
     }
 }

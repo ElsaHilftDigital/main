@@ -165,7 +165,7 @@ public class MessageSender {
             purchaseList.append(m.getName());
             purchaseList.append("*\n");
 
-            for (OrderItem i : m.getPurchaseSupermarketList()) {
+            for (OrderItem i : m.getPurchaseList()) {
                 purchaseList.append("\\- ");
                 var item = AdminMessageSender.escapeMarkdownCharacters(i.getPurchaseItem());
                 purchaseList.append(item);

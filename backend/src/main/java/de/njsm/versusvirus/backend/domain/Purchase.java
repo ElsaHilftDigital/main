@@ -38,9 +38,6 @@ public class Purchase {
 
     private Instant createTime;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> purchaseList = new ArrayList<>();
-
     private byte[] receipt;                   // picture of receipt
 
     private String receiptMimeType;
