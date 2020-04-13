@@ -68,6 +68,7 @@ const SinglePurchaseList = (props) => {
         if (e.key === "Enter") {
             const value = e.currentTarget.value;
             value && addToPurchaseList(value);
+            e.currentTarget.value = "";
         }
     };
 

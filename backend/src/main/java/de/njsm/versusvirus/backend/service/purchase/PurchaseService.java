@@ -172,6 +172,19 @@ public class PurchaseService {
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);
         purchase.setCost(updateRequest.cost);
+
+        purchase.getPurchaseSupermarketList().clear();
+        for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
+            var persistentMarket = new PurchaseSupermarket();
+            persistentMarket.setName(market.name);
+            for (String orderItemName : market.orderItems) {
+                var orderItem = new OrderItem();
+                orderItem.setPurchaseItem(orderItemName);
+                persistentMarket.addOrderItem(orderItem);
+            }
+            persistentMarket.setPurchase(purchase);
+            purchase.addSupermarket(persistentMarket);
+        }
     }
 
     public void customerNotified(UUID purchaseId) {

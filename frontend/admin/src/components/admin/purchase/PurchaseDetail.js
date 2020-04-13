@@ -5,6 +5,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 
+import PurchaseList from 'components/PurchaseList';
 import { purchaseActions } from 'store/purchase';
 import { usePurchase } from 'hooks/usePurchase';
 import { formatDate } from 'config/utils';
@@ -29,6 +30,8 @@ const PurchaseDetailInternal = (props) => {
     const {register, handleSubmit } = useForm({
         defaultValues: purchase
     });
+
+    const [supermarkets, setSupermarkets] = useState(purchase.supermarkets);
 
     const [showSaveToast, setShowSaveToast] = useState(false);
     const [showDeliverToast, setShowDeliverToast] = useState(false);
@@ -57,7 +60,7 @@ const PurchaseDetailInternal = (props) => {
     }
 
     const onSubmit = (data) => {
-        const updatedPurchase = Object.assign({}, purchase, data);
+        const updatedPurchase = Object.assign({}, purchase, data, { supermarkets });
         dispatch(purchaseActions.update(purchase.uuid, updatedPurchase));
         setShowSaveToast(true);
     };
@@ -237,22 +240,7 @@ const PurchaseDetailInternal = (props) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
-                    <ul className="list-group" name="displayTableOrderItems">
-                        {purchase.supermarkets.map((supermarket, index) => {
-                            return <>
-                                <li className="list-group-item" key={index}>
-                                    <b>Einkaufsliste {supermarket.name}:</b>
-                                </li>
-                                {supermarket.orderItems.map((item, itemIndex) => {
-                                    return <>
-                                        <li className="list-group-item" key={itemIndex}>
-                                            {item}
-                                        </li>
-                                    </>
-                                })}
-                            </>
-                        })}
-                    </ul>
+                    <PurchaseList value={supermarkets} setValue={setSupermarkets}/>
                 </div>
                 <div>
                     <div className="justify-content-between align-items-bottom">
