@@ -165,6 +165,15 @@ public class PurchaseService {
         messageSender.offerPurchase(purchase, customer, volunteer);
     }
 
+    public void updatePurchase(UUID purchaseId, UpdatePurchaseRequest updateRequest) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        purchase.setComments(updateRequest.comments);
+        purchase.setPurchaseSize(updateRequest.size);
+        purchase.setPaymentMethod(updateRequest.paymentMethod);
+        purchase.setTiming(updateRequest.timing);
+        purchase.setCost(updateRequest.cost);
+    }
+
     public void customerNotified(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);

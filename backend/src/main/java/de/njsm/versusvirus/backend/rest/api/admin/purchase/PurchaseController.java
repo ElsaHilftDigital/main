@@ -35,6 +35,12 @@ public class PurchaseController {
         return purchaseService.create(principal, req);
     }
 
+    @PostMapping("/{id}")
+    public void updatePurchase(@PathVariable("id") UUID purchaseId,
+                               @RequestBody UpdatePurchaseRequest updateRequest) {
+        purchaseService.updatePurchase(purchaseId, updateRequest);
+    }
+
     @PostMapping("/{id}/publish")
     public void publishPurchase(@PathVariable("id") UUID purchase) {
         purchaseService.publishPurchase(purchase);
