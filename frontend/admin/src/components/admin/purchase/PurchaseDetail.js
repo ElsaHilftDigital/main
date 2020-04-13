@@ -27,12 +27,7 @@ const PurchaseDetailInternal = (props) => {
     const dispatch = useDispatch();
 
     const {register, handleSubmit } = useForm({
-        defaultValues: {
-            registerFormTiming: purchase.timing,
-            registerFormExpensesPaid: purchase.expensesPaid,
-            registerFormCost: purchase.cost,
-            registerFormComments: purchase.comments,
-        }
+        defaultValues: purchase
     });
 
     const [showSaveToast, setShowSaveToast] = useState(false);
@@ -62,8 +57,9 @@ const PurchaseDetailInternal = (props) => {
     }
 
     const onSubmit = (data) => {
+        const updatedPurchase = Object.assign({}, purchase, data);
         setShowSaveToast(true);
-        console.log(data);
+        console.log(updatedPurchase);
     };
 
     return (<>
@@ -134,8 +130,8 @@ const PurchaseDetailInternal = (props) => {
                         <input name="displayFormStatus" disabled type="text" className="form-control" id="displayFormStatus" value={purchase.status}/>
                     </div>
                     <div className="form-group col-md-6">
-                        <label htmlFor="selectModerators">Verantwortlicher Moderator</label>
-                        <select ref={register()} id="selectModerators" name="selectModerators" className="form-control" defaultValue={purchase.responsible} >
+                        <label htmlFor="responsible">Verantwortlicher Moderator</label>
+                        <select ref={register()} id="responsible" name="responsible" className="form-control" defaultValue={purchase.responsible} >
                         </select>
                     </div>
 
@@ -207,25 +203,25 @@ const PurchaseDetailInternal = (props) => {
                 </div>
                 <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Auftraggeber hier klicken</a></i></div>
                 <div className="form-group">
-                    <label htmlFor="registerFormTiming">Braucht Einkauf</label>
-                    <input name="registerFormTiming" ref={register()} type="text" className="form-control" id="registerFormTiming" />
+                    <label htmlFor="timing">Braucht Einkauf</label>
+                    <input name="timing" ref={register()} type="text" className="form-control" id="timing" />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormPurchaseSize">Grösse des Einkaufs</label>
-                    <select ref={register()} id="registerFormPurchaseSize" name="purchaseSize" className="form-control" defaultValue={purchase.size} >
+                    <label htmlFor="size">Grösse des Einkaufs</label>
+                    <select ref={register()} id="size" name="size" className="form-control" defaultValue={purchase.size} >
                         <option value="SMALL">Kleiner Einkauf</option>
                         <option value="MEDIUM">Mittlerer Einkauf</option>
                         <option value="LARGE">Grosser Einkauf</option>
                     </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormCost">Kosten</label>
-                    <input name="registerFormCost" ref={register({})} type="text" className="form-control" id="registerFormCost" />
+                    <label htmlFor="cost">Kosten</label>
+                    <input name="cost" ref={register({})} type="text" className="form-control" id="cost" />
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="registerFormPaymentMethod">Zahlungsmethode</label>
-                    <select ref={register} id="registerFormPaymentMethod" name="registerFormPaymentMethod" className="form-control" defaultValue={purchase.paymentMethod}>
+                    <label htmlFor="paymentMethod">Zahlungsmethode</label>
+                    <select ref={register} id="paymentMethod" name="paymentMethod" className="form-control" defaultValue={purchase.paymentMethod}>
                         <option value="CASH">Bargeld</option>
                         <option value="BILL">Rechnung</option>
                         <option value="TWINT">TWINT</option>
@@ -236,8 +232,8 @@ const PurchaseDetailInternal = (props) => {
                     <Link to={routes.purchaseDetails(purchase.uuid)}>Hier ist der Link zur Quittung, falls vorhanden</Link>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="registerFormComments">Kommentare</label>
-                    <textarea name="registerFormComments" ref={register()} type="text" className="form-control" id="registerFormComments"></textarea>
+                    <label htmlFor="comments">Kommentare</label>
+                    <textarea name="comments" ref={register()} type="text" className="form-control" id="comments"></textarea>
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
