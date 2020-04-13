@@ -4,6 +4,7 @@ import de.njsm.versusvirus.backend.domain.Purchase;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public class UpdatePurchaseRequest {
     public String timing;
@@ -12,4 +13,5 @@ public class UpdatePurchaseRequest {
     public Purchase.PaymentMethod paymentMethod;
     public BigDecimal cost;
     public List<PurchaseSupermarketDTO> supermarkets;
+    public UUID responsibleModerator;
 }

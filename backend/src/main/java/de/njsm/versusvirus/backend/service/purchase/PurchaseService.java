@@ -8,6 +8,7 @@ import de.njsm.versusvirus.backend.domain.PurchaseSupermarket;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.*;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
+import de.njsm.versusvirus.backend.spring.web.BadRequestException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.slf4j.Logger;
@@ -86,7 +87,7 @@ public class PurchaseService {
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
 
-        // ToDo: set according to FE
+        // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
 
         purchaseRepository.save(purchase);
@@ -185,6 +186,9 @@ public class PurchaseService {
             persistentMarket.setPurchase(purchase);
             purchase.addSupermarket(persistentMarket);
         }
+
+        var moderator = moderatorRepository.findByUuid(updateRequest.responsibleModerator).orElseThrow(BadRequestException::new);
+        purchase.setResponsibleModeratorId(moderator.getId());
     }
 
     public void customerNotified(UUID purchaseId) {

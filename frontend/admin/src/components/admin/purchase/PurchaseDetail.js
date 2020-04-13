@@ -135,10 +135,10 @@ const PurchaseDetailInternal = (props) => {
                         <input name="displayFormStatus" disabled type="text" className="form-control" id="displayFormStatus" value={purchase.status}/>
                     </div>
                     <div className="form-group col-md-6">
-                        <label htmlFor="responsible">Verantwortlicher Moderator</label>
-                        <select ref={register()} id="responsible" name="responsible" className="form-control" defaultValue={purchase.responsible} >
+                        <label htmlFor="responsibleModerator">Verantwortlicher Moderator</label>
+                        <select ref={register()} id="responsibleModerator" name="responsibleModerator" className="form-control" defaultValue={purchase.responsible.uuid} >
                             {moderators.map(moderator => {
-                                return <option value={moderator.name}>{moderator.name}</option>
+                                return <option value={moderator.uuid}>{moderator.name}</option>
                             })}
                         </select>
                     </div>

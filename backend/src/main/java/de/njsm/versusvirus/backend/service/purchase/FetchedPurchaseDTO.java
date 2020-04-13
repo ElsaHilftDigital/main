@@ -6,6 +6,7 @@ import de.njsm.versusvirus.backend.domain.OrderItem;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.service.customer.CustomerDTO;
+import de.njsm.versusvirus.backend.service.moderator.ModeratorDTO;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 
 import java.math.BigDecimal;
@@ -28,7 +29,7 @@ public class FetchedPurchaseDTO {
     public Double cost;
     public boolean expensesPaid;
     public String createdBy;
-    public String responsible;
+    public ModeratorDTO responsible;
     public CustomerDTO customer;
     public Instant createdAt;
 
@@ -51,7 +52,7 @@ public class FetchedPurchaseDTO {
         this.customer = new CustomerDTO(customer);
         this.expensesPaid = purchase.isExpensesPaid();
         this.createdBy = createdBy.getName();
-        this.responsible = responsible.getName();
+        this.responsible = new ModeratorDTO(responsible);
         this.createdAt = purchase.getCreateTime();
     }
 }

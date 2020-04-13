@@ -38,6 +38,7 @@ export default function purchaseReducer(state = initialState, action) {
         case actions.GET_PURCHASES: 
             return {
                 ...state,
+                purchases: undefined,
                 getPurchasesError: null,
                 getPurchasesRequestOngoing: true,
             };
