@@ -329,7 +329,6 @@ public class Purchase {
         this.volunteerApplications = volunteerApplications;
     }
 
-    public long getResponsibleModeratorId() {
     public List<PurchaseSupermarket> getPurchaseSupermarketList() {
         return purchaseSupermarketList;
     }
