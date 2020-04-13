@@ -51,12 +51,6 @@ public class PurchaseController {
         purchaseService.assignVolunteer(purchaseId, volunteerId);
     }
 
-    @PostMapping("/{id}/assign-moderator/{moderatorId}")
-    public void assignModerator(@PathVariable("id") UUID purchaseId,
-                                @PathVariable("moderatorId") UUID moderatorId) {
-        purchaseService.assignModerator(purchaseId, moderatorId);
-    }
-
     @PostMapping("/{id}/customernotified")
     public void customerNotified(@PathVariable("id") UUID purchaseId) {
         purchaseService.customerNotified(purchaseId);
