@@ -64,8 +64,9 @@ const SinglePurchaseList = (props) => {
             })
         )
     }
-    const keyDownHandler = (e) => {
+    const keyPressHandler = (e) => {
         if (e.key === "Enter") {
+            e.preventDefault();
             const value = e.currentTarget.value;
             value && addToPurchaseList(value);
             e.currentTarget.value = "";
@@ -83,7 +84,7 @@ const SinglePurchaseList = (props) => {
                 <i onClick={() => removeFromPurchaseList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />
             </PurchaseListItem>)}
             <PurchaseListItem className="list-group-item">
-                <input className="no-outline" type="text" onKeyDown={keyDownHandler} autoFocus placeholder="Neues Einkaufsitem"></input>
+                <input className="no-outline" type="text" onKeyPress={keyPressHandler} autoFocus placeholder="Neues Einkaufsitem"></input>
             </PurchaseListItem>
         </ul>
     </>);
