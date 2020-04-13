@@ -252,14 +252,21 @@ const NewRequest = () => {
     };
 
     const EnterPurchaseList = (props) => {
-        const { supermarket } = props.supermarket;
-        const [purchaseList, setPurchaseList] = useState([]);
+        const { supermarket, onUpdate } = props;
 
         const addToPurchaseList = (item) => {
-            setPurchaseList(purchaseList.concat([item]));
-        }
+            onUpdate(
+                Object.assign({}, supermarket, {
+                    orderItems: supermarket.orderItems.concat([item])
+                })
+            )            
+        };
         const removeFromPurchaseList = (index) => {
-            setPurchaseList(purchaseList.filter((_, i) => i !== index));
+            onUpdate(
+                Object.assign({}, supermarket, {
+                    orderItems: supermarket.orderItems.filter((_, i) => i !== index)
+                })
+            )
         }
         const keyDownHandler = (e) => {
             if (e.key === "Enter") {
@@ -269,12 +276,12 @@ const NewRequest = () => {
         };
 
         return (<>
-            <label><b>{supermarket}: Einkaufsliste</b></label>
+            <label><b>Einkaufsliste für {supermarket.name}</b></label>
             <p>
                 <i>Bitte jedes Produkt mit "Enter" bestätigen.</i>
             </p>
             <ul className="list-group mb-3">
-                {purchaseList.map((item, index) => <PurchaseListItem className="list-group-item" key={index}>
+                {supermarket.orderItems.map((item, index) => <PurchaseListItem className="list-group-item" key={index}>
                     {item}
                     <i onClick={() => removeFromPurchaseList(index)} style={{margin: 'auto'}} className="fa fa-trash float-right"/>
                 </PurchaseListItem>)}
@@ -289,12 +296,27 @@ const NewRequest = () => {
         const { handleSubmit, register } = useForm({
             defaultValues: purchase ?? {}
         });
-        const addToSupermarketList = item => setSupermarketList(supermarketList.concat([item]));
+        const addToSupermarketList = supermarket => setSupermarketList(supermarketList.concat([supermarket]));
+        const updateSupermarket = (supermarket) => (newSupermarket) => setSupermarketList(
+            supermarketList.map(currentSupermarket => {
+                if (currentSupermarket === supermarket) {
+                    return newSupermarket
+                }
+                else {
+                    return currentSupermarket
+                }
+            }
+        ));
         const removeFromSupermarketList = index => setSupermarketList(supermarketList.filter((_, i) => i !== index));
         const keyDownHandler = (e) => {
             if (e.key === "Enter") {
                 const value = e.currentTarget.value;
-                value && addToSupermarketList(value);
+                value && addToSupermarketList(
+                    {
+                        name: value,
+                        orderItems: [],
+                    }
+                );
             }
         };
 
@@ -315,12 +337,11 @@ const NewRequest = () => {
             </p>
             <ul className="list-group mb-3">
                 {supermarketList.map((supermarket, index) => <SupermarketListItem className="list-group-item" key={index}>
-                    {supermarket}
                     <i onClick={() => removeFromSupermarketList(index)} style={{margin: 'auto'}} className="fa fa-trash float-right"/>
-                    <EnterPurchaseList supermarket={supermarket}/>
+                    <EnterPurchaseList supermarket={supermarket} onUpdate={updateSupermarket(supermarket)}/>
                 </SupermarketListItem>)}
                 <SupermarketListItem className="list-group-item">
-                    <input className="no-outline" type="text" onKeyDown={keyDownHandler} autoFocus placeholder="Eingabe neuer Supermarkt"></input>
+                    <input className="no-outline" type="text" onKeyDown={keyDownHandler} placeholder="Eingabe neuer Supermarkt"></input>
                 </SupermarketListItem>
             </ul>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -364,7 +385,7 @@ const NewRequest = () => {
             Object.assign(
                 purchase,
                 {
-                    orderItems: supermarketList,
+                    supermarkets: supermarketList,
                     customer: customer.uuid
                 }
             )
@@ -398,7 +419,7 @@ const NewRequest = () => {
             Object.assign(
                 purchase,
                 {
-                    orderItems: supermarketList,
+                    supermarkets: supermarketList,
                     customer: customerSuccess.uuid
                 }
             )
