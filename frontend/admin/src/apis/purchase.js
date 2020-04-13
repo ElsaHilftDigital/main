@@ -30,7 +30,7 @@ export async function getAvailableVolunteers(uuid) {
 };
 
 export async function assignVolunteer(purchaseUuid, volunteerUuid) {
-    const response = await client.post(`/purchases/${purchaseUuid}/assign/${volunteerUuid}`)
+    const response = await client.post(`/purchases/${purchaseUuid}/assign-volunteer/${volunteerUuid}`);
     return response.data;
 };
 

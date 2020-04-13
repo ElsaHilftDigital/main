@@ -45,10 +45,16 @@ public class PurchaseController {
         return purchaseService.getAvailableVolunteers(purchaseId);
     }
 
-    @PostMapping("/{id}/assign/{volunteerId}")
+    @PostMapping("/{id}/assign-volunteer/{volunteerId}")
     public void assignVolunteer(@PathVariable("id") UUID purchaseId,
                                 @PathVariable("volunteerId") UUID volunteerId) {
         purchaseService.assignVolunteer(purchaseId, volunteerId);
+    }
+
+    @PostMapping("/{id}/assign-moderator/{moderatorId}")
+    public void assignModerator(@PathVariable("id") UUID purchaseId,
+                                @PathVariable("moderatorId") UUID moderatorId) {
+        purchaseService.assignModerator(purchaseId, moderatorId);
     }
 
     @PostMapping("/{id}/customernotified")

@@ -51,9 +51,9 @@ public class Purchase {
 
     private Long createdByModerator;
 
-    private Long responsibleModeratorId;
+    private long responsibleModeratorId;
 
-    private Long customer;
+    private long customer;
 
     @ElementCollection
     @CollectionTable(name = "purchase_applications")
@@ -313,11 +313,11 @@ public class Purchase {
         this.createdByModerator = createdByModerator;
     }
 
-    public Long getCustomerId() {
+    public long getCustomerId() {
         return customer;
     }
 
-    public void setCustomerId(Long customer) {
+    public void setCustomerId(long customer) {
         this.customer = customer;
     }
 
@@ -337,8 +337,12 @@ public class Purchase {
         this.volunteerApplications = volunteerApplications;
     }
 
-    public Long getResponsibleModeratorId() {
+    public long getResponsibleModeratorId() {
         return responsibleModeratorId;
+    }
+
+    public void setResponsibleModeratorId(long responsibleModeratorId) {
+        this.responsibleModeratorId = responsibleModeratorId;
     }
 
     public List<OrderItem> getPurchaseList() {

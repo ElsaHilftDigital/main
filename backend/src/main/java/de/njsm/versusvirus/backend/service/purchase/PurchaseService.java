@@ -155,6 +155,12 @@ public class PurchaseService {
         messageSender.offerPurchase(purchase, customer, volunteer);
     }
 
+    public void assignModerator(UUID purchaseId, UUID moderatorId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        var moderator = moderatorRepository.findByUuid(moderatorId).orElseThrow(NotFoundException::new);
+        purchase.setResponsibleModeratorId(moderator.getId());
+    }
+
     public void customerNotified(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
