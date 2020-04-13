@@ -7,6 +7,7 @@ import Toast from 'react-bootstrap/Toast';
 
 import { purchaseActions } from 'store/purchase';
 import { usePurchase } from 'hooks/usePurchase';
+import { useModerators } from 'hooks/useModerators';
 import { formatDate } from 'config/utils';
 import * as routes from 'routes';
 
@@ -14,16 +15,17 @@ import * as routes from 'routes';
 const PurchaseDetail = () => {
     const { purchaseId } = useParams();
     const { purchase } = usePurchase(purchaseId);
+    const { moderators } = useModerators();
 
     if (!purchase) {
         return <span>...Loading</span>;
     }
 
-    return <PurchaseDetailInternal purchase={purchase} />;
+    return <PurchaseDetailInternal purchase={purchase} moderators={moderators}/>;
 };
 
 const PurchaseDetailInternal = (props) => {
-    const { purchase } = props;
+    const { purchase, moderators } = props;
     const dispatch = useDispatch();
 
     const {register, handleSubmit } = useForm({
@@ -132,6 +134,9 @@ const PurchaseDetailInternal = (props) => {
                     <div className="form-group col-md-6">
                         <label htmlFor="responsible">Verantwortlicher Moderator</label>
                         <select ref={register()} id="responsible" name="responsible" className="form-control" defaultValue={purchase.responsible} >
+                            {moderators.map(moderator => {
+                                return <option value={moderator.name}>{moderator.name}</option>
+                            })}
                         </select>
                     </div>
 
@@ -216,12 +221,12 @@ const PurchaseDetailInternal = (props) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="cost">Kosten</label>
-                    <input name="cost" ref={register({})} type="text" className="form-control" id="cost" />
+                    <input name="cost" ref={register()} type="text" className="form-control" id="cost" />
                 </div>
 
                 <div className="form-group">
                     <label htmlFor="paymentMethod">Zahlungsmethode</label>
-                    <select ref={register} id="paymentMethod" name="paymentMethod" className="form-control" defaultValue={purchase.paymentMethod}>
+                    <select ref={register()} id="paymentMethod" name="paymentMethod" className="form-control" defaultValue={purchase.paymentMethod}>
                         <option value="CASH">Bargeld</option>
                         <option value="BILL">Rechnung</option>
                         <option value="TWINT">TWINT</option>

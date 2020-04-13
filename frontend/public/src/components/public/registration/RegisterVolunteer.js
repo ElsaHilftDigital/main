@@ -23,7 +23,7 @@ const RegisterVolunteer = () => {
     const registerFormIban = watch('registerFormIban');
     const registerFormWantsNoCompensation = watch('registerFormWantsNoCompensation');
 
-    const onSubmit = data => {
+    const onSubmit = (data) => {
         dispatch(volunteerActions.createVolunteer({
             firstName: data.registerFormFirstname,
             lastName: data.registerFormLastname,

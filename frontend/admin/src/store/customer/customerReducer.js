@@ -51,7 +51,7 @@ export default function customerReducer(state = initialState, action) {
             return {
                 ...state,
                 getCustomersError: payload,
-                getCustomerRequestOngoing: false,
+                getCustomersRequestOngoing: false,
             }
         // get customer
         case actions.GET_CUSTOMER:
