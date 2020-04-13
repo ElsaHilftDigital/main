@@ -136,9 +136,20 @@ const PurchaseDetailInternal = (props) => {
             </div>         
 
             <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
-                <div className="form-group">
-                    <label htmlFor="displayFormStatus">Status</label>
-                    <input name="displayFormStatus" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormStatus" />
+                <div className="row">
+                    <div className="form-group col-md-6">
+                        <label htmlFor="displayFormStatus">Status</label>
+                        <input name="displayFormStatus" ref={register({ required: true })} disabled type="text" className="form-control" id="displayFormStatus" />
+                    </div>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="selectModerators">Verantwortlicher Moderator</label>
+                        <select ref={register()} id="selectModerators" name="selectModerators" className="form-control" defaultValue={purchase.responsible} >
+                            <option value="SMALL">Kleiner Einkauf</option>
+                            <option value="MEDIUM">Mittlerer Einkauf</option>
+                            <option value="LARGE">Grosser Einkauf</option>
+                        </select>
+                    </div>
+
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayFormCreateDate">Erstellungsdatum</label>

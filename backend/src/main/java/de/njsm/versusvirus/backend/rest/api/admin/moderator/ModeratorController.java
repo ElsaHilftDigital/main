@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/moderator")
+@RequestMapping("/api/v1/admin/moderators")
 public class ModeratorController {
 
     private final ModeratorService moderatorService;

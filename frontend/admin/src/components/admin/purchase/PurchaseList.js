@@ -183,7 +183,7 @@ const PurchaseListItem = (props) => {
                 <Row>
                     <Form.Label column md={labelWidth}>Betrag</Form.Label>
                     <Col>
-                        <Form.Control plaintext readOnly defaultValue={purchase.amount} />
+                        <Form.Control plaintext readOnly defaultValue={purchase.cost} />
                     </Col>
                 </Row>
                 <Row>
