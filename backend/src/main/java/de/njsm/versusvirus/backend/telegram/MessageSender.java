@@ -1,9 +1,6 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.domain.Customer;
-import de.njsm.versusvirus.backend.domain.OrderItem;
-import de.njsm.versusvirus.backend.domain.Organization;
-import de.njsm.versusvirus.backend.domain.Purchase;
+import de.njsm.versusvirus.backend.domain.*;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.telegram.dto.EditedMessage;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class MessageSender {
@@ -129,10 +127,11 @@ public class MessageSender {
 
     private MessageToBeSent composeBroadcastMessage(Organization organization, Customer customer, Purchase purchase) {
         String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
+        String supermarketList = purchase.getPurchaseSupermarketList().stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(", "));
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getSupermarket()),
+                AdminMessageSender.escapeMarkdownCharacters(supermarketList),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
                 purchase.getPurchaseSize().displayName()
         );
@@ -160,11 +159,18 @@ public class MessageSender {
         }
 
         StringBuilder purchaseList = new StringBuilder();
-        for (OrderItem i : purchase.getPurchaseList()) {
+        for (PurchaseSupermarket m : purchase.getPurchaseSupermarketList()) {
             // This is telegram markdownv2 -> escape dashes
-            purchaseList.append("\\- ");
-            var item = AdminMessageSender.escapeMarkdownCharacters(i.getPurchaseItem());
-            purchaseList.append(item);
+            purchaseList.append("*");
+            purchaseList.append(m.getName());
+            purchaseList.append("*\n");
+
+            for (OrderItem i : m.getPurchaseList()) {
+                purchaseList.append("\\- ");
+                var item = AdminMessageSender.escapeMarkdownCharacters(i.getPurchaseItem());
+                purchaseList.append(item);
+                purchaseList.append("\n");
+            }
             purchaseList.append("\n");
         }
 
@@ -177,7 +183,6 @@ public class MessageSender {
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getZipCode()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getComments()),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getSupermarket()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
                 purchaseList.toString()
         );

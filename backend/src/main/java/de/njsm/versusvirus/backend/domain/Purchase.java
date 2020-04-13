@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 public class Purchase {
@@ -24,7 +25,8 @@ public class Purchase {
 
     private String timing;                    // timing to deliver purchase "after" or "before" certain time
 
-    private String supermarket;               // preferred supermarket
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseSupermarket> purchaseSupermarketList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private PurchaseSize purchaseSize;        // depending on number of purchase items
@@ -35,9 +37,6 @@ public class Purchase {
     private String comments;
 
     private Instant createTime;
-
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> purchaseList = new ArrayList<>();
 
     private byte[] receipt;                   // picture of receipt
 
@@ -51,9 +50,9 @@ public class Purchase {
 
     private Long createdByModerator;
 
-    private long responsibleModeratorId;
+    private Long responsibleModeratorId;
 
-    private long customer;
+    private Long customer;
 
     @ElementCollection
     @CollectionTable(name = "purchase_applications")
@@ -79,11 +78,12 @@ public class Purchase {
                 customer.getFirstName() + " " + customer.getLastName(),
                 customer.getAddress().getAddress(),
                 customer.getAddress().getZipCode() + " " + customer.getAddress().getCity(),
-                supermarket,
+                purchaseSupermarketList.stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(" ")),
                 cost,
                 volunteer.getFirstName() + " " + volunteer.getLastName(),
                 volunteer.getPhone(),
-                volunteer.getIban());
+                volunteer.getIban()
+        );
     }
 
     public enum Status {
@@ -225,14 +225,6 @@ public class Purchase {
         this.timing = timing;
     }
 
-    public String getSupermarket() {
-        return supermarket;
-    }
-
-    public void setSupermarket(String supermarket) {
-        this.supermarket = supermarket;
-    }
-
     public PurchaseSize getPurchaseSize() {
         return purchaseSize;
     }
@@ -313,11 +305,11 @@ public class Purchase {
         this.createdByModerator = createdByModerator;
     }
 
-    public long getCustomerId() {
+    public Long getCustomerId() {
         return customer;
     }
 
-    public void setCustomerId(long customer) {
+    public void setCustomerId(Long customer) {
         this.customer = customer;
     }
 
@@ -338,24 +330,25 @@ public class Purchase {
     }
 
     public long getResponsibleModeratorId() {
+    public List<PurchaseSupermarket> getPurchaseSupermarketList() {
+        return purchaseSupermarketList;
+    }
+
+    public void addSupermarket(PurchaseSupermarket supermarket) {
+        purchaseSupermarketList.add(supermarket);
+        supermarket.setPurchase(this);
+    }
+
+    public void setPurchaseList(List<PurchaseSupermarket> purchaseList) {
+        this.purchaseSupermarketList = purchaseList;
+    }
+
+    public Long getResponsibleModeratorId() {
         return responsibleModeratorId;
     }
 
-    public void setResponsibleModeratorId(long responsibleModeratorId) {
+    public void setResponsibleModeratorId(Long responsibleModeratorId) {
         this.responsibleModeratorId = responsibleModeratorId;
-    }
-
-    public List<OrderItem> getPurchaseList() {
-        return purchaseList;
-    }
-
-    public void addOrderItem(OrderItem orderItem) {
-        purchaseList.add(orderItem);
-        orderItem.setPurchase(this);
-    }
-
-    public void setPurchaseList(List<OrderItem> purchaseList) {
-        this.purchaseList = purchaseList;
     }
 
     @PrePersist
