@@ -25,4 +25,13 @@ export const formatDateTime = timestamp => {
     return date.toLocaleString('de-DE');
 }
 
+export const parseDate = localdate => {
+    const dateSplit = localdate.indexOf('.');
+    const monthSplit = localdate.indexOf('.', dateSplit + 1)
+    const day = localdate.substring(0, dateSplit);
+    const month = localdate.substring(dateSplit + 1, monthSplit);
+    const year = localdate.substring(monthSplit + 1);
+    return new Date(`${year}-${month}-${day}`);
+}
+
 export const formatBoolean = value => value ? "Ja" : "Nein";
