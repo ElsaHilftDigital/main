@@ -164,11 +164,11 @@ const PurchaseDetailInternal = (props) => {
                         <div className="row">
                             <div className="form-group col-md-6">
                                 <label htmlFor="displayFormVolunteerFirstname">Vorname</label>
-                                <input name="displayFormVolunteerFirstname" disabled type="text" className="form-control" id="displayFormVolunteerFirstname" value={purchase.assignVolunteer.firstName}/>
+                                <input name="displayFormVolunteerFirstname" disabled type="text" className="form-control" id="displayFormVolunteerFirstname" value={purchase.assignedVolunteer.firstName}/>
                             </div>
                             <div className="form-group col-md-6">
                                 <label htmlFor="displayFormVolunteerLastname">Name</label>
-                                <input name="displayFormVolunteerLastname" disabled type="text" className="form-control" id="displayFormVolunteerLastname" value={purchase.assignVolunteer.lastName}/>
+                                <input name="displayFormVolunteerLastname" disabled type="text" className="form-control" id="displayFormVolunteerLastname" value={purchase.assignedVolunteer.lastName}/>
                             </div>
                             </div>
                         <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Helfer hier klicken</a></i></div>

@@ -262,7 +262,7 @@ const NewRequest = () => {
             <p>
                 <i>Bitte für jeden Supermarkt mit "Enter" bestätigen.</i>
             </p>
-            <PurchaseList value={supermarketList} setValue={setSupermarketList}/>
+            <PurchaseList autoFocus value={supermarketList} setValue={setSupermarketList}/>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="form-group">
                     <label htmlFor="purchaseSize">Grösse des Einkaufs</label>
