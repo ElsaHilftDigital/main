@@ -7,7 +7,9 @@ import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 public class PurchaseListItemDTO {
@@ -16,7 +18,7 @@ public class PurchaseListItemDTO {
     public VolunteerDTO volunteer;
     public StatusIndicator statusIndicator;
     public String status;
-    public String amount;
+    public Double cost;
     public boolean paid;
     public String deadline;
     public String responsible;
@@ -40,8 +42,8 @@ public class PurchaseListItemDTO {
         }
         this.statusIndicator = StatusIndicator.get(purchase.getStatus());
         this.status = purchase.getStatus().displayName();
-        this.amount = "TODO"; // TODO
-        this.paid = false;    // TODO
+        this.cost = Optional.ofNullable(purchase.getCost()).map(BigDecimal::doubleValue).orElse(null);
+        this.paid = purchase.getStatus() == Purchase.Status.PURCHASE_COMPLETED;
         this.deadline = purchase.getTiming();
         this.responsible = responsibleModerator.getName();
         this.createdBy = createdBy.getName();

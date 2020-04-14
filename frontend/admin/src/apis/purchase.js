@@ -19,6 +19,11 @@ export async function getPurchaseReceipt(uuid) {
     return response.data;
 };
 
+export async function getPurchaseExport(uuid) {
+    const response = await client.get(`/purchases/${uuid}/export`, {responseType: 'blob'});
+    return response.data;
+};
+
 export async function createPurchase(purchase) {
     const response = await client.post(`/purchases`, purchase);
     return response.data;
@@ -52,5 +57,5 @@ export async function publishPurchase(uuid) {
 
 export async function markCompleted(uuid) {
     const response = await client.post(`/purchases/${uuid}/markcompleted`);
-    return response;
+    return response.data;
 };

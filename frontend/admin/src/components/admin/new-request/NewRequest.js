@@ -316,7 +316,7 @@ const NewRequest = () => {
                     {createPurchase
                         ? <>
                             <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-                            <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag Bitte Auftrag freigeben.</Link>
+                            <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag freigeben.</Link>
                         </>
                         : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
                     }

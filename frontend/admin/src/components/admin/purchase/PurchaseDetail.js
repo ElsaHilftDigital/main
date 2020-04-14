@@ -57,8 +57,19 @@ const PurchaseDetailInternal = (props) => {
     };
 
     const markPurchaseAsCompleted = () => {
-        dispatch(purchaseActions.markCompleted(purchase.uuid));
-        setShowCompleteToast(true)
+        if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+            dispatch(purchaseActions.markCompleted(purchase.uuid));
+            setShowCompleteToast(true)
+        }
+    }
+
+    const exportPurchase = () => {
+        if (!purchase.assignedVolunteer) {
+            window.confirm('Export kann erst durchgeführt werden, nachdem ein Helfer zugeordnet wurde.')
+        }
+        else {
+            //ToDo purchaseActions.exportPurchase
+        }
     }
 
     const onSubmit = (data) => {
@@ -117,13 +128,13 @@ const PurchaseDetailInternal = (props) => {
                         onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <>
                     <Button className="m-3"
-                        onClick={() => routes.purchaseDetails(purchase.uuid)}>Quittung ansehen</Button>
+                        onClick={() => routes.purchaseReceipt(purchase.uuid)}>Quittung ansehen</Button>
                     <Button className="m-3"
                         onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
                 </>}
                 {(purchase.status === "Kein Geld deponiert" || purchase.status === "Ausgeliefert - Zahlung ausstehend") &&
                     <Button
-                        onClick={() => { if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) markPurchaseAsCompleted() } }
+                        onClick={() => { markPurchaseAsCompleted() } }
                         className="btn btn-primary m-1">Einkauf erledigt</Button>
                 }
             </div>         
@@ -237,7 +248,7 @@ const PurchaseDetailInternal = (props) => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <Link to={routes.purchaseDetails(purchase.uuid)}>Hier ist der Link zur Quittung, falls vorhanden</Link>
+                    <Link to={routes.purchaseReceipt(purchase.uuid)}>Hier ist der Link zur Quittung, falls vorhanden</Link>
                 </div>
                 <div className="form-group">
                     <label htmlFor="comments">Kommentare</label>
@@ -248,16 +259,25 @@ const PurchaseDetailInternal = (props) => {
                     <PurchaseList value={supermarkets} setValue={setSupermarkets}/>
                 </div>
                 <div>
-                    <div className="justify-content-between align-items-bottom">
-                        <Button type="submit">Speichern</Button>
-                        {showSaveToast &&
-                            <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
-                                <Toast.Header>
-                                <strong className="mr-auto">Einkauf speichern</strong>
-                                </Toast.Header>
-                                <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
-                            </Toast>
-                        }
+                    <div className="row">
+                        <div className="col">
+                            <Button type="submit">Speichern</Button>
+                            {showSaveToast &&
+                                <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
+                                    <Toast.Header>
+                                    <strong className="mr-auto">Einkauf speichern</strong>
+                                    </Toast.Header>
+                                    <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
+                                </Toast>
+                            }
+                        </div>
+                        <div className="col">
+                            <Button className="float-right" onClick={() => exportPurchase()}>Export</Button>   
+                        </div>
+                        
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        
+                    </div>
                     </div>
                 </div>
             </form>
