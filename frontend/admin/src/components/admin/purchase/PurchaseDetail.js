@@ -68,7 +68,7 @@ const PurchaseDetailInternal = (props) => {
             window.confirm('Export kann erst durchgeführt werden, nachdem ein Helfer zugeordnet wurde.')
         }
         else {
-            //ToDo purchaseActions.exportPurchase
+            window.open(routes.purchaseExport(purchase.uuid));
         }
     }
 
@@ -128,11 +128,11 @@ const PurchaseDetailInternal = (props) => {
                         onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <>
                     <Button className="m-3"
-                        onClick={() => routes.purchaseReceipt(purchase.uuid)}>Quittung ansehen</Button>
+                        onClick={() => window.open(routes.purchaseReceipt(purchase.uuid))}>Quittung ansehen</Button>
                     <Button className="m-3"
                         onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
                 </>}
-                {(purchase.status === "Kein Geld deponiert" || purchase.status === "Ausgeliefert - Zahlung ausstehend") &&
+                {(purchase.status === "Kein Geld deponiert" || purchase.status === "Ausgeliefert - Zahlung ausstehend" || purchase.status === "Wird ausgeliefert") &&
                     <Button
                         onClick={() => { markPurchaseAsCompleted() } }
                         className="btn btn-primary m-1">Einkauf erledigt</Button>
@@ -158,7 +158,9 @@ const PurchaseDetailInternal = (props) => {
                 <div className="form-group">
                     <label htmlFor="displayFormCreateDate">Erstellungsdatum</label>
                     <input name="displayFormCreateDate" disabled type="tel" className="form-control" id="displayFormCreateDate" value={formatDate(purchase.createdAt)}/>
-                </div>   
+                </div>
+
+                <h5 className="mt-2"> Helfer</h5>   
                 {purchase.assignedVolunteer && (
                     <span>
                         <div className="row">
@@ -171,7 +173,6 @@ const PurchaseDetailInternal = (props) => {
                                 <input name="displayFormVolunteerLastname" disabled type="text" className="form-control" id="displayFormVolunteerLastname" value={purchase.assignedVolunteer.lastName}/>
                             </div>
                             </div>
-                        <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Helfer hier klicken</a></i></div>
                     </span>
                 )}
                 {!purchase.assignedVolunteer && (
@@ -186,7 +187,6 @@ const PurchaseDetailInternal = (props) => {
                                     <tr>
                                         <th>Vorname</th>
                                         <th>Nachname</th>
-                                        <th>Link</th>
                                         <th>Auswahl</th>
                                     </tr>
                                 </thead>
@@ -195,7 +195,6 @@ const PurchaseDetailInternal = (props) => {
                                         return <tr key={v.uuid}>
                                             <td>{v.firstName}</td>
                                             <td>{v.lastName}</td>
-                                            <td></td>
                                             <td><button type="button" className="btn btn-primary" onClick={() => assignVolunteer(v.uuid)}>Bestätigen</button></td>
                                         </tr>
                                     })}
@@ -205,7 +204,7 @@ const PurchaseDetailInternal = (props) => {
                     </span>
                 )}
 
-
+                <h5 className="mt-2"> Auftraggeber</h5>
                 <div className="form-group">
                         <label htmlFor="displayFormCity">Ort</label>
                         <input name="displayFormCity" disabled type="text" className="form-control" id="displayFormCity" value={purchase.customer.city}/>
@@ -220,7 +219,18 @@ const PurchaseDetailInternal = (props) => {
                         <input name="displayFormLastname" disabled type="text" className="form-control" id="displayFormLastname" value={purchase.customer.lastName}/>
                     </div>
                 </div>
-                <div className="form-group mb-2 mb-3"><i><a href="/">Für weitere Infos zum Auftraggeber hier klicken</a></i></div>
+                <div className="row">
+                    <div className="form-group col-md-6">
+                        <label htmlFor="displayFormPhone ">Festnetznummer</label>
+                        <input name="displayFormPhone " disabled type="text" className="form-control" id="displayFormPhone " value={purchase.customer.phone}/>
+                    </div>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="displayFormMobile ">Mobilnummer</label>
+                        <input name="displayFormMobile " disabled type="text" className="form-control" id="displayFormMobile " value={purchase.customer.mobile}/>
+                    </div>
+                </div>
+
+                <h5 className="mt-2"> Einkaufsdetails</h5>
                 <div className="form-group">
                     <label htmlFor="timing">Braucht Einkauf</label>
                     <input name="timing" ref={register()} type="text" className="form-control" id="timing" />
@@ -265,7 +275,7 @@ const PurchaseDetailInternal = (props) => {
                             {showSaveToast &&
                                 <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
                                     <Toast.Header>
-                                    <strong className="mr-auto">Einkauf speichern</strong>
+                                    <strong className="mr-auto">Einkauf gespeichert</strong>
                                     </Toast.Header>
                                     <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
                                 </Toast>

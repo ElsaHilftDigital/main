@@ -11,9 +11,11 @@ const VolunteerDetail = (props) => {
     const dispatch = useDispatch();
 
     const [showSaveToast, setShowSaveToast] = useState(false);
+    const [showConfirmToast, setShowConfirmToast] = useState(false);
 
     const handleConfirmVolunteer = (uuid) => {
         dispatch(volunteerActions.validateVolunteer(uuid));
+        setShowConfirmToast(true);
     };
 
     const onSubmit = (values) => {
@@ -35,7 +37,17 @@ const VolunteerDetail = (props) => {
 
     const wantsNoCompensation = watch('wantsNoCompensation');
 
-    return (
+    return (<>
+        <div className="position-absolute d-flex flex-column">
+            {showConfirmToast &&
+                <Toast className="mt-2 mb-2" onClose={() => setShowConfirmToast(false)} show={showConfirmToast} delay={3000} autohide>
+                    <Toast.Header>
+                    <strong className="mr-auto">Helfer bestätigen</strong>
+                    </Toast.Header>
+                    <Toast.Body>Der Helfer wurde bestätigt.</Toast.Body>
+                </Toast>
+            }
+        </div>
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
                 <h1>Helfer {props.currentVolunteer.firstname}</h1>
@@ -136,7 +148,7 @@ const VolunteerDetail = (props) => {
                 }
             </form>
         </div>
-    );
+    </>);
 };
 
 export default VolunteerDetail;
