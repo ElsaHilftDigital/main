@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 
@@ -149,7 +149,7 @@ const PurchaseDetailInternal = (props) => {
                         <label htmlFor="responsibleModerator">Verantwortlicher Moderator</label>
                         <select ref={register()} id="responsibleModerator" name="responsibleModerator" className="form-control" defaultValue={purchase.responsible.uuid} >
                             {moderators.map(moderator => {
-                                return <option value={moderator.uuid}>{moderator.name}</option>
+                                return <option key={moderator.uuid} value={moderator.uuid}>{moderator.name}</option>
                             })}
                         </select>
                     </div>
@@ -261,8 +261,12 @@ const PurchaseDetailInternal = (props) => {
                     <i><a href="routes.purchaseReceipt(purchase.uuid)">Hier ist der Link zur Quittung, falls vorhanden.</a></i>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="comments">Kommentare</label>
-                    <textarea name="comments" ref={register()} type="text" className="form-control" id="comments"></textarea>
+                    <label htmlFor="publicComments">Gruppenchat Kommentare</label>
+                    <textarea name="publicComments" ref={register()} type="text" className="form-control" id="publicComments"></textarea>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="privateComments">Private Kommentare</label>
+                    <textarea name="privateComments" ref={register()} type="text" className="form-control" id="privateComments"></textarea>
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>

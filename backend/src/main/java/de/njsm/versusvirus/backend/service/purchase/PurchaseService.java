@@ -81,7 +81,7 @@ public class PurchaseService {
         purchase.setPaymentMethod(req.paymentMethod);
         purchase.setTiming(req.timing);
         purchase.setPurchaseSize(req.purchaseSize);
-        purchase.setComments(req.comments);
+        purchase.setPublicComments(req.comments);
         purchase.setCreatedByModerator(moderator.getId());
         purchase.setCustomerId(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);
@@ -168,7 +168,8 @@ public class PurchaseService {
 
     public void updatePurchase(UUID purchaseId, UpdatePurchaseRequest updateRequest) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        purchase.setComments(updateRequest.comments);
+        purchase.setPublicComments(updateRequest.publicComments);
+        purchase.setPrivateComments(updateRequest.privateComments);
         purchase.setPurchaseSize(updateRequest.size);
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);

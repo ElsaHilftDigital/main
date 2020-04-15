@@ -18,7 +18,8 @@ public class PurchaseDTO {
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
     public Purchase.PurchaseSize size;
-    public String comments;
+    public String publicComments;
+    public String privateComments;
     public Double cost;
     public boolean expensesPaid;
     public Long assignedVolunteer;
@@ -35,7 +36,8 @@ public class PurchaseDTO {
         paymentMethod = p.getPaymentMethod();
         timing = p.getTiming();
         size = p.getPurchaseSize();
-        comments = p.getComments();
+        publicComments = p.getPublicComments();
+        privateComments = p.getPrivateComments();
         cost = Optional.ofNullable(p.getCost()).map(BigDecimal::doubleValue).orElse(null);
         expensesPaid = p.isExpensesPaid();
         assignedVolunteer = p.getAssignedVolunteer();
