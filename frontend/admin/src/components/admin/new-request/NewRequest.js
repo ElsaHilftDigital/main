@@ -286,8 +286,12 @@ const NewRequest = () => {
                     <input name="timing" id="timing" type="text" ref={register} className="form-control" placeholder="Braucht Einkauf bis"/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="comments">Bemerkungen</label>
-                    <input name="comments" type="text" ref={register} className="form-control" id="comments" placeholder="Bemerkungen"/>
+                    <label htmlFor="publicComments">Gruppenchat Bemerkungen</label>
+                    <input name="publicComments" type="text" ref={register} className="form-control" id="publicComments" placeholder="Gruppenchat Bemerkungen"/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="privateComments">Private Bemerkungen</label>
+                    <input name="privateComments" type="text" ref={register} className="form-control" id="privateComments" placeholder="Private Bemerkungen"/>
                 </div>
 
                 <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück</button>
