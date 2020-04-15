@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-bootstrap/Toast';
@@ -27,13 +27,27 @@ const VolunteerDetail = (props) => {
         setShowSaveToast(true);
     };
 
-    const { register, handleSubmit, errors, watch } = useForm({
+    const { register, handleSubmit, errors, watch, setValue } = useForm({
         defaultValues: {
             ...currentVolunteer,
             birthDate: formatDate(currentVolunteer.birthDate),
             wantsNoCompensation: !currentVolunteer.wantsCompensation,
         }
     });
+
+    useEffect(() => {
+        setValue('firstName', currentVolunteer.firstName);
+        setValue('lastName', currentVolunteer.lastName);
+        setValue('phone', currentVolunteer.phone);
+        setValue('email', currentVolunteer.email);
+        setValue('address', currentVolunteer.address);
+        setValue('zipCode', currentVolunteer.zipCode);
+        setValue('city', currentVolunteer.city);
+        setValue('birthDate', formatDate(currentVolunteer.birthDate));
+        setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation);
+        setValue('iban', currentVolunteer.ibane);
+        setValue('bankName', currentVolunteer.bankName);
+    }, [currentVolunteer]);
 
     const wantsNoCompensation = watch('wantsNoCompensation');
 
