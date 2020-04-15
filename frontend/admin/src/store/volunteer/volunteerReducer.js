@@ -60,6 +60,7 @@ export default function volunteerReducer(state = initialState, action) {
         case actions.GET_VOLUNTEER:
             return {
                 ...state,
+                currentVolunteer: undefined,
                 getVolunteerError: null,
                 getVolunteerRequestOngoing: true,
             };

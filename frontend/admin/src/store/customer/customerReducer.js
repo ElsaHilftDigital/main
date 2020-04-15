@@ -57,6 +57,7 @@ export default function customerReducer(state = initialState, action) {
         case actions.GET_CUSTOMER:
             return {
                 ...state,
+                currentCustomer: undefined,
                 getCustomerError: null,
                 getCustomerRequestOngoing: true,
             };

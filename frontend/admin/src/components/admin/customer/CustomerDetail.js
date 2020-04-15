@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 const CustomerDetail = (props) => {
     const dispatch = useDispatch();
     const { selectedCustomer } = props;
-    const { handleSubmit, register } = useForm({
+    const { handleSubmit, register, setValue } = useForm({
         defaultValues: {
             firstName: selectedCustomer.firstName,
             lastName: selectedCustomer.lastName,
@@ -18,11 +18,6 @@ const CustomerDetail = (props) => {
             address: selectedCustomer.address,
             zipCode: selectedCustomer.zipCode,
             city: selectedCustomer.city,
-            paymentMethod: 'bar',
-            finishedJobs: 'none',
-            openJobs: 'test',
-            openPaymentAmount: '0',
-            shoppingList: 'ravioli',
         },
     });
     const [showSaveToast, setShowSaveToast] = useState(false);
@@ -32,9 +27,13 @@ const CustomerDetail = (props) => {
         setShowSaveToast(true);
     }
 
-    if (!props.selectedCustomer) {
-        return null;
-    }
+    setValue('firstName', selectedCustomer.firstName);
+    setValue('lastName', selectedCustomer.lastName);
+    setValue('phone', selectedCustomer.phone);
+    setValue('mobile', selectedCustomer.mobile);
+    setValue('address', selectedCustomer.address);
+    setValue('zipCode', selectedCustomer.zipCode);
+    setValue('city', selectedCustomer.city);
 
     return (
         <div className="container mb-5">
@@ -89,31 +88,31 @@ const CustomerDetail = (props) => {
                     <div className="form-group row">
                             <label htmlFor="paymentMethod" className="col-sm-4 col-form-label">Zahlungsmittel</label>
                             <div className="col-sm-8">
-                                <input name="paymentMethod" ref={register()} type="text" className="form-control" id="paymentMethod" />
+                                <input disabled name="paymentMethod" ref={register()} type="text" className="form-control" id="paymentMethod" />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="finishedJobs" className="col-sm-4 col-form-label">Abgeschlossene Anfragen</label>
                             <div className="col-sm-8">
-                                <input name="finishedJobs" ref={register()} type="text" className="form-control" id="finishedJobs" />
+                                <input disabled name="finishedJobs" ref={register()} type="text" className="form-control" id="finishedJobs" />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="openJobs" className="col-sm-4 col-form-label">Offene Anfragen</label>
                             <div className="col-sm-8">
-                                <input name="openJobs" ref={register()} type="text" className="form-control" id="openJobs" />
+                                <input disabled name="openJobs" ref={register()} type="text" className="form-control" id="openJobs" />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="openPaymentAmount" className="col-sm-4 col-form-label">Offener Betrag</label>
                             <div className="col-sm-8">
-                                <input name="openPaymentAmount" ref={register()} type="text" className="form-control" id="openPaymentAmount" />
+                                <input disabled name="openPaymentAmount" ref={register()} type="text" className="form-control" id="openPaymentAmount" />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="shoppingList" className="col-sm-4 col-form-label">Einkaufsliste</label>
                             <div className="col-sm-8">
-                                <input name="shoppingList" ref={register()} type="text" className="form-control" id="shoppingList" />
+                                <input disabled name="shoppingList" ref={register()} type="text" className="form-control" id="shoppingList" />
                             </div>
                         </div>
                     </div>
