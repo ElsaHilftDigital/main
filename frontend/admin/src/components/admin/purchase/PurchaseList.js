@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Col, Container, Form, ListGroup, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { usePurchases } from 'hooks/usePurchases';
 import * as routes from 'routes';
-import { formatBoolean, formatDate, formatDateTime } from 'config/utils';
+import { formatBoolean, formatDate, formatDateTime, parseDate } from 'config/utils';
 
 
 const PurchaseList = () => {
@@ -22,8 +23,68 @@ const PurchaseList = () => {
         );
     };
 
-    return <PurchaseListInternal purchases={purchases} />;
+    return (<>
+        <Container fluid>
+            <PurchaseListInternal purchases={purchases} />
+        </Container>
+    </>);
 };
+
+const PurchaseListHeader = () => {
+    const [incorrectDates, setIncorrectDates] = useState(false);
+    const { register, handleSubmit, errors } = useForm();
+
+    const onExport = (values) => {
+        if (parseDate(values.startDate) > parseDate(values.endDate)){
+            setIncorrectDates(true)
+        }
+        else {
+            setIncorrectDates(false)
+            // make export
+            console.log(values.startDate, values.endDate)
+        }
+    };
+
+    const validateDate = (input) => {
+        if (!input) {
+            return false;
+        }
+
+        const inputDate = parseDate(input.replace(/\s/g, ''));
+        if (!(inputDate instanceof Date && !isNaN(inputDate))) {
+            return false;
+        }
+
+        return inputDate;
+    };
+
+    return (<>
+            <div className="row" style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                <form onSubmit={handleSubmit(onExport)} className="form-inline mt-3 ml-4 mr-4 mb-3 float-right">
+                    {incorrectDates && (<span className="text-danger mr-4"><b>Enddatum früher als Anfangsdatum</b></span>)}
+                    {(errors.startDate || errors.endDate) && (<span className="text-danger mr-4"><b>Datumseingabe inkorrekt</b></span>)}
+                    <label className="sr-only" htmlFor="startDate">Startdatum</label>
+                    <div className="input-group mb-2 mr-sm-2">
+                        <div className="input-group-prepend">
+                        <div className="input-group-text">von</div>
+                        </div>
+                        <input type="text" ref={register({ validate: validateDate })} name="startDate" className="form-control" id="startDate" placeholder="01.01.2020"></input>
+                    </div>
+
+                    <label className="sr-only" htmlFor="endDate">Enddatum</label>
+                    <div className="input-group mb-2 mr-sm-2">
+                        <div className="input-group-prepend">
+                        <div className="input-group-text">bis</div>
+                        </div>
+                        <input type="text" ref={register({ validate: validateDate })} name="endDate" className="form-control" id="endDate" placeholder="31.12.2020"></input>
+                    </div>
+
+                    <button type="submit" className="btn btn-primary mb-2">Export</button>
+                </form>
+
+            </div>
+    </>);
+}
 
 const PurchaseListInternal = (props) => {
     const { purchases } = props;
@@ -48,28 +109,27 @@ const PurchaseListInternal = (props) => {
 
     const [selectedDate, setSelectedDate] = useState(purchaseDates[0]);
 
-    return (
-        <Container fluid>
-            <FlexRow>
-                <DateCol md="4">
-                    <Title>Datum</Title>
-                    <DateListGroup variant="flush">
-                        {purchaseDates.map((date, i) => {
-                            return <ListGroup.Item key={i} action active={date === selectedDate} onClick={() => setSelectedDate(date)}>
-                                {formatDate(date)}
-                                <div className="float-right"><StatusIndicator value={purchaseDateIndicators[i]} /></div>
-                            </ListGroup.Item>;
-                        })}
-                    </DateListGroup>
-                </DateCol>
-                <Col>
-                    <ListGroup variant="flush">
-                        {purchasesByDate.get(selectedDate).map(p => <PurchaseListItem purchase={p} key={p.uuid} />)}
-                    </ListGroup>
-                </Col>
-            </FlexRow>
-        </Container>
-    )
+    return (<>
+        <FlexRow>
+            <DateCol md="4">
+                <Title>Datum</Title>
+                <DateListGroup variant="flush">
+                    {purchaseDates.map((date, i) => {
+                        return <ListGroup.Item key={i} action active={date === selectedDate} onClick={() => setSelectedDate(date)}>
+                            {formatDate(date)}
+                            <div className="float-right"><StatusIndicator value={purchaseDateIndicators[i]} /></div>
+                        </ListGroup.Item>;
+                    })}
+                </DateListGroup>
+            </DateCol>
+            <Col>
+                <PurchaseListHeader />
+                <ListGroup variant="flush">
+                    {purchasesByDate.get(selectedDate).map(p => <PurchaseListItem purchase={p} key={p.uuid} />)}
+                </ListGroup>
+            </Col>
+        </FlexRow>
+    </>)
 };
 
 const DateCol = styled(Col)`
