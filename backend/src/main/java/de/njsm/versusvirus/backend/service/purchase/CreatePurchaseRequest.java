@@ -11,6 +11,7 @@ public class CreatePurchaseRequest {
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
     public Purchase.PurchaseSize purchaseSize;
-    public String comments;
+    public String publicComments;
+    public String privateComments;
     public UUID customer;
 }

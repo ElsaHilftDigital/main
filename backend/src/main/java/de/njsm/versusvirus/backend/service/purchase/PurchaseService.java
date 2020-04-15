@@ -81,7 +81,8 @@ public class PurchaseService {
         purchase.setPaymentMethod(req.paymentMethod);
         purchase.setTiming(req.timing);
         purchase.setPurchaseSize(req.purchaseSize);
-        purchase.setPublicComments(req.comments);
+        purchase.setPublicComments(req.publicComments);
+        purchase.setPrivateComments(req.privateComments);
         purchase.setCreatedByModerator(moderator.getId());
         purchase.setCustomerId(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);

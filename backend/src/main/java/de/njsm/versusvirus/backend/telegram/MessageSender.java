@@ -134,8 +134,8 @@ public class MessageSender {
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
                 AdminMessageSender.escapeMarkdownCharacters(supermarketList),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
-                AdminMessageSender.escapeMarkdownCharacters(comment),
-                purchase.getPurchaseSize().displayName()
+                purchase.getPurchaseSize().displayName(),
+                AdminMessageSender.escapeMarkdownCharacters(comment)
         );
 
         String template = telegramMessages.getBroadcastPurchase();
@@ -186,7 +186,8 @@ public class MessageSender {
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPrivateComments()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
-                purchaseList.toString()
+                purchaseList.toString(),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming())
         );
 
         String template = telegramMessages.getOfferPurchase();
