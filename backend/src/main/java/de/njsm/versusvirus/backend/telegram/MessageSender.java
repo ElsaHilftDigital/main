@@ -128,11 +128,13 @@ public class MessageSender {
     private MessageToBeSent composeBroadcastMessage(Organization organization, Customer customer, Purchase purchase) {
         String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
         String supermarketList = purchase.getPurchaseSupermarketList().stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(", "));
+        String comment = purchase.getPublicComments();
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
                 AdminMessageSender.escapeMarkdownCharacters(supermarketList),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
+                AdminMessageSender.escapeMarkdownCharacters(comment),
                 purchase.getPurchaseSize().displayName()
         );
 
@@ -182,7 +184,7 @@ public class MessageSender {
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getAddress()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getZipCode()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getComments()),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getPrivateComments()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
                 purchaseList.toString()
         );

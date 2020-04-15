@@ -34,7 +34,9 @@ public class Purchase {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private String comments;
+    private String publicComments;
+
+    private String privateComments;
 
     private Instant createTime;
 
@@ -241,12 +243,20 @@ public class Purchase {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getComments() {
-        return comments;
+    public String getPublicComments() {
+        return publicComments;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
+    public void setPublicComments(String publicComments) {
+        this.publicComments = publicComments;
+    }
+
+    public String getPrivateComments() {
+        return privateComments;
+    }
+
+    public void setPrivateComments(String privateComments) {
+        this.privateComments = privateComments;
     }
 
     public byte[] getReceipt() {

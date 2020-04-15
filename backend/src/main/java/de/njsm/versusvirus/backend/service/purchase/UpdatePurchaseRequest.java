@@ -8,7 +8,8 @@ import java.util.UUID;
 
 public class UpdatePurchaseRequest {
     public String timing;
-    public String comments;
+    public String publicComments;
+    public String privateComments;
     public Purchase.PurchaseSize size;
     public Purchase.PaymentMethod paymentMethod;
     public BigDecimal cost;

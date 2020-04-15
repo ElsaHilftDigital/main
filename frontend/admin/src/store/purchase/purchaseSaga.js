@@ -56,7 +56,7 @@ export function* handleUpdatePurchase(updatePurchase, action) {
     } catch (error) {
         console.log(error);
         handleErrorRedirect(error);
-        yield put(actions.UPDATE_PURCHASE_ERROR(parseError(error)));
+        yield put(actions.updateError(parseError(error)));
     }
 }
 
