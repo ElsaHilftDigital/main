@@ -47,7 +47,7 @@ const VolunteerDetail = (props) => {
         setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation);
         setValue('iban', currentVolunteer.ibane);
         setValue('bankName', currentVolunteer.bankName);
-    }, [currentVolunteer]);
+    }, [setValue, currentVolunteer]);
 
     const wantsNoCompensation = watch('wantsNoCompensation');
 
