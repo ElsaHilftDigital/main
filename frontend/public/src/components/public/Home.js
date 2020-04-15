@@ -8,6 +8,7 @@ const Home = () => {
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "30%"}}>
             <div className="container pt-5 mb-5">
                 <h1>Elsa hilft - Anmeldung als Helfer/in</h1>
+                <img src="elsahilft_Baden.png" className="center-block m-4 float-right" width="auto" height="auto" alt="" />
 
                 <p>
                     <br/>Willst du der Risikogruppe während der Coronakrise helfen und für sie den Einkauf erledigen?
@@ -29,7 +30,7 @@ const Home = () => {
                 <p>
                     Ein Projekt der Elsa Benz-von Arx-Stiftung in Zusammenarbeit mit der Stadt Baden und der Unterstützung von hilf-jetzt.ch und vielen weiteren unverzichtbaren Helfenden
                 </p>
-                <button type="submit" className="btn btn-primary mt-4" onClick={() => history.push("/register")}>Ich möchte mich als Helfer melden</button>
+                <button type="submit" className="btn btn-primary mt-4" onClick={() => history.push("/register")}>Ich möchte mich jetzt als Helfer melden</button>
             </div>
         </div>
     );

@@ -28,7 +28,7 @@ const Header = (props) => {
     return (
         <StyledNavbar sticky="top" bg="primary" expand="md">
             <Navbar.Brand onClick={navigate("/")} className="hover-pointer" >
-            <img src="ElsaHilftMehr.png" className="mr-3" width="50" height="50" alt="" />
+            <img src="elsahilft_Baden.png" className="mr-3" width="50" height="50" alt="" />
             <span className="text-light font-weight-bold">Elsa hilft</span>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />

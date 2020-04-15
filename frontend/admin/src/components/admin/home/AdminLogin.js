@@ -23,18 +23,18 @@ const AdminLogin = () => {
 
             <div className="container mt-3 mb-5" >
                 <div className="d-flex flex-column align-items-center">
-                    <img src="ElsaHilftMehrContour.png" className="align-middle mt-5" width="200" height="200" alt="" />
+                    <img src="elsahilft_Baden.png" className="align-middle mt-5" width="auto" height="auto" alt="" />
                 </div>
 
                 <h1 className="mb-4">Login</h1>
                 {loginError && (
-                    <span className="text-danger">Username/Passwort sind inkorrekt.</span>
+                    <span className="text-danger">Benutzername oder Passwort ist inkorrekt.</span>
                 )}
                 <form onSubmit={handleSubmit(onSubmit)} >
                     <div className="form-group">
-                        <label htmlFor="loginUsername">Username</label>
+                        <label htmlFor="loginUsername">Benutzername</label>
                         <input name="loginUsername" ref={register({ required: true })} type="text" className="form-control" id="loginUsername" placeholder="Username" />
-                        {errors.loginUsername && (<span className="text-danger">Username wird benötigt</span>)}
+                        {errors.loginUsername && (<span className="text-danger">Benutzername wird benötigt</span>)}
                     </div>
                     <div className="form-group">
                         <label htmlFor="loginPassword">Passwort</label>

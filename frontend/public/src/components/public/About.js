@@ -14,12 +14,15 @@ const About = () => {
                     Mit dem Ziel, Ansteckungen und die weitere Verbreitung des Coronavirus aufzuhalten und der Risikogruppe eine niederschwellige und vertrauenserweckende Möglichkeit zu bieten,
                     hat die Stadt Baden eine Zentrale eingerichtet, die für die Risikogruppe mit der Hilfe von freiwilligen Helfenden den Einkauf erledigt:
                 </p>
-                    <ul>
-                        <li>Kostenlose und sichere Hilfe für die Risikogruppe des Coronavirus</li>
-                        <li>Individuelle Einkaufswünsche möglich (Produkte und Geschäfte wählbar)</li>
-                        <li>Die Privatsphäre der Empfängerinnen und Empfänger sowie der freiwilligen Helfenden ist geschützt, kein Datenaustausch</li>
-                        <li>Die Hygieneregeln des Bundesamts für Gesundheit müssen befolgt werden</li>
-                    </ul>
+                <ul>
+                    <li>Kostenlose und sichere Hilfe für die Risikogruppe des Coronavirus</li>
+                    <li>Individuelle Einkaufswünsche möglich (Produkte und Geschäfte wählbar)</li>
+                    <li>Die Privatsphäre der Empfängerinnen und Empfänger sowie der freiwilligen Helfenden ist geschützt, kein Datenaustausch</li>
+                    <li>Die Hygieneregeln des Bundesamts für Gesundheit müssen befolgt werden</li>
+                </ul>
+            </div>
+            <div className="d-flex flex-column align-items-center">
+                <img src="elsahilft_Baden.png" className="center-block m-4" width="auto" height="auto" alt="Elsa hilft" />
             </div>
         </div>
     )

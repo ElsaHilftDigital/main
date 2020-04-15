@@ -5,7 +5,7 @@ const RegisterVolunteerSuccess = (props) => {
     console.log(props);
     return (
         <div className="pl-5 pr-5 pt-3"
-        style={{backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
+        style={{backgroundImage: `url("elsahilft_Baden.jpg")`,
             backgroundPositionX: "right", backgroundPositionY: "bottom",
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", backgroundSize: "auto", paddingBottom: "25%"}}
         >
