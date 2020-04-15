@@ -186,7 +186,8 @@ public class MessageSender {
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPrivateComments()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
-                purchaseList.toString()
+                purchaseList.toString(),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming())
         );
 
         String template = telegramMessages.getOfferPurchase();
