@@ -258,7 +258,7 @@ const PurchaseDetailInternal = (props) => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <Link to={routes.purchaseReceipt(purchase.uuid)}>Hier ist der Link zur Quittung, falls vorhanden</Link>
+                    <i><a href="routes.purchaseReceipt(purchase.uuid)">Hier ist der Link zur Quittung, falls vorhanden.</a></i>
                 </div>
                 <div className="form-group">
                     <label htmlFor="comments">Kommentare</label>
