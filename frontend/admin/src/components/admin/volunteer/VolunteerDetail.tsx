@@ -2,23 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-bootstrap/Toast';
+import { useParams } from 'react-router-dom';
 
+import { useVolunteer } from 'hooks/useVolunteer';
 import { volunteerActions } from 'store/volunteer';
 import { formatDate, parseDate } from 'config/utils';
 
-const VolunteerDetail = (props) => {
+const VolunteerDetail = () => {
+    const { volunteerId } = useParams();
+    const { volunteer } = useVolunteer(volunteerId);
+
+    if (!volunteer) {
+        return <span>...Loading</span>;
+    }
+    return <VolunteerDetailInternal currentVolunteer={volunteer}/>;
+};
+
+interface Props {
+    currentVolunteer: any,
+}
+
+const VolunteerDetailInternal: React.FC<Props> = (props) => {
     const { currentVolunteer } = props;
     const dispatch = useDispatch();
 
     const [showSaveToast, setShowSaveToast] = useState(false);
     const [showConfirmToast, setShowConfirmToast] = useState(false);
 
-    const handleConfirmVolunteer = (uuid) => {
+    const handleConfirmVolunteer = (uuid: string) => {
         dispatch(volunteerActions.validateVolunteer(uuid));
         setShowConfirmToast(true);
     };
 
-    const onSubmit = (values) => {
+    const onSubmit = (values: any) => {
         dispatch(volunteerActions.updateVolunteer(currentVolunteer.uuid,
             {
                 ...values,

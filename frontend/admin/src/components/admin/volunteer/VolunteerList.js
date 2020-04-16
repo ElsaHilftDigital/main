@@ -1,6 +1,10 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+import * as routes from 'routes';
 
 const VolunteerList = (props) => {
+    const history = useHistory();
+
     if (!props.volunteers.length) {
         return (
             <span>
@@ -18,7 +22,7 @@ const VolunteerList = (props) => {
             <ul className="sidebar-nav">
                 {props.volunteers.map(volunteer => (
                     <li 
-                        onClick={() => props.onSelectedVolunteerUpdate(volunteer)}
+                        onClick={() => history.push(routes.volunteerDetails(volunteer.uuid))}
                         key={volunteer.uuid} 
                         className={'nav-item' + (volunteer.uuid === props.selectedVolunteer?.uuid ? ' nav-item-active' : '')}
                     >

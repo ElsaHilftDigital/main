@@ -6,6 +6,7 @@ import history from '../history';
 import AdminLogin from './admin/home/AdminLogin';
 import Customer from './admin/customer/Customer';
 import Volunteer from './admin/volunteer/Volunteer';
+import VolunteerDetail from './admin/volunteer/VolunteerDetail';
 import NewRequest from './admin/new-request/NewRequest';
 import PurchaseList from './admin/purchase/PurchaseList';
 import PurchaseDetail from './admin/purchase/PurchaseDetail';
@@ -24,6 +25,7 @@ const App = (props) => {
                     <Route exact path="/purchase/:purchaseId"><PurchaseDetail/></Route>
                     <Route exact path="/customers"><Customer/></Route>
                     <Route exact path="/volunteers"><Volunteer/></Route>
+                    <Route exact path="/volunteer/:volunteerId"><VolunteerDetail/></Route>
                     <Redirect to="/purchases"/>
                 </Switch>
             </Router>
