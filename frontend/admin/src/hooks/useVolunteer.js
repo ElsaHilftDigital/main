@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { volunteerActions, volunteerSelectors } from '../store/volunteer';
 
 
-export const useVolunteers = uuid => {
+export const useVolunteer = uuid => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(volunteerActions.getVolunteer());
+        dispatch(volunteerActions.getVolunteer(uuid));
     }, [dispatch, uuid])
 
     return {
