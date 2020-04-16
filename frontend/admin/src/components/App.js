@@ -5,7 +5,7 @@ import { Redirect, Router, Route, Switch } from 'react-router-dom';
 import history from '../history';
 import AdminLogin from './admin/home/AdminLogin';
 import Customer from './admin/customer/Customer';
-import Volunteer from './admin/volunteer/Volunteer';
+import VolunteerList from './admin/volunteer/VolunteerList';
 import VolunteerDetail from './admin/volunteer/VolunteerDetail';
 import NewRequest from './admin/new-request/NewRequest';
 import PurchaseList from './admin/purchase/PurchaseList';
@@ -24,7 +24,7 @@ const App = (props) => {
                     <Route exact path="/purchases"><PurchaseList/></Route>
                     <Route exact path="/purchase/:purchaseId"><PurchaseDetail/></Route>
                     <Route exact path="/customers"><Customer/></Route>
-                    <Route exact path="/volunteers"><Volunteer/></Route>
+                    <Route exact path="/volunteers"><VolunteerList/></Route>
                     <Route exact path="/volunteer/:volunteerId"><VolunteerDetail/></Route>
                     <Redirect to="/purchases"/>
                 </Switch>

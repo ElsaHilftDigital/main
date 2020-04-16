@@ -1,11 +1,14 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+
 import * as routes from 'routes';
+import { useVolunteers } from 'hooks/useVolunteers';
 
-const VolunteerList = (props) => {
+const VolunteerList: React.FC = () => {
     const history = useHistory();
+    const { volunteers } = useVolunteers();
 
-    if (!props.volunteers.length) {
+    if (!volunteers.length) {
         return (
             <span>
                 <span className="list-header mt-3 mb-2">Helfer</span>
@@ -20,11 +23,10 @@ const VolunteerList = (props) => {
         <>
             <span className="list-header mt-3 mb-2">Helfer</span>
             <ul className="sidebar-nav">
-                {props.volunteers.map(volunteer => (
+                {volunteers.map((volunteer: any) => (
                     <li 
                         onClick={() => history.push(routes.volunteerDetails(volunteer.uuid))}
                         key={volunteer.uuid} 
-                        className={'nav-item' + (volunteer.uuid === props.selectedVolunteer?.uuid ? ' nav-item-active' : '')}
                     >
                         {volunteer.lastName}
                     </li>
