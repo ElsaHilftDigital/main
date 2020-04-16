@@ -17,13 +17,30 @@ const About = () => {
                 <ul>
                     <li>Kostenlose und sichere Hilfe für die Risikogruppe des Coronavirus</li>
                     <li>Individuelle Einkaufswünsche möglich (Produkte und Geschäfte wählbar)</li>
-                    <li>Die Privatsphäre der Empfängerinnen und Empfänger sowie der freiwilligen Helfenden ist geschützt, kein Datenaustausch</li>
                     <li>Die Hygieneregeln des Bundesamts für Gesundheit müssen befolgt werden</li>
+                    <li>Die Privatsphäre der Empfängerinnen und Empfänger sowie der freiwilligen Helfenden ist geschützt, nur notwendige Daten werden ausgetauscht</li>
                 </ul>
+
+                <div>
+                    <h2>Elsa für die Einkaufshilfe</h2>
+
+                    <b>Tel. 056 200 81 85</b> (Montag bis Samstag, 8 bis 16 Uhr)
+                    <p>
+                        <a href="https://www.baden.ch/public/upload/assets/116736/Infoblatt%20Empf%C3%A4nger_innen.pdf">Infoblatt für Empfänger/-innen</a>
+                    </p>
+                </div>
+
+                <div>
+                    <h2>Datenschutz</h2>
+                    Personendaten, die von Helfer/-innen oder Empfänger/-innen im Rahmen der Initiative "Elsa hilft" erhoben werden, dienen nur der Abwicklung der Einkäufe sowie der Bezahlung. <a href="https://telegram.org/">Telegram</a> wird als Kommunikationsmittel zur Koordination der Einkäufe genutzt. Es werden nur die notwendigen Daten der Empfänger/-innen an die Helfer übertragen, um den Einkauf abwickeln zu können.
+                </div>
+
             </div>
             <div className="d-flex flex-column align-items-center">
                 <img src="elsahilft_Baden.png" className="center-block m-4" width="auto" height="auto" alt="Elsa hilft" />
             </div>
+
+
         </div>
     )
 };

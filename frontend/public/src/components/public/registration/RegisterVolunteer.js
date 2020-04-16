@@ -22,6 +22,7 @@ const RegisterVolunteer = () => {
     const [ oldZipCode, setOldZipCode ] = useState('');
     const registerFormIban = watch('registerFormIban');
     const registerFormWantsNoCompensation = watch('registerFormWantsNoCompensation');
+    const registerFormDataProtection = watch('registerFormDataProtection');
 
     const onSubmit = (data) => {
         dispatch(volunteerActions.createVolunteer({
@@ -174,7 +175,8 @@ const RegisterVolunteer = () => {
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "10%"}}>
         <div className="container pt-5 mb-5">
             <h1>Als Helfer/in registrieren</h1>
-            <form onSubmit={handleSubmit(onSubmit)} >
+            <i>Bitte lese zuerst das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt%20Helfer_innen.pdf" target="_blank">Infoblatt für Helfende</a> gut durch.</i>
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="registerFormFirstname">Vorname</label>
@@ -237,7 +239,14 @@ const RegisterVolunteer = () => {
                         </div>
                     </>
                 )}
-                <button type="submit" className="btn btn-primary">Absenden</button>
+                <div className="form-check mb-3">
+                    <input name="registerFormDataProtection" ref={register()} type="checkbox" className="form-check-input" id="registerFormDataProtection" />
+                    <label className="form-check-label" htmlFor="registerFormDataProtection">
+                        Ich bestätige, dass meine Daten für Tätigkeiten im Zusammenhang mit der Initiative "Elsa hilft" genutzt werden dürfen.<br />
+                        Weitere Informationen über den Datenschutz findest du <a href="/#/about">hier</a>.
+                    </label>
+                </div>
+                <button type="submit" className="btn btn-primary" disabled={!registerFormDataProtection}>Absenden</button>
             </form>
         </div>
         </div>

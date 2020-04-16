@@ -24,11 +24,10 @@ const Home = () => {
                     </ul>
 
                 <p>
-                    Weitere Informationen findest du hier:
-                    <a href="https://www.baden.ch/elsahilft"> www.baden.ch/elsahilft</a>
+                <i>Bitte lese zudem das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt%20Helfer_innen.pdf">Infoblatt für Helfende</a> durch.</i>
                 </p>
                 <p>
-                    Ein Projekt der Elsa Benz-von Arx-Stiftung in Zusammenarbeit mit der Stadt Baden und der Unterstützung von hilf-jetzt.ch und vielen weiteren unverzichtbaren Helfenden
+                    "Elsa hilft" ist ein Projekt der Elsa Benz-von Arx-Stiftung in Zusammenarbeit mit der Stadt Baden und der Unterstützung von hilf-jetzt.ch und vielen weiteren unverzichtbaren Helfenden.
                 </p>
                 <button type="submit" className="btn btn-primary mt-4" onClick={() => history.push("/register")}>Ich möchte mich jetzt als Helfer melden</button>
             </div>
