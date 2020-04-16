@@ -6,7 +6,7 @@ const Home = () => {
         <div className="view bg" style={{backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
             backgroundPositionX: "right", backgroundPositionY: "bottom", backgroundSize: "auto",
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "30%"}}>
-            <div className="container pt-5 mb-5">
+            <div className="container pt-4 mb-5">
                 <h1>Elsa hilft - Anmeldung als Helfer/in</h1>
                 <img src="elsahilft_Baden.png" className="center-block m-4 float-right" width="auto" height="auto" alt="" />
 
@@ -24,7 +24,7 @@ const Home = () => {
                     </ul>
 
                 <p>
-                <i>Bitte lese zudem das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt%20Helfer_innen.pdf">Infoblatt für Helfende</a> durch.</i>
+                <i>Bitte lese zudem das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt%20Helfer_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Helfende</a> durch.</i>
                 </p>
                 <p>
                     "Elsa hilft" ist ein Projekt der Elsa Benz-von Arx-Stiftung in Zusammenarbeit mit der Stadt Baden und der Unterstützung von hilf-jetzt.ch und vielen weiteren unverzichtbaren Helfenden.

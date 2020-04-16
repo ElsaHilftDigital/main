@@ -1,11 +1,11 @@
-import React from 'react';
+    import React from 'react';
 
 const About = () => {
     return (
         <div className="view bg" style={{backgroundImage: `url("ElsaHilftMehrBackgroundCropped.png")`,
             backgroundPositionX: "right", backgroundPositionY: "bottom", backgroundSize: "auto",
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "30%"}}>
-            <div className="container pt-5">
+            <div className="container pt-4">
                 <h1>Über Elsa hilft</h1>
                 <h4><strong><br />Ein Projekt der Elsa Benz-von Arx Stiftung unter der Leitung der Stadt Baden - Einkaufen für die Risikogruppe des Coronavirus im Bezirk Baden</strong></h4>
                 <p>
@@ -23,10 +23,10 @@ const About = () => {
 
                 <div>
                     <h2>Elsa für die Einkaufshilfe</h2>
-
-                    <b>Tel. 056 200 81 85</b> (Montag bis Samstag, 8 bis 16 Uhr)
                     <p>
-                        <a href="https://www.baden.ch/public/upload/assets/116736/Infoblatt%20Empf%C3%A4nger_innen.pdf">Infoblatt für Empfänger/-innen</a>
+                        <b>Tel. 056 200 81 85</b> (Montag bis Samstag, 8 bis 16 Uhr)
+                        <br />
+                        <a href="https://www.baden.ch/public/upload/assets/116736/Infoblatt%20Empf%C3%A4nger_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Empfänger/-innen</a>
                     </p>
                 </div>
 

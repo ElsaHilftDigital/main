@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-bootstrap/Toast';
 
@@ -24,16 +24,19 @@ const CustomerDetail = (props) => {
 
     const onSubmit = values => {
         dispatch(customerActions.updateCustomer(selectedCustomer.uuid, values));
+        setTimeout(() => dispatch(customerActions.getCustomers()), 1000);
         setShowSaveToast(true);
     }
 
-    setValue('firstName', selectedCustomer.firstName);
-    setValue('lastName', selectedCustomer.lastName);
-    setValue('phone', selectedCustomer.phone);
-    setValue('mobile', selectedCustomer.mobile);
-    setValue('address', selectedCustomer.address);
-    setValue('zipCode', selectedCustomer.zipCode);
-    setValue('city', selectedCustomer.city);
+    useEffect(() => {
+        setValue('firstName', selectedCustomer.firstName);
+        setValue('lastName', selectedCustomer.lastName);
+        setValue('phone', selectedCustomer.phone);
+        setValue('mobile', selectedCustomer.mobile);
+        setValue('address', selectedCustomer.address);
+        setValue('zipCode', selectedCustomer.zipCode);
+        setValue('city', selectedCustomer.city);
+    }, [setValue, selectedCustomer]);
 
     return (
         <div className="container mb-5">
