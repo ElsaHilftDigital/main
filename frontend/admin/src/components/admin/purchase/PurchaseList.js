@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { usePurchases } from 'hooks/usePurchases';
 import * as routes from 'routes';
 import { formatBoolean, formatDate, formatDateTime, parseDate } from 'config/utils';
+import StatusIndicator from 'components/StatusIndicator';
 
 
 const PurchaseList = () => {
@@ -158,25 +159,6 @@ const Title = styled.h2`
     display: table-cell;
 
 `;
-
-const StatusIndicator = (props) => {
-    const color = ((col) => {
-        switch (col) {
-            case "RED":
-                return 'danger';
-            case "AMBER":
-                return 'warning';
-            case "GREEN":
-                return 'success';
-            default:
-                return 'error';
-        }
-    })(props.value);
-    if (props.bottom) {
-        return <span className={`text-${color} fa fa-circle`} style={{ verticalAlign: 'bottom' }} />;
-    }
-    return <span className={`text-${color} fa fa-circle`} />;
-};
 
 const PurchaseListItem = (props) => {
     const { purchase } = props;
