@@ -46,7 +46,7 @@ const CustomerListItem: React.FC<ListItemProps> = (props) => {
     const { volunteer } = props;
     const history = useHistory();
 
-    return <ListGroup.Item
+    return <ListGroup.Item action
         onClick={() => history.push(routes.volunteerDetails(volunteer.uuid))}
     >
         <Row>
