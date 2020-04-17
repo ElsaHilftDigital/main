@@ -5,9 +5,11 @@ import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -74,7 +76,9 @@ public class Purchase {
     }
 
     public String renderToCsv(Customer customer, Volunteer volunteer) {
-        DateTimeFormatter format = DateTimeFormatter.ISO_DATE;
+        DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE
+                                    .withLocale(Locale.GERMANY)
+                                    .withZone(ZoneId.systemDefault());
 
         return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 // Auftragsnummer not available
