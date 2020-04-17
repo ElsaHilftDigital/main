@@ -60,7 +60,11 @@ const PurchaseListHeader = () => {
     };
 
     return (<>
-            <div className="row" style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <div className="row">
+            <div className="flex-column">
+                <Title>Aufträge</Title>
+            </div>
+            <div className="col" style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                 <form onSubmit={handleSubmit(onExport)} className="form-inline mt-3 ml-4 mr-4 mb-3 float-right">
                     {incorrectDates && (<span className="text-danger mr-4"><b>Enddatum früher als Anfangsdatum</b></span>)}
                     {(errors.startDate || errors.endDate) && (<span className="text-danger mr-4"><b>Datumseingabe inkorrekt</b></span>)}
@@ -84,6 +88,7 @@ const PurchaseListHeader = () => {
                 </form>
 
             </div>
+        </div>
     </>);
 }
 
