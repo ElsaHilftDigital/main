@@ -20,6 +20,7 @@ const About = () => {
                     <li>Die Hygieneregeln des Bundesamts für Gesundheit müssen befolgt werden</li>
                     <li>Die Privatsphäre der Empfängerinnen und Empfänger sowie der freiwilligen Helfenden ist geschützt, nur notwendige Daten werden ausgetauscht</li>
                 </ul>
+                <p>Weitere Informationen finden Sie unter <a href="https://www.baden.ch/elsahilft">www.baden.ch/elsahilft</a>.</p>
 
                 <div>
                     <h2>Elsa für die Einkaufshilfe</h2>

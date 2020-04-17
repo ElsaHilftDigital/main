@@ -69,7 +69,7 @@ const PurchaseListHeader = () => {
                         <div className="input-group-prepend">
                         <div className="input-group-text">von</div>
                         </div>
-                        <input type="text" ref={register({ validate: validateDate })} name="startDate" className="form-control" id="startDate" placeholder="01.01.2020"></input>
+                        <input type="text" ref={register({ validate: validateDate })} onChange={() => setIncorrectDates(false)} name="startDate" className="form-control" id="startDate" placeholder="01.01.2020"></input>
                     </div>
 
                     <label className="sr-only" htmlFor="endDate">Enddatum</label>
@@ -77,7 +77,7 @@ const PurchaseListHeader = () => {
                         <div className="input-group-prepend">
                         <div className="input-group-text">bis</div>
                         </div>
-                        <input type="text" ref={register({ validate: validateDate })} name="endDate" className="form-control" id="endDate" placeholder="31.12.2020"></input>
+                        <input type="text" ref={register({ validate: validateDate })} onChange={() => setIncorrectDates(false)} name="endDate" className="form-control" id="endDate" placeholder="31.12.2020"></input>
                     </div>
 
                     <button type="submit" className="btn btn-primary mb-2">Export</button>
