@@ -25,6 +25,7 @@ public class Volunteer {
     private String iban;
     private String bankName;
     // Means of Transportation
+
     // Employment Status
 
     private boolean wantsCompensation;
@@ -136,6 +137,10 @@ public class Volunteer {
 
     public void setValidated(boolean validated) {
         this.validated = validated;
+    }
+
+    public boolean getWantsCompensation() {
+        return wantsCompensation;
     }
 
     public Long getTelegramChatId() {

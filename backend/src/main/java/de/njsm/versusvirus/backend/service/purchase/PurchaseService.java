@@ -231,4 +231,9 @@ public class PurchaseService {
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
         return purchase.renderToCsv(customer, volunteer);
     }
+
+    public String appendExportHeader(String content) {
+        String header = "Auftrag # ;Auftrag Status ;Auftrag Datum ;Auftrag Zahlungsmethode ;Auftrag Kosten ;Helfer Name ;Helfer Vorname ;Helfer Adresse ;Helfer PLZ ; Helfer Wohnort ;Helfer Geb.Dat. ;Helfer IBAN ;Helfer Entschädigung ;Kunde Name ;Kunde Vorname ;Kunde Adresse ;Kunde PLZ ;Kunde Wohnort\n\n";
+        return header.concat(content);
+    }
 }

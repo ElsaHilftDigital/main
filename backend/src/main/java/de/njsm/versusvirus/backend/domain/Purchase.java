@@ -75,16 +75,29 @@ public class Purchase {
 
     public String renderToCsv(Customer customer, Volunteer volunteer) {
         DateTimeFormatter format = DateTimeFormatter.ISO_DATE;
-        return String.format("date,customer,address,city,shops,cost,volunteer,volunteer phone,volunteer iban\n%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+
+        return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                // Auftragsnummer not available
+                "",
+                getStatus().displayName(),
                 format.format(createTime),
-                customer.getFirstName() + " " + customer.getLastName(),
+                getPaymentMethod().displayName(),
+                getCost().toString(),
+
+                volunteer.getLastName(),
+                volunteer.getFirstName(),
+                volunteer.getAddress().getAddress(),
+                volunteer.getAddress().getZipCode(),
+                volunteer.getAddress().getCity(),
+                volunteer.getBirthDate(),
+                volunteer.getIban(),
+                volunteer.getWantsCompensation() ? "10" : "0",
+
+                customer.getLastName(),
+                customer.getFirstName(),
                 customer.getAddress().getAddress(),
-                customer.getAddress().getZipCode() + " " + customer.getAddress().getCity(),
-                purchaseSupermarketList.stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(" ")),
-                cost,
-                volunteer.getFirstName() + " " + volunteer.getLastName(),
-                volunteer.getPhone(),
-                volunteer.getIban()
+                customer.getAddress().getZipCode(),
+                customer.getAddress().getCity()
         );
     }
 
