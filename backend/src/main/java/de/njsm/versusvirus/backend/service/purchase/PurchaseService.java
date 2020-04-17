@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -229,10 +230,11 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
-        return purchase.renderToCsv(customer, volunteer);
+        return appendExportHeader(purchase.renderToCsv(customer, volunteer));
     }
 
-    public String exportAll() {
+    public String exportAll(LocalDate startDate, LocalDate endDate) {
+
         return "";
     }
 

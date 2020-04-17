@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -67,7 +71,7 @@ public class PurchaseController {
         purchaseService.markCompleted(purchaseId);
     }
 
-    @RequestMapping("/{id}/receipt")
+    @GetMapping("/{id}/receipt")
     public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID purchaseId) {
         var image = purchaseService.getReceipt(purchaseId);
         return ResponseEntity.ok()
@@ -81,6 +85,21 @@ public class PurchaseController {
         var result = purchaseService.export(purchaseId);
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"purchase-" + purchaseId + ".csv\"");
+        return result;
+    }
+
+    @GetMapping("/{startDate}/{endDate}/export")
+    public String exportAll(@PathVariable("startDate") String startDateInput,
+                         @PathVariable("endDate") String endDateInput,
+                         HttpServletResponse response) {
+        DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                                                    .withLocale(Locale.GERMANY)
+                                                    .withZone(ZoneId.systemDefault());
+        LocalDate startDate = LocalDate.parse(startDateInput, europeanDateFormatter);
+        LocalDate endDate = LocalDate.parse(endDateInput, europeanDateFormatter);
+        var result = purchaseService.exportAll(startDate, endDate);
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"Einkaeufe_von_" + startDate.toString() + "_bis_" + endDate.toString() + ".csv\"");
         return result;
     }
 }
