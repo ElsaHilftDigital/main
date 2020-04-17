@@ -246,7 +246,7 @@ public class PurchaseService {
     public void exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
         List<Purchase> allPurchases = purchaseRepository.findAll(Sort.by("createTime"));
 
-        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.newFormat(';')
                                     .withHeader(EXPORT_CSV_HEADER));
 
         for(Purchase purchase : allPurchases) {

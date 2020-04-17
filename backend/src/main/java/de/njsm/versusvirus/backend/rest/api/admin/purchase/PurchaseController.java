@@ -2,7 +2,6 @@ package de.njsm.versusvirus.backend.rest.api.admin.purchase;
 
 import de.njsm.versusvirus.backend.service.purchase.*;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -52,7 +49,7 @@ public class PurchaseController {
         purchaseService.publishPurchase(purchase);
     }
 
-    @RequestMapping("/{id}/availablevolunteers")
+    @GetMapping("/{id}/availablevolunteers")
     public List<VolunteerDTO> getAvailableVolunteers(@PathVariable("id") UUID purchaseId) {
         return purchaseService.getAvailableVolunteers(purchaseId);
     }
@@ -89,10 +86,13 @@ public class PurchaseController {
         purchaseService.export(response.getWriter(), purchaseId);
     }
 
-    @GetMapping("/export/{startDate}/{endDate}")
-    public void exportAll(@PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                            @PathVariable("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+    @GetMapping("/exports/{startDate}/{endDate}")
+    public void exportAll(@PathVariable("startDate") String inputStartDate,
+                            @PathVariable("endDate") String inputEndDate,
                             HttpServletResponse response) throws IOException {
+        DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate startDate = LocalDate.parse(inputStartDate, europeanDateFormatter);
+        LocalDate endDate = LocalDate.parse(inputEndDate, europeanDateFormatter);
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"Einkaeufe_von_" + startDate.toString() + "_bis_" + endDate.toString() + ".csv\"");
         purchaseService.exportAll(response.getWriter(), startDate, endDate);
