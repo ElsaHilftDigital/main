@@ -119,7 +119,6 @@ const PurchaseDetailInternal = (props) => {
             <div className="flex-grow-0 justify-content-between align-items-bottom mb-3">
                 <h1>Details zum Einkauf vom {formatDate(purchase.createdAt)} für {purchase.customer.lastName}</h1>
                 <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
-                
             </div>
 
             <div className="flex-grow-0">

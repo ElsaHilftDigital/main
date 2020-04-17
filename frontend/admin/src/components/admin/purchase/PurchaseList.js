@@ -8,6 +8,7 @@ import { usePurchases } from 'hooks/usePurchases';
 import * as routes from 'routes';
 import { formatBoolean, formatDate, formatDateTime, parseDate } from 'config/utils';
 import StatusIndicator from 'components/StatusIndicator';
+import Title from 'components/Title';
 
 
 const PurchaseList = () => {
@@ -22,7 +23,7 @@ const PurchaseList = () => {
                 </ul>
             </span>
         );
-    };
+    }
 
     return (<>
         <Container fluid>
@@ -155,14 +156,6 @@ const DateListGroup = styled(ListGroup)`
     max-height: calc(100vh - 10rem);
     display: block !important;
     overflow-y: auto;
-`;
-
-const Title = styled.h2`
-    padding: 1rem;
-    height: 5rem;
-    vertical-align: middle;
-    display: table-cell;
-
 `;
 
 const PurchaseListItem = (props) => {
