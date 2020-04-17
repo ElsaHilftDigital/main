@@ -11,6 +11,8 @@ import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.spring.web.BadRequestException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,6 +51,8 @@ public class PurchaseService {
     private final ModeratorRepository moderatorRepository;
 
     private final MessageSender messageSender;
+
+    private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
     public PurchaseService(PurchaseRepository purchaseRepository, OrderItemRepository orderItemRepository, OrganizationRepository organizationRepository, CustomerRepository customerRepository, VolunteerRepository volunteerRepository, ModeratorRepository moderatorRepository, MessageSender messageSender) {
         this.purchaseRepository = purchaseRepository;
@@ -231,15 +236,30 @@ public class PurchaseService {
 
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
-        var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
-        purchase.writeToCsv(writer, customer, volunteer);
+        var customer = customerRepository.findById(purchase.getCustomerId());
+        var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer());
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
+                                    .withHeader(EXPORT_CSV_HEADER));
+        purchase.writeToCsv(csvPrinter, customer, volunteer);
     }
 
-    public String exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
+    public void exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
         List<Purchase> allPurchases = purchaseRepository.findAll(Sort.by("createTime"));
 
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
+                                    .withHeader(EXPORT_CSV_HEADER));
 
-        return "";
+        for(Purchase purchase : allPurchases) {
+            LocalDate createDate = LocalDate.ofInstant(purchase.getCreateTime(), ZoneId.systemDefault());
+            if (createDate.isBefore(startDate)) {
+                continue;
+            }
+            if (createDate.isAfter(endDate)) {
+                break;
+            }
+            var customer = customerRepository.findById(purchase.getCustomerId());
+            var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer());
+            purchase.writeToCsv(csvPrinter, customer, volunteer);
+        }
     }
 }

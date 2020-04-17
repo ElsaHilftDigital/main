@@ -1,20 +1,17 @@
 package de.njsm.versusvirus.backend.domain;
 
+import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity
@@ -25,8 +22,6 @@ public class Purchase {
     private long id;
 
     private UUID uuid;
-
-    private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -81,34 +76,33 @@ public class Purchase {
         this.receiptMimeType = receiptMimeType;
     }
 
-    public void writeToCsv(PrintWriter writer, Customer customer, Volunteer volunteer) throws IOException {
+    public void writeToCsv(CSVPrinter csvPrinter, Optional<Customer> customer,
+                           Optional<Volunteer> volunteer) throws IOException {
         DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE
-                                    .withLocale(Locale.GERMANY)
-                                    .withZone(ZoneId.systemDefault());
+                .withLocale(Locale.GERMANY)
+                .withZone(ZoneId.systemDefault());
 
-        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
-                                    .withHeader(EXPORT_CSV_HEADER));
         csvPrinter.printRecord(
-            "",
-            getStatus().displayName(),
-            format.format(createTime),
-            getPaymentMethod().displayName(),
-            getCost().toString(),
+                getId(),
+                getStatus().displayName(),
+                format.format(getCreateTime()),
+                getPaymentMethod().displayName(),
+                getCost().toString(),
 
-            volunteer.getLastName(),
-            volunteer.getFirstName(),
-            volunteer.getAddress().getAddress(),
-            volunteer.getAddress().getZipCode(),
-            volunteer.getAddress().getCity(),
-            volunteer.getBirthDate().toString(),
-            volunteer.getIban(),
-            volunteer.getWantsCompensation() ? "10" : "0",
+                volunteer.map(Volunteer::getLastName).orElse(""),
+                volunteer.map(Volunteer::getFirstName).orElse(""),
+                volunteer.map(Volunteer::getAddress).map(Address::getAddress).orElse(""),
+                volunteer.map(Volunteer::getAddress).map(Address::getZipCode).orElse(""),
+                volunteer.map(Volunteer::getAddress).map(Address::getCity).orElse(""),
+                volunteer.map(Volunteer::getBirthDate).map(LocalDate::toString).orElse(""),
+                volunteer.flatMap(v -> Optional.ofNullable(v.getIban())).orElse(""),
+                volunteer.map(v -> v.getWantsCompensation() ? "10" : "0").orElse(""),
 
-            customer.getLastName(),
-            customer.getFirstName(),
-            customer.getAddress().getAddress(),
-            customer.getAddress().getZipCode(),
-            customer.getAddress().getCity()
+                customer.map(Customer::getLastName).orElse(""),
+                customer.map(Customer::getFirstName).orElse(""),
+                customer.map(Customer::getAddress).map(Address::getAddress).orElse(""),
+                customer.map(Customer::getAddress).map(Address::getZipCode).orElse(""),
+                customer.map(Customer::getAddress).map(Address::getCity).orElse("")
         );
     }
 
@@ -196,6 +190,7 @@ public class Purchase {
                 return "grosser Einkauf";
             }
         };
+
         public abstract String displayName();
     }
 
@@ -224,6 +219,7 @@ public class Purchase {
                 return "Andere";
             }
         };
+
         public abstract String displayName();
     }
 

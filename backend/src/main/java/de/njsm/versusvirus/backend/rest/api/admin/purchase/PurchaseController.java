@@ -90,12 +90,11 @@ public class PurchaseController {
     }
 
     @GetMapping("/export/{startDate}/{endDate}")
-    public String exportAll(@PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+    public void exportAll(@PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                             @PathVariable("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                             HttpServletResponse response) throws IOException {
-        var result = purchaseService.exportAll(response.getWriter(), startDate, endDate);
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"Einkaeufe_von_" + startDate.toString() + "_bis_" + endDate.toString() + ".csv\"");
-        return result;
+        purchaseService.exportAll(response.getWriter(), startDate, endDate);
     }
 }
