@@ -89,7 +89,7 @@ public class Purchase {
                 volunteer.getAddress().getAddress(),
                 volunteer.getAddress().getZipCode(),
                 volunteer.getAddress().getCity(),
-                volunteer.getBirthDate(),
+                volunteer.getBirthDate().toString(),
                 volunteer.getIban(),
                 volunteer.getWantsCompensation() ? "10" : "0",
 
