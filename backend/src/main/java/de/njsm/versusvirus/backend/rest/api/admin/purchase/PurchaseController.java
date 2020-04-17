@@ -2,10 +2,12 @@ package de.njsm.versusvirus.backend.rest.api.admin.purchase;
 
 import de.njsm.versusvirus.backend.service.purchase.*;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -80,24 +82,18 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}/export")
-    public String export(@PathVariable("id") UUID purchaseId,
-                         HttpServletResponse response) {
-        var result = purchaseService.export(purchaseId);
+    public void export(@PathVariable("id") UUID purchaseId,
+                         HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"purchase-" + purchaseId + ".csv\"");
-        return result;
+        purchaseService.export(response.getWriter(), purchaseId);
     }
 
-    @GetMapping("/{startDate}/{endDate}/export")
-    public String exportAll(@PathVariable("startDate") String startDateInput,
-                         @PathVariable("endDate") String endDateInput,
-                         HttpServletResponse response) {
-        DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-                                                    .withLocale(Locale.GERMANY)
-                                                    .withZone(ZoneId.systemDefault());
-        LocalDate startDate = LocalDate.parse(startDateInput, europeanDateFormatter);
-        LocalDate endDate = LocalDate.parse(endDateInput, europeanDateFormatter);
-        var result = purchaseService.exportAll(startDate, endDate);
+    @GetMapping("/export/{startDate}/{endDate}")
+    public String exportAll(@PathVariable("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                            @PathVariable("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                            HttpServletResponse response) throws IOException {
+        var result = purchaseService.exportAll(response.getWriter(), startDate, endDate);
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"Einkaeufe_von_" + startDate.toString() + "_bis_" + endDate.toString() + ".csv\"");
         return result;

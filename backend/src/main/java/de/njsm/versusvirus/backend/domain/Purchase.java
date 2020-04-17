@@ -1,8 +1,12 @@
 package de.njsm.versusvirus.backend.domain;
 
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 import javax.persistence.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -11,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 @Entity
 public class Purchase {
@@ -21,6 +25,8 @@ public class Purchase {
     private long id;
 
     private UUID uuid;
+
+    private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -75,33 +81,34 @@ public class Purchase {
         this.receiptMimeType = receiptMimeType;
     }
 
-    public String renderToCsv(Customer customer, Volunteer volunteer) {
+    public void writeToCsv(PrintWriter writer, Customer customer, Volunteer volunteer) throws IOException {
         DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE
                                     .withLocale(Locale.GERMANY)
                                     .withZone(ZoneId.systemDefault());
 
-        return String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-                // Auftragsnummer not available
-                "",
-                getStatus().displayName(),
-                format.format(createTime),
-                getPaymentMethod().displayName(),
-                getCost().toString(),
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
+                                    .withHeader(EXPORT_CSV_HEADER));
+        csvPrinter.printRecord(
+            "",
+            getStatus().displayName(),
+            format.format(createTime),
+            getPaymentMethod().displayName(),
+            getCost().toString(),
 
-                volunteer.getLastName(),
-                volunteer.getFirstName(),
-                volunteer.getAddress().getAddress(),
-                volunteer.getAddress().getZipCode(),
-                volunteer.getAddress().getCity(),
-                volunteer.getBirthDate().toString(),
-                volunteer.getIban(),
-                volunteer.getWantsCompensation() ? "10" : "0",
+            volunteer.getLastName(),
+            volunteer.getFirstName(),
+            volunteer.getAddress().getAddress(),
+            volunteer.getAddress().getZipCode(),
+            volunteer.getAddress().getCity(),
+            volunteer.getBirthDate().toString(),
+            volunteer.getIban(),
+            volunteer.getWantsCompensation() ? "10" : "0",
 
-                customer.getLastName(),
-                customer.getFirstName(),
-                customer.getAddress().getAddress(),
-                customer.getAddress().getZipCode(),
-                customer.getAddress().getCity()
+            customer.getLastName(),
+            customer.getFirstName(),
+            customer.getAddress().getAddress(),
+            customer.getAddress().getZipCode(),
+            customer.getAddress().getCity()
         );
     }
 

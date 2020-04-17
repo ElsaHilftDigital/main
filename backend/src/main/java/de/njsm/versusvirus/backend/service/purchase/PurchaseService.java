@@ -13,9 +13,12 @@ import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
@@ -226,20 +229,17 @@ public class PurchaseService {
         return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType());
     }
 
-    public String export(UUID purchaseId) {
+    public void export(PrintWriter writer, UUID purchaseId) throws IOException {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
-        return appendExportHeader(purchase.renderToCsv(customer, volunteer));
+        purchase.writeToCsv(writer, customer, volunteer);
     }
 
-    public String exportAll(LocalDate startDate, LocalDate endDate) {
+    public String exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
+        List<Purchase> allPurchases = purchaseRepository.findAll(Sort.by("createTime"));
+
 
         return "";
-    }
-
-    public String appendExportHeader(String content) {
-        String header = "Auftrag # ;Auftrag Status ;Auftrag Datum ;Auftrag Zahlungsmethode ;Auftrag Kosten ;Helfer Name ;Helfer Vorname ;Helfer Adresse ;Helfer PLZ ; Helfer Wohnort ;Helfer Geb.Dat. ;Helfer IBAN ;Helfer Entschädigung ;Kunde Name ;Kunde Vorname ;Kunde Adresse ;Kunde PLZ ;Kunde Wohnort\n\n";
-        return header.concat(content);
     }
 }
