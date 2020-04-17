@@ -42,8 +42,9 @@ const PurchaseListHeader = () => {
         }
         else {
             setIncorrectDates(false)
-            // make export
-            console.log(values.startDate, values.endDate)
+            const inputStartDate = parseDate(values.startDate.trim());
+            const inputEndDate = parseDate(values.endDate.trim());
+            window.open(routes.purchaseExportAll(inputStartDate, inputEndDate))
         }
     };
 
@@ -52,7 +53,7 @@ const PurchaseListHeader = () => {
             return false;
         }
 
-        const inputDate = parseDate(input.replace(/\s/g, ''));
+        const inputDate = parseDate(input.trim());
         if (!(inputDate instanceof Date && !isNaN(inputDate))) {
             return false;
         }
