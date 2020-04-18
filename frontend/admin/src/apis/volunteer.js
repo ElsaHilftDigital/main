@@ -1,46 +1,38 @@
 import axios from 'axios';
 
-import { BACKEND_URL } from '../config/constants';
-
-const adminClient = axios.create({ baseURL: `${BACKEND_URL}/v1/admin`});
-const anonymousClient = axios.create({ baseURL: `${BACKEND_URL}/v1/anonymous`});
+const client = axios.create({ baseURL: `/api/v1/admin`});
 
 export async function getVolunteers() {
-    const response = await adminClient.get(`/volunteers`);
+    const response = await client.get(`/volunteers`);
     return response.data;
-};
+}
 
 export async function getVolunteer(uuid) {
-    const response = await adminClient.get(`volunteers/${uuid}`);
+    const response = await client.get(`volunteers/${uuid}`);
     return response.data;
-};
-
-export async function createVolunteer(volunteer) {
-    const response = await anonymousClient.post(`/volunteers`, volunteer);
-    return response.data;
-};
+}
 
 export async function updateVolunteer(uuid, volunteer) {
-    const response = await adminClient.put(`/volunteers/${uuid}`, volunteer);
+    const response = await client.put(`/volunteers/${uuid}`, volunteer);
     return response.data;
-};
+}
 
 export async function deleteVolunteer(uuid) {
-    const response = await adminClient.delete(`/volunteers/${uuid}`);
-    return response;
-};
+    const response = await client.delete(`/volunteers/${uuid}`);
+    return response.data;
+}
 
 export async function validateVolunteer(uuid) {
-    const response = await adminClient.post(`/volunteers/${uuid}/validate`);
+    const response = await client.post(`/volunteers/${uuid}/validate`);
     return response.data;
-};
+}
 
 export async function getCompletedPurchaseList(uuid) {
-    const response = await adminClient.get(`/volunteers/${uuid}/completed-purchases`);
+    const response = await client.get(`/volunteers/${uuid}/completed-purchases`);
     return response.data;
-};
+}
 
 export async function getOpenPurchaseList(uuid) {
-    const response = await adminClient.get(`/volunteers/${uuid}/open-purchases`);
+    const response = await client.get(`/volunteers/${uuid}/open-purchases`);
     return response.data;
-};
+}
