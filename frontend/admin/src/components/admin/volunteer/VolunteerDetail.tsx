@@ -143,24 +143,6 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
                     <label htmlFor="bankName">Bank Name</label>
                     <input name="bankName" ref={register({ required: true })} type="text" className="form-control" id="bankName" />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="amountPurchases">Anzahl Einkäufe</label>
-                    <input name="amountPurchases" type="text" className="form-control" id="amountPurchases" disabled />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="displayTablePurchases">Erledigte Einkäufe</label>
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Datum</th>
-                                <th>Kundenname</th>
-                                <th>Gemeinde</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
                 <button type="submit" className="btn btn-primary">Speichern</button>
                 {showSaveToast &&
                     <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>

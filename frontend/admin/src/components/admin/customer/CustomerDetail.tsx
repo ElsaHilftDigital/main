@@ -112,32 +112,6 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-6">
-                        <div className="form-group row">
-                            <label htmlFor="finishedJobs" className="col-sm-4 col-form-label">Abgeschlossene
-                                Anfragen</label>
-                            <div className="col-sm-8">
-                                <input disabled name="finishedJobs" ref={register()} type="text"
-                                       className="form-control" id="finishedJobs"/>
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="openJobs" className="col-sm-4 col-form-label">Offene Anfragen</label>
-                            <div className="col-sm-8">
-                                <input disabled name="openJobs" ref={register()} type="text"
-                                       className="form-control"
-                                       id="openJobs"/>
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="openPaymentAmount" className="col-sm-4 col-form-label">Offener
-                                Betrag</label>
-                            <div className="col-sm-8">
-                                <input disabled name="openPaymentAmount" ref={register()} type="text"
-                                       className="form-control" id="openPaymentAmount"/>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <button type="submit" className="btn btn-primary">Speichern</button>
                 {showSaveToast &&
