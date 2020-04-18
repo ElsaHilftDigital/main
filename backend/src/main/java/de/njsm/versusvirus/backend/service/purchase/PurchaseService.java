@@ -238,7 +238,7 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId());
         var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer());
-        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.newFormat(';')
                                     .withHeader(EXPORT_CSV_HEADER));
         purchase.writeToCsv(csvPrinter, customer, volunteer);
     }
