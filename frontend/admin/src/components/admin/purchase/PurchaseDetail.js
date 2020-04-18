@@ -68,12 +68,7 @@ const PurchaseDetailInternal = (props) => {
     }
 
     const exportPurchase = () => {
-        if (!purchase.assignedVolunteer) {
-            window.confirm('Export kann erst durchgeführt werden, nachdem ein Helfer zugeordnet wurde.')
-        }
-        else {
-            window.location = routes.purchaseExport(purchase.uuid);
-        }
+        window.location = routes.purchaseExport(purchase.uuid);
     }
 
     const onSubmit = (data) => {
