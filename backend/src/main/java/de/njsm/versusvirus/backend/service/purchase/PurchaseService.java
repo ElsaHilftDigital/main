@@ -238,7 +238,7 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId());
         var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById);
-        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.newFormat(';')
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withDelimiter(';')
                                     .withHeader(EXPORT_CSV_HEADER));
         purchase.writeToCsv(csvPrinter, customer, volunteer);
     }
@@ -246,7 +246,7 @@ public class PurchaseService {
     public void exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
         List<Purchase> allPurchases = purchaseRepository.findAll(Sort.by("createTime"));
 
-        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.newFormat(';')
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withDelimiter(';')
                                     .withHeader(EXPORT_CSV_HEADER));
 
         for(Purchase purchase : allPurchases) {
