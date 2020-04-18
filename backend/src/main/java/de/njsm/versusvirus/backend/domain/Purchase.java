@@ -96,6 +96,7 @@ public class Purchase {
                 volunteer.map(Volunteer::getAddress).map(Address::getCity).orElse(""),
                 volunteer.map(Volunteer::getBirthDate).map(LocalDate::toString).orElse(""),
                 volunteer.flatMap(v -> Optional.ofNullable(v.getIban())).orElse(""),
+                volunteer.flatMap(v -> Optional.ofNullable(v.getBankName())).orElse(""),
                 volunteer.map(v -> v.getWantsCompensation() ? "10" : "0").orElse(""),
 
                 customer.map(Customer::getLastName).orElse(""),
