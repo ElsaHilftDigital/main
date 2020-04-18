@@ -46,6 +46,7 @@ public class TelegramMessages {
     private String unexpectedImage;
     private String forwardedMessage;
     private String registrationEmail;
+    private String rejectApplication;
 
     public String getUnknownVolunteer() {
         return unknownVolunteer;
@@ -329,5 +330,13 @@ public class TelegramMessages {
 
     public void setVolunteerResignationWarning(String volunteerResignationWarning) {
         this.volunteerResignationWarning = volunteerResignationWarning;
+    }
+
+    public String getRejectApplication() {
+        return this.rejectApplication;
+    }
+
+    public void setRejectApplication(String rejectApplication) {
+        this.rejectApplication = rejectApplication;
     }
 }

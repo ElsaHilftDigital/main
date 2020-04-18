@@ -126,17 +126,7 @@ public class MessageSender {
     }
 
     private MessageToBeSent composeBroadcastMessage(Organization organization, Customer customer, Purchase purchase) {
-        String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
-        String supermarketList = purchase.getPurchaseSupermarketList().stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(", "));
-        String comment = purchase.getPublicComments();
-        String purchaseDesc = MessageFormat.format(
-                purchaseDescTemplate,
-                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
-                AdminMessageSender.escapeMarkdownCharacters(supermarketList),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
-                purchase.getPurchaseSize().displayName(),
-                AdminMessageSender.escapeMarkdownCharacters(comment)
-        );
+        String purchaseDesc = renderBroadcastPurchaseDescription(customer, purchase);
 
         String template = telegramMessages.getBroadcastPurchase();
         String callbackQuery = CallbackCommand.HELP_OFFER.render(purchase.getUuid());
@@ -145,6 +135,20 @@ public class MessageSender {
         return new MessageToBeSent(organization.getTelegramGroupChatId(),
                 text,
                 new InlineKeyboardButton(telegramMessages.getOfferHelp(), callbackQuery));
+    }
+
+    private String renderBroadcastPurchaseDescription(Customer customer, Purchase purchase) {
+        String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
+        String supermarketList = purchase.getPurchaseSupermarketList().stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(", "));
+        String comment = purchase.getPublicComments();
+        return MessageFormat.format(
+                purchaseDescTemplate,
+                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
+                AdminMessageSender.escapeMarkdownCharacters(supermarketList),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
+                purchase.getPurchaseSize().displayName(),
+                AdminMessageSender.escapeMarkdownCharacters(comment)
+        );
     }
 
     public void offerPurchase(Purchase purchase, Customer customer, Volunteer volunteer) {
@@ -324,6 +328,13 @@ public class MessageSender {
     public void warnVolunteerFromResignation(long chatId) {
         var m = new MessageToBeSent(chatId, telegramMessages.getVolunteerResignationWarning(),
                 new InlineKeyboardButton("Account löschen", CallbackCommand.CONFIRM_DELETION.render(UUID.randomUUID())));
+        api.sendMessage(m);
+    }
+
+    public void sendRejectionToApplicant(long chatId, Customer customer, Purchase purchase) {
+        String template = telegramMessages.getRejectApplication();
+        String text = MessageFormat.format(template, renderBroadcastPurchaseDescription(customer, purchase));
+        var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }
 }
