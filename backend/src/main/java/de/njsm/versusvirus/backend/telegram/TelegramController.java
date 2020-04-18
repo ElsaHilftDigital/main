@@ -69,6 +69,12 @@ public class TelegramController {
             LOG.info("No message found");
             return;
         }
+        LOG.info("Received message from user {} {} {} {}",
+                message.getFrom().getFirstName(),
+                message.getFrom().getLastName(),
+                message.getFrom().getUserName(),
+                message.getFrom().getId());
+
 
         checkIfIJoinedAnExistingChat(message);
         checkIfIJoinedANewChat(message.getChat(), message.isGroupChatCreated());

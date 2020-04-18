@@ -98,3 +98,6 @@ databaseChangeLog:
   - include:
       file: 20200415-1950-split-purchase-comments.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200418-1044-add-support-telegram-account.sql
+      relativeToChangelogFile: true

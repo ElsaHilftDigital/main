@@ -23,11 +23,13 @@ public class MessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
-    private TelegramApi api;
-    private TelegramMessages telegramMessages;
+    private final TelegramApi api;
+
+    private final TelegramMessages telegramMessages;
+
     private final CustomerRepository customerRepository;
 
-    private String domain;
+    private final String domain;
 
     @Autowired
     public MessageSender(@Value("${deployment.domain}") String domain, TelegramApi api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
@@ -290,8 +292,10 @@ public class MessageSender {
         api.sendMessage(m);
     }
 
-    public void confirmConfirmation(long chatId) {
-        var m = new MessageToBeSent(chatId, telegramMessages.getThankForDoingPurchaseMessage());
+    public void confirmConfirmation(long chatId, Long telegramSupportChat) {
+        var template = telegramMessages.getThankForDoingPurchaseMessage();
+        var text = MessageFormat.format(template, "tg://user?id=" + telegramSupportChat);
+        var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }
 
