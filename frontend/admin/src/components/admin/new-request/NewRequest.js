@@ -157,7 +157,7 @@ const NewRequest = () => {
                             <input disabled name="phone" type="text" className="form-control" id="phone" value={customer.phone}/>
                         </div>
                         <div className="form-group col-md-6">
-                            <label htmlFor="mobile">Mobile</label>
+                            <label htmlFor="mobile">Mobil</label>
                             <input disabled name="mobile" type="text" className="form-control" id="mobile" value={customer.mobile}/>
                         </div>
                     </div>
@@ -214,8 +214,8 @@ const NewRequest = () => {
                         {errors.phone && (<span className="text-danger">Festnetz wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
-                        <label htmlFor="mobile">Mobile</label>
-                        <input name="mobile" type="text" ref={register()} className="form-control" id="mobile" placeholder="Mobile"/>
+                        <label htmlFor="mobile">Mobil</label>
+                        <input name="mobile" type="text" ref={register()} className="form-control" id="mobile" placeholder="Mobil"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary float-right">Weiter</button>

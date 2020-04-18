@@ -137,18 +137,14 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
                     <input name="wantsNoCompensation" ref={register()} type="checkbox" className="form-check-input" id="wantsNoCompensation" />
                     <label className="form-check-label" htmlFor="wantsNoCompensation">Möchte keine Entschädigung für seinen Einsatz</label>
                 </div>
-                {!wantsNoCompensation && <>
-                    <div className="form-group">
-                        <label htmlFor="iban">IBAN</label>
-                        <input name="iban" ref={register({ required: true })} type="text" className="form-control" id="iban" />
-                        {errors.iban && (<span className="text-danger">IBAN wird benötigt</span>)}
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="bankName">Bank Name</label>
-                        <input name="bankName" ref={register({ required: true })} type="text" className="form-control" id="bankName" />
-                        {errors.bankName && (<span className="text-danger">Bank Name wird benötigt</span>)}
-                    </div>
-                </>}
+                <div className="form-group">
+                    <label htmlFor="iban">IBAN</label>
+                    <input name="iban" ref={register({ required: true })} type="text" className="form-control" id="iban" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="bankName">Bank Name</label>
+                    <input name="bankName" ref={register({ required: true })} type="text" className="form-control" id="bankName" />
+                </div>
                 <div className="form-group">
                     <label htmlFor="amountPurchases">Anzahl Einkäufe</label>
                     <input name="amountPurchases" type="text" className="form-control" id="amountPurchases" disabled />
@@ -158,9 +154,9 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
                     <table className="table table-striped">
                         <thead>
                             <tr>
+                                <th>Datum</th>
                                 <th>Kundenname</th>
                                 <th>Gemeinde</th>
-                                <th>Datum</th>
                             </tr>
                         </thead>
                         <tbody>

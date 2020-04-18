@@ -77,14 +77,14 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="phone" className="col-sm-3 col-form-label">Telefonnummer</label>
+                            <label htmlFor="phone" className="col-sm-3 col-form-label">Festnetz</label>
                             <div className="col-sm-9">
                                 <input name="phone" ref={register()} type="text" className="form-control"
                                        id="phone"/>
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="mobile" className="col-sm-3 col-form-label">Mobile</label>
+                            <label htmlFor="mobile" className="col-sm-3 col-form-label">Mobil</label>
                             <div className="col-sm-9">
                                 <input name="mobile" ref={register()} type="text" className="form-control"
                                        id="mobile"/>
@@ -114,14 +114,6 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                     </div>
                     <div className="col-lg-6">
                         <div className="form-group row">
-                            <label htmlFor="paymentMethod"
-                                   className="col-sm-4 col-form-label">Zahlungsmittel</label>
-                            <div className="col-sm-8">
-                                <input disabled name="paymentMethod" ref={register()} type="text"
-                                       className="form-control" id="paymentMethod"/>
-                            </div>
-                        </div>
-                        <div className="form-group row">
                             <label htmlFor="finishedJobs" className="col-sm-4 col-form-label">Abgeschlossene
                                 Anfragen</label>
                             <div className="col-sm-8">
@@ -143,13 +135,6 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                             <div className="col-sm-8">
                                 <input disabled name="openPaymentAmount" ref={register()} type="text"
                                        className="form-control" id="openPaymentAmount"/>
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="shoppingList" className="col-sm-4 col-form-label">Einkaufsliste</label>
-                            <div className="col-sm-8">
-                                <input disabled name="shoppingList" ref={register()} type="text"
-                                       className="form-control" id="shoppingList"/>
                             </div>
                         </div>
                     </div>
