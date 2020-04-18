@@ -72,7 +72,7 @@ const PurchaseDetailInternal = (props) => {
             window.confirm('Export kann erst durchgeführt werden, nachdem ein Helfer zugeordnet wurde.')
         }
         else {
-            window.open(routes.purchaseExport(purchase.uuid));
+            window.location = routes.purchaseExport(purchase.uuid);
         }
     }
 
@@ -131,7 +131,7 @@ const PurchaseDetailInternal = (props) => {
                         onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <>
                     <Button className="mr-3 mb-1"
-                        onClick={() => window.open(routes.purchaseReceipt(purchase.uuid))}>Quittung ansehen</Button>
+                        onClick={() => window.location = routes.purchaseReceipt(purchase.uuid)}>Quittung ansehen</Button>
                     <Button className="mr-3 mb-1"
                         onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
                 </>}

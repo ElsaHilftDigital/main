@@ -42,7 +42,7 @@ public class PurchaseListItemDTO {
         }
         this.statusIndicator = StatusIndicator.get(purchase.getStatus());
         this.status = purchase.getStatus().displayName();
-        this.cost = Optional.ofNullable(purchase.getCost()).map(BigDecimal::doubleValue).orElse(null);
+        this.cost = purchase.getCost().map(BigDecimal::doubleValue).orElse(null);
         this.paid = purchase.getStatus() == Purchase.Status.PURCHASE_COMPLETED;
         this.deadline = purchase.getTiming();
         this.responsible = responsibleModerator.getName();

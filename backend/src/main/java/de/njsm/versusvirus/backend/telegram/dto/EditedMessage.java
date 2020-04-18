@@ -21,6 +21,10 @@ public class EditedMessage {
     @JsonProperty("reply_markup")
     private InlineKeyboardMarkup buttons;
 
+    public EditedMessage(long chatId, long messageId, String text, InlineKeyboardButton... buttons) {
+        this(chatId, messageId, text, new InlineKeyboardMarkup(buttons));
+    }
+
     public EditedMessage(long chatId, long messageId, String text, InlineKeyboardMarkup buttons) {
         this.chatId = chatId;
         this.messageId = messageId;

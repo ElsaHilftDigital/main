@@ -38,9 +38,9 @@ public class PurchaseDTO {
         size = p.getPurchaseSize();
         publicComments = p.getPublicComments();
         privateComments = p.getPrivateComments();
-        cost = Optional.ofNullable(p.getCost()).map(BigDecimal::doubleValue).orElse(null);
+        cost = p.getCost().map(BigDecimal::doubleValue).orElse(null);
         expensesPaid = p.isExpensesPaid();
-        assignedVolunteer = p.getAssignedVolunteer();
+        assignedVolunteer = p.getAssignedVolunteer().orElse(null);
         createdByModerator = p.getCreatedByModerator();
         customer = p.getCustomerId();
         createDate = p.getCreateTime().toString();

@@ -54,6 +54,7 @@ const PurchaseListHeader = () => {
     });
 
     const onExport = (values) => {
+        console.log(values);
         if (parseDate(values.startDate) > parseDate(values.endDate)){
             setIncorrectDates(true)
         }
@@ -61,7 +62,7 @@ const PurchaseListHeader = () => {
             setIncorrectDates(false)
             const inputStartDate = parseDate(values.startDate.trim());
             const inputEndDate = parseDate(values.endDate.trim());
-            window.open(routes.purchaseExportAll(inputStartDate, inputEndDate))
+            window.location = routes.purchaseExportAll(inputStartDate, inputEndDate);
         }
     };
 

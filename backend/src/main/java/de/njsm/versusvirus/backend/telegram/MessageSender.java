@@ -166,6 +166,18 @@ public class MessageSender {
             return;
         }
 
+        String text = renderPrivatePurchaseList(purchase, customer);
+
+        String acceptCommand = CallbackCommand.CONFIRM_HELP.render(purchase.getUuid());
+        String rejectCommand = CallbackCommand.WITHDRAW_HELP.render(purchase.getUuid());
+        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(),
+                text,
+                new InlineKeyboardButton(telegramMessages.getYes(), acceptCommand),
+                new InlineKeyboardButton(telegramMessages.getNo(), rejectCommand));
+        api.sendMessage(message);
+    }
+
+    private String renderPrivatePurchaseList(Purchase purchase, Customer customer) {
         StringBuilder purchaseList = new StringBuilder();
         for (PurchaseSupermarket m : purchase.getPurchaseSupermarketList()) {
             // This is telegram markdownv2 -> escape dashes
@@ -197,17 +209,17 @@ public class MessageSender {
         );
 
         String template = telegramMessages.getOfferPurchase();
-        String acceptCommand = CallbackCommand.CONFIRM_HELP.render(purchase.getUuid());
-        String rejectCommand = CallbackCommand.WITHDRAW_HELP.render(purchase.getUuid());
-        String text = MessageFormat.format(
+        return MessageFormat.format(
                 template,
                 purchaseDesc);
+    }
 
-        MessageToBeSent message = new MessageToBeSent(volunteer.getTelegramChatId(),
-                text,
-                new InlineKeyboardButton(telegramMessages.getYes(), acceptCommand),
-                new InlineKeyboardButton(telegramMessages.getNo(), rejectCommand));
-        api.sendMessage(message);
+    public void removePurchaseDetailButtons(long chatId, long messageId, Purchase purchase, Customer customer) {
+        String text = renderPrivatePurchaseList(purchase, customer);
+        EditedMessage message = new EditedMessage(chatId,
+                messageId,
+                text);
+        api.editMessage(message);
     }
 
     public void confirmReceiptPurchaseMapping(Volunteer volunteer, List<Purchase> purchases) {

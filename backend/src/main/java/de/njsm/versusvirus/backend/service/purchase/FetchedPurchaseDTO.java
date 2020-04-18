@@ -49,7 +49,7 @@ public class FetchedPurchaseDTO {
         this.size = purchase.getPurchaseSize();
         this.publicComments = purchase.getPublicComments();
         this.privateComments = purchase.getPrivateComments();
-        this.cost = Optional.ofNullable(purchase.getCost()).map(BigDecimal::doubleValue).orElse(null);
+        this.cost = purchase.getCost().map(BigDecimal::doubleValue).orElse(null);
         this.customer = new CustomerDTO(customer);
         this.expensesPaid = purchase.isExpensesPaid();
         this.createdBy = createdBy.getName();
