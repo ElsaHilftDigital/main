@@ -65,7 +65,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         setValue('city', currentVolunteer.city);
         setValue('birthDate', formatDate(currentVolunteer.birthDate));
         setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation);
-        setValue('iban', currentVolunteer.ibane);
+        setValue('iban', currentVolunteer.iban);
         setValue('bankName', currentVolunteer.bankName);
     }, [setValue, currentVolunteer]);
 
@@ -125,7 +125,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
                         <div className="form-group row">
                             <label htmlFor="iban" className="col-sm-3 col-form-label">IBAN</label>
                             <div className="col-sm-9">
-                                <input name="iban" ref={register({ required: true })} type="text" className="form-control" id="iban" /> 
+                                <input name="iban" ref={register()} type="text" className="form-control" id="iban" /> 
                             </div>
                         </div>
                     </div>
@@ -161,7 +161,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
                         <div className="form-group row">
                             <label htmlFor="bankName" className="col-sm-3 col-form-label">Bank Name</label>
                             <div className="col-sm-9">
-                                <input name="bankName" ref={register({ required: true })} type="text" className="form-control" id="bankName" />
+                                <input name="bankName" ref={register()} type="text" className="form-control" id="bankName" />
                             </div>
                         </div>
                     </div>

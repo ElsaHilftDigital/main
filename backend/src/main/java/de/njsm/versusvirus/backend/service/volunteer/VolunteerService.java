@@ -115,8 +115,8 @@ public class VolunteerService {
         volunteer.setEmail(updateRequest.email);
         volunteer.setPhone(updateRequest.phone);
         volunteer.setBirthDate(updateRequest.birthDate);
-        volunteer.setIban(updateRequest.iban);
-        volunteer.setBankName(updateRequest.bankName);
+        if (!updateRequest.iban.equals("")) volunteer.setIban(updateRequest.iban);
+        if (!updateRequest.bankName.equals("")) volunteer.setBankName(updateRequest.bankName);
         volunteer.setWantsCompensation(updateRequest.wantsCompensation);
     }
 
