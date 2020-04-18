@@ -13,7 +13,11 @@ const VolunteerDetail = () => {
     const { volunteer } = useVolunteer(volunteerId);
 
     if (!volunteer) {
-        return <span>...Loading</span>;
+        return(
+            <div className="container mt-3 mb-5">
+                <div className="spinner-border"></div>
+            </div>
+        );
     }
     return <VolunteerDetailInternal currentVolunteer={volunteer}/>;
 };
@@ -43,7 +47,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         setShowSaveToast(true);
     };
 
-    const { register, handleSubmit, errors, watch, setValue } = useForm({
+    const { register, handleSubmit, errors, setValue } = useForm({
         defaultValues: {
             ...currentVolunteer,
             birthDate: formatDate(currentVolunteer.birthDate),
@@ -89,60 +93,86 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
 
             <form onSubmit={handleSubmit(onSubmit)} style={{ paddingTop: "1em" }}>
                 <div className="row">
-                    <div className="form-group col-md-6">
-                        <label htmlFor="firstName">Vorname</label>
-                        <input name="firstName" ref={register({ required: true })} type="text" className="form-control" id="firstName" placeholder="Vorname" />
-                        {errors.firstName && (<span className="text-danger">Vorname wird benötigt</span>)}
+                    <div className="col-lg-6">
+                        <div className="form-group row">
+                            <label htmlFor="firstName" className="col-sm-3 col-form-label">Vorname</label>
+                            <div className="col-sm-9">
+                                <input name="firstName" ref={register({ required: true })} type="text" className="form-control" id="firstName" placeholder="Vorname" />
+                            </div>
+                            {errors.firstName && (<span className="text-danger">Vorname wird benötigt</span>)}
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="phone" className="col-sm-3 col-form-label">Telefonnummer</label>
+                            <div className="col-sm-9">
+                                <input name="phone" ref={register({ required: true })} type="tel" className="form-control" id="phone" placeholder="+41781234567" />
+                            </div>
+                            {errors.phone && (<span className="text-danger">Telefonnummer wird benötigt</span>)}
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="email" className="col-sm-3 col-form-label">E-Mail</label>
+                            <div className="col-sm-9">
+                                <input name="email" ref={register({ required: true })} type="email" className="form-control" id="email" placeholder="elsa@baden.ch" />
+                            </div>
+                            {errors.email && (<span className="text-danger">E-mail wird benötigt</span>)}
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="zipCode" className="col-sm-3 col-form-label">PLZ</label>
+                            <div className="col-sm-9">
+                                <input name="zipCode" ref={register({ required: true })} type="text" className="form-control" id="zipCode" placeholder="8000" />    
+                            </div>
+                            {errors.zipCode && (<span className="text-danger">PLZ wird benötigt</span>)}
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="iban" className="col-sm-3 col-form-label">IBAN</label>
+                            <div className="col-sm-9">
+                                <input name="iban" ref={register({ required: true })} type="text" className="form-control" id="iban" /> 
+                            </div>
+                        </div>
                     </div>
-                    <div className="form-group col-md-6">
-                        <label htmlFor="lastName">Name</label>
-                        <input name="lastName" ref={register({ required: true })} type="text" className="form-control" id="lastName" placeholder="Name" />
-                        {errors.lastName && (<span className="text-danger">Name wird benötigt</span>)}
+
+                    <div className="col-lg-6">
+                        <div className="form-group row">
+                            <label htmlFor="lastName" className="col-sm-3 col-form-label">Name</label>
+                            <div className="col-sm-9">
+                                <input name="lastName" ref={register({ required: true })} type="text" className="form-control" id="lastName" placeholder="Name" />
+                            </div>
+                            {errors.lastName && (<span className="text-danger">Name wird benötigt</span>)}
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="birthDate" className="col-sm-3 col-form-label">Geburtstag</label>
+                            <div className="col-sm-9">
+                                <input name="birthDate" ref={register({ required: true })} type="text" className="form-control" id="birthDate" />   
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="address" className="col-sm-3 col-form-label">Strasse, Nr.</label>
+                            <div className="col-sm-9">
+                                <input name="address" ref={register({ required: true })} type="text" className="form-control" id="address" placeholder="Hauptrasse 1" />
+                            </div>
+                            {errors.address && (<span className="text-danger">Addresse wird benötigt</span>)}
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="city" className="col-sm-3 col-form-label">Ort</label>
+                            <div className="col-sm-9">
+                                <input name="city" ref={register({ required: true })} type="text" className="form-control" id="city" placeholder="Zürich" />
+                            </div>
+                            {errors.city && (<span className="text-danger">Ort wird benötigt</span>)}
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="bankName" className="col-sm-3 col-form-label">Bank Name</label>
+                            <div className="col-sm-9">
+                                <input name="bankName" ref={register({ required: true })} type="text" className="form-control" id="bankName" />
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="phone">Telefonnummer</label>
-                    <input name="phone" ref={register({ required: true })} type="tel" className="form-control" id="phone" placeholder="+41781234567" />
-                    {errors.phone && (<span className="text-danger">Telefonnummer wird benötigt</span>)}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">E-Mail</label>
-                    <input name="email" ref={register({ required: true })} type="email" className="form-control" id="email" placeholder="elsa@baden.ch" />
-                    {errors.email && (<span className="text-danger">E-mail wird benötigt</span>)}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="address">Strasse, Nr.</label>
-                    <input name="address" ref={register({ required: true })} type="text" className="form-control" id="address" placeholder="Hauptrasse 1" />
-                    {errors.address && (<span className="text-danger">Addresse wird benötigt</span>)}
-                </div>
-                <div className="row">
-                    <div className="form-group col-md-6">
-                        <label htmlFor="zipCode">PLZ</label>
-                        <input name="zipCode" ref={register({ required: true })} type="text" className="form-control" id="zipCode" placeholder="8000" />
-                        {errors.zipCode && (<span className="text-danger">PLZ wird benötigt</span>)}
-                    </div>
-                    <div className="form-group col-md-6">
-                        <label htmlFor="city">Ort</label>
-                        <input name="city" ref={register({ required: true })} type="text" className="form-control" id="city" placeholder="Zürich" />
-                        {errors.city && (<span className="text-danger">Ort wird benötigt</span>)}
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="birthDate">Geburtstag <small>(DD.MM.YYYY)</small></label>
-                    <input name="birthDate" ref={register({ required: true })} type="text" className="form-control" id="birthDate" />
-                </div>
-                <div className="form-check mb-2">
+
+                <div className="form-check mb-3">
                     <input name="wantsNoCompensation" ref={register()} type="checkbox" className="form-check-input" id="wantsNoCompensation" />
-                    <label className="form-check-label" htmlFor="wantsNoCompensation">Möchte keine Entschädigung für seinen Einsatz</label>
+                    <label className="form-check-label" htmlFor="wantsNoCompensation">Möchte keine Entschädigung für seinen / ihren Einsatz</label>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="iban">IBAN</label>
-                    <input name="iban" ref={register({ required: true })} type="text" className="form-control" id="iban" />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="bankName">Bank Name</label>
-                    <input name="bankName" ref={register({ required: true })} type="text" className="form-control" id="bankName" />
-                </div>
+                
+                
                 <button type="submit" className="btn btn-primary">Speichern</button>
                 {showSaveToast &&
                     <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>

@@ -13,7 +13,11 @@ const CustomerDetail = () => {
     const { customer } = useCustomer(customerId);
 
     if (!customer) {
-        return <span>...Loading</span>;
+        return(
+            <div className="container mt-3 mb-5">
+                <div className="spinner-border"></div>
+            </div>
+        );
     }
     return <CustomerDetailInternal selectedCustomer={customer}/>;
 };

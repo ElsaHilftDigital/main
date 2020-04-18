@@ -10,14 +10,12 @@ const CustomerList: React.FC = () => {
     const { customers } = useCustomers();
 
     if (!customers.length) {
-        return (
-            <span>
-                <span className="list-header mt-3 mb-2">Kunden</span>
-                <ul className="sidebar-nav">
-                    Keine Kunden
-                </ul>
-            </span>
-        );
+        return (<>
+                <Title>Kunden</Title>
+                <ListGroup.Item>
+                    <Row><b style={{padding: "1rem"}}>Keine Kunden vorhanden</b></Row>
+                </ListGroup.Item>
+        </>);
     }
 
     return (

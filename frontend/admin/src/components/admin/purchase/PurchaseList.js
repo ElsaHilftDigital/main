@@ -15,14 +15,25 @@ const PurchaseList = () => {
     const { purchases } = usePurchases();
 
     if (!purchases?.length) {
-        return (
-            <span>
-                <span className="list-header mt-3 mb-2">Einkäufe</span>
-                <ul className="sidebar-nav">
-                    Keine Einkäufe
-                </ul>
-            </span>
-        );
+        return (<>
+            <Container fluid>
+                <FlexRow>
+                    <DateCol md="4">
+                        <Title>Datum</Title>
+                    </DateCol>
+                    <Col>
+                        <div className="row">
+                            <div className="flex-column">
+                                <Title>Aufträge</Title>
+                            </div>
+                        </div>
+                        <ListGroup.Item>
+                            <Row><b style={{padding: "1rem"}}>Keine Aufträge vorhanden</b></Row>
+                        </ListGroup.Item>    
+                    </Col>
+                </FlexRow>
+            </Container>
+        </>);
     }
 
     return (<>

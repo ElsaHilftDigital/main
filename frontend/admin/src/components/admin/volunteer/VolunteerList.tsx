@@ -12,14 +12,12 @@ const VolunteerList: React.FC = () => {
     const { volunteers } = useVolunteers();
 
     if (!volunteers.length) {
-        return (
-            <span>
-                <span className="list-header mt-3 mb-2">Helfer</span>
-                <ul className="sidebar-nav">
-                    Keine Helfer
-                </ul>
-            </span>
-        );
+        return (<>
+            <Title>Helfer</Title>
+            <ListGroup.Item>
+                <Row><b style={{padding: "1rem"}}>Keine Helfer vorhanden</b></Row>
+            </ListGroup.Item>
+        </>);
     }
 
     const sortedVolunteers: any[] = volunteers.slice();

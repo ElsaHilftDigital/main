@@ -19,7 +19,11 @@ const PurchaseDetail = () => {
     const { moderators } = useModerators();
 
     if (!purchase) {
-        return <span>...Loading</span>;
+        return(
+            <div className="container mt-3 mb-5">
+                <div className="spinner-border"></div>
+            </div>
+        );
     }
 
     return <PurchaseDetailInternal purchase={purchase} moderators={moderators}/>;
@@ -123,18 +127,18 @@ const PurchaseDetailInternal = (props) => {
 
             <div className="flex-grow-0">
                 {purchase.status === "Neu" &&
-                    <Button className="m-3"
+                    <Button className="mr-3 mb-1"
                         onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <>
-                    <Button className="m-3"
+                    <Button className="mr-3 mb-1"
                         onClick={() => window.open(routes.purchaseReceipt(purchase.uuid))}>Quittung ansehen</Button>
-                    <Button className="m-3"
+                    <Button className="mr-3 mb-1"
                         onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
                 </>}
                 {(purchase.status === "Kein Geld deponiert" || purchase.status === "Ausgeliefert - Zahlung ausstehend" || purchase.status === "Wird ausgeliefert") &&
                     <Button
                         onClick={() => { markPurchaseAsCompleted() } }
-                        className="btn btn-primary m-1">Einkauf erledigt</Button>
+                        className="mr-3 mb-1">Einkauf erledigt</Button>
                 }
             </div>         
 
@@ -177,28 +181,35 @@ const PurchaseDetailInternal = (props) => {
                 {!purchase.assignedVolunteer && (
                     <span>
                         <div className="form-group">
-                            <label htmlFor="applyingVolunteers">Helfer wurde noch nicht ausgewählt</label>
-                            <p>
-                                <i>Helfer, die sich gemeldet haben:</i>
-                            </p>
-                            <table className="table table-striped" name="applyingVolunteers">
-                                <thead>
-                                    <tr>
-                                        <th>Vorname</th>
-                                        <th>Nachname</th>
-                                        <th>Auswahl</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {purchase.volunteerApplications.map((v) => {
-                                        return <tr key={v.uuid}>
-                                            <td>{v.firstName}</td>
-                                            <td>{v.lastName}</td>
-                                            <td><button type="button" className="btn btn-primary" onClick={() => assignVolunteer(v.uuid)}>Bestätigen</button></td>
-                                        </tr>
-                                    })}
-                                </tbody>
-                            </table>
+                            <label htmlFor="applyingVolunteers">Helfer/-in wurde noch nicht ausgewählt</label>
+                            {purchase.status === "Neu" &&
+                                <label><b>&nbsp;und dieser Auftrag wurde noch nicht an Helfer freigegeben</b></label>
+                            }
+                            {!(purchase.status === "Neu") && !(purchase.status === "Veröffentlicht") &&
+                                <>
+                                    <p>
+                                        <i>Helfer, die sich gemeldet haben:</i>
+                                    </p>
+                                    <table className="table table-striped" name="applyingVolunteers">
+                                        <thead>
+                                            <tr>
+                                                <th>Vorname</th>
+                                                <th>Nachname</th>
+                                                <th>Auswahl</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {purchase.volunteerApplications.map((v) => {
+                                                return <tr key={v.uuid}>
+                                                    <td>{v.firstName}</td>
+                                                    <td>{v.lastName}</td>
+                                                    <td><button type="button" className="btn btn-primary" onClick={() => assignVolunteer(v.uuid)}>Bestätigen</button></td>
+                                                </tr>
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </>
+                            }
                         </div>
                     </span>
                 )}
