@@ -71,7 +71,6 @@ function send() {
   echo "$DATA" | jq
   curl -v http://localhost:4000/api/v1/telegram/the/next/path/is/a/password/Wz4Bg0pZUybWCbyjjRxpol \
       -H 'Content-Type: application/json' \
-      -XPOST \
       -d "${1}"
 }
 
