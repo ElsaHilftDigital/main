@@ -37,7 +37,7 @@ function withdraw-help() {
 
 
 function upload-receipt() {
-  DATA='{"update_id": '$ID',"message":{"message_id":0,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"date":'"$(date +%s)"',"chat":{"id":1409,"type":"private"},"text":"",photo:[{"file_id":"fileid","file_unique_id":"fileuniqueid","width":5,"height":5,"file_size":25}]}}'
+  DATA='{"update_id": '$ID',"message":{"message_id":0,"from":{"id":1409,"is_bot":false,"first_name":"Test","last_name":"Volunteer"},"date":'"$(date +%s)"',"chat":{"id":1409,"type":"private"},"text":"","photo":[{"file_id":"fileid","file_unique_id":"fileuniqueid","width":5,"height":5,"file_size":25}]}}'
   send "$DATA"
 }
 
