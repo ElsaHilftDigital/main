@@ -87,7 +87,7 @@ public class Purchase {
                 getStatus().displayName(),
                 format.format(getCreateTime()),
                 getPaymentMethod().displayName(),
-                getCost().toString(),
+                getCost().map(BigDecimal::toPlainString).orElse(""),
 
                 volunteer.map(Volunteer::getLastName).orElse(""),
                 volunteer.map(Volunteer::getFirstName).orElse(""),
@@ -288,8 +288,8 @@ public class Purchase {
         this.receipt = receipt;
     }
 
-    public BigDecimal getCost() {
-        return cost;
+    public Optional<BigDecimal> getCost() {
+        return Optional.ofNullable(cost);
     }
 
     public void setCost(BigDecimal cost) {
@@ -320,8 +320,8 @@ public class Purchase {
         this.broadcastMessageId = broadcastMessageId;
     }
 
-    public Long getAssignedVolunteer() {
-        return assignedVolunteer;
+    public Optional<Long> getAssignedVolunteer() {
+        return Optional.ofNullable(assignedVolunteer);
     }
 
     public void setAssignedVolunteer(Long assignedVolunteer) {

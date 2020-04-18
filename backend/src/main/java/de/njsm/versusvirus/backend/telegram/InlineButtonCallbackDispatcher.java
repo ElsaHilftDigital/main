@@ -109,7 +109,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return new TelegramShouldBeFineException("Purchase has no customer");
         });
 
-        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+        if (purchase.getAssignedVolunteer().isPresent() &&
+                purchase.getAssignedVolunteer().get() != volunteer.getId()) {
             messageSender.blameHackingUser(message.getChat().getId());
             return;
         }
@@ -157,7 +158,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return new TelegramShouldBeFineException("Purchase has no customer");
         });
 
-        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+        if (purchase.getAssignedVolunteer().isPresent() &&
+                purchase.getAssignedVolunteer().get() != volunteer.getId()) {
             messageSender.blameHackingUser(chatId);
             return;
         }
@@ -204,7 +206,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return new TelegramShouldBeFineException("Organization not found");
         });
 
-        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+        if (purchase.getAssignedVolunteer().isPresent() &&
+                purchase.getAssignedVolunteer().get() != volunteer.getId()) {
             messageSender.blameHackingUser(message.getChat().getId());
             return;
         }
@@ -260,7 +263,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return new TelegramShouldBeFineException("volunteer not found");
         });
 
-        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+        if (purchase.getAssignedVolunteer().isPresent() &&
+                purchase.getAssignedVolunteer().get() != volunteer.getId()) {
             messageSender.blameHackingUser(chatId);
             return;
         }
@@ -297,7 +301,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return new TelegramShouldBeFineException("Organization not found");
         });
 
-        if (purchase.getAssignedVolunteer() != volunteer.getId()) {
+        if (purchase.getAssignedVolunteer().isPresent() &&
+                purchase.getAssignedVolunteer().get() != volunteer.getId()) {
             messageSender.blameHackingUser(chatId);
             return;
         }

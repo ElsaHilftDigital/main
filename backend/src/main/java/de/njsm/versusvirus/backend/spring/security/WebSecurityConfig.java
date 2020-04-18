@@ -39,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
+                .headers().cacheControl().disable()
+                .and()
                 .csrf().disable()
                 .httpBasic().disable()
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)

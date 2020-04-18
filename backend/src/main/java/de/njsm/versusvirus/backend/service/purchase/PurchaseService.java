@@ -118,7 +118,7 @@ public class PurchaseService {
         var volunteers = volunteerRepository.findAllById(
                 purchases.stream()
                         .map(Purchase::getAssignedVolunteer)
-                        .filter(Objects::nonNull)
+                        .flatMap(Optional::stream)
                         .collect(Collectors.toSet()))
                 .stream()
                 .collect(Collectors.toMap(Volunteer::getId, Function.identity()));
@@ -141,7 +141,7 @@ public class PurchaseService {
 
     public FetchedPurchaseDTO getFetchedPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        var assignedVolunteer = Optional.ofNullable(purchase.getAssignedVolunteer()).flatMap(volunteerRepository::findById).orElse(null);
+        var assignedVolunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById).orElse(null);
         var volunteerApplications = volunteerRepository.findAllById(purchase.getVolunteerApplications());
 
         // The following entities are loaded from not-null foreign keys, they should never fail
@@ -204,7 +204,7 @@ public class PurchaseService {
 
     public void customerNotified(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer()).orElseThrow(NotFoundException::new);
+        var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
 
         if (purchase.getStatus() == Purchase.Status.PURCHASE_DONE) {
@@ -237,7 +237,7 @@ public class PurchaseService {
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId());
-        var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer());
+        var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById);
         CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.newFormat(';')
                                     .withHeader(EXPORT_CSV_HEADER));
         purchase.writeToCsv(csvPrinter, customer, volunteer);
@@ -258,7 +258,7 @@ public class PurchaseService {
                 break;
             }
             var customer = customerRepository.findById(purchase.getCustomerId());
-            var volunteer = volunteerRepository.findById(purchase.getAssignedVolunteer());
+            var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById);
             purchase.writeToCsv(csvPrinter, customer, volunteer);
         }
     }
