@@ -43,7 +43,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         setShowSaveToast(true);
     };
 
-    const { register, handleSubmit, errors, watch, setValue } = useForm({
+    const { register, handleSubmit, errors, setValue } = useForm({
         defaultValues: {
             ...currentVolunteer,
             birthDate: formatDate(currentVolunteer.birthDate),
