@@ -119,6 +119,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             rejectApplicants(customer, purchase);
             purchase.getVolunteerApplications().clear();
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
+            messageSender.removePurchaseDetailButtons(message.getChat().getId(), message.getId(), purchase, customer);
             messageSender.confirmConfirmation(message.getChat().getId(), organization.getTelegramSupportChat());
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed unexpectedly");
@@ -167,6 +168,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 purchase.setStatus(Purchase.Status.PUBLISHED);
             }
             purchase.setAssignedVolunteer(null);
+            telegramApi.deleteMessage(message.getChat().getId(), message.getId());
             messageSender.confirmRejection(chatId);
             messageSender.updateBroadcastMessage(organization, customer, purchase);
             adminMessageSender.helperHasRejected(organization.getTelegramModeratorGroupChatId());
