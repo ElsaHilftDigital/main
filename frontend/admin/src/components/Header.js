@@ -7,7 +7,7 @@ import history from '../history';
 
 
 const StyledNavbar = styled(Navbar)`
-    min-height: 5rem;
+    max-height: 5rem;
 `;
 
 const Header = (props) => {
