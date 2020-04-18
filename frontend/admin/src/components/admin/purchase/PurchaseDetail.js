@@ -231,7 +231,7 @@ const PurchaseDetailInternal = (props) => {
 
                 <h5 className="mt-2"> Einkaufsdetails</h5>
                 <div className="form-group">
-                    <label htmlFor="timing">Braucht Einkauf</label>
+                    <label htmlFor="timing">Zeit</label>
                     <input name="timing" ref={register()} type="text" className="form-control" id="timing" />
                 </div>
                 <div className="form-group">
@@ -257,7 +257,9 @@ const PurchaseDetailInternal = (props) => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <i><a href="routes.purchaseReceipt(purchase.uuid)">Hier ist der Link zur Quittung, falls vorhanden.</a></i>
+                    {(!(purchase.status === "Neu") && !(purchase.status === "Veröffentlicht") && !(purchase.status === "Helfer gefunden") && !(purchase.status === "Helfer bestätigt")) &&
+                        <i><a href={routes.purchaseReceipt(purchase.uuid)}>Hier ist der Link zur Quittung.</a></i>
+                    }
                 </div>
                 <div className="form-group">
                     <label htmlFor="publicComments">Gruppenchat Kommentare</label>

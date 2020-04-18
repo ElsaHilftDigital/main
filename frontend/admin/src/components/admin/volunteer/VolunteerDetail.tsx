@@ -65,8 +65,6 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         setValue('bankName', currentVolunteer.bankName);
     }, [setValue, currentVolunteer]);
 
-    const wantsNoCompensation = watch('wantsNoCompensation');
-
     return (<>
         <div className="position-absolute d-flex flex-column">
             {showConfirmToast &&
