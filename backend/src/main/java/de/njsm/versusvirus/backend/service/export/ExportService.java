@@ -54,7 +54,7 @@ public class ExportService {
                 zipStream.putNextEntry(new ZipEntry(currentDirectory));
                 for (var purchase : purchases) {
                     var extension = TikaConfig.getDefaultConfig().getMimeRepository().forName(purchase.getReceiptMimeType()).getExtension();
-                    var fileName = String.format("%s%s.%s", currentDirectory, purchase.getId(), extension);
+                    var fileName = currentDirectory + purchase.getId() + extension;
                     zipStream.putNextEntry(new ZipEntry(fileName));
                     zipStream.write(purchase.getReceipt());
                 }
