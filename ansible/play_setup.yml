@@ -10,6 +10,8 @@
       tags: ssh_config
     - role: hostname
       tags: hostname
+    - role: nftables
+      tags: nftables
     - role: postgresql
       tags: postgresql
     - role: nginx

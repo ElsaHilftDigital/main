@@ -1,0 +1,11 @@
+---
+nftables: []
+# - name: mandatory
+#   address_family: optional
+#   chains:
+#     - name: mandatory
+#       type: mandatory
+#       hook: mandatory
+#       priority: 0
+#       policy: drop
+#       rules: []

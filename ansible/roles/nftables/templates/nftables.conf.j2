@@ -1,0 +1,22 @@
+#!/bin/nft -f
+# {{ ansible_managed }}
+
+flush ruleset
+
+{% for table in nftables %}
+table {{ table.address_family | default ('') }} {{ table.name }} {
+
+{% for chain in table.chains | default([]) %}
+  chain {{ chain.name }} {
+{% if chain.type is defined %}
+    type {{ chain.type }} hook {{ chain.hook }} priority {{ chain.priority | default(0) }};
+    policy {{ chain.policy | default('drop') }};
+{% endif %}
+{% for rule in chain.rules | default([]) %}
+    {{ rule }}
+{% endfor %}
+  }
+
+{% endfor %}
+}
+{% endfor %}
