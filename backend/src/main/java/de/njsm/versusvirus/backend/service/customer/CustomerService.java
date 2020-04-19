@@ -68,7 +68,7 @@ public class CustomerService {
         customer.setLastName(req.lastName);
         customer.getAddress().setAddress(req.address);
         customer.getAddress().setZipCode(req.zipCode);
-        customer.getAddress().setCity(req.zipCode);
+        customer.getAddress().setCity(req.city);
         customer.setPhone(req.phone);
         customer.setMobile(req.mobile);
     }

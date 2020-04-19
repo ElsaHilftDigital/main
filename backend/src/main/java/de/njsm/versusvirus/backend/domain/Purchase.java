@@ -1,11 +1,18 @@
 package de.njsm.versusvirus.backend.domain;
 
+import de.njsm.versusvirus.backend.domain.common.Address;
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import org.apache.commons.csv.CSVPrinter;
+
 import javax.persistence.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 
 @Entity
 public class Purchase {
@@ -16,11 +23,101 @@ public class Purchase {
 
     private UUID uuid;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    private String timing;                    // timing to deliver purchase "after" or "before" certain time
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseSupermarket> purchaseSupermarketList = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private PurchaseSize purchaseSize;        // depending on number of purchase items
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    private String publicComments;
+
+    private String privateComments;
+
+    private Instant createTime;
+
+    private byte[] receipt;                   // picture of receipt
+
+    private String receiptMimeType;
+
+    private BigDecimal cost;                  // cost of purchase in "Rappen"
+
+    private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
+
+    private Long assignedVolunteer;
+
+    private Long createdByModerator;
+
+    private Long responsibleModeratorId;
+
+    private Long customer;
+
+    @ElementCollection
+    @CollectionTable(name = "purchase_applications")
+    @Column(name = "volunteer_id")
+    private List<Long> volunteerApplications;
+
+    // telegram parameters
+    private String receiptFileId;
+    private Long broadcastMessageId;
+
+    public String getReceiptMimeType() {
+        return receiptMimeType;
+    }
+
+    public void setReceiptMimeType(String receiptMimeType) {
+        this.receiptMimeType = receiptMimeType;
+    }
+
+    public void writeToCsv(CSVPrinter csvPrinter, Optional<Customer> customer,
+                           Optional<Volunteer> volunteer) throws IOException {
+        DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE
+                .withLocale(Locale.GERMANY)
+                .withZone(ZoneId.systemDefault());
+
+        csvPrinter.printRecord(
+                getId(),
+                getStatus().displayName(),
+                format.format(getCreateTime()),
+                getPaymentMethod().displayName(),
+                getCost().map(BigDecimal::toPlainString).orElse(""),
+
+                volunteer.map(Volunteer::getLastName).orElse(""),
+                volunteer.map(Volunteer::getFirstName).orElse(""),
+                volunteer.map(Volunteer::getAddress).map(Address::getAddress).orElse(""),
+                volunteer.map(Volunteer::getAddress).map(Address::getZipCode).orElse(""),
+                volunteer.map(Volunteer::getAddress).map(Address::getCity).orElse(""),
+                volunteer.map(Volunteer::getBirthDate).map(LocalDate::toString).orElse(""),
+                volunteer.flatMap(v -> Optional.ofNullable(v.getIban())).orElse(""),
+                volunteer.flatMap(v -> Optional.ofNullable(v.getBankName())).orElse(""),
+                volunteer.map(v -> v.getWantsCompensation() ? "10" : "0").orElse(""),
+
+                customer.map(Customer::getLastName).orElse(""),
+                customer.map(Customer::getFirstName).orElse(""),
+                customer.map(Customer::getAddress).map(Address::getAddress).orElse(""),
+                customer.map(Customer::getAddress).map(Address::getZipCode).orElse(""),
+                customer.map(Customer::getAddress).map(Address::getCity).orElse("")
+        );
+    }
+
     public enum Status {
         NEW {
             @Override
             public String displayName() {
                 return "Neu";
+            }
+        },
+        PUBLISHED {
+            @Override
+            public String displayName() {
+                return "Veröffentlicht";
             }
         },
         VOLUNTEER_FOUND {
@@ -94,6 +191,7 @@ public class Purchase {
                 return "grosser Einkauf";
             }
         };
+
         public abstract String displayName();
     }
 
@@ -110,45 +208,21 @@ public class Purchase {
                 return "Überweisung";
             }
         },
+        TWINT {
+            @Override
+            public String displayName() {
+                return "TWINT";
+            }
+        },
         OTHER {
             @Override
             public String displayName() {
                 return "Andere";
             }
         };
+
         public abstract String displayName();
     }
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
-    private String timing;                    // timing to deliver purchase "after" or "before" certain time
-    private String supermarket;               // preferred supermarket
-    @Enumerated(EnumType.STRING)
-    private PurchaseSize purchaseSize;        // depending on number of purchase items
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-    private String comments;
-    private Instant createTime;
-
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> purchaseList = new ArrayList<>();
-
-    private byte[] receipt;                   // picture of receipt
-    private BigDecimal cost;                      // cost of purchase in "Rappen"
-    private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
-
-    private Long assignedVolunteer;
-    private Long createdByModerator;
-    private Long customer;
-
-    @ElementCollection
-    @CollectionTable(name = "purchase_applications")
-    @Column(name = "volunteer_id")
-    private List<Long> volunteerApplications;
-
-    // telegram parameters
-    private String receiptFileId;
-    private Long broadcastMessageId;
 
     public long getId() {
         return id;
@@ -174,14 +248,6 @@ public class Purchase {
         this.timing = timing;
     }
 
-    public String getSupermarket() {
-        return supermarket;
-    }
-
-    public void setSupermarket(String supermarket) {
-        this.supermarket = supermarket;
-    }
-
     public PurchaseSize getPurchaseSize() {
         return purchaseSize;
     }
@@ -198,12 +264,20 @@ public class Purchase {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getComments() {
-        return comments;
+    public String getPublicComments() {
+        return publicComments;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
+    public void setPublicComments(String publicComments) {
+        this.publicComments = publicComments;
+    }
+
+    public String getPrivateComments() {
+        return privateComments;
+    }
+
+    public void setPrivateComments(String privateComments) {
+        this.privateComments = privateComments;
     }
 
     public byte[] getReceipt() {
@@ -214,8 +288,8 @@ public class Purchase {
         this.receipt = receipt;
     }
 
-    public BigDecimal getCost() {
-        return cost;
+    public Optional<BigDecimal> getCost() {
+        return Optional.ofNullable(cost);
     }
 
     public void setCost(BigDecimal cost) {
@@ -246,8 +320,8 @@ public class Purchase {
         this.broadcastMessageId = broadcastMessageId;
     }
 
-    public Long getAssignedVolunteer() {
-        return assignedVolunteer;
+    public Optional<Long> getAssignedVolunteer() {
+        return Optional.ofNullable(assignedVolunteer);
     }
 
     public void setAssignedVolunteer(Long assignedVolunteer) {
@@ -262,11 +336,11 @@ public class Purchase {
         this.createdByModerator = createdByModerator;
     }
 
-    public Long getCustomer() {
+    public Long getCustomerId() {
         return customer;
     }
 
-    public void setCustomer(Long customer) {
+    public void setCustomerId(Long customer) {
         this.customer = customer;
     }
 
@@ -286,17 +360,25 @@ public class Purchase {
         this.volunteerApplications = volunteerApplications;
     }
 
-    public List<OrderItem> getPurchaseList() {
-        return purchaseList;
+    public List<PurchaseSupermarket> getPurchaseSupermarketList() {
+        return purchaseSupermarketList;
     }
 
-    public void addOrderItem(OrderItem orderItem) {
-        purchaseList.add(orderItem);
-        orderItem.setPurchase(this);
+    public void addSupermarket(PurchaseSupermarket supermarket) {
+        purchaseSupermarketList.add(supermarket);
+        supermarket.setPurchase(this);
     }
 
-    public void setPurchaseList(List<OrderItem> purchaseList) {
-        this.purchaseList = purchaseList;
+    public void setPurchaseList(List<PurchaseSupermarket> purchaseList) {
+        this.purchaseSupermarketList = purchaseList;
+    }
+
+    public Long getResponsibleModeratorId() {
+        return responsibleModeratorId;
+    }
+
+    public void setResponsibleModeratorId(Long responsibleModeratorId) {
+        this.responsibleModeratorId = responsibleModeratorId;
     }
 
     @PrePersist

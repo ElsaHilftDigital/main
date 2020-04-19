@@ -18,6 +18,14 @@ interface ApiClient {
     Call<TelegramResponse<Message>> sendMessage(@Path("token") String token,
                                                 @Body MessageToBeSent message);
 
+    @POST("/bot{token}/editMessageText")
+    Call<TelegramResponse<Message>> editMessageText(@Path("token") String token,
+                                                    @Body EditedMessage message);
+
+    @POST("/bot{token}/answerCallbackQuery")
+    Call<TelegramResponse<Void>> answerCallbackQuery(@Path("token") String token,
+                                                     @Body CallbackQueryAnswer answer);
+
     @GET("/bot{token}/getFile")
     Call<TelegramResponse<File>> getFile(@Path("token") String token,
                                          @Query("file_id") String fileId);
@@ -27,6 +35,7 @@ interface ApiClient {
                                   @Path("filePath") String filePath);
 
     @POST("/bot{token}/deleteMessage")
-    Call<TelegramResponse<Void>> deleteMessage(@Query("chat_id") long chatId,
+    Call<TelegramResponse<Void>> deleteMessage(@Path("token") String token,
+                                               @Query("chat_id") long chatId,
                                                @Query("message_id") long messageId);
 }

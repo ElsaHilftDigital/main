@@ -1,0 +1,1 @@
+alter table purchase add column receipt_mime_type text;

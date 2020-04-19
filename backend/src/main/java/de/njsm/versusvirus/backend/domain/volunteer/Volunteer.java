@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.domain.volunteer;
 
 import de.njsm.versusvirus.backend.domain.common.Address;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class Volunteer {
     private String iban;
     private String bankName;
     // Means of Transportation
+
     // Employment Status
 
     private boolean wantsCompensation;
@@ -135,6 +137,10 @@ public class Volunteer {
 
     public void setValidated(boolean validated) {
         this.validated = validated;
+    }
+
+    public boolean getWantsCompensation() {
+        return wantsCompensation;
     }
 
     public Long getTelegramChatId() {

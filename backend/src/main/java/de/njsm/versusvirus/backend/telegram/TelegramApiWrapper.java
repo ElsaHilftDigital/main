@@ -1,12 +1,12 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.TelegramController;
 import de.njsm.versusvirus.backend.telegram.dto.*;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import retrofit2.Call;
@@ -17,7 +17,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.IOException;
 
 @Component
-class TelegramApiWrapper {
+@Profile("!dev")
+class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramApiWrapper.class);
 
@@ -25,7 +26,10 @@ class TelegramApiWrapper {
 
     private ApiClient apiClient;
 
-    TelegramApiWrapper(@Value("${telegram.bot.token}") String token) {
+    private String domain;
+
+    TelegramApiWrapper(@Value("${telegram.bot.token}") String token, @Value("${deployment.domain}") String domain) {
+        this.domain = domain;
         RequestInterceptor logger = new RequestInterceptor();
         apiClient = new Retrofit.Builder()
                 .baseUrl("https://api.telegram.org")
@@ -37,18 +41,34 @@ class TelegramApiWrapper {
         registerWebhook();
     }
 
+    @Override
     public Message sendMessage(MessageToBeSent message) {
         LOG.debug("Sending message to {}", message.getChatId());
         Call<TelegramResponse<Message>> call = apiClient.sendMessage(token, message);
         return executeQuery(call);
     }
 
-    public void deleteMessage(long chatId, long messageId) {
-        LOG.debug("Deleting message in chat {}", chatId);
-        Call<TelegramResponse<Void>> call = apiClient.deleteMessage(chatId, messageId);
+    public Message editMessage(EditedMessage message) {
+        LOG.debug("Editing message to {}", message.getChatId());
+        Call<TelegramResponse<Message>> call = apiClient.editMessageText(token, message);
+        return executeQuery(call);
+    }
+
+    @Override
+    public void answerCallbackQuery(CallbackQueryAnswer query) {
+        LOG.debug("Answering callback query {}", query.getCallbackQueryId());
+        Call<TelegramResponse<Void>> call = apiClient.answerCallbackQuery(token, query);
         executeQuery(call);
     }
 
+    @Override
+    public void deleteMessage(long chatId, long messageId) {
+        LOG.debug("Deleting message in chat {}", chatId);
+        Call<TelegramResponse<Void>> call = apiClient.deleteMessage(token, chatId, messageId);
+        executeQuery(call);
+    }
+
+    @Override
     public byte[] getFile(String fileId) {
         LOG.debug("Downloading file {}", fileId);
         Call<TelegramResponse<File>> call = apiClient.getFile(token, fileId);
@@ -68,7 +88,7 @@ class TelegramApiWrapper {
 
     private void registerWebhook() {
         LOG.debug("Setting webhook to production");
-        String url = "https://versusvirus.njsm.de/api/v1/" + TelegramController.TELEGRAM_WEBHOOK;
+        String url = "https://" + domain + "/api/v1" + TelegramController.TELEGRAM_WEBHOOK;
         Call<TelegramResponse<Void>> call = apiClient.setWebhook(token, new WebhookRequest(url));
         executeQuery(call);
     }

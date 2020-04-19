@@ -16,6 +16,7 @@ public class Organization {
     private String urlGroupChat;
     private Long telegramGroupChatId;
     private Long telegramModeratorGroupChatId;
+    private Long telegramSupportChat;
 
     @JoinColumn(name = "organization_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -63,5 +64,13 @@ public class Organization {
 
     public void setTelegramModeratorGroupChatId(Long telegramModeratorGroupChatId) {
         this.telegramModeratorGroupChatId = telegramModeratorGroupChatId;
+    }
+
+    public Long getTelegramSupportChat() {
+        return telegramSupportChat;
+    }
+
+    public void setTelegramSupportChat(Long telegramSupportChat) {
+        this.telegramSupportChat = telegramSupportChat;
     }
 }

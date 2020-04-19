@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public class CreatePurchaseRequest {
 
-    public List<String> orderItems;
+    public List<PurchaseSupermarketDTO> supermarkets;
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
-    public String supermarket;
     public Purchase.PurchaseSize purchaseSize;
-    public String comments;
+    public String publicComments;
+    public String privateComments;
     public UUID customer;
 }

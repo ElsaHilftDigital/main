@@ -1,10 +1,23 @@
 ---
 
+- name: Purge old app
+  become: True
+  shell: rm -rf /var/www/html/*
+
 - name: Copy resources
   become: True
   copy:
-    src: "{{ playbook_dir }}/../frontend/build/"
+    src: "{{ playbook_dir }}/../frontend/public/build/"
     dest: /var/www/html
+    owner: root
+    group: root
+    mode: 0444
+
+- name: Copy Admin Frontend
+  become: True
+  copy:
+    src: "{{ playbook_dir }}/../frontend/admin/build/"
+    dest: /var/www/html/admin
     owner: root
     group: root
     mode: 0444

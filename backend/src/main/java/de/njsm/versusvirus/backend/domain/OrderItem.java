@@ -12,7 +12,7 @@ public class OrderItem {
     private String purchaseItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Purchase purchase;
+    private PurchaseSupermarket purchaseSupermarket;
 
     public long getId() {
         return id;
@@ -30,7 +30,11 @@ public class OrderItem {
         this.purchaseItem = purchaseItem;
     }
 
-    public void setPurchase(Purchase purchase) {
-        this.purchase = purchase;
+    public PurchaseSupermarket getPurchaseSupermarket() {
+        return purchaseSupermarket;
+    }
+
+    public void setPurchaseSupermarket(PurchaseSupermarket purchaseSupermarket) {
+        this.purchaseSupermarket = purchaseSupermarket;
     }
 }

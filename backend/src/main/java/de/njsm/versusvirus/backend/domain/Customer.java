@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.domain;
 
 import de.njsm.versusvirus.backend.domain.common.Address;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -57,7 +58,7 @@ public class Customer {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phone = phone.replaceAll("\\s", "");
     }
 
     public String getMobile() {
@@ -65,7 +66,7 @@ public class Customer {
     }
 
     public void setMobile(String mobile) {
-        this.mobile = mobile;
+        this.mobile = mobile.replaceAll("\\s", "");
     }
 
     public Address getAddress() {

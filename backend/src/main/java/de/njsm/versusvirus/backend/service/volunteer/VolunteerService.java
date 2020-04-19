@@ -3,17 +3,25 @@ package de.njsm.versusvirus.backend.service.volunteer;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.mail.OurMailSender;
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
+import de.njsm.versusvirus.backend.spring.web.InternalServerErrorException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.AdminMessageSender;
+import de.njsm.versusvirus.backend.telegram.InviteLinkGenerator;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,12 +41,24 @@ public class VolunteerService {
 
     private final PurchaseRepository purchaseRepository;
 
-    public VolunteerService(VolunteerRepository repository, MessageSender messageSender, AdminMessageSender adminMessageSender, OrganizationRepository organizationRepository, PurchaseRepository purchaseRepository) {
+    private final InviteLinkGenerator inviteLinkGenerator;
+
+    private final OurMailSender mailSender;
+
+    public VolunteerService(VolunteerRepository repository,
+                            MessageSender messageSender,
+                            AdminMessageSender adminMessageSender,
+                            OrganizationRepository organizationRepository,
+                            PurchaseRepository purchaseRepository,
+                            InviteLinkGenerator inviteLinkGenerator,
+                            OurMailSender mailSender) {
         this.repository = repository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.organizationRepository = organizationRepository;
         this.purchaseRepository = purchaseRepository;
+        this.inviteLinkGenerator = inviteLinkGenerator;
+        this.mailSender = mailSender;
     }
 
     public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
@@ -63,8 +83,11 @@ public class VolunteerService {
         volunteer.setWantsCompensation(signupRequest.wantsCompensation);
 
         repository.save(volunteer);
+
+        String inviteLink = inviteLinkGenerator.getInviteLink(volunteer.getUuid());
         notifyModerators();
-        return new VolunteerDTO(volunteer);
+        mailSender.sendRegistrationMail(volunteer, inviteLink);
+        return new VolunteerDTO(volunteer, inviteLink);
     }
 
     private void notifyModerators() {
@@ -92,8 +115,8 @@ public class VolunteerService {
         volunteer.setEmail(updateRequest.email);
         volunteer.setPhone(updateRequest.phone);
         volunteer.setBirthDate(updateRequest.birthDate);
-        volunteer.setIban(updateRequest.iban);
-        volunteer.setBankName(updateRequest.bankName);
+        if (!updateRequest.iban.equals("")) volunteer.setIban(updateRequest.iban);
+        if (!updateRequest.bankName.equals("")) volunteer.setBankName(updateRequest.bankName);
         volunteer.setWantsCompensation(updateRequest.wantsCompensation);
     }
 
@@ -124,5 +147,29 @@ public class VolunteerService {
 
         volunteer.setValidated(true);
         messageSender.confirmRegistration(organization, volunteer);
+    }
+
+    public void importVolunteers(String upload) {
+        Iterable<CSVRecord> records;
+        try {
+            records = CSVFormat.DEFAULT.parse(new StringReader(upload));
+        } catch (IOException e) {
+            throw new InternalServerErrorException(e);
+        }
+        for (CSVRecord record : records) {
+            SignupRequest req = new SignupRequest();
+            req.firstName = record.get("firstname");
+            req.lastName = record.get("lastname");
+            req.phone = record.get("phone");
+            req.email = record.get("email");
+            req.address = record.get("address");
+            req.city = record.get("city");
+            req.zipCode = record.get("zipcode");
+            req.birthDate = LocalDate.now();
+            req.iban = record.get("iban");
+            req.bankName = record.get("bankname");
+            req.wantsCompensation = true;
+            signup(req);
+        }
     }
 }

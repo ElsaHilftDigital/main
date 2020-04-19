@@ -1,9 +1,11 @@
 package de.njsm.versusvirus.backend.telegram.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessageToBeSent {
 
     @JsonProperty("chat_id")
@@ -17,11 +19,19 @@ public class MessageToBeSent {
     @JsonProperty("disable_web_page_preview")
     private boolean disableWebPagePreview;
 
+    @JsonProperty("reply_markup")
+    private InlineKeyboardMarkup buttons;
+
     public MessageToBeSent(long chatId, String markdownText) {
         this.chatId = chatId;
         this.text = markdownText;
-        this.parseMode = "Markdown";
+        this.parseMode = "MarkdownV2";
         this.disableWebPagePreview = true;
+    }
+
+    public MessageToBeSent(long chatId, String markdownText, InlineKeyboardButton... buttons) {
+        this(chatId, markdownText);
+        this.buttons = new InlineKeyboardMarkup(buttons);
     }
 
     public long getChatId() {
@@ -38,5 +48,9 @@ public class MessageToBeSent {
 
     public boolean isDisableWebPagePreview() {
         return disableWebPagePreview;
+    }
+
+    public InlineKeyboardMarkup getButtons() {
+        return buttons;
     }
 }
