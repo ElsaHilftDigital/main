@@ -39,9 +39,8 @@ public class LoginController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        var authCookie = tokenService.generateAuthCookie(request.username);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, authCookie.toString())
+                .headers(tokenService.authCookieHeaders(request.username))
                 .build();
     }
 
