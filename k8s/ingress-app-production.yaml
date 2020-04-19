@@ -26,9 +26,17 @@ spec:
   tls:
   - hosts:
     - elsa-hilft.ch
+    - www.elsa-hilft.ch
     secretName: production-main-acme-tls
   rules:
   - host: elsa-hilft.ch
+    http:
+      paths:
+      - path: /(.+)$
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+  - host: www.elsa-hilft.ch
     http:
       paths:
       - path: /(.+)$
@@ -53,9 +61,17 @@ spec:
   tls:
   - hosts:
     - elsa-hilft.ch
+    - www.elsa-hilft.ch
     secretName: production-main-acme-tls
   rules:
   - host: elsa-hilft.ch
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+  - host: www.elsa-hilft.ch
     http:
       paths:
       - path: /
