@@ -118,6 +118,18 @@ const PurchaseDetailInternal = (props) => {
             <div className="flex-grow-0 justify-content-between align-items-bottom mb-3">
                 <h1>Details zum Einkauf vom {formatDate(purchase.createdAt)} für {purchase.customer.lastName}</h1>
                 <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
+                {(purchase.status === "Einkauf abgeschlossen" || purchase.status === "Kunde benachrichtigt") &&
+                    <p className="mt-2">
+                        <b>Einkauf wurde erledigt. Die nächsten Schritte sind die folgenden:
+                            <ol>
+                                <li>Quittung überprüfen über "Quittung ansehen"</li>
+                                <li>Quittungsbetrag bei "Kosten" eintragen und Einkauf ganz unten "Speichern"</li>
+                                <li>Kunde/-in anrufen und Betrag kommunizieren</li>
+                                <li>Auf "Lieferung freigeben" klicken</li>
+                            </ol>
+                        </b>
+                    </p>
+                }
             </div>
 
             <div className="flex-grow-0">
@@ -178,7 +190,7 @@ const PurchaseDetailInternal = (props) => {
                         <div className="form-group">
                             <label htmlFor="applyingVolunteers">Helfer/-in wurde noch nicht ausgewählt</label>
                             {purchase.status === "Neu" &&
-                                <label><b>&nbsp;und dieser Auftrag wurde noch nicht an Helfer freigegeben</b></label>
+                                <label><b>&nbsp;und dieser Auftrag wurde noch nicht an Helfer freigegeben.</b></label>
                             }
                             {!(purchase.status === "Neu") && !(purchase.status === "Veröffentlicht") &&
                                 <>
@@ -190,6 +202,7 @@ const PurchaseDetailInternal = (props) => {
                                             <tr>
                                                 <th>Vorname</th>
                                                 <th>Nachname</th>
+                                                <th>Kommt aus</th>
                                                 <th>Auswahl</th>
                                             </tr>
                                         </thead>
@@ -198,6 +211,7 @@ const PurchaseDetailInternal = (props) => {
                                                 return <tr key={v.uuid}>
                                                     <td>{v.firstName}</td>
                                                     <td>{v.lastName}</td>
+                                                    <td>{v.city}</td>
                                                     <td><button type="button" className="btn btn-primary" onClick={() => assignVolunteer(v.uuid)}>Bestätigen</button></td>
                                                 </tr>
                                             })}
@@ -210,10 +224,16 @@ const PurchaseDetailInternal = (props) => {
                 )}
 
                 <h5 className="mt-2"> Auftraggeber</h5>
-                <div className="form-group">
+                <div className="row">
+                    <div className="form-group col-md-6">
+                        <label htmlFor="displayFormStreet">Strasse</label>
+                        <input name="displayFormStreet" disabled type="text" className="form-control" id="displayFormStreet" value={purchase.customer.address}/>
+                    </div>
+                    <div className="form-group col-md-6">
                         <label htmlFor="displayFormCity">Ort</label>
-                        <input name="displayFormCity" disabled type="text" className="form-control" id="displayFormCity" value={purchase.customer.city}/>
-                    </div>          
+                        <input name="displayFormCity" disabled type="text" className="form-control" id="displayFormCity" value={purchase.customer.zipCode + " " + purchase.customer.city}/>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="displayFormFirstname">Vorname</label>
@@ -264,7 +284,7 @@ const PurchaseDetailInternal = (props) => {
                 </div>
                 <div className="form-group">
                     {(!(purchase.status === "Neu") && !(purchase.status === "Veröffentlicht") && !(purchase.status === "Helfer gefunden") && !(purchase.status === "Helfer bestätigt")) &&
-                        <i><a href={routes.purchaseReceipt(purchase.uuid)}>Hier ist der Link zur Quittung.</a></i>
+                        <i><a href={routes.purchaseReceipt(purchase.uuid)} target="_blank" rel="noopener noreferrer">Hier ist der Link zur Quittung.</a></i>
                     }
                 </div>
                 <div className="form-group">

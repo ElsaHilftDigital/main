@@ -282,8 +282,8 @@ const NewRequest = () => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="timing">Braucht Einkauf bis</label>
-                    <input name="timing" id="timing" type="text" ref={register} className="form-control" placeholder="Braucht Einkauf bis"/>
+                    <label htmlFor="timing">Zeit</label>
+                    <input name="timing" id="timing" type="text" ref={register} className="form-control" placeholder="Braucht Einkauf bis / ab"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="publicComments">Gruppenchat Bemerkungen</label>

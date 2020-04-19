@@ -212,7 +212,7 @@ const RegisterVolunteer = () => {
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="registerFormOrt">Ort</label>
-                        <input name="registerFormOrt" ref={register({ required: true })} type="text" className="form-control" id="registerFormOrt" placeholder="Zürich" />
+                        <input name="registerFormOrt" ref={register({ required: true })} type="text" className="form-control" id="registerFormOrt" placeholder="Baden" />
                         {errors.registerFormOrt && (<span className="text-danger">Ort wird benötigt</span>)}
                     </div>
                 </div>
@@ -243,7 +243,7 @@ const RegisterVolunteer = () => {
                     <input name="registerFormDataProtection" ref={register()} type="checkbox" className="form-check-input" id="registerFormDataProtection" />
                     <label className="form-check-label" htmlFor="registerFormDataProtection">
                         Ich bestätige, dass meine Daten für Tätigkeiten im Zusammenhang mit der Initiative "Elsa hilft" genutzt werden dürfen.<br />
-                        Weitere Informationen über den Datenschutz findest du <a href="/#/about">hier</a>.
+                        Weitere Informationen über den Datenschutz findest du <a href="/#/about" target="_blank" rel="noopener noreferrer">hier</a>.
                     </label>
                 </div>
                 <button type="submit" className="btn btn-primary" disabled={!registerFormDataProtection}>Absenden</button>
