@@ -101,3 +101,6 @@ databaseChangeLog:
   - include:
       file: 20200418-1044-add-support-telegram-account.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200419-1920-introduce-constraint-on-receipt-data.sql
+      relativeToChangelogFile: true
