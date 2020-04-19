@@ -16,7 +16,7 @@ jobs:
       with:
         token: '${{ github.token }}'
         environment: 'production'
-        target_url: 'https://gcp.elsa-hilft.ch'
+        target_url: 'https://elsa-hilft.ch'
     - uses: actions/checkout@v2
     - uses: actions/cache@v1
       with:
@@ -60,7 +60,7 @@ jobs:
       uses: chrnorm/deployment-status@releases/v1
       with:
         token: "${{ github.token }}"
-        target_url: 'https://gcp.elsa-hilft.ch'
+        target_url: 'https://elsa-hilft.ch'
         state: "success"
         deployment_id: ${{ steps.deployment.outputs.deployment_id }}
     - name: Update deployment status (failure)
@@ -68,7 +68,7 @@ jobs:
       uses: chrnorm/deployment-status@releases/v1
       with:
         token: "${{ github.token }}"
-        target_url: 'https://gcp.elsa-hilft.ch'
+        target_url: 'https://elsa-hilft.ch'
         state: "failure"
         deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
