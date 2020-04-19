@@ -2,9 +2,7 @@ name: build
 
 on:
   push:
-    branches: [ testing ]
-  pull_request:
-    branches: [ testing ]
+    branches: [ master ]
 
 jobs:
   java:
