@@ -1,11 +1,8 @@
-package de.njsm.versusvirus.backend.rest.api.authentication;
+package de.njsm.versusvirus.backend.rest.api.login;
 
 import de.njsm.versusvirus.backend.spring.security.JwtTokenService;
-import org.apache.tomcat.util.http.SameSiteCookies;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,16 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/v1")
-public class AuthenticationController {
+public class LoginController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService tokenService;
 
-    public AuthenticationController(
+    public LoginController(
             AuthenticationManager authenticationManager,
             JwtTokenService tokenService
     ) {
@@ -35,7 +31,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> authenticate(
-            @RequestBody AuthenticationRequest request,
+            @RequestBody LoginRequest request,
             HttpServletResponse response
     ) {
         try {

@@ -25,7 +25,8 @@ public class ExportController {
     public void receipts(@RequestParam() @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                          @RequestParam() @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                          HttpServletResponse response) throws IOException {
-        response.setHeader("Content-Disposition", "attachment; filename=receipts.zip");
+        var filename = String.format("Quittungen_von_%s_bis_%s.zip", from, to);
+        response.setHeader("Content-Disposition", "attachment; filename=" + filename);
         exportService.exportReceiptsZip(response.getOutputStream(), from, to);
     }
 }
