@@ -37,8 +37,13 @@ public class PurchaseListItemDTO {
         this.customer.phone = customer.getPhone();
         if (assignedVolunteer != null) {
             this.volunteer = new VolunteerDTO();
-            this.volunteer.name = assignedVolunteer.getFirstName() + " " + assignedVolunteer.getLastName();
-            this.volunteer.phone = assignedVolunteer.getPhone();
+            if (assignedVolunteer.isDeleted()) {
+                this.volunteer.name = "gelöscht";
+                this.volunteer.phone = "gelöscht";
+            } else {
+                this.volunteer.name = assignedVolunteer.getFirstName() + " " + assignedVolunteer.getLastName();
+                this.volunteer.phone = assignedVolunteer.getPhone();
+            }
         }
         this.statusIndicator = StatusIndicator.get(purchase.getStatus());
         this.status = purchase.getStatus().displayName();
