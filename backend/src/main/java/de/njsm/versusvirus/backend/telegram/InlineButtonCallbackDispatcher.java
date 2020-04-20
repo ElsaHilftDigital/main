@@ -167,7 +167,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.getVolunteerApplications().remove(volunteer.getId());
             if (purchase.getVolunteerApplications().isEmpty()) {
-                purchase.setStatus(Purchase.Status.NEW);
+                purchase.setStatus(Purchase.Status.PUBLISHED);
             }
             purchase.setAssignedVolunteer(null);
             telegramApi.deleteMessage(message.getChat().getId(), message.getId());
