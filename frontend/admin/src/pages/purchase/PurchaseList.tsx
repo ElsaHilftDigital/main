@@ -89,7 +89,7 @@ const ExportForm = () => {
     }
 
     return <Form inline>
-        <Form.Row>
+        <Form.Row className="mr-0">
             <Col>
                 <Form.Group>
                     <Form.Label srOnly htmlFor="startDate">Startdatum</Form.Label>
