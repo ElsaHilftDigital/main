@@ -122,7 +122,7 @@ public class VolunteerService {
 
     public void deleteVolunteer(UUID uuid) {
         var volunteer = repository.findByUuid(uuid).orElseThrow(NotFoundException::new);
-        volunteer.setDeleted(true);
+        volunteer.delete();
     }
 
     public List<PurchaseDTO> getCompletedPurchasesOf(UUID volunteerId) {

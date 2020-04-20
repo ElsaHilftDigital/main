@@ -327,7 +327,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                     throw new TelegramShouldBeFineException("helper not found. telegram id: " + message.getFrom().getId());
                 }
         );
-        volunteer.setDeleted(true);
+        volunteer.delete();
         messageSender.resignVolunteer(message.getChat().getId());
     }
 }
