@@ -75,8 +75,8 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         setValue('address', currentVolunteer.address);
         setValue('zipCode', currentVolunteer.zipCode);
         setValue('city', currentVolunteer.city);
-        setValue('birthDate', formatDate(currentVolunteer.birthDate));
-        setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation);
+        setValue('birthDate', formatDate(currentVolunteer.birthDate) as any);
+        setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation as any);
         setValue('iban', currentVolunteer.iban);
         setValue('bankName', currentVolunteer.bankName);
     }, [setValue, currentVolunteer]);
