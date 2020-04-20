@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
 
@@ -129,8 +129,8 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col">
+                <Row>
+                    <Col>
                         <Button type="submit">Speichern</Button>
                             {showSaveToast &&
                             <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
@@ -142,9 +142,9 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                                 <Toast.Body>Auftraggeber wurde gespeichert</Toast.Body>
                             </Toast>
                             }
-                    </div>
-                    <div className="col">
-                        <Button className="float-right" onClick={() => onDelete()}>Löschen</Button>
+                    </Col>
+                    <Col>
+                        <Button variant="danger" className="float-right" onClick={() => onDelete()}>Löschen</Button>
                         {showDeleteToast &&
                             <Toast className="mt-2 mb-2" onClose={() => setShowDeleteToast(false)} show={showDeleteToast} delay={3000} autohide>
                                 <Toast.Header>
@@ -153,9 +153,8 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                                 <Toast.Body>Auftraggeber/-in wurde gelöscht</Toast.Body>
                             </Toast>
                         }   
-                    </div>
-                </div>
-                
+                    </Col>
+                </Row>
             </form>
         </div>
     );
