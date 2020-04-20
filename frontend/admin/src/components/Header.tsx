@@ -11,7 +11,7 @@ const StyledNavbar = styled(Navbar)`
 `;
 
 const Header = () => {
-    const [cookies] = useCookies(['token']);
+    const [cookies, , removeCookie] = useCookies(['token']);
     const user = JSON.parse(atob(cookies.token)).sub;
 
     return (
@@ -31,7 +31,7 @@ const Header = () => {
                 <Nav>
                     <NavDropdown alignRight id="user-dropdown" title={user} className="text-light">
                         <NavDropdown.Item>Passwort ändern</NavDropdown.Item>
-                        <NavDropdown.Item>Abmelden</NavDropdown.Item>
+                        <NavDropdown.Item onClick={() => removeCookie('token')}>Abmelden</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
             </Navbar.Collapse>
