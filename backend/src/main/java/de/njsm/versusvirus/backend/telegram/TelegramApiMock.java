@@ -73,8 +73,8 @@ public class TelegramApiMock implements TelegramApi {
     }
 
     @Override
-    public byte[] getFile(String fileId) {
+    public Image getFile(String fileId) {
         LOG.info("Sorry, the mock has no image to serve");
-        return new byte[0];
+        return new Image(new byte[0], "image/jpeg");
     }
 }
