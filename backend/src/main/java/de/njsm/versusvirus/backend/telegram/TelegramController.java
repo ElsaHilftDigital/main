@@ -56,6 +56,15 @@ public class TelegramController {
 
     @PostMapping(TELEGRAM_WEBHOOK)
     public void receiveTelegramUpdate(@RequestBody Update update) {
+        try {
+            receiveTelegramUpdateInternal(update);
+        } catch (TelegramShouldBeFineException e) {
+            LOG.info("Something went wrong", e);
+            throw e;
+        }
+    }
+
+    private void receiveTelegramUpdateInternal(@RequestBody Update update) {
         if (update.getId() <= updateService.getLatestUpdate()) {
             LOG.info("Repost of update " + update.getId());
             return;
