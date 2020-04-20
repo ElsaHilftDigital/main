@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/anonymous/**").permitAll()
                 .antMatchers("/api/v1/telegram/**").permitAll()
-                .antMatchers("/api/v1/login").permitAll()
+                .antMatchers("/api/v1/auth/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
