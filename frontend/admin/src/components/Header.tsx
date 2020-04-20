@@ -2,6 +2,7 @@ import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 import { matchPath } from 'react-router-dom';
 import styled from 'styled-components';
+import logo from 'assets/elsahilft_Baden.png';
 
 import history from '../history';
 
@@ -18,7 +19,7 @@ const Header = () => {
     return (
         <StyledNavbar sticky="top" bg="primary" expand="md">
             <Navbar.Brand onClick={() => history.push("/")} className="hover-pointer" >
-            <img src="elsahilft_Baden.png" className="mr-3" width="50" height="50" alt="" />
+            <img src={logo} className="mr-3" width="50" height="50" alt="" />
             <span className="text-light font-weight-bold">Elsa hilft</span>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
