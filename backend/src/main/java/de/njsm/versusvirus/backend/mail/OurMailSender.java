@@ -16,14 +16,10 @@ public class OurMailSender {
 
     private final TelegramMessages telegramMessages;
 
-    private final String mailHost;
-
     public OurMailSender(JavaMailSender mailSender,
-                          TelegramMessages telegramMessages,
-                          @Value("${spring.mail.host}") String mailHost) {
+                          TelegramMessages telegramMessages) {
         this.mailSender = mailSender;
         this.telegramMessages = telegramMessages;
-        this.mailHost = mailHost;
     }
 
     public void sendRegistrationMail(Volunteer volunteer, String inviteLink) {
@@ -32,7 +28,7 @@ public class OurMailSender {
                 inviteLink);
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@" + mailHost);
+        message.setFrom("noreply@elsa-hilft.ch");
         message.setTo(volunteer.getEmail());
         message.setSubject("Registrierung bei Elsa hilft");
         message.setText(text);
