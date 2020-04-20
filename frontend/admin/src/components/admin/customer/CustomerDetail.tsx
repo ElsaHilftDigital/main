@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
 
@@ -41,11 +42,19 @@ const CustomerDetailInternal: React.FC<Props> = props => {
         },
     });
     const [showSaveToast, setShowSaveToast] = useState(false);
+    const [showDeleteToast, setShowDeleteToast] = useState(false);
 
     const onSubmit = (values: any) => {
         dispatch(customerActions.updateCustomer(selectedCustomer.uuid, values));
         setShowSaveToast(true);
     };
+
+    const onDelete = () => {
+        if (window.confirm('Bitte versichere dich, dass alle offenen Rechnungen oder Zahlungen von diesem/-r Kunden/-in vor dem Löschen erledigt sind.\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
+            dispatch(customerActions.deleteCustomer(selectedCustomer.uuid));
+            setShowDeleteToast(true);
+        }
+    }
 
     useEffect(() => {
         setValue('firstName', selectedCustomer.firstName);
@@ -94,6 +103,9 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                                        id="mobile"/>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="col-lg-6">
                         <div className="form-group row">
                             <label htmlFor="address" className="col-sm-3 col-form-label">Strasse</label>
                             <div className="col-sm-9">
@@ -117,17 +129,33 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                         </div>
                     </div>
                 </div>
-                <button type="submit" className="btn btn-primary">Speichern</button>
-                {showSaveToast &&
-                <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
-                       delay={3000}
-                       autohide>
-                    <Toast.Header>
-                        <strong className="mr-auto">Kunde speichern</strong>
-                    </Toast.Header>
-                    <Toast.Body>Auftraggeber wurde gespeichert</Toast.Body>
-                </Toast>
-                }
+                <div className="row">
+                    <div className="col">
+                        <Button type="submit">Speichern</Button>
+                            {showSaveToast &&
+                            <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
+                                delay={3000}
+                                autohide>
+                                <Toast.Header>
+                                    <strong className="mr-auto">Kunde speichern</strong>
+                                </Toast.Header>
+                                <Toast.Body>Auftraggeber wurde gespeichert</Toast.Body>
+                            </Toast>
+                            }
+                    </div>
+                    <div className="col">
+                        <Button className="float-right" onClick={() => onDelete()}>Löschen</Button>
+                        {showDeleteToast &&
+                            <Toast className="mt-2 mb-2" onClose={() => setShowDeleteToast(false)} show={showDeleteToast} delay={3000} autohide>
+                                <Toast.Header>
+                                <strong className="mr-auto">Kunde löschen</strong>
+                                </Toast.Header>
+                                <Toast.Body>Auftraggeber/-in wurde gelöscht</Toast.Body>
+                            </Toast>
+                        }   
+                    </div>
+                </div>
+                
             </form>
         </div>
     );

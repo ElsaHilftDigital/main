@@ -299,26 +299,21 @@ const PurchaseDetailInternal = (props) => {
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
                     <PurchaseList value={supermarkets} setValue={setSupermarkets}/>
                 </div>
-                <div>
-                    <div className="row">
-                        <div className="col">
-                            <Button type="submit">Speichern</Button>
-                            {showSaveToast &&
-                                <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
-                                    <Toast.Header>
-                                    <strong className="mr-auto">Einkauf gespeichert</strong>
-                                    </Toast.Header>
-                                    <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
-                                </Toast>
-                            }
-                        </div>
-                        <div className="col">
-                            <Button className="float-right" onClick={() => exportPurchase()}>Export</Button>   
-                        </div>
-                        
-                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        
+            
+                <div className="row">
+                    <div className="col">
+                        <Button type="submit">Speichern</Button>
+                        {showSaveToast &&
+                            <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast} delay={3000} autohide>
+                                <Toast.Header>
+                                <strong className="mr-auto">Einkauf gespeichert</strong>
+                                </Toast.Header>
+                                <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
+                            </Toast>
+                        }
                     </div>
+                    <div className="col">
+                        <Button className="float-right" onClick={() => exportPurchase()}>Export</Button>   
                     </div>
                 </div>
             </form>

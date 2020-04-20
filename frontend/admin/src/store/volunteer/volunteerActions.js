@@ -84,7 +84,7 @@ export const updateVolunteerError = error => ({
     error: true,
 });
 
-export const deleteVolunter = uuid => ({
+export const deleteVolunteer = uuid => ({
     type: DELETE_VOLUNTEER,
     payload: uuid,
 });
