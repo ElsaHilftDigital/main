@@ -4,7 +4,6 @@ import de.njsm.versusvirus.backend.domain.Customer;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
-import org.apache.tika.config.TikaConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -53,8 +52,7 @@ public class ExportService {
                 var currentDirectory = String.format("%s%s_%s_%s/", rootDirectoryName, customer.getId(), customer.getFirstName(), customer.getLastName());
                 zipStream.putNextEntry(new ZipEntry(currentDirectory));
                 for (var purchase : purchases) {
-                    var extension = TikaConfig.getDefaultConfig().getMimeRepository().forName(purchase.getReceiptMimeType()).getExtension();
-                    var fileName = currentDirectory + purchase.getId() + extension;
+                    var fileName = currentDirectory + purchase.getId() + purchase.getReceiptFileExtension();
                     zipStream.putNextEntry(new ZipEntry(fileName));
                     zipStream.write(purchase.getReceipt());
                 }

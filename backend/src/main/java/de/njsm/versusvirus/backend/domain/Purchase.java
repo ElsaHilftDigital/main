@@ -47,6 +47,8 @@ public class Purchase {
 
     private String receiptMimeType;
 
+    private String receiptFileExtension;
+
     private BigDecimal cost;                  // cost of purchase in "Rappen"
 
     private boolean expensesPaid;             // 10.- per purchase by foundation (if Volunteer wantsCompensation)
@@ -105,6 +107,14 @@ public class Purchase {
                 customer.map(Customer::getAddress).map(Address::getZipCode).orElse(""),
                 customer.map(Customer::getAddress).map(Address::getCity).orElse("")
         );
+    }
+
+    public String getReceiptFileExtension() {
+        return receiptFileExtension;
+    }
+
+    public void setReceiptFileExtension(String receiptFileExtension) {
+        this.receiptFileExtension = receiptFileExtension;
     }
 
     public enum Status {

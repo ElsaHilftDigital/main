@@ -104,3 +104,6 @@ databaseChangeLog:
   - include:
       file: 20200419-1920-introduce-constraint-on-receipt-data.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200420-2233-store-receipt-file-extension.sql
+      relativeToChangelogFile: true
