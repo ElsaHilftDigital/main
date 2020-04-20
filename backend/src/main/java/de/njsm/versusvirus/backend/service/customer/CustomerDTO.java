@@ -16,13 +16,24 @@ public class CustomerDTO {
     public String city;
 
     public CustomerDTO(Customer customer) {
-        uuid = customer.getUuid();
-        firstName = customer.getFirstName();
-        lastName = customer.getLastName();
-        phone = customer.getPhone();
-        mobile = customer.getMobile();
-        address = customer.getAddress().getAddress();
-        zipCode = customer.getAddress().getZipCode();
-        city = customer.getAddress().getCity();
+        if (customer.isDeleted()) {
+            uuid = customer.getUuid();
+            firstName = "gelöscht";
+            lastName = "gelöscht";
+            phone = "gelöscht";
+            mobile = "gelöscht";
+            address = "gelöscht";
+            zipCode = "gelöscht";
+            city = "gelöscht";
+        } else {
+            uuid = customer.getUuid();
+            firstName = customer.getFirstName();
+            lastName = customer.getLastName();
+            phone = customer.getPhone();
+            mobile = customer.getMobile();
+            address = customer.getAddress().getAddress();
+            zipCode = customer.getAddress().getZipCode();
+            city = customer.getAddress().getCity();
+        }
     }
 }

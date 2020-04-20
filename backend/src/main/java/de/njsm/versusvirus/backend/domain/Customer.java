@@ -4,6 +4,7 @@ import de.njsm.versusvirus.backend.domain.common.Address;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
@@ -13,13 +14,13 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private UUID uuid;
+    @NotNull private UUID uuid;
 
-    private String firstName;
-    private String lastName;
-    private String phone;
+    @NotNull private String firstName;
+    @NotNull private String lastName;
+    @NotNull private Address address;
+    @NotNull private String phone;
     private String mobile;
-    private Address address;
     private boolean deleted;
 
     public long getId() {
@@ -81,7 +82,14 @@ public class Customer {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void delete() {
+        this.firstName = "<deleted>";
+        this.lastName = "<deleted>";
+        this.phone = "<deleted>";
+        this.mobile = null;
+        this.address.setAddress("<deleted>");
+        this.address.setCity("<deleted>");
+        this.address.setZipCode("<deleted>");
+        this.deleted = true;
     }
 }

@@ -33,8 +33,13 @@ public class PurchaseListItemDTO {
             Moderator createdBy) {
         this.uuid = purchase.getUuid();
         this.customer = new CustomerDTO();
-        this.customer.name = customer.getFirstName() + " " + customer.getLastName();
-        this.customer.phone = customer.getPhone();
+        if (customer.isDeleted()) {
+            this.customer.name = "gelöscht";
+            this.customer.phone = "gelöscht";
+        } else {
+            this.customer.name = customer.getFirstName() + " " + customer.getLastName();
+            this.customer.phone = customer.getPhone();
+        }
         if (assignedVolunteer != null) {
             this.volunteer = new VolunteerDTO();
             if (assignedVolunteer.isDeleted()) {
