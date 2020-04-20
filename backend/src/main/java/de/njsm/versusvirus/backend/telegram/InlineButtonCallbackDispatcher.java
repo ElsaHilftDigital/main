@@ -130,7 +130,9 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private void rejectApplicants(Customer customer, Purchase purchase) {
         purchase.getVolunteerApplications().forEach(id -> {
-            if (!purchase.getAssignedVolunteer().equals(id)) {
+            if (purchase.getAssignedVolunteer().isPresent() &&
+                !purchase.getAssignedVolunteer().get().equals(id)) {
+
                 volunteerRepository.findById(id).ifPresent(v -> {
                     messageSender.sendRejectionToApplicant(v.getTelegramChatId(), customer, purchase);
                 });
