@@ -132,7 +132,7 @@ public class PurchaseService {
                 .map(purchase -> new PurchaseListItemDTO(
                         purchase,
                         customers.get(purchase.getCustomerId()),
-                        volunteers.get(purchase.getAssignedVolunteer()),
+                        purchase.getAssignedVolunteer().map(volunteers::get).orElse(null),
                         moderators.get(purchase.getResponsibleModeratorId()),
                         moderators.get(purchase.getCreatedByModerator())))
                 .collect(Collectors.toList());
