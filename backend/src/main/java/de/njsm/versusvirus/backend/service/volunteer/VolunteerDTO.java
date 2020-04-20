@@ -25,20 +25,37 @@ public class VolunteerDTO {
     public String telegramJoinBotChatUrl;
 
     public VolunteerDTO(Volunteer volunteer) {
-        id = volunteer.getId();
-        uuid = volunteer.getUuid();
-        firstName = volunteer.getFirstName();
-        lastName = volunteer.getLastName();
-        phone = volunteer.getPhone();
-        email = volunteer.getEmail();
-        address = volunteer.getAddress().getAddress();
-        city = volunteer.getAddress().getCity();
-        zipCode = volunteer.getAddress().getZipCode();
-        birthDate = volunteer.getBirthDate();
-        iban = volunteer.getIban();
-        bankName = volunteer.getBankName();
-        wantsCompensation = volunteer.wantsCompensation();
-        validated = volunteer.isValidated();
+        if (volunteer.isDeleted()) {
+            id = volunteer.getId();
+            uuid = volunteer.getUuid();
+            firstName = "gelöscht";
+            lastName = "gelöscht";
+            phone = "gelöscht";
+            email = "gelöscht";
+            address = "gelöscht";
+            city = "gelöscht";
+            zipCode = "gelöscht";
+            birthDate = volunteer.getBirthDate();
+            iban = null;
+            bankName = null;
+            wantsCompensation = volunteer.wantsCompensation();
+            validated = volunteer.isValidated();
+        } else {
+            id = volunteer.getId();
+            uuid = volunteer.getUuid();
+            firstName = volunteer.getFirstName();
+            lastName = volunteer.getLastName();
+            phone = volunteer.getPhone();
+            email = volunteer.getEmail();
+            address = volunteer.getAddress().getAddress();
+            city = volunteer.getAddress().getCity();
+            zipCode = volunteer.getAddress().getZipCode();
+            birthDate = volunteer.getBirthDate();
+            iban = volunteer.getIban();
+            bankName = volunteer.getBankName();
+            wantsCompensation = volunteer.wantsCompensation();
+            validated = volunteer.isValidated();
+        }
     }
 
     public VolunteerDTO(Volunteer volunteer, String telegramJoinBotChatUrl) {
