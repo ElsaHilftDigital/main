@@ -1,13 +1,15 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { useCookies } from "react-cookie";
 
 const PrivateRoute: React.FC = ({ children, ...rest }) => {
-    const isAuthenticated = document.cookie.indexOf('token') !== -1;
-    return <Route {...rest}
-                  render={({ location }) => isAuthenticated
-                      ? children
-                      : <Redirect to={{ pathname: "/login", state: { from: location } }}/>}
-    />;
+    const [cookies] = useCookies(['token']);
+    const isAuthenticated = !!cookies.token;
+    if (isAuthenticated) {
+        return <Route {...rest}>{children}</Route>;
+    } else {
+        return <Redirect to="/login"/>
+    }
 };
 
 export default PrivateRoute;

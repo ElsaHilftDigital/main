@@ -11,7 +11,6 @@ import VolunteerDetail from './volunteer/VolunteerDetail';
 import NewRequest from './new-request/NewRequest';
 import PurchaseList from './purchase/PurchaseList';
 import PurchaseDetail from './purchase/PurchaseDetail';
-import Header from '../components/Header';
 import PrivateRoute from '../components/PrivateRoute';
 
 
@@ -19,7 +18,6 @@ const App = (props) => {
     return (
         <Provider store={props.store}>
             <Router history={history}>
-                <Route path="/" component={Header}/>
                 <Switch>
                     <Route exact path="/login"><AdminLogin/></Route>
                     <PrivateRoute exact path="/new-request"><NewRequest/></PrivateRoute>

@@ -8,16 +8,19 @@ import { useParams } from 'react-router-dom';
 import { useVolunteer } from 'hooks/useVolunteer';
 import { volunteerActions } from 'store/volunteer/index';
 import { formatDate, parseDate } from 'config/utils';
+import Header from 'components/Header';
 
 const VolunteerDetail = () => {
     const { volunteerId } = useParams();
     const { volunteer } = useVolunteer(volunteerId);
 
     if (!volunteer) {
-        return (
-            <div className="container mt-3 mb-5">
-                <div className="spinner-border"/>
-            </div>
+        return (<>
+                <Header/>
+                <div className="container mt-3 mb-5">
+                    <div className="spinner-border"/>
+                </div>
+            </>
         );
     }
     return <VolunteerDetailInternal currentVolunteer={volunteer}/>;
@@ -54,7 +57,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
             dispatch(volunteerActions.deleteVolunteer(currentVolunteer.uuid));
             setShowDeleteToast(true);
         }
-    }
+    };
 
     const { register, handleSubmit, errors, setValue } = useForm({
         defaultValues: {
@@ -79,6 +82,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
     }, [setValue, currentVolunteer]);
 
     return (<>
+        <Header/>
         <div className="position-absolute d-flex flex-column">
             {showConfirmToast &&
             <Toast className="mt-2 mb-2" onClose={() => setShowConfirmToast(false)} show={showConfirmToast} delay={3000}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as authentication from 'apis/authentication';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
 import background from 'assets/ElsaHilftMehrBackgroundCropped.png';
@@ -23,12 +23,10 @@ const AdminLogin = () => {
     const [invalidCredentials, setInvalidCredentials] = useState(false);
 
     const history = useHistory();
-    const location = useLocation<{ from: { pathname: string } }>();
-    const { from } = location.state || { from: { pathname: "/" } };
 
     const onSubmit = (values: any) => {
         authentication.login(values)
-            .then(() => history.replace(from))
+            .then(() => history.replace("/"))
             .catch(() => setInvalidCredentials(true));
     };
 

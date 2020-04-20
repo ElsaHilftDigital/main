@@ -6,6 +6,7 @@ import * as routes from 'routes';
 import { useVolunteers } from 'hooks/useVolunteers';
 import StatusIndicator from 'components/StatusIndicator';
 import Title from 'components/Title';
+import Header from "components/Header";
 
 
 const VolunteerList: React.FC = () => {
@@ -13,6 +14,7 @@ const VolunteerList: React.FC = () => {
 
     if (!volunteers.length) {
         return (<>
+            <Header/>
             <Title>Helfer</Title>
             <ListGroup.Item>
                 <Row><b style={{padding: "1rem"}}>Keine Helfer vorhanden</b></Row>
@@ -25,6 +27,7 @@ const VolunteerList: React.FC = () => {
 
     return (
         <>
+            <Header/>
             <Title>Helfer</Title>
             <ListGroup>
                 {sortedVolunteers.map((volunteer: any) => <VolunteerListItem volunteer={volunteer}
