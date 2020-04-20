@@ -3,16 +3,16 @@ import { Provider } from 'react-redux';
 import { Redirect, Router, Route, Switch } from 'react-router-dom';
 
 import history from '../history';
-import AdminLogin from './admin/home/AdminLogin';
-import CustomerList from './admin/customer/CustomerList';
-import CustomerDetail from './admin/customer/CustomerDetail';
-import VolunteerList from './admin/volunteer/VolunteerList';
-import VolunteerDetail from './admin/volunteer/VolunteerDetail';
-import NewRequest from './admin/new-request/NewRequest';
-import PurchaseList from './admin/purchase/PurchaseList';
-import PurchaseDetail from './admin/purchase/PurchaseDetail';
-import Header from './Header';
-import PrivateRoute from './PrivateRoute';
+import AdminLogin from './home/AdminLogin';
+import CustomerList from './customer/CustomerList';
+import CustomerDetail from './customer/CustomerDetail';
+import VolunteerList from './volunteer/VolunteerList';
+import VolunteerDetail from './volunteer/VolunteerDetail';
+import NewRequest from './new-request/NewRequest';
+import PurchaseList from './purchase/PurchaseList';
+import PurchaseDetail from './purchase/PurchaseDetail';
+import Header from '../components/Header';
+import PrivateRoute from '../components/PrivateRoute';
 
 
 const App = (props) => {

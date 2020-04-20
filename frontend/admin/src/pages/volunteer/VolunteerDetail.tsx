@@ -6,7 +6,7 @@ import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
 
 import { useVolunteer } from 'hooks/useVolunteer';
-import { volunteerActions } from 'store/volunteer';
+import { volunteerActions } from 'store/volunteer/index';
 import { formatDate, parseDate } from 'config/utils';
 
 const VolunteerDetail = () => {

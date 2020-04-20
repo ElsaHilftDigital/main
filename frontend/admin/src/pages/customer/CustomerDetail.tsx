@@ -4,7 +4,7 @@ import { Row, Col, Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
 
-import { customerActions } from 'store/customer';
+import { customerActions } from 'store/customer/index';
 import { useDispatch } from 'react-redux';
 import { useCustomer } from 'hooks/useCustomer';
 
