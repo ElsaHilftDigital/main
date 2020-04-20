@@ -69,7 +69,7 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
     }
 
     @Override
-    public Image getFile(String fileId) {
+    public byte[] getFile(String fileId) {
         LOG.debug("Downloading file {}", fileId);
         Call<TelegramResponse<File>> call = apiClient.getFile(token, fileId);
         File file = executeQuery(call);
@@ -78,8 +78,8 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
         }
 
         Call<ResponseBody> rawFileCall = apiClient.getRawFile(token, file.getFilePath());
-        Image body = executeRawQuery(rawFileCall);
-        if (body == null || body.getData() == null || body.getMimeType() == null) {
+        byte[] body = executeRawQuery(rawFileCall);
+        if (body == null) {
             throw new RuntimeException("No file content found, see above");
         }
 
@@ -105,14 +105,14 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
     }
 
     @Nullable
-    private Image executeRawQuery(Call<ResponseBody> call) {
+    private byte[] executeRawQuery(Call<ResponseBody> call) {
         try {
             Response<ResponseBody> r = call.execute();
             ResponseBody body = returnRawResponse(r);
             if (body == null) {
                 return null;
             }
-            return new Image(body.bytes(), r.headers().get("Content-Type"));
+            return body.bytes();
         } catch (IOException e) {
             LOG.error("Error connecting to the server", e);
             return null;

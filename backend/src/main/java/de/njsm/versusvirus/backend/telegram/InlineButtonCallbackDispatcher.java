@@ -7,14 +7,19 @@ import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
-import de.njsm.versusvirus.backend.telegram.dto.Image;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.User;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -218,19 +223,33 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         }
 
         if (volunteer.getTelegramFileId() != null) {
-            Image image = telegramApi.getFile(volunteer.getTelegramFileId());
-            purchase.setReceipt(image.getData());
-            purchase.setReceiptMimeType(image.getMimeType());
-            purchase.setReceiptFileId(volunteer.getTelegramFileId());
-            purchase.setStatus(Purchase.Status.PURCHASE_DONE);
-            volunteer.setTelegramFileId(null);
-            messageSender.confirmReceiptUpload(message.getChat().getId());
-            adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+            var image = telegramApi.getFile(volunteer.getTelegramFileId());
+            MediaType mimetype = detectMimeType(image);
+            if (mimetype != MediaType.OCTET_STREAM) {
+                purchase.setReceipt(image);
+                purchase.setReceiptMimeType(mimetype.toString());
+                purchase.setReceiptFileId(volunteer.getTelegramFileId());
+                purchase.setStatus(Purchase.Status.PURCHASE_DONE);
+                volunteer.setTelegramFileId(null);
+                messageSender.confirmReceiptUpload(message.getChat().getId());
+                adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+            } else {
+                LOG.warn("Unable to detect MIME type of file {}", volunteer.getTelegramChatId());
+                messageSender.sendUnexpectedImage(message.getChat().getId());
+            }
         } else {
             LOG.warn("volunteer {} wants to map a receipt to purchase {} without having submitted a receipt",
                     volunteer.getUuid(),
                     purchaseId);
             messageSender.sendUnexpectedMessage(message.getChat().getId());
+        }
+    }
+
+    private MediaType detectMimeType(byte[] image) {
+        try {
+            return new TikaConfig().getDetector().detect(new ByteArrayInputStream(image), new Metadata());
+        } catch (IOException | TikaException e) {
+            return MediaType.OCTET_STREAM;
         }
     }
 
