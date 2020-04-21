@@ -37,6 +37,11 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
           env:
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: jwt
           - name: TELEGRAM_TOKEN
             valueFrom:
               secretKeyRef:
