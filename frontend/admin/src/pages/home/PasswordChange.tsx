@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Header from "../../components/Header";
 import { Alert, Button, Container, Form } from "react-bootstrap";
-import Title from "../../components/Title";
 import * as authentication from 'apis/authentication';
 import { useHistory } from 'react-router-dom';
 
@@ -50,8 +49,8 @@ const PasswordChange = () => {
 
     return <>
         <Header/>
-        <Container>
-            <Title>Passwort ändern</Title>
+        <Container className="mt-3 mb-5">
+            <h1>Passwort ändern</h1>
             <Form onSubmit={changePassword}>
                 <Form.Group controlId="oldPassword">
                     <Form.Label>Altes Passwort</Form.Label>

@@ -96,7 +96,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         </div>
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
-                <h1>Helfer {props.currentVolunteer.firstname}</h1>
+                <h1>Details von Helfer {currentVolunteer.lastName}</h1>
                 {!currentVolunteer.validated && (
                     <button
                         onClick={() => handleConfirmVolunteer(currentVolunteer.uuid)}
