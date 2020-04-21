@@ -3,3 +3,4 @@
 elsa_backend_telegram_token: changeme
 elsa_backend_bot_name: changeme
 elsa_backend_spring_profile: prod
+elsa_backend_jwt_secret: changeme

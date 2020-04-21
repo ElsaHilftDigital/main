@@ -58,7 +58,7 @@ public class CustomerService {
 
     public void deleteCustomer(UUID customerId) {
         var customer = customerRepository.findByUuid(customerId).orElseThrow(NotFoundException::new);
-        customer.setDeleted(true);
+        customer.delete();
     }
 
     public void updateCustomer(UUID customerId, UpdateRequest req) {

@@ -9,6 +9,7 @@ import { formatBoolean, formatDateTime, formatMoment, parseDate } from 'config/u
 import StatusIndicator from 'components/StatusIndicator';
 import Title from 'components/Title';
 import moment from "moment";
+import Header from "components/Header";
 
 
 const PurchaseList = () => {
@@ -16,6 +17,7 @@ const PurchaseList = () => {
 
     if (!purchases?.length) {
         return (<>
+            <Header/>
             <Container fluid>
                 <FlexRow>
                     <DateCol md="4">
@@ -37,6 +39,7 @@ const PurchaseList = () => {
     }
 
     return (<>
+        <Header/>
         <Container fluid>
             <PurchaseListInternal purchases={purchases}/>
         </Container>

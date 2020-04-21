@@ -4,6 +4,7 @@ import de.njsm.versusvirus.backend.domain.common.Address;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -14,30 +15,19 @@ public class Volunteer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private UUID uuid;
+    @NotNull private UUID uuid;
 
-    private String firstName;
-    private String lastName;
-    private String phone;
-    private String email;
-    private Address address;
-    private LocalDate birthDate;
+    @NotNull private String firstName;
+    @NotNull private String lastName;
+    @NotNull private String phone;
+    @NotNull private String email;
+    @NotNull private Address address;
+    @NotNull private LocalDate birthDate;
     private String iban;
     private String bankName;
-    // Means of Transportation
-
-    // Employment Status
 
     private boolean wantsCompensation;
     private boolean validated;
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
 
     private boolean deleted;
 
@@ -165,6 +155,32 @@ public class Volunteer {
 
     public void setTelegramFileId(String telegramFileId) {
         this.telegramFileId = telegramFileId;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void delete() {
+        this.firstName = "<deleted>";
+        this.lastName = "<deleted>";
+        this.address.setAddress("<deleted>");
+        this.address.setCity("<deleted>");
+        this.address.setZipCode("<deleted>");
+        this.phone = "<deleted>";
+        this.email = "<deleted>";
+        this.birthDate = LocalDate.EPOCH;
+
+        this.wantsCompensation = false;
+        this.iban = null;
+        this.bankName = null;
+
+        this.telegramChatId = null;
+        this.telegramFileId = null;
+        this.telegramUserId = null;
+
+        this.validated = false;
+        this.deleted = true;
     }
 }
 

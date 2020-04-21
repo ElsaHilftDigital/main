@@ -7,13 +7,14 @@ Type=simple
 Environment=TELEGRAM_TOKEN={{ elsa_backend_telegram_token }}
 Environment=TELEGRAM_BOT_NAME={{ elsa_backend_bot_name }}
 Environment=DEPLOYMENT_DOMAIN={{ ansible_fqdn }}
-Environment=SMTP_HOST=
+Environment=SMTP_HOST=elsa-hilft.ch
 Environment=SMTP_PORT=
 Environment=SMTP_USER=
 Environment=SMTP_PASSWORD=
 Environment=DATABASE_USER=db
 Environment=DATABASE_PASSWORD=db
 Environment=DATABASE_URL=jdbc:postgresql://localhost:5434/db
+Environment=JWT_SECRET={{ elsa_backend_jwt_secret }}
 ExecStart=java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4004 \
         -jar /usr/local/lib/elsa-hilft.jar --spring.profiles.active={{ elsa_backend_spring_profile }}
 User=elsa

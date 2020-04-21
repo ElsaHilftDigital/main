@@ -5,21 +5,24 @@ import { useCustomers } from 'hooks/useCustomers';
 import * as routes from 'routes';
 import Title from 'components/Title';
 import { Col, ListGroup, Row, Form } from 'react-bootstrap';
+import Header from "components/Header";
 
 const CustomerList: React.FC = () => {
     const { customers } = useCustomers();
 
     if (!customers.length) {
         return (<>
-                <Title>Kunden</Title>
-                <ListGroup.Item>
-                    <Row><b style={{padding: "1rem"}}>Keine Kunden vorhanden</b></Row>
-                </ListGroup.Item>
+            <Header/>
+            <Title>Kunden</Title>
+            <ListGroup.Item>
+                <Row><b style={{ padding: "1rem" }}>Keine Kunden vorhanden</b></Row>
+            </ListGroup.Item>
         </>);
     }
 
     return (
         <>
+            <Header/>
             <Title>Kunden</Title>
             <ListGroup>
                 {customers.map((customer: any) => <CustomerListItem key={customer.uuid} customer={customer}/>)}

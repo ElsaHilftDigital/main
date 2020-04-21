@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {useForm} from 'react-hook-form';
-import {useSelector, useDispatch} from 'react-redux';
-import {Link} from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import SearchBox from 'components/SearchBox';
 import PurchaseList from 'components/PurchaseList';
-import {useCustomers} from 'hooks/useCustomers';
-import {customerSelectors, customerActions} from 'store/customer';
-import {purchaseSelectors, purchaseActions} from 'store/purchase';
+import { useCustomers } from 'hooks/useCustomers';
+import { customerSelectors, customerActions } from 'store/customer';
+import { purchaseSelectors, purchaseActions } from 'store/purchase';
 import * as routes from 'routes';
+import Header from "components/Header";
 
 const ProgressItem = styled.li`
     position: relative;
@@ -21,7 +22,7 @@ const ProgressItem = styled.li`
         content: '';
         display: block;
         margin: 0 auto;
-        background: ${props => (props.isActive || props.isCompleted) ? '#2f2f86' : '#6c757d' };
+        background: ${props => (props.isActive || props.isCompleted) ? '#2f2f86' : '#6c757d'};
         width: 1em;
         height: 1em;
         margin-bottom: 1em;
@@ -116,54 +117,63 @@ const NewRequest = () => {
             }
             const matches = (customer, searchText) => {
                 const terms = searchTerms(searchText);
-                const {id, uuid, ...remainder} = customer;
+                const { id, uuid, ...remainder } = customer;
                 const properties = Object.values(remainder).map(s => s.toLowerCase());
                 return terms.every(term => properties.some(prop => prop.includes(term)));
             }
             return <>
                 <SearchBox
-                        items={allCustomers}
-                        onChange={setCustomer}
-                        filter={matches}
-                        renderItem={renderCustomerSuggestion}/>
+                    items={allCustomers}
+                    onChange={setCustomer}
+                    filter={matches}
+                    renderItem={renderCustomerSuggestion}/>
                 {customer && <>
                     <div className="row mt-3">
                         <div className="form-group col-md-6">
                             <label htmlFor="firstName">Vorname</label>
-                            <input disabled name="firstName" type="text" className="form-control" id="firstName" value={customer.firstName} />
+                            <input disabled name="firstName" type="text" className="form-control" id="firstName"
+                                   value={customer.firstName}/>
                         </div>
                         <div className="form-group col-md-6">
                             <label htmlFor="lastName">Nachname</label>
-                            <input disabled name="lastName" type="text" className="form-control" id="lastName" value={customer.lastName}/>
+                            <input disabled name="lastName" type="text" className="form-control" id="lastName"
+                                   value={customer.lastName}/>
                         </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="address">Adresse</label>
-                        <input disabled name="address" type="text" className="form-control" id="address" value={customer.address}/>
+                        <input disabled name="address" type="text" className="form-control" id="address"
+                               value={customer.address}/>
                     </div>
                     <div className="row">
                         <div className="form-group col-md-6">
                             <label htmlFor="zipCode">PLZ</label>
-                            <input disabled name="zipCode" type="text" className="form-control" id="zipCode" value={customer.zipCode}/>
+                            <input disabled name="zipCode" type="text" className="form-control" id="zipCode"
+                                   value={customer.zipCode}/>
                         </div>
                         <div className="form-group col-md-6">
                             <label htmlFor="city">Ort</label>
-                            <input disabled name="city" type="text" className="form-control" id="city" value={customer.city}/>
+                            <input disabled name="city" type="text" className="form-control" id="city"
+                                   value={customer.city}/>
                         </div>
                     </div>
                     <div className="row">
                         <div className="form-group col-md-6">
                             <label htmlFor="phone">Festnetz</label>
-                            <input disabled name="phone" type="text" className="form-control" id="phone" value={customer.phone}/>
+                            <input disabled name="phone" type="text" className="form-control" id="phone"
+                                   value={customer.phone}/>
                         </div>
                         <div className="form-group col-md-6">
                             <label htmlFor="mobile">Mobil</label>
-                            <input disabled name="mobile" type="text" className="form-control" id="mobile" value={customer.mobile}/>
+                            <input disabled name="mobile" type="text" className="form-control" id="mobile"
+                                   value={customer.mobile}/>
                         </div>
                     </div>
                 </>}
                 <form className="mt-3" onSubmit={() => setStep(step + 1)}>
-                    <button type="submit" disabled={!customer || !customer.uuid} className="btn btn-primary float-right">Weiter</button>
+                    <button type="submit" disabled={!customer || !customer.uuid}
+                            className="btn btn-primary float-right">Weiter
+                    </button>
                 </form>
             </>;
         };
@@ -181,41 +191,48 @@ const NewRequest = () => {
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="firstName">Vorname</label>
-                        <input name="firstName" type="text" ref={register({ required: true })} className="form-control" id="firstName" placeholder="Vorname"/>
+                        <input name="firstName" type="text" ref={register({ required: true })} className="form-control"
+                               id="firstName" placeholder="Vorname"/>
                         {errors.firstName && (<span className="text-danger">Vorname wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="lastName">Nachname</label>
-                        <input name="lastName" type="text" ref={register({ required: true })} className="form-control" id="lastName" placeholder="Nachname"/>
+                        <input name="lastName" type="text" ref={register({ required: true })} className="form-control"
+                               id="lastName" placeholder="Nachname"/>
                         {errors.lastName && (<span className="text-danger">Nachname wird benötigt</span>)}
                     </div>
                 </div>
                 <div className="form-group">
                     <label htmlFor="address">Adresse</label>
-                    <input name="address" type="text" ref={register({ required: true })} className="form-control" id="address" placeholder="Adresse"/>
-                        {errors.address && (<span className="text-danger">Adresse wird benötigt</span>)}
+                    <input name="address" type="text" ref={register({ required: true })} className="form-control"
+                           id="address" placeholder="Adresse"/>
+                    {errors.address && (<span className="text-danger">Adresse wird benötigt</span>)}
                 </div>
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="zipCode">PLZ</label>
-                        <input name="zipCode" type="text" ref={register({ required: true })} className="form-control" id="zipCode" placeholder="PLZ"/>
+                        <input name="zipCode" type="text" ref={register({ required: true })} className="form-control"
+                               id="zipCode" placeholder="PLZ"/>
                         {errors.zipCode && (<span className="text-danger">PLZ wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="city">Ort</label>
-                        <input name="city" type="text" ref={register({ required: true })} className="form-control" id="city" placeholder="Ort"/>
+                        <input name="city" type="text" ref={register({ required: true })} className="form-control"
+                               id="city" placeholder="Ort"/>
                         {errors.city && (<span className="text-danger">Ort wird benötigt</span>)}
                     </div>
                 </div>
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="phone">Festnetz</label>
-                        <input name="phone" type="text" ref={register({ required: true })} className="form-control" id="phone" placeholder="Festnetz"/>
+                        <input name="phone" type="text" ref={register({ required: true })} className="form-control"
+                               id="phone" placeholder="Festnetz"/>
                         {errors.phone && (<span className="text-danger">Festnetz wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="mobile">Mobil</label>
-                        <input name="mobile" type="text" ref={register()} className="form-control" id="mobile" placeholder="Mobil"/>
+                        <input name="mobile" type="text" ref={register()} className="form-control" id="mobile"
+                               placeholder="Mobil"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary float-right">Weiter</button>
@@ -239,7 +256,7 @@ const NewRequest = () => {
                     <label className="form-check-label" htmlFor="new">Neuer Kunde</label>
                 </div>
             </form>
-            {newCustomer ? <NewCustomer/> : <ExistingCustomer/> }
+            {newCustomer ? <NewCustomer/> : <ExistingCustomer/>}
         </>);
     };
 
@@ -283,18 +300,22 @@ const NewRequest = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="timing">Zeit</label>
-                    <input name="timing" id="timing" type="text" ref={register} className="form-control" placeholder="Braucht Einkauf bis / ab"/>
+                    <input name="timing" id="timing" type="text" ref={register} className="form-control"
+                           placeholder="Braucht Einkauf bis / ab"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="publicComments">Gruppenchat Bemerkungen</label>
-                    <input name="publicComments" type="text" ref={register} className="form-control" id="publicComments" placeholder="Gruppenchat Bemerkungen"/>
+                    <input name="publicComments" type="text" ref={register} className="form-control" id="publicComments"
+                           placeholder="Gruppenchat Bemerkungen"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="privateComments">Private Bemerkungen</label>
-                    <input name="privateComments" type="text" ref={register} className="form-control" id="privateComments" placeholder="Private Bemerkungen"/>
+                    <input name="privateComments" type="text" ref={register} className="form-control"
+                           id="privateComments" placeholder="Private Bemerkungen"/>
                 </div>
 
-                <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück</button>
+                <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück
+                </button>
                 <button type="submit" className="btn btn-primary float-right">Speichern</button>
             </form>
         </>);
@@ -304,27 +325,30 @@ const NewRequest = () => {
         const dispatch = useDispatch();
         const ongoingPurchaseCreate = useSelector(purchaseSelectors.selectCreatePurchaseRequestOngoing);
         const createPurchase = useSelector(purchaseSelectors.selectCreatePurchaseSuccess);
-        useEffect(() => {dispatch(purchaseActions.createPurchase(
-            Object.assign(
-                purchase,
-                {
-                    supermarkets: supermarketList,
-                    customer: customer.uuid,
-                }
-            )
-        ))}, [dispatch]);
+        useEffect(() => {
+            dispatch(purchaseActions.createPurchase(
+                Object.assign(
+                    purchase,
+                    {
+                        supermarkets: supermarketList,
+                        customer: customer.uuid,
+                    }
+                )
+            ))
+        }, [dispatch]);
         return <>
             {ongoingPurchaseCreate && <div className="spinner-border" role="status"/>}
-            {!ongoingPurchaseCreate && 
-                <>
-                    {createPurchase
-                        ? <>
-                            <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-                            <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag freigeben.</Link>
-                        </>
-                        : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
-                    }
-                </>
+            {!ongoingPurchaseCreate &&
+            <>
+                {createPurchase
+                    ? <>
+                        <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
+                        <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag
+                            freigeben.</Link>
+                    </>
+                    : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
+                }
+            </>
             }
         </>;
     };
@@ -333,40 +357,44 @@ const NewRequest = () => {
         const dispatch = useDispatch();
         const ongoingCustomerCreate = useSelector(customerSelectors.selectCreateCustomerRequestOngoing);
         const customerSuccess = useSelector(customerSelectors.selectCreateCustomerSuccess);
-        useEffect(() => {dispatch(customerActions.createCustomer(customer))}, [dispatch]);
+        useEffect(() => {
+            dispatch(customerActions.createCustomer(customer))
+        }, [dispatch]);
         const ongoingPurchaseCreate = useSelector(purchaseSelectors.selectCreatePurchaseRequestOngoing);
         const createPurchase = useSelector(purchaseSelectors.selectCreatePurchaseSuccess);
         useEffect(() => {
             console.log('createPurchase', customerSuccess);
             customerSuccess && dispatch(purchaseActions.createPurchase(
-            Object.assign(
-                purchase,
-                {
-                    supermarkets: supermarketList,
-                    customer: customerSuccess.uuid,
-                }
-            )
-        ))}, [customerSuccess, dispatch]);
+                Object.assign(
+                    purchase,
+                    {
+                        supermarkets: supermarketList,
+                        customer: customerSuccess.uuid,
+                    }
+                )
+            ))
+        }, [customerSuccess, dispatch]);
         return <>
             {(ongoingCustomerCreate || ongoingPurchaseCreate) && <div className="spinner-border" role="status"/>}
             {!ongoingCustomerCreate &&
-                <>
-                    {customerSuccess
+            <>
+                {customerSuccess
                     ? <div className="alert alert-success" role="alert">Kunde erfolgreich erstellt</div>
                     : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Kunden</div>
-                    }
-                </>
+                }
+            </>
             }
             {!ongoingPurchaseCreate &&
-                <>
-                    {createPurchase
-                        ? <>
-                            <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-                            <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag freigeben.</Link>
-                        </>
-                        : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
-                    }
-                </>
+            <>
+                {createPurchase
+                    ? <>
+                        <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
+                        <Link to={routes.purchaseDetails(createPurchase.uuid)}>Hier geht es zum Auftrag. Bitte Auftrag
+                            freigeben.</Link>
+                    </>
+                    : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
+                }
+            </>
             }
         </>;
     }
@@ -384,12 +412,14 @@ const NewRequest = () => {
                 return null;
         }
     };
-    return (
-        <div className="container mt-3 mb-5">
-            <h1>Auftrag erfassen</h1>
-            <Progress>{renderSteps()}</Progress>
-            {renderContent()}
-        </div>
+    return (<>
+            <Header/>
+            <div className="container mt-3 mb-5">
+                <h1>Auftrag erfassen</h1>
+                <Progress>{renderSteps()}</Progress>
+                {renderContent()}
+            </div>
+        </>
     );
 };
 
