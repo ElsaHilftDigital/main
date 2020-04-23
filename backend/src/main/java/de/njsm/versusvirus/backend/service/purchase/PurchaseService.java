@@ -1,6 +1,5 @@
 package de.njsm.versusvirus.backend.service.purchase;
 
-import de.njsm.versusvirus.backend.PurchaseSummary;
 import de.njsm.versusvirus.backend.domain.*;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.*;
@@ -268,7 +267,7 @@ public class PurchaseService {
     }
 
     public void updateSummary() {
-        List<PurchaseSummary> summaries = purchaseRepository.summarizeByState();
+        List<PurchaseRepository.PurchaseSummary> summaries = purchaseRepository.summarizeByState();
         summaries.forEach(s -> PURCHASES.labels(s.getStatus().name()).set(s.getNumberOfPurchases()));
     }
 }

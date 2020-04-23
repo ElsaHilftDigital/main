@@ -1,6 +1,5 @@
 package de.njsm.versusvirus.backend.repository;
 
-import de.njsm.versusvirus.backend.PurchaseSummary;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +27,9 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
     @Query("select status as status, count(status) as numberOfPurchases from Purchase group by status")
     List<PurchaseSummary> summarizeByState();
+
+    interface PurchaseSummary {
+        Purchase.Status getStatus();
+        double getNumberOfPurchases();
+    }
 }
