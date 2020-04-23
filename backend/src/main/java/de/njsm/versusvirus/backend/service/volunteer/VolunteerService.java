@@ -22,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -151,6 +154,7 @@ public class VolunteerService {
 
     public void importVolunteers(String upload) {
         Iterable<CSVRecord> records;
+        var format = DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(Locale.GERMAN).withZone(ZoneId.of("Europe/Zurich"));
         try {
             records = CSVFormat.DEFAULT.parse(new StringReader(upload));
         } catch (IOException e) {
@@ -158,17 +162,17 @@ public class VolunteerService {
         }
         for (CSVRecord record : records) {
             SignupRequest req = new SignupRequest();
-            req.firstName = record.get("firstname");
-            req.lastName = record.get("lastname");
-            req.phone = record.get("phone");
-            req.email = record.get("email");
-            req.address = record.get("address");
-            req.city = record.get("city");
-            req.zipCode = record.get("zipcode");
-            req.birthDate = LocalDate.now();
-            req.iban = record.get("iban");
-            req.bankName = record.get("bankname");
-            req.wantsCompensation = true;
+            req.firstName = record.get("Name");
+            req.lastName = record.get("Vorname");
+            req.phone = record.get("Telefonnummer");
+            req.email = record.get("Email");
+            req.address = record.get("Adresse");
+            req.city = record.get("Wohnort");
+            req.zipCode = record.get("PLZ");
+            req.birthDate = LocalDate.parse(record.get("Geb.Dat."), format);
+            req.iban = record.get("IBAN");
+            req.bankName = record.get("Bankname");
+            req.wantsCompensation = ! record.get("IBAN").isBlank();
             signup(req);
         }
     }
