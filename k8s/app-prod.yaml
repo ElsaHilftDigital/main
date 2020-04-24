@@ -42,6 +42,11 @@ spec:
               secretKeyRef:
                 key: secret
                 name: jwt
+          - name: METRICS_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: secret
+                name: metrics
           - name: TELEGRAM_TOKEN
             valueFrom:
               secretKeyRef:
