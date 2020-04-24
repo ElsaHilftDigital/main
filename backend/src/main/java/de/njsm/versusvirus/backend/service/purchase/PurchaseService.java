@@ -267,6 +267,9 @@ public class PurchaseService {
     }
 
     public void updateSummary() {
+        for (Purchase.Status s : Purchase.Status.values()) {
+            PURCHASES.labels(s.name()).set(0);
+        }
         List<PurchaseRepository.PurchaseSummary> summaries = purchaseRepository.summarizeByState();
         summaries.forEach(s -> PURCHASES.labels(s.getStatus().name()).set(s.getNumberOfPurchases()));
     }
