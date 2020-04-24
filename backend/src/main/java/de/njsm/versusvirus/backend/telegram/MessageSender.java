@@ -252,7 +252,7 @@ public class MessageSender {
         return result;
     }
 
-    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer, Long telegramSupportChat) {
+    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer, String telegramSupportChat) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
             return;
@@ -270,7 +270,7 @@ public class MessageSender {
         String text = MessageFormat.format(
                 template,
                 customerString,
-                "tg://user?id=" + telegramSupportChat);
+                telegramSupportChat);
 
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
         String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
@@ -305,9 +305,9 @@ public class MessageSender {
         api.sendMessage(m);
     }
 
-    public void confirmConfirmation(long chatId, Long telegramSupportChat) {
+    public void confirmConfirmation(long chatId, String telegramSupportChat) {
         var template = telegramMessages.getThankForDoingPurchaseMessage();
-        var text = MessageFormat.format(template, "tg://user?id=" + telegramSupportChat);
+        var text = MessageFormat.format(template, telegramSupportChat);
         var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }

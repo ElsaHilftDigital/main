@@ -107,3 +107,6 @@ databaseChangeLog:
   - include:
       file: 20200420-2233-store-receipt-file-extension.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200424-1614-change-telegram-support-type-to-string.sql
+      relativeToChangelogFile: true
