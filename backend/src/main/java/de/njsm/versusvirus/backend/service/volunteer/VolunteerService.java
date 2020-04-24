@@ -172,7 +172,7 @@ public class VolunteerService {
             req.birthDate = LocalDate.parse(record.get("Geb.Dat."), format);
             req.iban = record.get("IBAN");
             req.bankName = record.get("Bankname");
-            req.wantsCompensation = ! record.get("IBAN").isBlank();
+            req.wantsCompensation = record.get("compensation yes / no").equals("1");
             signup(req);
         }
     }
