@@ -65,6 +65,7 @@ const NewRequest = () => {
     const [newCustomer, setNewCustomer] = useState(false);
     const [supermarketList, setSupermarketList] = useState([]);
     const [purchase, setPurchase] = useState(undefined);
+    console.log(customer);
 
     const renderSteps = () => steps.map((s, i) => (
         <ProgressItem key={i} isActive={i === step} isCompleted={i < step}>
@@ -414,7 +415,7 @@ const NewRequest = () => {
     return (<>
             <Header/>
             <div className="container mt-3 mb-5">
-                <h1>Auftrag erfassen</h1>
+                {!!customer ? <h1>Auftrag erfassen für {customer.firstName} {customer.lastName}</h1> : <h1>Auftrag erfassen</h1>}
                 <Progress>{renderSteps()}</Progress>
                 {renderContent()}
             </div>
