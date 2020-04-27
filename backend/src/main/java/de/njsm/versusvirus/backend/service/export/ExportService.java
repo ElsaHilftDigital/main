@@ -52,7 +52,7 @@ public class ExportService {
                 var currentDirectory = String.format("%s%s_%s_%s/", rootDirectoryName, customer.getId(), customer.getFirstName(), customer.getLastName());
                 zipStream.putNextEntry(new ZipEntry(currentDirectory));
                 for (var purchase : purchases) {
-                    var fileName = currentDirectory + purchase.getId() + purchase.getReceiptFileExtension();
+                    var fileName = currentDirectory + purchase.getId() + "." + purchase.getReceiptFileExtension();
                     zipStream.putNextEntry(new ZipEntry(fileName));
                     zipStream.write(purchase.getReceipt());
                 }
