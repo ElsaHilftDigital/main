@@ -65,7 +65,6 @@ const NewRequest = () => {
     const [newCustomer, setNewCustomer] = useState(false);
     const [supermarketList, setSupermarketList] = useState([]);
     const [purchase, setPurchase] = useState(undefined);
-    console.log(customer);
 
     const renderSteps = () => steps.map((s, i) => (
         <ProgressItem key={i} isActive={i === step} isCompleted={i < step}>
