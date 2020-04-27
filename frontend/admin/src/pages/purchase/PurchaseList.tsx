@@ -147,6 +147,8 @@ const ExportForm = () => {
 
 };
 
+const statusIndicators = ["RED", "AMBER", "GREEN"];
+
 const PurchaseListInternal = (props: any) => {
     const { purchases } = props;
 
@@ -162,8 +164,16 @@ const PurchaseListInternal = (props: any) => {
         purchases.forEach((purchase: any) => result.get(toDate(purchase.createdAt))!.push(purchase));
         for (const list of Array.from(result.values())) {
             list.sort((l: any, r: any) => {
-                if (new Date(l.createdAt) < new Date(r.createdAt)) {
+                const leftIndex = statusIndicators.indexOf(l.statusIndicator);
+                const rightIndex = statusIndicators.indexOf(r.statusIndicator);
+                if (leftIndex < rightIndex) {
                     return -1;
+                } else if (leftIndex === rightIndex) {
+                    if (new Date(l.createdAt) < new Date(r.createdAt)) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
                 } else {
                     return 1;
                 }
@@ -171,11 +181,10 @@ const PurchaseListInternal = (props: any) => {
         }
         return result;
     }, [purchaseDates, purchases]);
-    const indicators = ["RED", "AMBER", "GREEN"];
     const purchaseDateIndicators = useMemo(() => purchaseDates.map(date => {
-        const index = purchasesByDate.get(date)!.reduce((acc, current) => Math.min(acc, indicators.indexOf(current.statusIndicator)), indicators.length);
-        return indicators[index];
-    }), [purchaseDates, purchasesByDate, indicators]);
+        const index = purchasesByDate.get(date)!.reduce((acc, current) => Math.min(acc, statusIndicators.indexOf(current.statusIndicator)), statusIndicators.length);
+        return statusIndicators[index];
+    }), [purchaseDates, purchasesByDate]);
 
 
     const [selectedDate, setSelectedDate] = useState(purchaseDates[0]);
