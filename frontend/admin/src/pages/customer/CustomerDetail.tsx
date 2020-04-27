@@ -33,16 +33,8 @@ interface Props {
 const CustomerDetailInternal: React.FC<Props> = props => {
     const dispatch = useDispatch();
     const { selectedCustomer } = props;
-    const { handleSubmit, register, setValue } = useForm({
-        defaultValues: {
-            firstName: selectedCustomer.firstName,
-            lastName: selectedCustomer.lastName,
-            phone: selectedCustomer.phone,
-            mobile: selectedCustomer.mobile,
-            address: selectedCustomer.address,
-            zipCode: selectedCustomer.zipCode,
-            city: selectedCustomer.city,
-        },
+    const { handleSubmit, register } = useForm({
+        defaultValues: selectedCustomer
     });
     const [showSaveToast, setShowSaveToast] = useState(false);
     const [showDeleteToast, setShowDeleteToast] = useState(false);
@@ -58,16 +50,6 @@ const CustomerDetailInternal: React.FC<Props> = props => {
             setShowDeleteToast(true);
         }
     };
-
-    useEffect(() => {
-        setValue('firstName', selectedCustomer.firstName);
-        setValue('lastName', selectedCustomer.lastName);
-        setValue('phone', selectedCustomer.phone);
-        setValue('mobile', selectedCustomer.mobile);
-        setValue('address', selectedCustomer.address);
-        setValue('zipCode', selectedCustomer.zipCode);
-        setValue('city', selectedCustomer.city);
-    }, [setValue, selectedCustomer]);
 
     return (<>
         <Header/>
