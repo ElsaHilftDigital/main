@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {useDispatch} from 'react-redux';
+import {useParams} from 'react-router-dom';
+import {Button} from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 
 import PurchaseList from 'components/PurchaseList';
-import { purchaseActions } from 'store/purchase';
-import { usePurchase } from 'hooks/usePurchase';
-import { useModerators } from 'hooks/useModerators';
-import { formatDate } from 'config/utils';
+import {purchaseActions} from 'store/purchase';
+import {usePurchase} from 'hooks/usePurchase';
+import {useModerators} from 'hooks/useModerators';
+import {formatDate} from 'config/utils';
 import * as routes from 'routes';
 import Header from "components/Header";
 
 
 const PurchaseDetail = () => {
-    const { purchaseId } = useParams();
-    const { purchase } = usePurchase(purchaseId);
-    const { moderators } = useModerators();
+    const {purchaseId} = useParams();
+    const {purchase} = usePurchase(purchaseId);
+    const {moderators} = useModerators();
 
     if (!purchase) {
         return (<>
@@ -32,11 +32,11 @@ const PurchaseDetail = () => {
     return <PurchaseDetailInternal purchase={purchase} moderators={moderators}/>;
 };
 
-const PurchaseDetailInternal = (props) => {
-    const { purchase, moderators } = props;
+const PurchaseDetailInternal = (props: any) => {
+    const {purchase, moderators} = props;
     const dispatch = useDispatch();
 
-    const { register, handleSubmit } = useForm({
+    const {register, handleSubmit} = useForm({
         defaultValues: purchase
     });
 
@@ -53,7 +53,7 @@ const PurchaseDetailInternal = (props) => {
         setShowSearchHelperToast(true);
     };
 
-    const assignVolunteer = (uuid) => {
+    const assignVolunteer = (uuid: string) => {
         dispatch(purchaseActions.assignVolunteer(purchase.uuid, uuid));
         setShowAssignVolunteerToast(true);
     };
@@ -71,11 +71,11 @@ const PurchaseDetailInternal = (props) => {
     }
 
     const exportPurchase = () => {
-        window.location = routes.purchaseExport(purchase.uuid);
+        window.location.href = routes.purchaseExport(purchase.uuid);
     }
 
-    const onSubmit = (data) => {
-        const updatedPurchase = Object.assign({}, purchase, data, { supermarkets });
+    const onSubmit = (data: any) => {
+        const updatedPurchase = Object.assign({}, purchase, data, {supermarkets});
         dispatch(purchaseActions.update(purchase.uuid, updatedPurchase));
         setShowSaveToast(true);
     };
@@ -146,7 +146,7 @@ const PurchaseDetailInternal = (props) => {
                         onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                 {purchase.status === "Einkauf abgeschlossen" && <>
                     <Button className="mr-3 mb-1"
-                            onClick={() => window.location = routes.purchaseReceipt(purchase.uuid)}>Quittung
+                            onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung
                         ansehen</Button>
                     <Button className="mr-3 mb-1"
                             onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
@@ -171,7 +171,7 @@ const PurchaseDetailInternal = (props) => {
                         <label htmlFor="responsibleModerator">Verantwortlicher Moderator</label>
                         <select ref={register()} id="responsibleModerator" name="responsibleModerator"
                                 className="form-control" defaultValue={purchase.responsible.uuid}>
-                            {moderators.map(moderator => {
+                            {moderators.map((moderator: any) => {
                                 return <option key={moderator.uuid} value={moderator.uuid}>{moderator.name}</option>
                             })}
                         </select>
@@ -205,7 +205,7 @@ const PurchaseDetailInternal = (props) => {
                 {!purchase.assignedVolunteer && (
                     <span>
                         <div className="form-group">
-                            <label htmlFor="applyingVolunteers">Helfer/-in wurde noch nicht ausgewählt</label>
+                            <label>Helfer/-in wurde noch nicht ausgewählt</label>
                             {purchase.status === "Neu" &&
                             <label><b>&nbsp;und dieser Auftrag wurde noch nicht an Helfer freigegeben.</b></label>
                             }
@@ -214,7 +214,7 @@ const PurchaseDetailInternal = (props) => {
                                 <p>
                                     <i>Helfer, die sich gemeldet haben:</i>
                                 </p>
-                                <table className="table table-striped" name="applyingVolunteers">
+                                <table className="table table-striped">
                                     <thead>
                                     <tr>
                                         <th>Vorname</th>
@@ -224,7 +224,7 @@ const PurchaseDetailInternal = (props) => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {purchase.volunteerApplications.map((v) => {
+                                    {purchase.volunteerApplications.map((v: any) => {
                                         return <tr key={v.uuid}>
                                             <td>{v.firstName}</td>
                                             <td>{v.lastName}</td>
@@ -319,13 +319,15 @@ const PurchaseDetailInternal = (props) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="publicComments">Gruppenchat Kommentare</label>
-                    <textarea name="publicComments" ref={register()} type="text" className="form-control"
-                              id="publicComments"></textarea>
+                    <textarea name="publicComments" ref={register()}
+                              className="form-control"
+                              id="publicComments"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="privateComments">Private Kommentare</label>
-                    <textarea name="privateComments" ref={register()} type="text" className="form-control"
-                              id="privateComments"></textarea>
+                    <textarea name="privateComments" ref={register()}
+                              className="form-control"
+                              id="privateComments"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
