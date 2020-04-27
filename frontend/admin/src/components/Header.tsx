@@ -29,7 +29,7 @@ const Header = () => {
                 </Nav>
                 <Nav>
                     <NavDropdown alignRight id="user-dropdown" title={user} className="text-light">
-                        <NavDropdown.Item>Passwort ändern</NavDropdown.Item>
+                        <NavDropdown.Item href="#change-password">Passwort ändern</NavDropdown.Item>
                         <NavDropdown.Item onClick={() => removeCookie('token')}>Abmelden</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>

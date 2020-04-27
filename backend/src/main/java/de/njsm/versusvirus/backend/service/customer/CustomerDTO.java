@@ -32,7 +32,7 @@ public class CustomerDTO {
             phone = customer.getPhone();
             mobile = customer.getMobile();
             address = customer.getAddress().getAddress();
-            zipCode = customer.getAddress().getZipCode();
+            zipCode = customer.getAddress().getZipCode().orElse("");
             city = customer.getAddress().getCity();
         }
     }

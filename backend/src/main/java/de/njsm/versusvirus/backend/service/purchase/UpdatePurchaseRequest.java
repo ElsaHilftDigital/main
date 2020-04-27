@@ -10,6 +10,7 @@ public class UpdatePurchaseRequest {
     public String timing;
     public String publicComments;
     public String privateComments;
+    public String internalComments;
     public Purchase.PurchaseSize size;
     public Purchase.PaymentMethod paymentMethod;
     public BigDecimal cost;

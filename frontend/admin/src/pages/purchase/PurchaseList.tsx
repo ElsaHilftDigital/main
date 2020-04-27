@@ -1,19 +1,18 @@
-import React, { useMemo, useState } from 'react';
-import { Col, Container, Dropdown, Form, InputGroup, ListGroup, Row } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import React, {useMemo, useState} from 'react';
+import {Col, Container, Dropdown, Form, InputGroup, ListGroup, Row} from 'react-bootstrap';
+import {useHistory} from 'react-router-dom';
 import styled from 'styled-components';
 
-import { usePurchases } from 'hooks/usePurchases';
+import {usePurchases} from 'hooks/usePurchases';
 import * as routes from 'routes';
-import { formatBoolean, formatDateTime, formatMoment, parseDate } from 'config/utils';
+import {formatBoolean, formatDateTime, formatMoment, parseDate} from 'config/utils';
 import StatusIndicator from 'components/StatusIndicator';
 import Title from 'components/Title';
 import moment from "moment";
 import Header from "components/Header";
 
-
 const PurchaseList = () => {
-    const { purchases } = usePurchases();
+    const {purchases} = usePurchases();
 
     if (!purchases?.length) {
         return (<>
@@ -30,7 +29,7 @@ const PurchaseList = () => {
                             </div>
                         </div>
                         <ListGroup.Item>
-                            <Row><b style={{ padding: "1rem" }}>Keine Aufträge vorhanden</b></Row>
+                            <Row><b style={{padding: "1rem"}}>Keine Aufträge vorhanden</b></Row>
                         </ListGroup.Item>
                     </Col>
                 </FlexRow>
@@ -47,13 +46,14 @@ const PurchaseList = () => {
 };
 
 const PurchaseListHeader = () => {
-    return (
+    return <>
         <Row>
             <Col>
                 <Title>Aufträge</Title>
             </Col>
             <ExportForm/>
-        </Row>);
+        </Row>
+    </>;
 }
 
 const ExportForm = () => {
@@ -89,7 +89,7 @@ const ExportForm = () => {
     }
 
     return <Form inline>
-        <Form.Row>
+        <Form.Row className="mr-0">
             <Col>
                 <Form.Group>
                     <Form.Label srOnly htmlFor="startDate">Startdatum</Form.Label>
@@ -106,7 +106,7 @@ const ExportForm = () => {
                             isInvalid={!startDateValid}
                         />
                     </InputGroup>
-                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={startDateValid}>
+                    <div className="invalid-tooltip" style={{display: 'block'}} hidden={startDateValid}>
                         Datumsformat: DD.MM.YYYY
                     </div>
                 </Form.Group>
@@ -127,7 +127,7 @@ const ExportForm = () => {
                             isInvalid={!endDateValid}
                         />
                     </InputGroup>
-                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={endDateValid}>
+                    <div className="invalid-tooltip" style={{display: 'block'}} hidden={endDateValid}>
                         Datumsformat: DD.MM.YYYY
                     </div>
                 </Form.Group>
@@ -147,8 +147,10 @@ const ExportForm = () => {
 
 };
 
+const statusIndicators = ["RED", "AMBER", "GREEN"];
+
 const PurchaseListInternal = (props: any) => {
-    const { purchases } = props;
+    const {purchases} = props;
 
     function toDate(timestamp: string): string {
         return formatMoment(moment(timestamp));
@@ -162,8 +164,16 @@ const PurchaseListInternal = (props: any) => {
         purchases.forEach((purchase: any) => result.get(toDate(purchase.createdAt))!.push(purchase));
         for (const list of Array.from(result.values())) {
             list.sort((l: any, r: any) => {
-                if (new Date(l.createdAt) < new Date(r.createdAt)) {
+                const leftIndex = statusIndicators.indexOf(l.statusIndicator);
+                const rightIndex = statusIndicators.indexOf(r.statusIndicator);
+                if (leftIndex < rightIndex) {
                     return -1;
+                } else if (leftIndex === rightIndex) {
+                    if (new Date(l.createdAt) < new Date(r.createdAt)) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
                 } else {
                     return 1;
                 }
@@ -171,11 +181,10 @@ const PurchaseListInternal = (props: any) => {
         }
         return result;
     }, [purchaseDates, purchases]);
-    const indicators = ["RED", "AMBER", "GREEN"];
     const purchaseDateIndicators = useMemo(() => purchaseDates.map(date => {
-        const index = purchasesByDate.get(date)!.reduce((acc, current) => Math.min(acc, indicators.indexOf(current.statusIndicator)), indicators.length);
-        return indicators[index];
-    }), [purchaseDates, purchasesByDate, indicators]);
+        const index = purchasesByDate.get(date)!.reduce((acc, current) => Math.min(acc, statusIndicators.indexOf(current.statusIndicator)), statusIndicators.length);
+        return statusIndicators[index];
+    }), [purchaseDates, purchasesByDate]);
 
 
     const [selectedDate, setSelectedDate] = useState(purchaseDates[0]);
@@ -197,6 +206,14 @@ const PurchaseListInternal = (props: any) => {
             <Col>
                 <PurchaseListHeader/>
                 <ListGroup variant="flush">
+                    <ListGroup.Item>
+                        <Row>
+                            <Col><h3>Kunde</h3></Col>
+                            <Col><h3>Helfer</h3></Col>
+                            <Col><h3>Status</h3></Col>
+                            <Col><h3>Moderator</h3></Col>
+                        </Row>
+                    </ListGroup.Item>
                     {purchasesByDate.get(selectedDate)!.map(p => <PurchaseListItem purchase={p} key={p.uuid}/>)}
                 </ListGroup>
             </Col>
@@ -224,14 +241,13 @@ const DateListGroup = styled(ListGroup)`
 `;
 
 const PurchaseListItem = (props: any) => {
-    const { purchase } = props;
+    const {purchase} = props;
     const history = useHistory();
     const labelWidth = 5;
 
     return <ListGroup.Item action onClick={() => history.push(routes.purchaseDetails(purchase.uuid))}>
         <Row>
             <Col>
-                <h3>Kunde</h3>
                 <Row>
                     <Form.Label column md={labelWidth}>Name</Form.Label>
                     <Col>
@@ -252,7 +268,6 @@ const PurchaseListItem = (props: any) => {
                 </Row>
             </Col>
             <Col>
-                <h3>Helfer</h3>
                 <Row>
                     <Form.Label column md={labelWidth}>Name</Form.Label>
                     <Col>
@@ -274,15 +289,12 @@ const PurchaseListItem = (props: any) => {
             </Col>
             <Col>
                 <Row>
-                    <Col md={labelWidth}>
-                        <h3>Status</h3>
-                    </Col>
-                    <Col><StatusIndicator bottom value={purchase.statusIndicator}/></Col>
-                </Row>
-                <Row>
                     <Form.Label column md={labelWidth}>Zustand</Form.Label>
                     <Col>
                         <Form.Control plaintext readOnly defaultValue={purchase.status}/>
+                    </Col>
+                    <Col md="2">
+                        <StatusIndicator bottom value={purchase.statusIndicator}/>
                     </Col>
                 </Row>
                 <Row>
@@ -299,7 +311,6 @@ const PurchaseListItem = (props: any) => {
                 </Row>
             </Col>
             <Col>
-                <h3>Moderator</h3>
                 <Row>
                     <Form.Label column md={labelWidth}>Erstellt von</Form.Label>
                     <Col>

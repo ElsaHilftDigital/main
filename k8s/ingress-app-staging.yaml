@@ -1,0 +1,159 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: google-storage-buckets
+  namespace: elsahilft-digital-staging
+spec:
+  type: ExternalName
+  externalName: storage.googleapis.com
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend-public-static
+  namespace: elsahilft-digital-staging
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # rewrite the path we send to gcs
+    nginx.ingress.kubernetes.io/rewrite-target: /staging.elsa-hilft.ch/$1
+    nginx.ingress.kubernetes.io/upstream-vhost: "storage.googleapis.com"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  tls:
+  - hosts:
+    - staging.elsa-hilft.ch
+    secretName: staging-main-acme-tls
+  rules:
+  - host: staging.elsa-hilft.ch
+    http:
+      paths:
+      - path: /(.+)$
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend-public-static-redirect
+  namespace: elsahilft-digital-staging
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # rewrite the path we send to gcs
+    nginx.ingress.kubernetes.io/rewrite-target: /staging.elsa-hilft.ch/index.html
+    nginx.ingress.kubernetes.io/upstream-vhost: "storage.googleapis.com"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  tls:
+  - hosts:
+    - staging.elsa-hilft.ch
+    secretName: staging-main-acme-tls
+  rules:
+  - host: staging.elsa-hilft.ch
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend-admin-static
+  namespace: elsahilft-digital-staging
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # rewrite the path we send to gcs
+    nginx.ingress.kubernetes.io/rewrite-target: /admin-staging.elsa-hilft.ch/$1
+    nginx.ingress.kubernetes.io/upstream-vhost: "storage.googleapis.com"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  tls:
+  - hosts:
+    - admin-staging.elsa-hilft.ch
+    secretName: staging-admin-acme-tls
+  rules:
+  - host: admin-staging.elsa-hilft.ch
+    http:
+      paths:
+      - path: /(.+)$
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+      - path: /admin/(.+)$
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend-admin-static-redirect
+  namespace: elsahilft-digital-staging
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # rewrite the path we send to gcs
+    nginx.ingress.kubernetes.io/rewrite-target: /admin-staging.elsa-hilft.ch/index.html
+    nginx.ingress.kubernetes.io/upstream-vhost: "storage.googleapis.com"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  tls:
+  - hosts:
+    - admin-staging.elsa-hilft.ch
+    secretName: staging-admin-acme-tls
+  rules:
+  - host: admin-staging.elsa-hilft.ch
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+      - path: /admin
+        backend:
+          serviceName: google-storage-buckets
+          servicePort: 443
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: backend
+  namespace: elsahilft-digital-staging
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  tls:
+  - hosts:
+    - staging.elsa-hilft.ch
+    - admin-staging.elsa-hilft.ch
+    secretName: staging-acme-api-tls
+  rules:
+  - host: staging.elsa-hilft.ch
+    http:
+      paths:
+      - path: /api/.*$
+        backend:
+          serviceName: backend-service
+          servicePort: 80
+  - host: admin-staging.elsa-hilft.ch
+    http:
+      paths:
+      - path: /api/.*$
+        backend:
+          serviceName: backend-service
+          servicePort: 80

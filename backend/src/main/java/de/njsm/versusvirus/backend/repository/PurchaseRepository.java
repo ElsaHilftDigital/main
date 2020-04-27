@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,4 +24,12 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
     @Query("SELECT p FROM Purchase p WHERE p.createTime >= :from AND p.createTime < :to")
     List<Purchase> findAllInRange(@Param("from") Instant from, @Param("to") Instant to);
+
+    @Query("select status as status, count(status) as numberOfPurchases from Purchase group by status")
+    List<PurchaseSummary> summarizeByState();
+
+    interface PurchaseSummary {
+        Purchase.Status getStatus();
+        double getNumberOfPurchases();
+    }
 }

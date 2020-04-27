@@ -1,13 +1,18 @@
 package de.njsm.versusvirus.backend.domain.common;
 
+import org.springframework.lang.Nullable;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @Embeddable
 public class Address {
     @NotNull private String address;
     @NotNull private String City;
-    @NotNull private String zipCode;
+    @Nullable private String zipCode;
 
     public String getAddress() {
         return address;
@@ -25,8 +30,8 @@ public class Address {
         City = city;
     }
 
-    public String getZipCode() {
-        return zipCode;
+    public Optional<String> getZipCode() {
+        return Optional.ofNullable(zipCode);
     }
 
     public void setZipCode(String zipCode) {

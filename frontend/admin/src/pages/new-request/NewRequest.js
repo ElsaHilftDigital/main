@@ -211,9 +211,8 @@ const NewRequest = () => {
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="zipCode">PLZ</label>
-                        <input name="zipCode" type="text" ref={register({ required: true })} className="form-control"
+                        <input name="zipCode" type="text" ref={register()} className="form-control"
                                id="zipCode" placeholder="PLZ"/>
-                        {errors.zipCode && (<span className="text-danger">PLZ wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
                         <label htmlFor="city">Ort</label>
@@ -415,7 +414,7 @@ const NewRequest = () => {
     return (<>
             <Header/>
             <div className="container mt-3 mb-5">
-                <h1>Auftrag erfassen</h1>
+                {!!customer ? <h1>Auftrag erfassen für {customer.firstName} {customer.lastName}</h1> : <h1>Auftrag erfassen</h1>}
                 <Progress>{renderSteps()}</Progress>
                 {renderContent()}
             </div>

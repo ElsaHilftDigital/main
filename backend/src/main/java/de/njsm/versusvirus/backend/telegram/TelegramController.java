@@ -4,6 +4,7 @@ import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.*;
+import io.prometheus.client.Counter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,23 @@ public class TelegramController {
     private static final Logger LOG = LoggerFactory.getLogger(TelegramController.class);
 
     public static final String TELEGRAM_WEBHOOK = "/telegram/the/next/path/is/a/password/Wz4Bg0pZUybWCbyjjRxpol";
+
+    private static final Counter CALLBACK_QUERIES = Counter.build()
+            .name("telegram_callback_queries")
+            .help("Number of received callback queries")
+            .labelNames("type")
+            .register();
+
+    private static final Counter BOT_COMMANDS = Counter.build()
+            .name("telegram_bot_commands")
+            .help("Number received bot commands")
+            .labelNames("type")
+            .register();
+
+    private static final Counter FORWARDED_MESSAGES = Counter.build()
+            .name("telegram_forwarded_messages")
+            .help("Number of forwarded messages from volunteers")
+            .register();
 
     private final BotCommandDispatcher botCommandDispatcher;
 
@@ -111,6 +129,7 @@ public class TelegramController {
                     message.getChat().getId() != o.getTelegramGroupChatId()) {
                     LOG.info("Forwarding message from " + message.getFrom().getUserName());
                     adminMessageSender.forwardVolunteerMessage(o.getTelegramModeratorGroupChatId(), message, v);
+                    FORWARDED_MESSAGES.inc();
                 }
             });
         });
@@ -121,6 +140,7 @@ public class TelegramController {
         if (query != null) {
             CallbackCommand c = CallbackCommand.create(query.getData());
             if (c != null) {
+                CALLBACK_QUERIES.labels(c.name()).inc();
                 c.dispatch(callbackCommandDispatcher,
                         query.getMessage(),
                         query.getFrom(),
@@ -141,6 +161,7 @@ public class TelegramController {
                 continue;
             }
 
+            BOT_COMMANDS.labels(command.name()).inc();
             try {
                 command.dispatch(botCommandDispatcher, rawCommand, botName, message);
             } catch (TelegramShouldBeFineException ex) {

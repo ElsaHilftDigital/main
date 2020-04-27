@@ -49,7 +49,7 @@ public class VolunteerDTO {
             email = volunteer.getEmail();
             address = volunteer.getAddress().getAddress();
             city = volunteer.getAddress().getCity();
-            zipCode = volunteer.getAddress().getZipCode();
+            zipCode = volunteer.getAddress().getZipCode().orElse("");
             birthDate = volunteer.getBirthDate();
             iban = volunteer.getIban();
             bankName = volunteer.getBankName();

@@ -1,97 +1,3 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend
-  namespace: elsahilft-digital-production
-  annotations:
-    keel.sh/policy: 'glob:*'
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      serviceAccountName: backend
-      imagePullSecrets:
-        - name: github-pull-token
-      containers:
-        - name: cloudsql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.11
-          command: ["/cloud_sql_proxy",
-                    "-instances=elsa-hilft-digital:europe-west6:elsa-hilft-prod-db=tcp:5432"]
-          securityContext:
-            runAsUser: 2  # non-root user
-            allowPrivilegeEscalation: false
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-        - name: backend
-          image: 'docker.pkg.github.com/elsahilftdigital/main/backend:c1535fd'
-          ports:
-            - containerPort: 4000
-          securityContext:
-            allowPrivilegeEscalation: false
-          env:
-          - name: TELEGRAM_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: telegram
-                key: token
-          - name: TELEGRAM_BOT_NAME
-            valueFrom:
-              secretKeyRef:
-                name: telegram
-                key: name
-          - name: DEPLOYMENT_DOMAIN
-            value: elsa-hilft.ch
-          - name: SMTP_HOST
-            valueFrom:
-              secretKeyRef:
-                name: mail
-                key: host
-          - name: SMTP_PORT
-            valueFrom:
-              secretKeyRef:
-                name: mail
-                key: port
-          - name: SMTP_USER
-            valueFrom:
-              secretKeyRef:
-                name: mail
-                key: user
-          - name: SMTP_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mail
-                key: password
-          - name: DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                name: database
-                key: url
-          - name: DATABASE_USER
-            valueFrom:
-              secretKeyRef:
-                name: database
-                key: user
-          - name: DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: database
-                key: password
-          - name: SPRING_PROFILES_ACTIVE
-            value: production
-          resources:
-            limits:
-              memory: 2Gi
-            requests:
-              cpu: 200m
-              memory: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -108,3 +14,131 @@ spec:
   selector:
     app: backend
   type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    keel.sh/policy: glob:*
+  labels:
+    app: backend
+  name: backend
+  namespace: elsahilft-digital-production
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 0%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - command:
+        - /cloud_sql_proxy
+        - -instances=elsa-hilft-digital:europe-west6:elsa-hilft-prod-db=tcp:5432
+        image: gcr.io/cloudsql-docker/gce-proxy:1.11
+        imagePullPolicy: IfNotPresent
+        name: cloudsql-proxy
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 2
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - env:
+        - name: METRICS_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: secret
+              name: metrics
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: secret
+              name: jwt
+        - name: TELEGRAM_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: telegram
+        - name: TELEGRAM_BOT_NAME
+          valueFrom:
+            secretKeyRef:
+              key: name
+              name: telegram
+        - name: DEPLOYMENT_DOMAIN
+          value: elsa-hilft.ch
+        - name: SMTP_HOST
+          valueFrom:
+            secretKeyRef:
+              key: host
+              name: mail
+        - name: SMTP_PORT
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: mail
+        - name: SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: mail
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mail
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: url
+              name: database
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: database
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: database
+        - name: SPRING_PROFILES_ACTIVE
+          value: production
+        image: docker.pkg.github.com/elsahilftdigital/main/backend:0db473c
+        imagePullPolicy: IfNotPresent
+        name: backend
+        ports:
+        - containerPort: 4000
+          protocol: TCP
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: github-pull-token
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: backend
+      serviceAccountName: backend
+      terminationGracePeriodSeconds: 30
