@@ -1,6 +1,7 @@
 package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.telegram.dto.*;
+import io.prometheus.client.Counter;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
@@ -28,6 +29,31 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
 
     private String domain;
 
+    private static final Counter MESSAGES_SENT = Counter.build()
+            .name("elsa_hilft_telegram_ll_messages_sent")
+            .help("Number of total sent messages")
+            .register();
+
+    private static final Counter MESSAGES_EDITED = Counter.build()
+            .name("elsa_hilft_telegram_ll_messages_edited")
+            .help("Number of total edited messages")
+            .register();
+
+    private static final Counter MESSAGES_DELETED = Counter.build()
+            .name("elsa_hilft_telegram_ll_messages_deleted")
+            .help("Number of total deleted messages")
+            .register();
+
+    private static final Counter CALLBACK_QUERIES_ANSWERED = Counter.build()
+            .name("elsa_hilft_telegram_ll_callback_queries_answered")
+            .help("Number of total answered callback queries")
+            .register();
+
+    private static final Counter IMAGES_DOWNLOADED = Counter.build()
+            .name("elsa_hilft_telegram_ll_images_downloaded")
+            .help("Number of total downloaded images")
+            .register();
+
     TelegramApiWrapper(@Value("${telegram.bot.token}") String token, @Value("${deployment.domain}") String domain) {
         this.domain = domain;
         RequestInterceptor logger = new RequestInterceptor();
@@ -45,12 +71,14 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
     public Message sendMessage(MessageToBeSent message) {
         LOG.debug("Sending message to {}", message.getChatId());
         Call<TelegramResponse<Message>> call = apiClient.sendMessage(token, message);
+        MESSAGES_SENT.inc();
         return executeQuery(call);
     }
 
     public Message editMessage(EditedMessage message) {
         LOG.debug("Editing message to {}", message.getChatId());
         Call<TelegramResponse<Message>> call = apiClient.editMessageText(token, message);
+        MESSAGES_EDITED.inc();
         return executeQuery(call);
     }
 
@@ -58,6 +86,7 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
     public void answerCallbackQuery(CallbackQueryAnswer query) {
         LOG.debug("Answering callback query {}", query.getCallbackQueryId());
         Call<TelegramResponse<Void>> call = apiClient.answerCallbackQuery(token, query);
+        CALLBACK_QUERIES_ANSWERED.inc();
         executeQuery(call);
     }
 
@@ -65,23 +94,27 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
     public void deleteMessage(long chatId, long messageId) {
         LOG.debug("Deleting message in chat {}", chatId);
         Call<TelegramResponse<Void>> call = apiClient.deleteMessage(token, chatId, messageId);
+        MESSAGES_DELETED.inc();
         executeQuery(call);
     }
 
     @Override
-    public byte[] getFile(String fileId) {
+    public Image getFile(String fileId) {
         LOG.debug("Downloading file {}", fileId);
         Call<TelegramResponse<File>> call = apiClient.getFile(token, fileId);
+        IMAGES_DOWNLOADED.inc();
         File file = executeQuery(call);
         if (file == null) {
             throw new RuntimeException("No file found, see above");
         }
 
         Call<ResponseBody> rawFileCall = apiClient.getRawFile(token, file.getFilePath());
-        byte[] body = executeRawQuery(rawFileCall);
-        if (body == null) {
+        Image body = executeRawQuery(rawFileCall);
+        if (body == null || body.getMimeType() == null || body.getData() == null) {
             throw new RuntimeException("No file content found, see above");
         }
+
+        body.extractFileExtension(file.getFilePath());
 
         return body;
     }
@@ -105,14 +138,14 @@ class TelegramApiWrapper implements TelegramApi, CallbackQueryReplyer {
     }
 
     @Nullable
-    private byte[] executeRawQuery(Call<ResponseBody> call) {
+    private Image executeRawQuery(Call<ResponseBody> call) {
         try {
             Response<ResponseBody> r = call.execute();
             ResponseBody body = returnRawResponse(r);
             if (body == null) {
                 return null;
             }
-            return body.bytes();
+            return new Image(body.bytes(), r.headers().get("content-type"));
         } catch (IOException e) {
             LOG.error("Error connecting to the server", e);
             return null;

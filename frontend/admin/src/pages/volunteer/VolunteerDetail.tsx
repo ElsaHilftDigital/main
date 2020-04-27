@@ -75,8 +75,8 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         setValue('address', currentVolunteer.address);
         setValue('zipCode', currentVolunteer.zipCode);
         setValue('city', currentVolunteer.city);
-        setValue('birthDate', formatDate(currentVolunteer.birthDate));
-        setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation);
+        setValue('birthDate', formatDate(currentVolunteer.birthDate) as any);
+        setValue('wantsNoCompensation', !currentVolunteer.wantsCompensation as any);
         setValue('iban', currentVolunteer.iban);
         setValue('bankName', currentVolunteer.bankName);
     }, [setValue, currentVolunteer]);
@@ -96,7 +96,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         </div>
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
-                <h1>Helfer {props.currentVolunteer.firstname}</h1>
+                <h1>Details von Helfer {currentVolunteer.lastName}</h1>
                 {!currentVolunteer.validated && (
                     <button
                         onClick={() => handleConfirmVolunteer(currentVolunteer.uuid)}

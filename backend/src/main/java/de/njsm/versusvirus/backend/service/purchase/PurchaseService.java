@@ -1,16 +1,13 @@
 package de.njsm.versusvirus.backend.service.purchase;
 
-import de.njsm.versusvirus.backend.domain.Customer;
-import de.njsm.versusvirus.backend.domain.Moderator;
-import de.njsm.versusvirus.backend.domain.OrderItem;
-import de.njsm.versusvirus.backend.domain.Purchase;
-import de.njsm.versusvirus.backend.domain.PurchaseSupermarket;
+import de.njsm.versusvirus.backend.domain.*;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.repository.*;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.spring.web.BadRequestException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
+import io.prometheus.client.Gauge;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
@@ -50,6 +47,12 @@ public class PurchaseService {
     private final ModeratorRepository moderatorRepository;
 
     private final MessageSender messageSender;
+
+    private static final Gauge PURCHASES = Gauge.build()
+            .name("elsa_hilft_purchases")
+            .labelNames("state")
+            .help("Number of purchases by state")
+            .register();
 
     private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Bank", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
@@ -179,6 +182,7 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         purchase.setPublicComments(updateRequest.publicComments);
         purchase.setPrivateComments(updateRequest.privateComments);
+        purchase.setInternalComments(updateRequest.internalComments);
         purchase.setPurchaseSize(updateRequest.size);
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);
@@ -261,5 +265,13 @@ public class PurchaseService {
             var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById);
             purchase.writeToCsv(csvPrinter, customer, volunteer);
         }
+    }
+
+    public void updateSummary() {
+        for (Purchase.Status s : Purchase.Status.values()) {
+            PURCHASES.labels(s.name()).set(0);
+        }
+        List<PurchaseRepository.PurchaseSummary> summaries = purchaseRepository.summarizeByState();
+        summaries.forEach(s -> PURCHASES.labels(s.getStatus().name()).set(s.getNumberOfPurchases()));
     }
 }

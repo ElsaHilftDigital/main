@@ -20,6 +20,7 @@ public class PurchaseDTO {
     public Purchase.PurchaseSize size;
     public String publicComments;
     public String privateComments;
+    public String internalComments;
     public Double cost;
     public boolean expensesPaid;
     public Long assignedVolunteer;
@@ -38,6 +39,7 @@ public class PurchaseDTO {
         size = p.getPurchaseSize();
         publicComments = p.getPublicComments();
         privateComments = p.getPrivateComments();
+        internalComments = p.getInternalComments();
         cost = p.getCost().map(BigDecimal::doubleValue).orElse(null);
         expensesPaid = p.isExpensesPaid();
         assignedVolunteer = p.getAssignedVolunteer().orElse(null);

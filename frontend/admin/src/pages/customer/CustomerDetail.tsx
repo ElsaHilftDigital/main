@@ -33,16 +33,8 @@ interface Props {
 const CustomerDetailInternal: React.FC<Props> = props => {
     const dispatch = useDispatch();
     const { selectedCustomer } = props;
-    const { handleSubmit, register, setValue } = useForm({
-        defaultValues: {
-            firstName: selectedCustomer.firstName,
-            lastName: selectedCustomer.lastName,
-            phone: selectedCustomer.phone,
-            mobile: selectedCustomer.mobile,
-            address: selectedCustomer.address,
-            zipCode: selectedCustomer.zipCode,
-            city: selectedCustomer.city,
-        },
+    const { handleSubmit, register } = useForm({
+        defaultValues: selectedCustomer
     });
     const [showSaveToast, setShowSaveToast] = useState(false);
     const [showDeleteToast, setShowDeleteToast] = useState(false);
@@ -59,112 +51,100 @@ const CustomerDetailInternal: React.FC<Props> = props => {
         }
     };
 
-    useEffect(() => {
-        setValue('firstName', selectedCustomer.firstName);
-        setValue('lastName', selectedCustomer.lastName);
-        setValue('phone', selectedCustomer.phone);
-        setValue('mobile', selectedCustomer.mobile);
-        setValue('address', selectedCustomer.address);
-        setValue('zipCode', selectedCustomer.zipCode);
-        setValue('city', selectedCustomer.city);
-    }, [setValue, selectedCustomer]);
-
     return (<>
-            <Header/>
-            <div className="container mt-3 mb-5">
-                <div className="flex-grow-0 justify-content-between align-items-bottom mb-3">
-                    <h1>Details für Kunde {selectedCustomer.lastName}</h1>
-                    <i>Die Felder von Kunden können von Moderatoren angepasst und gespeichert werden.</i>
-                </div>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <div className="form-group row">
-                                <label htmlFor="firstName" className="col-sm-3 col-form-label">Vorname</label>
-                                <div className="col-sm-9">
-                                    <input name="firstName" ref={register()} type="text" className="form-control"
-                                           id="firstName"/>
-                                </div>
-                            </div>
-                            <div className="form-group row">
-                                <label htmlFor="lastName" className="col-sm-3 col-form-label">Nachname</label>
-                                <div className="col-sm-9">
-                                    <input name="lastName" ref={register()} type="text" className="form-control"
-                                           id="lastName"/>
-                                </div>
-                            </div>
-                            <div className="form-group row">
-                                <label htmlFor="phone" className="col-sm-3 col-form-label">Festnetz</label>
-                                <div className="col-sm-9">
-                                    <input name="phone" ref={register()} type="text" className="form-control"
-                                           id="phone"/>
-                                </div>
-                            </div>
-                            <div className="form-group row">
-                                <label htmlFor="mobile" className="col-sm-3 col-form-label">Mobil</label>
-                                <div className="col-sm-9">
-                                    <input name="mobile" ref={register()} type="text" className="form-control"
-                                           id="mobile"/>
-                                </div>
+        <Header/>
+        <div className="container mt-3 mb-5">
+            <div className="flex-grow-0 justify-content-between align-items-bottom mb-3">
+                <h1>Details von Kunde {selectedCustomer.lastName}</h1>
+                <i>Die Felder von Kunden können von Moderatoren angepasst und gespeichert werden.</i>
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="row">
+                    <div className="col-lg-6">
+                        <div className="form-group row">
+                            <label htmlFor="firstName" className="col-sm-3 col-form-label">Vorname</label>
+                            <div className="col-sm-9">
+                                <input name="firstName" ref={register()} type="text" className="form-control"
+                                        id="firstName"/>
                             </div>
                         </div>
-
-                        <div className="col-lg-6">
-                            <div className="form-group row">
-                                <label htmlFor="address" className="col-sm-3 col-form-label">Strasse</label>
-                                <div className="col-sm-9">
-                                    <input name="address" ref={register()} type="text" className="form-control"
-                                           id="addressStreet"/>
-                                </div>
+                        <div className="form-group row">
+                            <label htmlFor="lastName" className="col-sm-3 col-form-label">Nachname</label>
+                            <div className="col-sm-9">
+                                <input name="lastName" ref={register()} type="text" className="form-control"
+                                        id="lastName"/>
                             </div>
-                            <div className="form-group row">
-                                <label htmlFor="zipCode" className="col-sm-3 col-form-label">PLZ</label>
-                                <div className="col-sm-9">
-                                    <input name="zipCode" ref={register()} type="text" className="form-control"
-                                           id="addressZipCode"/>
-                                </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="phone" className="col-sm-3 col-form-label">Festnetz</label>
+                            <div className="col-sm-9">
+                                <input name="phone" ref={register()} type="text" className="form-control"
+                                        id="phone"/>
                             </div>
-                            <div className="form-group row">
-                                <label htmlFor="city" className="col-sm-3 col-form-label">Ort</label>
-                                <div className="col-sm-9">
-                                    <input name="city" ref={register()} type="text" className="form-control"
-                                           id="addressCity"/>
-                                </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="mobile" className="col-sm-3 col-form-label">Mobil</label>
+                            <div className="col-sm-9">
+                                <input name="mobile" ref={register()} type="text" className="form-control"
+                                        id="mobile"/>
                             </div>
                         </div>
                     </div>
-                    <Row>
-                        <Col>
-                            <Button type="submit">Speichern</Button>
-                            {showSaveToast &&
-                            <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
-                                   delay={3000}
-                                   autohide>
-                                <Toast.Header>
-                                    <strong className="mr-auto">Kunde speichern</strong>
-                                </Toast.Header>
-                                <Toast.Body>Auftraggeber wurde gespeichert</Toast.Body>
-                            </Toast>
-                            }
-                        </Col>
-                        <Col>
-                            <Button variant="danger" className="float-right" onClick={() => onDelete()}>Löschen</Button>
-                            {showDeleteToast &&
-                            <Toast className="mt-2 mb-2" onClose={() => setShowDeleteToast(false)}
-                                   show={showDeleteToast}
-                                   delay={3000} autohide>
-                                <Toast.Header>
-                                    <strong className="mr-auto">Kunde löschen</strong>
-                                </Toast.Header>
-                                <Toast.Body>Auftraggeber/-in wurde gelöscht</Toast.Body>
-                            </Toast>
-                            }
-                        </Col>
-                    </Row>
-                </form>
-            </div>
-        </>
-    );
-};
+
+                    <div className="col-lg-6">
+                        <div className="form-group row">
+                            <label htmlFor="address" className="col-sm-3 col-form-label">Strasse</label>
+                            <div className="col-sm-9">
+                                <input name="address" ref={register()} type="text" className="form-control"
+                                        id="addressStreet"/>
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="zipCode" className="col-sm-3 col-form-label">PLZ</label>
+                            <div className="col-sm-9">
+                                <input name="zipCode" ref={register()} type="text" className="form-control"
+                                        id="addressZipCode"/>
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="city" className="col-sm-3 col-form-label">Ort</label>
+                            <div className="col-sm-9">
+                                <input name="city" ref={register()} type="text" className="form-control"
+                                        id="addressCity"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <Row>
+                    <Col>
+                        <Button type="submit">Speichern</Button>
+                        {showSaveToast &&
+                        <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
+                                delay={3000}
+                                autohide>
+                            <Toast.Header>
+                                <strong className="mr-auto">Kunde speichern</strong>
+                            </Toast.Header>
+                            <Toast.Body>Auftraggeber wurde gespeichert</Toast.Body>
+                        </Toast>
+                        }
+                    </Col>
+                    <Col>
+                        <Button variant="danger" className="float-right" onClick={() => onDelete()}>Löschen</Button>
+                        {showDeleteToast &&
+                        <Toast className="mt-2 mb-2" onClose={() => setShowDeleteToast(false)}
+                                show={showDeleteToast}
+                                delay={3000} autohide>
+                            <Toast.Header>
+                                <strong className="mr-auto">Kunde löschen</strong>
+                            </Toast.Header>
+                            <Toast.Body>Auftraggeber/-in wurde gelöscht</Toast.Body>
+                        </Toast>
+                        }
+                    </Col>
+                </Row>
+            </form>
+        </div>
+</>);};
 
 export default CustomerDetail;

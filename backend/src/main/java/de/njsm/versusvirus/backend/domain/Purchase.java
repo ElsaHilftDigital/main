@@ -41,11 +41,15 @@ public class Purchase {
 
     private String privateComments;
 
+    private String internalComments;
+
     private Instant createTime;
 
     private byte[] receipt;                   // picture of receipt
 
     private String receiptMimeType;
+
+    private String receiptFileExtension;
 
     private BigDecimal cost;                  // cost of purchase in "Rappen"
 
@@ -92,7 +96,7 @@ public class Purchase {
                 volunteer.map(Volunteer::getLastName).orElse(""),
                 volunteer.map(Volunteer::getFirstName).orElse(""),
                 volunteer.map(Volunteer::getAddress).map(Address::getAddress).orElse(""),
-                volunteer.map(Volunteer::getAddress).map(Address::getZipCode).orElse(""),
+                volunteer.map(Volunteer::getAddress).flatMap(Address::getZipCode).orElse(""),
                 volunteer.map(Volunteer::getAddress).map(Address::getCity).orElse(""),
                 volunteer.map(Volunteer::getBirthDate).map(LocalDate::toString).orElse(""),
                 volunteer.flatMap(v -> Optional.ofNullable(v.getIban())).orElse(""),
@@ -102,9 +106,25 @@ public class Purchase {
                 customer.map(Customer::getLastName).orElse(""),
                 customer.map(Customer::getFirstName).orElse(""),
                 customer.map(Customer::getAddress).map(Address::getAddress).orElse(""),
-                customer.map(Customer::getAddress).map(Address::getZipCode).orElse(""),
+                customer.map(Customer::getAddress).flatMap(Address::getZipCode).orElse(""),
                 customer.map(Customer::getAddress).map(Address::getCity).orElse("")
         );
+    }
+
+    public String getReceiptFileExtension() {
+        return receiptFileExtension;
+    }
+
+    public void setReceiptFileExtension(String receiptFileExtension) {
+        this.receiptFileExtension = receiptFileExtension;
+    }
+
+    public String getInternalComments() {
+        return internalComments;
+    }
+
+    public void setInternalComments(String internalComments) {
+        this.internalComments = internalComments;
     }
 
     public enum Status {

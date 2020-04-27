@@ -20,7 +20,7 @@ export const formatMoment = (moment: Moment) => {
     return moment.format('DD.MM.YYYY');
 }
 
-export const formatDate = (timestamp: string) => {
+export const formatDate: (timestamp: string) => string = timestamp => {
     const date = new Date(timestamp);
     return date.toLocaleDateString('de-DE');
 }

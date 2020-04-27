@@ -8,7 +8,7 @@
   become: True
   copy:
     src: "{{ playbook_dir }}/../frontend/public/build/"
-    dest: /var/www/html
+    dest: /var/www/html/public
     owner: root
     group: root
     mode: 0444

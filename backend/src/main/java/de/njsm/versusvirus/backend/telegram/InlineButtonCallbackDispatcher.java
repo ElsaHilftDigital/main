@@ -9,17 +9,13 @@ import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.User;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
+import io.prometheus.client.Counter;
+import io.prometheus.client.Histogram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +38,17 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
     private final TelegramApi telegramApi;
 
     private final CustomerRepository customerRepository;
+
+    private static final Counter LEAVING_VOLUNTEERS = Counter.build()
+            .name("elsa_hilft_telegram_leaving_volunteers")
+            .help("Number of leaving volunteers")
+            .register();
+
+    private static final Histogram VOLUNTEERS_PER_PURCHASE = Histogram.build()
+            .linearBuckets(1, 1, 20)
+            .name("elsa_hilft_volunteers_per_purchase")
+            .help("Number of volunteers per purchase")
+            .register();
 
     public InlineButtonCallbackDispatcher(OrganizationRepository organizationRepository,
                                           VolunteerRepository volunteerRepository,
@@ -117,6 +124,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
+            VOLUNTEERS_PER_PURCHASE.observe(purchase.getVolunteerApplications().size());
             rejectApplicants(customer, purchase);
             purchase.getVolunteerApplications().clear();
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
@@ -224,32 +232,19 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         if (volunteer.getTelegramFileId() != null) {
             var image = telegramApi.getFile(volunteer.getTelegramFileId());
-            MediaType mimetype = detectMimeType(image);
-            if (mimetype != MediaType.OCTET_STREAM) {
-                purchase.setReceipt(image);
-                purchase.setReceiptMimeType(mimetype.toString());
-                purchase.setReceiptFileId(volunteer.getTelegramFileId());
-                purchase.setStatus(Purchase.Status.PURCHASE_DONE);
-                volunteer.setTelegramFileId(null);
-                messageSender.confirmReceiptUpload(message.getChat().getId());
-                adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
-            } else {
-                LOG.warn("Unable to detect MIME type of file {}", volunteer.getTelegramChatId());
-                messageSender.sendUnexpectedImage(message.getChat().getId());
-            }
+            purchase.setReceipt(image.getData());
+            purchase.setReceiptMimeType(image.getMimeType());
+            purchase.setReceiptFileExtension(image.getFileExtension());
+            purchase.setReceiptFileId(volunteer.getTelegramFileId());
+            purchase.setStatus(Purchase.Status.PURCHASE_DONE);
+            volunteer.setTelegramFileId(null);
+            messageSender.confirmReceiptUpload(message.getChat().getId());
+            adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
         } else {
             LOG.warn("volunteer {} wants to map a receipt to purchase {} without having submitted a receipt",
                     volunteer.getUuid(),
                     purchaseId);
             messageSender.sendUnexpectedMessage(message.getChat().getId());
-        }
-    }
-
-    private MediaType detectMimeType(byte[] image) {
-        try {
-            return new TikaConfig().getDetector().detect(new ByteArrayInputStream(image), new Metadata());
-        } catch (IOException | TikaException e) {
-            return MediaType.OCTET_STREAM;
         }
     }
 
@@ -331,5 +326,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         );
         volunteer.delete();
         messageSender.resignVolunteer(message.getChat().getId());
+        LEAVING_VOLUNTEERS.inc();
     }
 }

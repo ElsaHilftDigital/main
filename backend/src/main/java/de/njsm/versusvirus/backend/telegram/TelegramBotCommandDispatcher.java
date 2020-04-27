@@ -4,6 +4,7 @@ import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
+import io.prometheus.client.Counter;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,6 +20,11 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
 
     private final MessageSender messageSender;
 
+    private static final Counter NEW_VOLUNTEERS = Counter.build()
+            .name("elsa_hilft_telegram_new_volunteers")
+            .help("Number of new volunteers")
+            .register();
+
     public TelegramBotCommandDispatcher(OrganizationRepository organizationRepository,
                                         VolunteerRepository volunteerRepository,
                                         MessageSender messageSender) {
@@ -31,7 +37,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
     public void handleNewHelper(Message message, UUID userId) {
         var volunteer = volunteerRepository.findByUuid(userId).orElseThrow(() -> {
                     messageSender.directUserToRegistrationForm(message.getChat().getId());
-                    throw new TelegramShouldBeFineException("new helper not found. uuid: " + userId);
+                    throw new TelegramShouldBeFineException("new volunteer not found. uuid: " + userId);
                 }
         );
         var organization = organizationRepository.findById(1).orElseThrow(() -> new TelegramShouldBeFineException("Organization not found"));
@@ -39,6 +45,7 @@ public class TelegramBotCommandDispatcher implements BotCommandDispatcher {
         volunteer.setTelegramUserId(message.getFrom().getId());
         volunteer.setTelegramChatId(message.getChat().getId());
         messageSender.confirmRegistration(organization, volunteer);
+        NEW_VOLUNTEERS.inc();
     }
 
     @Override

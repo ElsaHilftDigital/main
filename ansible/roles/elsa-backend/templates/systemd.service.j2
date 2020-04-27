@@ -15,6 +15,7 @@ Environment=DATABASE_USER=db
 Environment=DATABASE_PASSWORD=db
 Environment=DATABASE_URL=jdbc:postgresql://localhost:5434/db
 Environment=JWT_SECRET={{ elsa_backend_jwt_secret }}
+Environment=METRICS_SECRET={{ elsa_backend_metrics_secret }}
 ExecStart=java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4004 \
         -jar /usr/local/lib/elsa-hilft.jar --spring.profiles.active={{ elsa_backend_spring_profile }}
 User=elsa

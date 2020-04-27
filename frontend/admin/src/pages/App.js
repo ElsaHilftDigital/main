@@ -12,6 +12,7 @@ import NewRequest from './new-request/NewRequest';
 import PurchaseList from './purchase/PurchaseList';
 import PurchaseDetail from './purchase/PurchaseDetail';
 import PrivateRoute from '../components/PrivateRoute';
+import PasswordChange from "./home/PasswordChange";
 
 
 const App = (props) => {
@@ -20,6 +21,7 @@ const App = (props) => {
             <Router history={history}>
                 <Switch>
                     <Route exact path="/login"><AdminLogin/></Route>
+                    <PrivateRoute exact path="/change-password"><PasswordChange/></PrivateRoute>
                     <PrivateRoute exact path="/new-request"><NewRequest/></PrivateRoute>
                     <PrivateRoute exact path="/purchases"><PurchaseList/></PrivateRoute>
                     <PrivateRoute exact path="/purchase/:purchaseId"><PurchaseDetail/></PrivateRoute>

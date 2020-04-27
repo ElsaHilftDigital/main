@@ -32,7 +32,7 @@ interface ApiClient {
 
     @GET("/file/bot{token}/{filePath}")
     Call<ResponseBody> getRawFile(@Path("token") String token,
-                                  @Path("filePath") String filePath);
+                                  @Path(value = "filePath", encoded = true) String filePath);
 
     @POST("/bot{token}/deleteMessage")
     Call<TelegramResponse<Void>> deleteMessage(@Path("token") String token,
