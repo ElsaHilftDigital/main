@@ -96,7 +96,7 @@ public class Purchase {
                 volunteer.map(Volunteer::getLastName).orElse(""),
                 volunteer.map(Volunteer::getFirstName).orElse(""),
                 volunteer.map(Volunteer::getAddress).map(Address::getAddress).orElse(""),
-                volunteer.map(Volunteer::getAddress).map(Address::getZipCode).orElse(""),
+                volunteer.map(Volunteer::getAddress).flatMap(Address::getZipCode).orElse(""),
                 volunteer.map(Volunteer::getAddress).map(Address::getCity).orElse(""),
                 volunteer.map(Volunteer::getBirthDate).map(LocalDate::toString).orElse(""),
                 volunteer.flatMap(v -> Optional.ofNullable(v.getIban())).orElse(""),
@@ -106,7 +106,7 @@ public class Purchase {
                 customer.map(Customer::getLastName).orElse(""),
                 customer.map(Customer::getFirstName).orElse(""),
                 customer.map(Customer::getAddress).map(Address::getAddress).orElse(""),
-                customer.map(Customer::getAddress).map(Address::getZipCode).orElse(""),
+                customer.map(Customer::getAddress).flatMap(Address::getZipCode).orElse(""),
                 customer.map(Customer::getAddress).map(Address::getCity).orElse("")
         );
     }

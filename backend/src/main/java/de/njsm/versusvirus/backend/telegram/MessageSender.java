@@ -200,7 +200,7 @@ public class MessageSender {
                 AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getLastName()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getAddress()),
-                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getZipCode()),
+                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getZipCode().orElse("")),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPrivateComments()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
