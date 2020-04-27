@@ -41,6 +41,8 @@ public class Purchase {
 
     private String privateComments;
 
+    private String internalComments;
+
     private Instant createTime;
 
     private byte[] receipt;                   // picture of receipt
@@ -115,6 +117,14 @@ public class Purchase {
 
     public void setReceiptFileExtension(String receiptFileExtension) {
         this.receiptFileExtension = receiptFileExtension;
+    }
+
+    public String getInternalComments() {
+        return internalComments;
+    }
+
+    public void setInternalComments(String internalComments) {
+        this.internalComments = internalComments;
     }
 
     public enum Status {

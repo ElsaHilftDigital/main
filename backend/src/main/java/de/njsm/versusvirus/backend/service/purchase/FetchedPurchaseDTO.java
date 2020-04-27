@@ -26,6 +26,7 @@ public class FetchedPurchaseDTO {
     public Purchase.PurchaseSize size;
     public String publicComments;
     public String privateComments;
+    public String internalComments;
     public Double cost;
     public boolean expensesPaid;
     public String createdBy;
@@ -49,6 +50,7 @@ public class FetchedPurchaseDTO {
         this.size = purchase.getPurchaseSize();
         this.publicComments = purchase.getPublicComments();
         this.privateComments = purchase.getPrivateComments();
+        this.internalComments = purchase.getInternalComments();
         this.cost = purchase.getCost().map(BigDecimal::doubleValue).orElse(null);
         this.customer = new CustomerDTO(customer);
         this.expensesPaid = purchase.isExpensesPaid();

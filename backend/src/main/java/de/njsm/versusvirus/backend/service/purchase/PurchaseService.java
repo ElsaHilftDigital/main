@@ -182,6 +182,7 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         purchase.setPublicComments(updateRequest.publicComments);
         purchase.setPrivateComments(updateRequest.privateComments);
+        purchase.setInternalComments(updateRequest.internalComments);
         purchase.setPurchaseSize(updateRequest.size);
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);

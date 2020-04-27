@@ -330,6 +330,12 @@ const PurchaseDetailInternal = (props: any) => {
                               id="privateComments"/>
                 </div>
                 <div className="form-group">
+                    <label htmlFor="internalComments">Interne Kommentare</label>
+                    <textarea name="internalComments" ref={register()}
+                              className="form-control"
+                              id="internalComments"/>
+                </div>
+                <div className="form-group">
                     <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
                     <PurchaseList value={supermarkets} setValue={setSupermarkets}/>
                 </div>
