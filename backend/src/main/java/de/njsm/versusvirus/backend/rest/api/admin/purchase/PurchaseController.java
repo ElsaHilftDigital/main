@@ -74,6 +74,7 @@ public class PurchaseController {
     public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID purchaseId) {
         var image = purchaseService.getReceipt(purchaseId);
         return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"receipt." + image.getExtension() + "\"")
                 .contentType(org.springframework.http.MediaType.parseMediaType(image.getMimeType()))
                 .body(image.getReceipt());
     }

@@ -235,7 +235,7 @@ public class PurchaseService {
 
     public ReceiptDTO getReceipt(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType());
+        return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType(), purchase.getReceiptFileExtension());
     }
 
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {
