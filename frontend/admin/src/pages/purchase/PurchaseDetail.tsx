@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useForm} from 'react-hook-form';
 import {useDispatch} from 'react-redux';
 import {useParams} from 'react-router-dom';
@@ -12,6 +12,7 @@ import {useModerators} from 'hooks/useModerators';
 import {formatDate} from 'config/utils';
 import * as routes from 'routes';
 import Header from "components/Header";
+import * as purchaseAPI from 'apis/purchase';
 
 
 const PurchaseDetail = () => {
@@ -58,26 +59,34 @@ const PurchaseDetailInternal = (props: any) => {
         setShowAssignVolunteerToast(true);
     };
 
-    const notifyVolunteerToDeliver = () => {
-        dispatch(purchaseActions.customerNotified(purchase.uuid));
-        setShowDeliverToast(true);
-    };
-
     const markPurchaseAsCompleted = () => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) {
             dispatch(purchaseActions.markCompleted(purchase.uuid));
             setShowCompleteToast(true)
         }
-    }
+    };
 
     const exportPurchase = () => {
         window.location.href = routes.purchaseExport(purchase.uuid);
-    }
+    };
 
     const onSubmit = (data: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, {supermarkets});
         dispatch(purchaseActions.update(purchase.uuid, updatedPurchase));
         setShowSaveToast(true);
+    };
+
+    
+    const onNotifyVolunteerToDeliver = (data: any) => {
+        const updatedPurchase = Object.assign({}, purchase, data, {supermarkets});
+
+        purchaseAPI.updatePurchase(purchase.uuid, updatedPurchase)
+            .then(() => {
+                return purchaseAPI.customerNotified(purchase.uuid)
+            })
+            .then(() => {
+                setShowDeliverToast(true);
+            })
     };
 
     return (<>
@@ -140,27 +149,27 @@ const PurchaseDetailInternal = (props: any) => {
                 }
             </div>
 
-            <div className="flex-grow-0">
-                {purchase.status === "Neu" &&
-                <Button className="mr-3 mb-1"
-                        onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
-                {purchase.status === "Einkauf abgeschlossen" && <>
-                    <Button className="mr-3 mb-1"
-                            onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung
-                        ansehen</Button>
-                    <Button className="mr-3 mb-1"
-                            onClick={() => notifyVolunteerToDeliver()}>Lieferung freigeben</Button>
-                </>}
-                {(purchase.status === "Kein Geld deponiert" || purchase.status === "Ausgeliefert - Zahlung ausstehend" || purchase.status === "Wird ausgeliefert") &&
-                <Button
-                    onClick={() => {
-                        markPurchaseAsCompleted()
-                    }}
-                    className="mr-3 mb-1">Einkauf erledigt</Button>
-                }
-            </div>
-
             <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
+                <div className="flex-grow-0">
+                    {purchase.status === "Neu" &&
+                    <Button className="mr-3 mb-1"
+                            onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
+                    {purchase.status === "Einkauf abgeschlossen" && <>
+                        <Button className="mr-3 mb-1"
+                                onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung
+                            ansehen</Button>
+                        <Button className="mr-3 mb-1"
+                                onClick={handleSubmit(onNotifyVolunteerToDeliver)}>Speichern & Lieferung freigeben</Button>
+                    </>}
+                    {(purchase.status === "Kein Geld deponiert" || purchase.status === "Ausgeliefert - Zahlung ausstehend" || purchase.status === "Wird ausgeliefert") &&
+                    <Button
+                        onClick={() => {
+                            markPurchaseAsCompleted()
+                        }}
+                        className="mr-3 mb-1">Einkauf erledigt</Button>
+                    }
+                </div>
+
                 <div className="row">
                     <div className="form-group col-md-6">
                         <label htmlFor="displayFormStatus">Status</label>
