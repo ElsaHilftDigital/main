@@ -9,14 +9,6 @@ export const initialState = {
     getCustomerRequestOngoing: false,
     getCustomerError: null,
 
-    currentCompletedPurchaseList: null,
-    getCompletedPurchaseListRequestOngoing: false,
-    getCompletedPurchaseListError: null,
-
-    currentOpenPurchaseList: null,
-    getOpenPurchaseListRequestOngoing: false,
-    getOpenPurchaseListError: null,
-
     createCustomerRequestOngoing: false,
     createCustomerSuccess: null,
     createCustomerError: null,
@@ -72,44 +64,6 @@ export default function customerReducer(state = initialState, action) {
                 ...state,
                 getCustomerError: payload,
                 getCustomerRequestOngoing: false,
-            };
-        // get completed purchase list
-        case actions.GET_COMPLETED_PURCHASE_LIST:
-            return {
-                ...state,
-                getCompletedPurchaseListError: null,
-                getCompletedPurchaseListRequestOngoing: true,
-            };
-        case actions.GET_COMPLETED_PURCHASE_LIST_SUCCESS:
-            return {
-                ...state,
-                currentCompletedPurchaseList: payload,
-                getCompletedPurchaseListRequestOngoing: false,
-            };
-        case actions.GET_COMPLETED_PURCHASE_LIST_ERROR:
-            return {
-                ...state,
-                getCompletedPurchaseListError: payload,
-                getCompletedPurchaseListRequestOngoing: false,
-            };
-        // get open purchase list
-        case actions.GET_OPEN_PURCHASE_LIST:
-            return {
-                ...state,
-                getOpenPurchaseListError: null,
-                getOpenPurchaseListRequestOngoing: true,
-            };
-        case actions.GET_OPEN_PURCHASE_LIST_SUCCESS:
-            return {
-                ...state,
-                currentOpenPurchaseList: payload,
-                getOpenPurchaseListRequestOngoing: false,
-            };
-        case actions.GET_OPEN_PURCHASE_LIST_ERROR:
-            return {
-                ...state,
-                getOpenPurchaseListError: payload,
-                getOpenPurchaseListRequestOngoing: false,
             };
         // create customer
         case actions.CREATE_CUSTOMER:
