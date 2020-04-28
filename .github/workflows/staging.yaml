@@ -121,6 +121,7 @@ jobs:
         cd frontend/admin
         npm install
         export REACT_APP_BACKEND_URL=https://admin-staging.elsa-hilft.ch/api
+        export REACT_APP_GIT_SHA="$GITHUB_SHA"
         npm run build
     - name: Publish admin frontend to GCS
       uses: actions-hub/gcloud@master
