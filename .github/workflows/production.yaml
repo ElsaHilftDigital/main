@@ -120,6 +120,7 @@ jobs:
       run: |
         cd frontend/admin
         npm install
+        export REACT_APP_GIT_SHA="$GITHUB_SHA"
         export REACT_APP_BACKEND_URL=https://admin.elsa-hilft.ch/api
         npm run build
     - name: Publish admin frontend to GCS

@@ -206,7 +206,7 @@ const PurchaseListInternal = (props: any) => {
             <Col>
                 <PurchaseListHeader/>
                 <ListGroup variant="flush">
-                    <ListGroup.Item>
+                    <ListGroup.Item className="pl-3">
                         <Row>
                             <Col><h3>Kunde</h3></Col>
                             <Col><h3>Helfer</h3></Col>

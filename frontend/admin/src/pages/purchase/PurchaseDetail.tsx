@@ -271,12 +271,12 @@ const PurchaseDetailInternal = (props: any) => {
                 </div>
                 <div className="row">
                     <div className="form-group col-md-6">
-                        <label htmlFor="displayFormPhone ">Festnetznummer</label>
+                        <label htmlFor="displayFormPhone ">Telefonnummer</label>
                         <input name="displayFormPhone " disabled type="text" className="form-control"
                                id="displayFormPhone " value={purchase.customer.phone}/>
                     </div>
                     <div className="form-group col-md-6">
-                        <label htmlFor="displayFormMobile ">Mobilnummer</label>
+                        <label htmlFor="displayFormMobile ">Notfallnummer</label>
                         <input name="displayFormMobile " disabled type="text" className="form-control"
                                id="displayFormMobile " value={purchase.customer.mobile}/>
                     </div>
