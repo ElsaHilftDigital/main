@@ -159,12 +159,12 @@ const NewRequest = () => {
                     </div>
                     <div className="row">
                         <div className="form-group col-md-6">
-                            <label htmlFor="phone">Festnetz</label>
+                            <label htmlFor="phone">Telefonnummer</label>
                             <input disabled name="phone" type="text" className="form-control" id="phone"
                                    value={customer.phone}/>
                         </div>
                         <div className="form-group col-md-6">
-                            <label htmlFor="mobile">Mobil</label>
+                            <label htmlFor="mobile">Notfallnummer</label>
                             <input disabled name="mobile" type="text" className="form-control" id="mobile"
                                    value={customer.mobile}/>
                         </div>
@@ -223,15 +223,15 @@ const NewRequest = () => {
                 </div>
                 <div className="row">
                     <div className="form-group col-md-6">
-                        <label htmlFor="phone">Festnetz</label>
+                        <label htmlFor="phone">Telefonnummer</label>
                         <input name="phone" type="text" ref={register({ required: true })} className="form-control"
-                               id="phone" placeholder="Festnetz"/>
-                        {errors.phone && (<span className="text-danger">Festnetz wird benötigt</span>)}
+                               id="phone" placeholder="Telefonnummer"/>
+                        {errors.phone && (<span className="text-danger">Telefonnummer wird benötigt</span>)}
                     </div>
                     <div className="form-group col-md-6">
-                        <label htmlFor="mobile">Mobil</label>
+                        <label htmlFor="mobile">Notfallnummer</label>
                         <input name="mobile" type="text" ref={register()} className="form-control" id="mobile"
-                               placeholder="Mobil"/>
+                               placeholder="Notfallnummer"/>
                     </div>
                 </div>
                 <button type="submit" className="btn btn-primary float-right">Weiter</button>
