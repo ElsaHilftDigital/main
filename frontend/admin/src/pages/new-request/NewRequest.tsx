@@ -12,17 +12,17 @@ import { purchaseSelectors, purchaseActions } from 'store/purchase';
 import * as routes from 'routes';
 import Header from "components/Header";
 
-const ProgressItem = styled.li`
+const ProgressItem: React.FC<any> = styled.li`
     position: relative;
     display: table-cell;
     text-align: center;
-    font-weight: ${props => props.isActive ? 'bold' : 'normal'};
+    font-weight: ${(props: any) => props.isActive ? 'bold' : 'normal'};
         
     &:before {
         content: '';
         display: block;
         margin: 0 auto;
-        background: ${props => (props.isActive || props.isCompleted) ? '#2f2f86' : '#6c757d'};
+        background: ${(props: any) => (props.isActive || props.isCompleted) ? '#2f2f86' : '#6c757d'};
         width: 1em;
         height: 1em;
         margin-bottom: 1em;
@@ -35,7 +35,7 @@ const ProgressItem = styled.li`
         content: '';
         position: absolute;
         display: block;
-        background: ${props => props.isCompleted ? '#2f2f86' : '#6c757d'};
+        background: ${(props: any) => props.isCompleted ? '#2f2f86' : '#6c757d'};
         width: 100%;
         height: 0.25em;
         top: 0.375em;
@@ -61,7 +61,7 @@ const Progress = styled.ol`
 const NewRequest = () => {
     const steps = ['Kunde', 'Auftrag', 'Bestätigung'];
     const [step, setStep] = useState(0);
-    const [customer, setCustomer] = useState(undefined);
+    const [customer, setCustomer] = useState<any>(undefined);
     const [newCustomer, setNewCustomer] = useState(false);
     const [supermarketList, setSupermarketList] = useState([]);
     const [purchase, setPurchase] = useState(undefined);
@@ -77,7 +77,7 @@ const NewRequest = () => {
         const allCustomers = customers;
 
         const ExistingCustomer = () => {
-            const renderCustomerSuggestion = (customer, searchText) => {
+            const renderCustomerSuggestion = (customer: any, searchText: string) => {
                 return [
                     <div key="name">{customer.firstName} {customer.lastName}</div>,
                     <div key="address">{customer.address}</div>,
@@ -86,14 +86,14 @@ const NewRequest = () => {
                 ];
             }
 
-            const searchTerms = rawInput => {
+            const searchTerms = (rawInput: string) => {
                 const rawTerms = rawInput.trim().split(/\s+/);
                 let terms = [];
                 let isNumber = false;
                 let numberTerm = undefined;
                 for (let i = 0; i < rawTerms.length; i++) {
                     const term = rawTerms[i].toLowerCase();
-                    if (!isNaN(term)) {
+                    if (!isNaN(Number(term))) {
                         if (isNumber) {
                             numberTerm += term;
                         } else {
@@ -115,10 +115,10 @@ const NewRequest = () => {
                 }
                 return terms;
             }
-            const matches = (customer, searchText) => {
+            const matches = (customer: any, searchText: string) => {
                 const terms = searchTerms(searchText);
                 const { id, uuid, ...remainder } = customer;
-                const properties = Object.values(remainder).map(s => s.toLowerCase());
+                const properties = Object.values(remainder).map((s: any) => s.toLowerCase());
                 return terms.every(term => properties.some(prop => prop.includes(term)));
             }
             return <>
@@ -182,7 +182,7 @@ const NewRequest = () => {
             const { errors, handleSubmit, register } = useForm({
                 defaultValues: customer ?? {}
             });
-            const onSubmit = data => {
+            const onSubmit = (data: any) => {
                 setCustomer(data);
                 setStep(step + 1);
             }
@@ -263,12 +263,12 @@ const NewRequest = () => {
         const { handleSubmit, register } = useForm({
             defaultValues: purchase ?? {}
         });
-        const onReset = data => {
+        const onReset = (data: any) => {
             setPurchase(data);
             setStep(step - 1);
         };
 
-        const onSubmit = data => {
+        const onSubmit = (data: any) => {
             setPurchase(data)
             setStep(step + 1);
         };
