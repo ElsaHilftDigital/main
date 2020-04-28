@@ -6,14 +6,6 @@ export const GET_CUSTOMER = 'GET_CUSTOMER';
 export const GET_CUSTOMER_SUCCESS = 'GET_CUSTOMER_SUCCESS';
 export const GET_CUSTOMER_ERROR = 'GET_CUSTOMER_ERROR';
 
-export const GET_COMPLETED_PURCHASE_LIST = 'GET_COMPLETED_PURCHASE_LIST';
-export const GET_COMPLETED_PURCHASE_LIST_SUCCESS = 'GET_COMPLETED_PURCHASE_LIST_SUCCESS';
-export const GET_COMPLETED_PURCHASE_LIST_ERROR = 'GET_COMPLETED_PURCHASE_LIST_ERROR';
-
-export const GET_OPEN_PURCHASE_LIST = 'GET_OPEN_PURCHASE_LIST';
-export const GET_OPEN_PURCHASE_LIST_SUCCESS = 'GET_OPEN_PURCHASE_LIST_SUCCESS';
-export const GET_OPEN_PURCHASE_LIST_ERROR = 'GET_OPEN_PURCHASE_LIST_ERROR';
-
 export const CREATE_CUSTOMER = 'CREATE_CUSTOMER';
 export const CREATE_CUSTOMER_SUCCESS = 'CREATE_CUSTOMER_SUCCESS';
 export const CREATE_CUSTOMER_ERROR = 'CREATE_CUSTOMER_ERROR';
@@ -53,35 +45,6 @@ export const getCustomerError = error => ({
     payload: error,
     error: true,
 });
-
-export const getCompletedPurchaseList = uuid => ({
-    type: GET_COMPLETED_PURCHASE_LIST,
-    payload: uuid,
-});
-export const getCompletedPurchaseListSuccess = completedPurchaseList => ({
-    type: GET_COMPLETED_PURCHASE_LIST_SUCCESS,
-    payload: completedPurchaseList,
-});
-export const getCompletedPurchaseListError = error => ({
-    type: GET_COMPLETED_PURCHASE_LIST_ERROR,
-    payload: error,
-    error: true,
-});
-
-export const getOpenPurchaseList = uuid => ({
-    type: GET_OPEN_PURCHASE_LIST,
-    payload: uuid,
-});
-export const getOpenPurchaseListSuccess = openPurchaseList => ({
-    type: GET_OPEN_PURCHASE_LIST_SUCCESS,
-    payload: openPurchaseList,
-});
-export const getOpenPurchaseListError = error => ({
-    type: GET_OPEN_PURCHASE_LIST_ERROR,
-    payload: error,
-    error: true,
-});
-
 
 export const createCustomer = customer => ({
     type: CREATE_CUSTOMER,
