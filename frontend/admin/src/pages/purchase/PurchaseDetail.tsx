@@ -81,12 +81,8 @@ const PurchaseDetailInternal = (props: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, {supermarkets});
 
         purchaseAPI.updatePurchase(purchase.uuid, updatedPurchase)
-            .then(() => {
-                return purchaseAPI.customerNotified(purchase.uuid)
-            })
-            .then(() => {
-                setShowDeliverToast(true);
-            })
+            .then(() => purchaseAPI.customerNotified(purchase.uuid))
+            .then(() => setShowDeliverToast(true));
     };
 
     return (<>
@@ -114,9 +110,9 @@ const PurchaseDetailInternal = (props: any) => {
             <Toast className="mt-2 mb-2" onClose={() => setShowDeliverToast(false)} show={showDeliverToast} delay={3000}
                    autohide>
                 <Toast.Header>
-                    <strong className="mr-auto">Lieferung freigeben</strong>
+                    <strong className="mr-auto">Lieferung freigegeben</strong>
                 </Toast.Header>
-                <Toast.Body>Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann.</Toast.Body>
+                <Toast.Body>Einkauf wurde gespeichert und Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann.</Toast.Body>
             </Toast>
             }
             {showCompleteToast &&
@@ -140,9 +136,9 @@ const PurchaseDetailInternal = (props: any) => {
                     <b>Einkauf wurde erledigt. Die nächsten Schritte sind die folgenden:
                         <ol>
                             <li>Quittung überprüfen über "Quittung ansehen"</li>
-                            <li>Quittungsbetrag bei "Kosten" eintragen und Einkauf ganz unten "Speichern"</li>
+                            <li>Quittungsbetrag bei "Kosten" eintragen</li>
                             <li>Kunde/-in anrufen und Betrag kommunizieren</li>
-                            <li>Auf "Lieferung freigeben" klicken</li>
+                            <li>Auf "Speichern & Lieferung freigeben" klicken</li>
                         </ol>
                     </b>
                 </p>
