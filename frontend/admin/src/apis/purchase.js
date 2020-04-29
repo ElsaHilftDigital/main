@@ -1,6 +1,6 @@
-import axios from 'axios';
+import {restClient} from "../config/utils";
 
-const client = axios.create({baseURL: `/api/v1/admin`});
+const client = restClient('/api/v1/admin');
 
 export async function getPurchases() {
     const response = await client.get(`/purchases`);
