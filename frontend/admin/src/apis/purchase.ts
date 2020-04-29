@@ -43,14 +43,14 @@ export const usePurchases = () => {
         const source = axios.CancelToken.source();
 
         client.get<Purchase[]>('/purchases', {
-            cancelToken: source.token
+            cancelToken: source.token,
         })
             .then(response => setPurchases(response.data))
             .catch();
 
         return () => {
             source.cancel();
-        }
+        };
     }, []);
 
     return { purchases };
@@ -65,18 +65,18 @@ export const usePurchase = (uuid: string) => {
         const source = axios.CancelToken.source();
 
         client.get<Purchase>(`/purchases/${uuid}`, {
-            cancelToken: source.token
+            cancelToken: source.token,
         })
             .then(response => setPurchase(response.data))
             .catch();
 
         return () => {
             source.cancel();
-        }
+        };
     }, [uuid, dummy]);
 
     return { purchase, refresh };
-}
+};
 
 async function createPurchase(purchase: string) {
     const response = await client.post<string>(`/purchases`, purchase);
@@ -92,7 +92,9 @@ function assignVolunteer(purchaseUuid: string, volunteerUuid: string) {
 }
 
 function customerNotified(uuid: string, message: string) {
-    return client.post<void>(`/purchases/${uuid}/customernotified`, message);
+    return client.post<void>(`/purchases/${uuid}/customernotified`, message, {
+        headers: { 'Content-Type': 'application/json' },
+    });
 }
 
 function publishPurchase(uuid: string) {
