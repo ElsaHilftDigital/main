@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { Button, Col, Row } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
-
-import { useVolunteer } from 'hooks/useVolunteer';
-import { volunteerActions } from 'store/volunteer/index';
+import { useVolunteer, Volunteer, volunteerAPI } from 'apis/volunteer';
 import { formatDate, parseDate } from 'config/utils';
 import Header from 'components/Header';
 
 const VolunteerDetail = () => {
     const { volunteerId } = useParams();
-    const { volunteer } = useVolunteer(volunteerId);
+    const { volunteer } = useVolunteer(volunteerId!);
 
     if (!volunteer) {
         return (<>
@@ -27,35 +24,42 @@ const VolunteerDetail = () => {
 };
 
 interface Props {
-    currentVolunteer: any,
+    currentVolunteer: Volunteer,
 }
 
 const VolunteerDetailInternal: React.FC<Props> = (props) => {
     const { currentVolunteer } = props;
-    const dispatch = useDispatch();
 
     const [showSaveToast, setShowSaveToast] = useState(false);
     const [showConfirmToast, setShowConfirmToast] = useState(false);
     const [showDeleteToast, setShowDeleteToast] = useState(false);
 
-    const handleConfirmVolunteer = (uuid: string) => {
-        dispatch(volunteerActions.validateVolunteer(uuid));
-        setShowConfirmToast(true);
+    const handleConfirmVolunteer = () => {
+        volunteerAPI.validate(currentVolunteer.uuid)
+            .then(() => {
+                setShowConfirmToast(true);
+            })
+            .catch();
     };
 
     const onSubmit = (values: any) => {
-        dispatch(volunteerActions.updateVolunteer(currentVolunteer.uuid,
-            {
-                ...values,
-                birthDate: parseDate(values.birthDate)
-            }));
-        setShowSaveToast(true);
+        volunteerAPI.update(currentVolunteer.uuid, {
+            ...values,
+            wantsCompensation: !values.wantsNoCompensation,
+            birthDate: parseDate(values.birthDate),
+        }).then(() => {
+            setShowSaveToast(true);
+        })
+            .catch();
     };
 
     const onDelete = () => {
         if (window.confirm('Bitte versichere dich, dass alle offenen Zahlungen und Entschädigungen von diesem Helfer vor dem Löschen erledigt sind.\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
-            dispatch(volunteerActions.deleteVolunteer(currentVolunteer.uuid));
-            setShowDeleteToast(true);
+            volunteerAPI.delete(currentVolunteer.uuid)
+                .then(() => {
+                    setShowDeleteToast(true);
+                })
+                .catch();
         }
     };
 
@@ -64,7 +68,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
             ...currentVolunteer,
             birthDate: formatDate(currentVolunteer.birthDate),
             wantsNoCompensation: !currentVolunteer.wantsCompensation,
-        }
+        },
     });
 
     useEffect(() => {
@@ -99,13 +103,13 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
                 <h1>Details von Helfer {currentVolunteer.lastName}</h1>
                 {!currentVolunteer.validated && (
                     <button
-                        onClick={() => handleConfirmVolunteer(currentVolunteer.uuid)}
+                        onClick={handleConfirmVolunteer}
                         className="btn btn-primary">Helfer bestätigen</button>
                 )}
             </div>
             <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
 
-            <form onSubmit={handleSubmit(onSubmit)} style={{ paddingTop: "1em" }}>
+            <form onSubmit={handleSubmit(onSubmit)} style={{ paddingTop: '1em' }}>
                 <div className="row">
                     <div className="col-lg-6">
                         <div className="form-group row">
