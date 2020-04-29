@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {useForm} from 'react-hook-form';
-import {Link} from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
 import SearchBox from 'components/SearchBox';
 import PurchaseList from 'components/PurchaseList';
-import {useCustomers} from 'hooks/useCustomers';
+import { useCustomers } from 'apis/customer';
 import * as routes from 'routes';
-import Header from "components/Header";
+import Header from 'components/Header';
 import * as purchaseAPI from 'apis/purchase';
 import * as customerAPI from 'apis/customer';
 
@@ -72,7 +72,7 @@ const NewRequest = () => {
         ));
 
         const EnterCustomer = () => {
-            const {customers} = useCustomers();
+            const { customers } = useCustomers();
             const allCustomers = customers;
 
             const ExistingCustomer = () => {
@@ -81,9 +81,9 @@ const NewRequest = () => {
                         <div key="name">{customer.firstName} {customer.lastName}</div>,
                         <div key="address">{customer.address}</div>,
                         <div key="address2">{customer.zipCode} {customer.city}</div>,
-                        <div key="phone">{customer.phone}{customer.mobile && ` / ${customer.mobile}`}</div>
+                        <div key="phone">{customer.phone}{customer.mobile && ` / ${customer.mobile}`}</div>,
                     ];
-                }
+                };
 
                 const searchTerms = (rawInput: string) => {
                     const rawTerms = rawInput.trim().split(/\s+/);
@@ -113,13 +113,13 @@ const NewRequest = () => {
                         terms.push(numberTerm);
                     }
                     return terms;
-                }
+                };
                 const matches = (customer: any, searchText: string) => {
                     const terms = searchTerms(searchText);
-                    const {id, uuid, ...remainder} = customer;
+                    const { id, uuid, ...remainder } = customer;
                     const properties = Object.values(remainder).map((s: any) => s.toLowerCase());
                     return terms.every(term => properties.some(prop => prop.includes(term)));
-                }
+                };
                 return <>
                     <SearchBox
                         items={allCustomers}
@@ -178,32 +178,32 @@ const NewRequest = () => {
             };
 
             const NewCustomer = () => {
-                const {errors, handleSubmit, register} = useForm({
-                    defaultValues: customer ?? {}
+                const { errors, handleSubmit, register } = useForm({
+                    defaultValues: customer ?? {},
                 });
                 const onSubmit = (data: any) => {
                     setCustomer(data);
                     setStep(step + 1);
-                }
+                };
 
                 return <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="row">
                         <div className="form-group col-md-6">
                             <label htmlFor="firstName">Vorname</label>
-                            <input name="firstName" type="text" ref={register({required: true})} className="form-control"
+                            <input name="firstName" type="text" ref={register({ required: true })} className="form-control"
                                    id="firstName" placeholder="Vorname"/>
                             {errors.firstName && (<span className="text-danger">Vorname wird benötigt</span>)}
                         </div>
                         <div className="form-group col-md-6">
                             <label htmlFor="lastName">Nachname</label>
-                            <input name="lastName" type="text" ref={register({required: true})} className="form-control"
+                            <input name="lastName" type="text" ref={register({ required: true })} className="form-control"
                                    id="lastName" placeholder="Nachname"/>
                             {errors.lastName && (<span className="text-danger">Nachname wird benötigt</span>)}
                         </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="address">Adresse</label>
-                        <input name="address" type="text" ref={register({required: true})} className="form-control"
+                        <input name="address" type="text" ref={register({ required: true })} className="form-control"
                                id="address" placeholder="Adresse"/>
                         {errors.address && (<span className="text-danger">Adresse wird benötigt</span>)}
                     </div>
@@ -215,7 +215,7 @@ const NewRequest = () => {
                         </div>
                         <div className="form-group col-md-6">
                             <label htmlFor="city">Ort</label>
-                            <input name="city" type="text" ref={register({required: true})} className="form-control"
+                            <input name="city" type="text" ref={register({ required: true })} className="form-control"
                                    id="city" placeholder="Ort"/>
                             {errors.city && (<span className="text-danger">Ort wird benötigt</span>)}
                         </div>
@@ -223,7 +223,7 @@ const NewRequest = () => {
                     <div className="row">
                         <div className="form-group col-md-6">
                             <label htmlFor="phone">Telefonnummer</label>
-                            <input name="phone" type="text" ref={register({required: true})} className="form-control"
+                            <input name="phone" type="text" ref={register({ required: true })} className="form-control"
                                    id="phone" placeholder="Telefonnummer"/>
                             {errors.phone && (<span className="text-danger">Telefonnummer wird benötigt</span>)}
                         </div>
@@ -259,8 +259,8 @@ const NewRequest = () => {
         };
 
         const EnterPurchase = () => {
-            const {handleSubmit, register} = useForm({
-                defaultValues: purchase ?? {}
+            const { handleSubmit, register } = useForm({
+                defaultValues: purchase ?? {},
             });
             const onReset = (data: any) => {
                 setPurchase(data);
@@ -268,7 +268,7 @@ const NewRequest = () => {
             };
 
             const onSubmit = (data: any) => {
-                setPurchase(data)
+                setPurchase(data);
                 setStep(step + 1);
             };
 
@@ -328,7 +328,7 @@ const NewRequest = () => {
                 case 2:
                     return newCustomer
                         ? <SubmitNewCustomer customer={customer} purchase={Object.assign({}, purchase,
-                            {supermarkets: supermarketList})}/>
+                            { supermarkets: supermarketList })}/>
                         : <SubmitExistingCustomer purchase={Object.assign({}, purchase, {
                             supermarkets: supermarketList,
                             customer: customer.uuid,
@@ -363,7 +363,7 @@ const SubmitExistingCustomer: React.FC<{ purchase: any }> = props => {
                 setLoading(false);
                 setUuid(newPurchase.uuid);
             })
-            .catch(() => setLoading(false))
+            .catch(() => setLoading(false));
     }, [props.purchase]);
 
     if (loading) {
@@ -390,8 +390,8 @@ const SubmitNewCustomer: React.FC<{ customer: any, purchase: any }> = props => {
             .then(newCustomer => {
                 setCustomerUuid(newCustomer.uuid);
                 setCustomerLoading(false);
-                const purchase = Object.assign({}, props.purchase, {customer: newCustomer.uuid});
-                return purchaseAPI.createPurchase(purchase)
+                const purchase = Object.assign({}, props.purchase, { customer: newCustomer.uuid });
+                return purchaseAPI.createPurchase(purchase);
             })
             .then(newPurchase => {
                 setPurchaseLoading(false);
@@ -426,5 +426,5 @@ const SubmitNewCustomer: React.FC<{ customer: any, purchase: any }> = props => {
         </>
         }
     </>;
-}
+};
 
