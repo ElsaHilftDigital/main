@@ -270,7 +270,7 @@ public class MessageSender {
         String text = MessageFormat.format(
                 template,
                 customerString,
-                telegramSupportChat);
+                AdminMessageSender.escapeMarkdownCharacters(telegramSupportChat));
 
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
         String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
@@ -307,7 +307,7 @@ public class MessageSender {
 
     public void confirmConfirmation(long chatId, String telegramSupportChat) {
         var template = telegramMessages.getThankForDoingPurchaseMessage();
-        var text = MessageFormat.format(template, telegramSupportChat);
+        var text = MessageFormat.format(template, AdminMessageSender.escapeMarkdownCharacters(telegramSupportChat));
         var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }
