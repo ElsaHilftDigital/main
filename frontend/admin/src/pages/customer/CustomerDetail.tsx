@@ -29,7 +29,7 @@ interface Props {
 
 const CustomerDetailInternal: React.FC<Props> = props => {
     const { selectedCustomer } = props;
-    const { handleSubmit, register, setValue } = useForm({
+    const { handleSubmit, register } = useForm({
         defaultValues: selectedCustomer,
     });
     const [showSaveToast, setShowSaveToast] = useState(false);
