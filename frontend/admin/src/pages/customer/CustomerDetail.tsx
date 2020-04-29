@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
-
-import { customerActions } from 'store/customer/index';
-import { useDispatch } from 'react-redux';
-import { useCustomer } from 'hooks/useCustomer';
-import Header from "components/Header";
-
+import { Customer, customerAPI, useCustomer } from 'apis/customer';
+import Header from 'components/Header';
 
 const CustomerDetail = () => {
     const { customerId } = useParams();
-    const { customer } = useCustomer(customerId);
+    const { customer, refresh } = useCustomer(customerId!);
 
     if (!customer) {
         return (<>
@@ -23,31 +19,39 @@ const CustomerDetail = () => {
             </>
         );
     }
-    return <CustomerDetailInternal selectedCustomer={customer}/>;
+    return <CustomerDetailInternal selectedCustomer={customer} refresh={refresh}/>;
 };
 
 interface Props {
-    selectedCustomer: any,
+    selectedCustomer: Customer,
+    refresh: () => void;
 }
 
 const CustomerDetailInternal: React.FC<Props> = props => {
-    const dispatch = useDispatch();
     const { selectedCustomer } = props;
     const { handleSubmit, register } = useForm({
-        defaultValues: selectedCustomer
+        defaultValues: selectedCustomer,
     });
     const [showSaveToast, setShowSaveToast] = useState(false);
     const [showDeleteToast, setShowDeleteToast] = useState(false);
 
     const onSubmit = (values: any) => {
-        dispatch(customerActions.updateCustomer(selectedCustomer.uuid, values));
-        setShowSaveToast(true);
+        customerAPI.update(selectedCustomer.uuid, values)
+            .then(() => {
+                setShowSaveToast(true);
+                props.refresh();
+            })
+            .catch();
     };
 
     const onDelete = () => {
         if (window.confirm('Bitte versichere dich, dass alle offenen Rechnungen oder Zahlungen von diesem/-r Kunden/-in vor dem Löschen erledigt sind.\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
-            dispatch(customerActions.deleteCustomer(selectedCustomer.uuid));
-            setShowDeleteToast(true);
+            customerAPI.delete(selectedCustomer.uuid)
+                .then(() => {
+                    setShowDeleteToast(true);
+                    props.refresh();
+                })
+                .catch();
         }
     };
 
@@ -65,28 +69,28 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                             <label htmlFor="firstName" className="col-sm-3 col-form-label">Vorname</label>
                             <div className="col-sm-9">
                                 <input name="firstName" ref={register()} type="text" className="form-control"
-                                        id="firstName"/>
+                                       id="firstName"/>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="lastName" className="col-sm-3 col-form-label">Nachname</label>
                             <div className="col-sm-9">
                                 <input name="lastName" ref={register()} type="text" className="form-control"
-                                        id="lastName"/>
+                                       id="lastName"/>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="phone" className="col-sm-3 col-form-label">Festnetz</label>
                             <div className="col-sm-9">
                                 <input name="phone" ref={register()} type="text" className="form-control"
-                                        id="phone"/>
+                                       id="phone"/>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="mobile" className="col-sm-3 col-form-label">Mobil</label>
                             <div className="col-sm-9">
                                 <input name="mobile" ref={register()} type="text" className="form-control"
-                                        id="mobile"/>
+                                       id="mobile"/>
                             </div>
                         </div>
                     </div>
@@ -96,21 +100,21 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                             <label htmlFor="address" className="col-sm-3 col-form-label">Strasse</label>
                             <div className="col-sm-9">
                                 <input name="address" ref={register()} type="text" className="form-control"
-                                        id="addressStreet"/>
+                                       id="addressStreet"/>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="zipCode" className="col-sm-3 col-form-label">PLZ</label>
                             <div className="col-sm-9">
                                 <input name="zipCode" ref={register()} type="text" className="form-control"
-                                        id="addressZipCode"/>
+                                       id="addressZipCode"/>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="city" className="col-sm-3 col-form-label">Ort</label>
                             <div className="col-sm-9">
                                 <input name="city" ref={register()} type="text" className="form-control"
-                                        id="addressCity"/>
+                                       id="addressCity"/>
                             </div>
                         </div>
                     </div>
@@ -120,8 +124,8 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                         <Button type="submit">Speichern</Button>
                         {showSaveToast &&
                         <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
-                                delay={3000}
-                                autohide>
+                               delay={3000}
+                               autohide>
                             <Toast.Header>
                                 <strong className="mr-auto">Kunde speichern</strong>
                             </Toast.Header>
@@ -133,8 +137,8 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                         <Button variant="danger" className="float-right" onClick={() => onDelete()}>Löschen</Button>
                         {showDeleteToast &&
                         <Toast className="mt-2 mb-2" onClose={() => setShowDeleteToast(false)}
-                                show={showDeleteToast}
-                                delay={3000} autohide>
+                               show={showDeleteToast}
+                               delay={3000} autohide>
                             <Toast.Header>
                                 <strong className="mr-auto">Kunde löschen</strong>
                             </Toast.Header>
@@ -145,6 +149,7 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                 </Row>
             </form>
         </div>
-</>);};
+    </>);
+};
 
 export default CustomerDetail;
