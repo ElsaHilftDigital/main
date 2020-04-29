@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
-
-import { customerActions } from 'store/customer/index';
-import { useDispatch } from 'react-redux';
-import { Customer, useCustomer } from 'apis/customer';
+import { Customer, customerAPI, useCustomer } from 'apis/customer';
 import Header from 'components/Header';
-
 
 const CustomerDetail = () => {
     const { customerId } = useParams();
-    const { customer } = useCustomer(customerId!);
+    const { customer, refresh } = useCustomer(customerId!);
 
     if (!customer) {
         return (<>
@@ -23,31 +19,39 @@ const CustomerDetail = () => {
             </>
         );
     }
-    return <CustomerDetailInternal selectedCustomer={customer}/>;
+    return <CustomerDetailInternal selectedCustomer={customer} refresh={refresh}/>;
 };
 
 interface Props {
     selectedCustomer: Customer,
+    refresh: () => void;
 }
 
 const CustomerDetailInternal: React.FC<Props> = props => {
-    const dispatch = useDispatch();
     const { selectedCustomer } = props;
-    const { handleSubmit, register } = useForm({
+    const { handleSubmit, register, setValue } = useForm({
         defaultValues: selectedCustomer,
     });
     const [showSaveToast, setShowSaveToast] = useState(false);
     const [showDeleteToast, setShowDeleteToast] = useState(false);
 
     const onSubmit = (values: any) => {
-        dispatch(customerActions.updateCustomer(selectedCustomer.uuid, values));
-        setShowSaveToast(true);
+        customerAPI.update(selectedCustomer.uuid, values)
+            .then(() => {
+                setShowSaveToast(true);
+                props.refresh();
+            })
+            .catch();
     };
 
     const onDelete = () => {
         if (window.confirm('Bitte versichere dich, dass alle offenen Rechnungen oder Zahlungen von diesem/-r Kunden/-in vor dem Löschen erledigt sind.\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
-            dispatch(customerActions.deleteCustomer(selectedCustomer.uuid));
-            setShowDeleteToast(true);
+            customerAPI.delete(selectedCustomer.uuid)
+                .then(() => {
+                    setShowDeleteToast(true);
+                    props.refresh();
+                })
+                .catch();
         }
     };
 

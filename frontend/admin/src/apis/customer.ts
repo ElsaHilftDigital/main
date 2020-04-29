@@ -100,3 +100,9 @@ export function updateCustomer(uuid: string, customer: UpdateCustomerRequest) {
 export function deleteCustomer(uuid: string) {
     return client.delete<void>(`/customers/${uuid}`);
 }
+
+export const customerAPI = {
+    create: createCustomer,
+    update: updateCustomer,
+    delete: deleteCustomer,
+};

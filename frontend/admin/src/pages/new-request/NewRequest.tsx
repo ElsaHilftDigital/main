@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-
 import SearchBox from 'components/SearchBox';
 import PurchaseList from 'components/PurchaseList';
-import { useCustomers } from 'apis/customer';
+import { customerAPI, useCustomers } from 'apis/customer';
 import * as routes from 'routes';
 import Header from 'components/Header';
 import * as purchaseAPI from 'apis/purchase';
-import * as customerAPI from 'apis/customer';
 
 const ProgressItem: React.FC<any> = styled.li`
     position: relative;
@@ -386,7 +384,7 @@ const SubmitNewCustomer: React.FC<{ customer: any, purchase: any }> = props => {
     const [purchaseUuid, setPurchaseUuid] = useState<string>();
 
     useEffect(() => {
-        customerAPI.createCustomer(props.customer)
+        customerAPI.create(props.customer)
             .then(newCustomer => {
                 setCustomerUuid(newCustomer.uuid);
                 setCustomerLoading(false);
