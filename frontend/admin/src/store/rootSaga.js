@@ -7,13 +7,11 @@ import * as moderatorApi from '../apis/moderator';
 import { customerSaga } from './customer';
 import { purchaseSaga } from './purchase';
 import { volunteerSaga } from './volunteer';
-import { moderatorSaga } from './moderator';
 
 export default function* rootSaga() {
     yield all([
         customerSaga(customerApi),
         purchaseSaga(purchaseApi),
         volunteerSaga(volunteerApi),
-        moderatorSaga(moderatorApi),
     ]);
 }

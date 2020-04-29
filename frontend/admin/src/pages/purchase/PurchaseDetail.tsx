@@ -8,23 +8,23 @@ import Toast from 'react-bootstrap/Toast';
 import PurchaseList from 'components/PurchaseList';
 import {purchaseActions} from 'store/purchase';
 import {usePurchase} from 'hooks/usePurchase';
-import {useModerators} from 'hooks/useModerators';
 import {formatDate} from 'config/utils';
 import * as routes from 'routes';
 import Header from "components/Header";
 import * as purchaseAPI from 'apis/purchase';
+import { useModerators } from 'apis/moderator';
 
 
 const PurchaseDetail = () => {
     const {purchaseId} = useParams();
     const {purchase} = usePurchase(purchaseId);
-    const {moderators} = useModerators();
+    const moderators = useModerators();
 
     if (!purchase) {
         return (<>
                 <Header/>
                 <div className="container mt-3 mb-5">
-                    <div className="spinner-border"></div>
+                    <div className="spinner-border"/>
                 </div>
             </>
         );
