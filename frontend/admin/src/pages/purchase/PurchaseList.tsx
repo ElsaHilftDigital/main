@@ -1,18 +1,17 @@
-import React, {useMemo, useState} from 'react';
-import {Col, Container, Dropdown, Form, InputGroup, ListGroup, Row} from 'react-bootstrap';
-import {useHistory} from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import { Col, Container, Dropdown, Form, InputGroup, ListGroup, Row } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-
-import {usePurchases} from 'hooks/usePurchases';
+import { usePurchases } from 'apis/purchase';
 import * as routes from 'routes';
-import {formatBoolean, formatDateTime, formatMoment, parseDate} from 'config/utils';
+import { formatBoolean, formatDateTime, formatMoment, parseDate } from 'config/utils';
 import StatusIndicator from 'components/StatusIndicator';
 import Title from 'components/Title';
-import moment from "moment";
-import Header from "components/Header";
+import moment from 'moment';
+import Header from 'components/Header';
 
 const PurchaseList = () => {
-    const {purchases} = usePurchases();
+    const { purchases } = usePurchases();
 
     if (!purchases?.length) {
         return (<>
@@ -29,7 +28,7 @@ const PurchaseList = () => {
                             </div>
                         </div>
                         <ListGroup.Item>
-                            <Row><b style={{padding: "1rem"}}>Keine Aufträge vorhanden</b></Row>
+                            <Row><b style={{ padding: '1rem' }}>Keine Aufträge vorhanden</b></Row>
                         </ListGroup.Item>
                     </Col>
                 </FlexRow>
@@ -54,12 +53,12 @@ const PurchaseListHeader = () => {
             <ExportForm/>
         </Row>
     </>;
-}
+};
 
 const ExportForm = () => {
     const today = new Date(Date.now()).toLocaleDateString('de-DE');
 
-    const [startDate, setStartDate] = useState("01.01.2020");
+    const [startDate, setStartDate] = useState('01.01.2020');
     const [endDate, setEndDate] = useState(today);
     const [startDateValid, setStartDateValid] = useState(true);
     const [endDateValid, setEndDateValid] = useState(true);
@@ -70,7 +69,7 @@ const ExportForm = () => {
 
     const validateStartDate = () => {
         setStartDateValid(!!parseDate(startDate));
-    }
+    };
 
     const handleEndDateUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEndDate(e.target.value);
@@ -78,15 +77,15 @@ const ExportForm = () => {
 
     const validateEndDate = () => {
         setEndDateValid(!!parseDate(endDate));
-    }
+    };
 
     const exportPurchases = () => {
         window.location.href = routes.purchaseExportAll(parseDate(startDate)!, parseDate(endDate)!);
-    }
+    };
 
     const exportReceipts = () => {
         window.location.href = routes.receiptExport(parseDate(startDate)!, parseDate(endDate)!);
-    }
+    };
 
     return <Form inline>
         <Form.Row className="mr-0">
@@ -106,7 +105,7 @@ const ExportForm = () => {
                             isInvalid={!startDateValid}
                         />
                     </InputGroup>
-                    <div className="invalid-tooltip" style={{display: 'block'}} hidden={startDateValid}>
+                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={startDateValid}>
                         Datumsformat: DD.MM.YYYY
                     </div>
                 </Form.Group>
@@ -127,7 +126,7 @@ const ExportForm = () => {
                             isInvalid={!endDateValid}
                         />
                     </InputGroup>
-                    <div className="invalid-tooltip" style={{display: 'block'}} hidden={endDateValid}>
+                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={endDateValid}>
                         Datumsformat: DD.MM.YYYY
                     </div>
                 </Form.Group>
@@ -143,14 +142,14 @@ const ExportForm = () => {
                 </Dropdown>
             </Col>
         </Form.Row>
-    </Form>
+    </Form>;
 
 };
 
-const statusIndicators = ["RED", "AMBER", "GREEN"];
+const statusIndicators = ['RED', 'AMBER', 'GREEN'];
 
 const PurchaseListInternal = (props: any) => {
-    const {purchases} = props;
+    const { purchases } = props;
 
     function toDate(timestamp: string): string {
         return formatMoment(moment(timestamp));
@@ -218,7 +217,7 @@ const PurchaseListInternal = (props: any) => {
                 </ListGroup>
             </Col>
         </FlexRow>
-    </>)
+    </>);
 };
 
 const DateCol = styled(Col)`
@@ -241,7 +240,7 @@ const DateListGroup = styled(ListGroup)`
 `;
 
 const PurchaseListItem = (props: any) => {
-    const {purchase} = props;
+    const { purchase } = props;
     const history = useHistory();
     const labelWidth = 5;
 

@@ -34,7 +34,7 @@ public class PurchaseController {
     }
 
     @PostMapping()
-    public PurchaseDTO createNewPurchase(Principal principal, @RequestBody CreatePurchaseRequest req) {
+    public UUID createNewPurchase(Principal principal, @RequestBody CreatePurchaseRequest req) {
         return purchaseService.create(principal, req);
     }
 

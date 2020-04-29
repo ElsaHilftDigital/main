@@ -66,9 +66,9 @@ public class PurchaseService {
         this.messageSender = messageSender;
     }
 
-    public PurchaseDTO create(Principal principal, CreatePurchaseRequest req) {
+    public UUID create(Principal principal, CreatePurchaseRequest req) {
         Purchase purchase = createPurchase(principal, req);
-        return new PurchaseDTO(purchase);
+        return purchase.getUuid();
     }
 
     private Purchase createPurchase(Principal principal, CreatePurchaseRequest req) {

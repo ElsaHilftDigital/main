@@ -36,11 +36,6 @@ export interface UpdateCustomerRequest {
     zipCode?: string,
 }
 
-export async function getCustomers() {
-    const response = await client.get(`/customers`);
-    return response.data;
-}
-
 export const useCustomers = () => {
     const [customers, setCustomers] = useState<Customer[]>([]);
 
@@ -60,11 +55,6 @@ export const useCustomers = () => {
 
     return { customers };
 };
-
-export async function getCustomer(uuid: string) {
-    const response = await client.get<Customer>(`/customers/${uuid}`);
-    return response.data;
-}
 
 export const useCustomer = (uuid: string) => {
     const [customer, setCustomer] = useState<Customer>();
@@ -88,16 +78,16 @@ export const useCustomer = (uuid: string) => {
     return { customer, refresh };
 };
 
-export async function createCustomer(customer: CreateCustomerRequest) {
+async function createCustomer(customer: CreateCustomerRequest) {
     const response = await client.post<Customer>('/customers', customer);
     return response.data;
 }
 
-export function updateCustomer(uuid: string, customer: UpdateCustomerRequest) {
+function updateCustomer(uuid: string, customer: UpdateCustomerRequest) {
     return client.put<void>(`/customers/${uuid}`, customer);
 }
 
-export function deleteCustomer(uuid: string) {
+function deleteCustomer(uuid: string) {
     return client.delete<void>(`/customers/${uuid}`);
 }
 

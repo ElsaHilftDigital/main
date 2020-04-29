@@ -7,7 +7,7 @@ import PurchaseList from 'components/PurchaseList';
 import { customerAPI, useCustomers } from 'apis/customer';
 import * as routes from 'routes';
 import Header from 'components/Header';
-import * as purchaseAPI from 'apis/purchase';
+import {purchaseAPI} from 'apis/purchase';
 
 const ProgressItem: React.FC<any> = styled.li`
     position: relative;
@@ -356,12 +356,10 @@ const SubmitExistingCustomer: React.FC<{ purchase: any }> = props => {
     const [uuid, setUuid] = useState<string>();
 
     useEffect(() => {
-        purchaseAPI.createPurchase(props.purchase)
-            .then(newPurchase => {
-                setLoading(false);
-                setUuid(newPurchase.uuid);
-            })
-            .catch(() => setLoading(false));
+        purchaseAPI.create(props.purchase)
+            .then(setUuid)
+            .catch()
+            .finally(() => setLoading(false));
     }, [props.purchase]);
 
     if (loading) {
@@ -389,11 +387,11 @@ const SubmitNewCustomer: React.FC<{ customer: any, purchase: any }> = props => {
                 setCustomerUuid(newCustomer.uuid);
                 setCustomerLoading(false);
                 const purchase = Object.assign({}, props.purchase, { customer: newCustomer.uuid });
-                return purchaseAPI.createPurchase(purchase);
+                return purchaseAPI.create(purchase);
             })
-            .then(newPurchase => {
+            .then(purchaseUuid => {
                 setPurchaseLoading(false);
-                setPurchaseUuid(newPurchase.uuid);
+                setPurchaseUuid(purchaseUuid);
             })
             .catch(() => {
                 setCustomerLoading(false);
