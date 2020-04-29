@@ -42,8 +42,8 @@ export async function assignVolunteer(purchaseUuid, volunteerUuid) {
     return response.data;
 }
 
-export async function customerNotified(uuid) {
-    const response = await client.post(`/purchases/${uuid}/customernotified`)
+export async function customerNotified(uuid, message) {
+    const response = await client.post(`/purchases/${uuid}/customernotified`, message);
     return response.data;
 }
 

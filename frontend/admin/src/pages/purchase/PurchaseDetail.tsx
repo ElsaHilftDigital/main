@@ -78,11 +78,15 @@ const PurchaseDetailInternal = (props: any) => {
 
     
     const onNotifyVolunteerToDeliver = (data: any) => {
-        const updatedPurchase = Object.assign({}, purchase, data, {supermarkets});
+        const message = window.prompt("Bitte Lieferung freigeben und Einkauf speichern mit \"OK\" bestätigen.\n\nBitte hier Nachricht angeben, welche über Telegram Bot an Helfer geschickt werden soll (kann leer gelassen werden):");
 
-        purchaseAPI.updatePurchase(purchase.uuid, updatedPurchase)
-            .then(() => purchaseAPI.customerNotified(purchase.uuid))
-            .then(() => setShowDeliverToast(true));
+        if (message || message === "") {            
+            const updatedPurchase = Object.assign({}, purchase, data, {supermarkets});
+
+            purchaseAPI.updatePurchase(purchase.uuid, updatedPurchase)
+                .then(() => purchaseAPI.customerNotified(purchase.uuid, message))
+                .then(() => setShowDeliverToast(true));
+        }
     };
 
     return (<>

@@ -205,7 +205,7 @@ public class PurchaseService {
         purchase.setResponsibleModeratorId(moderator.getId());
     }
 
-    public void customerNotified(UUID purchaseId) {
+    public void customerNotified(UUID purchaseId, String messageToVolunteer) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
@@ -214,7 +214,7 @@ public class PurchaseService {
         if (purchase.getStatus() == Purchase.Status.PURCHASE_DONE) {
 
             purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
-            messageSender.informToDeliverPurchase(purchase, volunteer, customer, organization.getTelegramSupportChat());
+            messageSender.informToDeliverPurchase(purchase, volunteer, customer, organization.getTelegramSupportChat(), messageToVolunteer);
         } else {
             LOG.warn("purchase is in wrong state {} to instruct helper for delivery", purchase.getStatus());
         }

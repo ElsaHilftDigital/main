@@ -252,7 +252,7 @@ public class MessageSender {
         return result;
     }
 
-    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer, String telegramSupportChat) {
+    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer, String telegramSupportChat, String messageToVolunteer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
             return;
@@ -265,7 +265,7 @@ public class MessageSender {
             return;
         }
 
-        String template = telegramMessages.getInformToDeliverPurchase();
+        String template = telegramMessages.getInformToDeliverPurchase() + "\n" + AdminMessageSender.escapeMarkdownCharacters(messageToVolunteer);
         var customerString = AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
         String text = MessageFormat.format(
                 template,
