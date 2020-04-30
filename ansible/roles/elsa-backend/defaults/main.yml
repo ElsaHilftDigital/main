@@ -1,6 +1,10 @@
 ---
 
 elsa_backend_telegram_token: changeme
+elsa_backend_telegram_group_chat_url: changeme
+elsa_backend_telegram_group_chat_id: changeme
+elsa_backend_telegram_moderator_chat_id: changeme
+elsa_backend_supportuser_name: changeme
 elsa_backend_bot_name: changeme
 elsa_backend_spring_profile: prod
 elsa_backend_jwt_secret: changeme
