@@ -265,12 +265,14 @@ public class MessageSender {
             return;
         }
 
-        String template = telegramMessages.getInformToDeliverPurchase() + "\n" + AdminMessageSender.escapeMarkdownCharacters(messageToVolunteer);
+        String template = telegramMessages.getInformToDeliverPurchase();
+        var escapedMessageToVolunteer = AdminMessageSender.escapeMarkdownCharacters(messageToVolunteer);
         var customerString = AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
         String text = MessageFormat.format(
                 template,
                 customerString,
-                AdminMessageSender.escapeMarkdownCharacters(telegramSupportChat));
+                AdminMessageSender.escapeMarkdownCharacters(telegramSupportChat),
+                escapedMessageToVolunteer);
 
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
         String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
