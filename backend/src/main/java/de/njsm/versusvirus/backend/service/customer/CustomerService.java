@@ -75,7 +75,7 @@ public class CustomerService {
 
     public List<PurchaseDTO> getCompletedPurchaseListOf(UUID customerId) {
         var customer = customerRepository.findByUuid(customerId).orElseThrow(NotFoundException::new);
-        return purchaseRepository.findAllByCustomerAndStatus(customer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+        return purchaseRepository.findAllByCustomerAndStatusAndDeletedFalse(customer.getId(), Purchase.Status.PURCHASE_COMPLETED)
                 .stream()
                 .map(PurchaseDTO::new)
                 .collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class CustomerService {
 
     public List<PurchaseDTO> getOpenPurchaseListOf(UUID customerId) {
         var customer = customerRepository.findByUuid(customerId).orElseThrow(NotFoundException::new);
-        return purchaseRepository.findAllByCustomerAndStatusNot(customer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+        return purchaseRepository.findAllByCustomerAndStatusNotAndDeletedFalse(customer.getId(), Purchase.Status.PURCHASE_COMPLETED)
                 .stream()
                 .map(PurchaseDTO::new)
                 .collect(Collectors.toList());

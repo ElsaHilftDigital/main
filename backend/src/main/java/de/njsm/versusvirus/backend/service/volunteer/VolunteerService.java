@@ -134,7 +134,7 @@ public class VolunteerService {
 
     public List<PurchaseDTO> getCompletedPurchasesOf(UUID volunteerId) {
         var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
-        return purchaseRepository.findAllByAssignedVolunteerAndStatus(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+        return purchaseRepository.findAllByAssignedVolunteerAndStatusAndDeletedFalse(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
                 .stream()
                 .map(PurchaseDTO::new)
                 .collect(Collectors.toList());
@@ -142,7 +142,7 @@ public class VolunteerService {
 
     public List<PurchaseDTO> getOpenPurchasesOf(UUID volunteerId) {
         var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
-        return purchaseRepository.findAllByAssignedVolunteerAndStatusNot(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+        return purchaseRepository.findAllByAssignedVolunteerAndStatusNotAndDeletedFalse(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
                 .stream()
                 .map(PurchaseDTO::new)
                 .collect(Collectors.toList());

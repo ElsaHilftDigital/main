@@ -44,6 +44,11 @@ public class PurchaseController {
         purchaseService.updatePurchase(purchaseId, updateRequest);
     }
 
+    @DeleteMapping("/{id}")
+    public void deletePurchase(@PathVariable("id") UUID purchaseId) {
+        purchaseService.deletePurchase(purchaseId);
+    }
+
     @PostMapping("/{id}/publish")
     public void publishPurchase(@PathVariable("id") UUID purchase) {
         purchaseService.publishPurchase(purchase);

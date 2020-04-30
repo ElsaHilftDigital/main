@@ -63,6 +63,8 @@ public class Purchase {
 
     private Long customer;
 
+    private boolean deleted;
+
     @ElementCollection
     @CollectionTable(name = "purchase_applications")
     @Column(name = "volunteer_id")
@@ -125,6 +127,14 @@ public class Purchase {
 
     public void setInternalComments(String internalComments) {
         this.internalComments = internalComments;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public enum Status {

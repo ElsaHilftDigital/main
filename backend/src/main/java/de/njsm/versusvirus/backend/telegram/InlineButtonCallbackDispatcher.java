@@ -1,6 +1,5 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.domain.Customer;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
@@ -125,7 +124,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
             VOLUNTEERS_PER_PURCHASE.observe(purchase.getVolunteerApplications().size());
-            rejectApplicants(customer, purchase);
+            messageSender.rejectApplicants(customer, purchase, volunteerRepository.findAllById(purchase.getVolunteerApplications()));
             purchase.getVolunteerApplications().clear();
             telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
             messageSender.removePurchaseDetailButtons(message.getChat().getId(), message.getId(), purchase, customer);
@@ -134,18 +133,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed unexpectedly");
             messageSender.sendUnexpectedMessage(message.getChat().getId());
         }
-    }
-
-    private void rejectApplicants(Customer customer, Purchase purchase) {
-        purchase.getVolunteerApplications().forEach(id -> {
-            if (purchase.getAssignedVolunteer().isPresent() &&
-                !purchase.getAssignedVolunteer().get().equals(id)) {
-
-                volunteerRepository.findById(id).ifPresent(v -> {
-                    messageSender.sendRejectionToApplicant(v.getTelegramChatId(), customer, purchase);
-                });
-            }
-        });
     }
 
     @Override
@@ -196,7 +183,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
-        List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteerAndStatus(volunteer.getId(), Purchase.Status.VOLUNTEER_ACCEPTED);
+        List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteerAndStatusAndDeletedFalse(volunteer.getId(), Purchase.Status.VOLUNTEER_ACCEPTED);
         volunteer.setTelegramFileId(fileId);
         messageSender.confirmReceiptPurchaseMapping(volunteer, activePurchases);
     }

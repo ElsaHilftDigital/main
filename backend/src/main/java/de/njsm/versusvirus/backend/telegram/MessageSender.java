@@ -214,6 +214,16 @@ public class MessageSender {
                 purchaseDesc);
     }
 
+    public void rejectApplicants(Customer customer, Purchase purchase, List<Volunteer> applicants) {
+        applicants.forEach(applicant -> {
+            if (purchase.getAssignedVolunteer().isEmpty() ||
+                    !purchase.getAssignedVolunteer().get().equals(applicant.getId())) {
+
+                sendRejectionToApplicant(applicant.getTelegramChatId(), customer, purchase);
+            }
+        });
+    }
+
     public void removePurchaseDetailButtons(long chatId, long messageId, Purchase purchase, Customer customer) {
         String text = renderPrivatePurchaseList(purchase, customer);
         EditedMessage message = new EditedMessage(chatId,
@@ -350,7 +360,7 @@ public class MessageSender {
         api.sendMessage(m);
     }
 
-    public void sendRejectionToApplicant(long chatId, Customer customer, Purchase purchase) {
+    private void sendRejectionToApplicant(long chatId, Customer customer, Purchase purchase) {
         String template = telegramMessages.getRejectApplication();
         String text = MessageFormat.format(template, renderBroadcastPurchaseDescription(customer, purchase));
         var m = new MessageToBeSent(chatId, text);
