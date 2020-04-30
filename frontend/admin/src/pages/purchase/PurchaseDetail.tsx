@@ -61,6 +61,17 @@ const PurchaseDetailInternal = (props: any) => {
             .catch();
     };
 
+    const deletePurchase = () => {
+        if (window.confirm('Möchtest du diesen Einkauf wirklich löschen?')) {
+            purchaseAPI.delete(purchase.uuid)
+                .then(() => {
+                    setShowCompleteToast(true)
+                })
+                .catch();
+            window.location.href = routes.purchaseList();
+        }
+    };
+
     const markPurchaseAsCompleted = () => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) {
             purchaseAPI.markCompleted(purchase.uuid)
@@ -164,6 +175,10 @@ const PurchaseDetailInternal = (props: any) => {
                     {purchase.status === 'Neu' &&
                     <Button className="mr-3 mb-1"
                             onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
+                    {(purchase.status === 'Neu' || purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') && <>
+                        <Button className="mr-3 mb-1"
+                                onClick={() => deletePurchase()}>Löschen</Button>
+                    </>}
                     {purchase.status === 'Einkauf abgeschlossen' && <>
                         <Button className="mr-3 mb-1"
                                 onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung

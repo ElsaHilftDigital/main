@@ -158,7 +158,7 @@ public class PurchaseService {
 
     public void deletePurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        if (purchase.getAssignedVolunteer().isEmpty()) {
+        if (purchase.getAssignedVolunteer().isPresent()) {
             throw new IllegalStateException("Cannot delete purchase after volunteer is assigned");
         }
 
