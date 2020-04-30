@@ -93,10 +93,14 @@ public class VolunteerService {
         return new VolunteerDTO(volunteer, inviteLink);
     }
 
+    public void sendInvitationEmail(UUID volunteerId) {
+        var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
+        String inviteLink = inviteLinkGenerator.getInviteLink(volunteer.getUuid());
+        mailSender.sendRegistrationMail(volunteer, inviteLink);
+    }
+
     private void notifyModerators() {
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            return new TelegramShouldBeFineException("Organization not found");
-        });
+        var organization = organizationRepository.findById(1).orElseThrow(() -> new TelegramShouldBeFineException("Organization not found"));
         adminMessageSender.newHelperHasRegistered(organization.getTelegramModeratorGroupChatId());
     }
 
