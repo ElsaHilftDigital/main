@@ -63,7 +63,7 @@ const PurchaseDetailInternal = (props: any) => {
     };
 
     const deletePurchase = () => {
-        if (window.confirm('Möchtest du diesen Einkauf wirklich löschen?')) {
+        if (window.confirm('Möchtest du diesen Einkauf wirklich löschen?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             purchaseAPI.delete(purchase.uuid)
                 .then(() => {
                     setShowCompleteToast(true);
@@ -74,7 +74,7 @@ const PurchaseDetailInternal = (props: any) => {
     };
 
     const markPurchaseAsCompleted = () => {
-        if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+        if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             purchaseAPI.markCompleted(purchase.uuid)
                 .then(() => {
                     setShowCompleteToast(true);
@@ -177,7 +177,7 @@ const PurchaseDetailInternal = (props: any) => {
                     <Button className="mr-3 mb-1"
                             onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
                     {!purchase.assignedVolunteer && <>
-                        <Button className="mr-3 mb-1"
+                        <Button variant="danger" className="mr-3 mb-1"
                                 onClick={() => deletePurchase()}>Löschen</Button>
                     </>}
                     {purchase.status === 'Einkauf abgeschlossen' && <>
@@ -190,9 +190,7 @@ const PurchaseDetailInternal = (props: any) => {
                     </>}
                     {(purchase.status === 'Kein Geld deponiert' || purchase.status === 'Ausgeliefert - Zahlung ausstehend' || purchase.status === 'Wird ausgeliefert') &&
                     <Button
-                        onClick={() => {
-                            markPurchaseAsCompleted();
-                        }}
+                        onClick={() => markPurchaseAsCompleted()}
                         className="mr-3 mb-1">Einkauf erledigt</Button>
                     }
                 </div>

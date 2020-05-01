@@ -50,7 +50,9 @@ const PurchaseListHeader = () => {
             <Col>
                 <Title>Aufträge</Title>
             </Col>
-            <ExportForm/>
+            <Col style={{padding: "1rem"}}>
+                <ExportForm/>
+            </Col>
         </Row>
     </>;
 };
@@ -203,22 +205,42 @@ const PurchaseListInternal = (props: any) => {
                 </DateListGroup>
             </DateCol>
             <Col>
-                <PurchaseListHeader/>
-                <ListGroup variant="flush">
-                    <ListGroup.Item className="pl-3">
-                        <Row>
-                            <Col><h3>Kunde</h3></Col>
-                            <Col><h3>Helfer</h3></Col>
-                            <Col><h3>Status</h3></Col>
-                            <Col><h3>Moderator</h3></Col>
-                        </Row>
-                    </ListGroup.Item>
-                    {purchasesByDate.get(selectedDate)!.map(p => <PurchaseListItem purchase={p} key={p.uuid}/>)}
-                </ListGroup>
+                <ListHeaderContainer>
+                    <PurchaseListHeader/>
+                    <ListGroup variant="flush">
+                        <ListGroup.Item className="pl-3">
+                            <Row>
+                                <Col><h3>Kunde</h3></Col>
+                                <Col><h3>Helfer</h3></Col>
+                                <Col><h3>Status</h3></Col>
+                                <Col><h3>Moderator</h3></Col>
+                            </Row>
+                        </ListGroup.Item>
+                    </ListGroup>
+                </ListHeaderContainer>
+                
+                <ListContainer>
+                    <ListGroup variant="flush">
+                        {purchasesByDate.get(selectedDate)!.map(p => <PurchaseListItem purchase={p} key={p.uuid}/>)}
+                    </ListGroup>
+                </ListContainer>
             </Col>
         </FlexRow>
     </>);
 };
+
+const ListHeaderContainer: React.FC = styled.div`
+    position: sticky;
+    width: 100%;
+    background: white;
+    z-index: 2;
+`;
+
+const ListContainer: React.FC = styled.div`
+    position: sticky;
+    width: 100%;
+    z-index: 1;
+`;
 
 const DateCol = styled(Col)`
     position: sticky;
