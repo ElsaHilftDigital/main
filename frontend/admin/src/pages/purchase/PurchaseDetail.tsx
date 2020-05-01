@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import PurchaseList from 'components/PurchaseList';
@@ -17,7 +16,6 @@ const PurchaseDetail = () => {
     const { purchaseId } = useParams();
     const { purchase } = usePurchase(purchaseId!);
     const moderators = useModerators();
-    const history = useHistory();
 
     if (!purchase) {
         return (<>
@@ -46,6 +44,7 @@ const PurchaseDetailInternal = (props: any) => {
     const [showAssignVolunteerToast, setShowAssignVolunteerToast] = useState(false);
     const [showSearchHelperToast, setShowSearchHelperToast] = useState(false);
     const [showCompleteToast, setShowCompleteToast] = useState(false);
+    const history = useHistory();
 
     const publishPurchaseSearchHelper = () => {
         purchaseAPI.publish(purchase.uuid)
@@ -67,7 +66,7 @@ const PurchaseDetailInternal = (props: any) => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich löschen?')) {
             purchaseAPI.delete(purchase.uuid)
                 .then(() => {
-                    setShowCompleteToast(true)
+                    setShowCompleteToast(true);
                     history.push(routes.purchaseList());
                 })
                 .catch();
@@ -177,7 +176,7 @@ const PurchaseDetailInternal = (props: any) => {
                     {purchase.status === 'Neu' &&
                     <Button className="mr-3 mb-1"
                             onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
-                    {purchase.assignedVolunteer && <>
+                    {!purchase.assignedVolunteer && <>
                         <Button className="mr-3 mb-1"
                                 onClick={() => deletePurchase()}>Löschen</Button>
                     </>}
