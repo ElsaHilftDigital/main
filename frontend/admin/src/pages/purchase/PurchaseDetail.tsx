@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import Toast from 'react-bootstrap/Toast';
 import PurchaseList from 'components/PurchaseList';
@@ -16,6 +17,7 @@ const PurchaseDetail = () => {
     const { purchaseId } = useParams();
     const { purchase } = usePurchase(purchaseId!);
     const moderators = useModerators();
+    const history = useHistory();
 
     if (!purchase) {
         return (<>
@@ -59,6 +61,17 @@ const PurchaseDetailInternal = (props: any) => {
                 setShowAssignVolunteerToast(true);
             })
             .catch();
+    };
+
+    const deletePurchase = () => {
+        if (window.confirm('Möchtest du diesen Einkauf wirklich löschen?')) {
+            purchaseAPI.delete(purchase.uuid)
+                .then(() => {
+                    setShowCompleteToast(true)
+                    history.push(routes.purchaseList());
+                })
+                .catch();
+        }
     };
 
     const markPurchaseAsCompleted = () => {
@@ -164,6 +177,10 @@ const PurchaseDetailInternal = (props: any) => {
                     {purchase.status === 'Neu' &&
                     <Button className="mr-3 mb-1"
                             onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
+                    {purchase.assignedVolunteer && <>
+                        <Button className="mr-3 mb-1"
+                                onClick={() => deletePurchase()}>Löschen</Button>
+                    </>}
                     {purchase.status === 'Einkauf abgeschlossen' && <>
                         <Button className="mr-3 mb-1"
                                 onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung

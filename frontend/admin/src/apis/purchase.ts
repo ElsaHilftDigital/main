@@ -83,6 +83,10 @@ async function createPurchase(purchase: string) {
     return response.data;
 }
 
+function deletePurchase(uuid: string) {
+    return client.delete<void>(`/purchases/${uuid}`);
+}
+
 function updatePurchase(uuid: string, update: UpdatePurchaseRequest) {
     return client.post<void>(`/purchases/${uuid}`, update);
 }
@@ -108,6 +112,7 @@ function markCompleted(uuid: string) {
 export const purchaseAPI = {
     create: createPurchase,
     update: updatePurchase,
+    delete: deletePurchase,
     assignVolunteer: assignVolunteer,
     notifyCustomer: customerNotified,
     publish: publishPurchase,
