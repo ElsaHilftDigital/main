@@ -33,7 +33,7 @@ const PurchaseStep: React.FC<Props> = props => {
     };
 
     const setPurchaseList = (list: any) => {
-        setPurchase((purchase: any) => Object.assign({}, purchase, {supermarkets: list}));
+        setPurchase((purchase: any) => Object.assign({}, purchase, { supermarkets: list }));
     };
 
     const onReset = (data: any) => {
@@ -42,10 +42,16 @@ const PurchaseStep: React.FC<Props> = props => {
     };
 
     const onSubmit = (data: any) => {
-        if (executionDateValid) {
-            setPurchase((purchase: any) => Object.assign({}, purchase, data, { executionDate: parseDate(executionDate) }));
-            next();
-        }
+        setPurchase((purchase: any) => Object.assign({}, purchase, data, {
+            executionDate: parseDate(executionDate),
+            publish: false
+        }));
+        next();
+    };
+
+    const onPublish = (data: any) => {
+        setPurchase((purchase: any) => Object.assign({}, purchase, data, { publish: true }));
+        next();
     };
 
 
@@ -55,7 +61,7 @@ const PurchaseStep: React.FC<Props> = props => {
             <i>Bitte für jeden Supermarkt mit "Enter" bestätigen.</i>
         </p>
         <PurchaseList autoFocus value={purchase.supermarkets}
-                      setValue={setPurchaseList} />
+                      setValue={setPurchaseList}/>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
                 <label htmlFor="purchaseSize">Grösse des Einkaufs</label>
@@ -108,7 +114,10 @@ const PurchaseStep: React.FC<Props> = props => {
 
             <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück
             </button>
-            <button type="submit" className="btn btn-primary float-right" disabled={!executionDateValid}>Speichern</button>
+                <button type="button" onClick={handleSubmit(onPublish)}
+                        className="btn btn-primary float-right ml-2 mb-3" disabled={!executionDateValid}>Speichern & Veröffentlichen
+                </button>
+                <button type="submit" className="btn btn-primary float-right" disabled={!executionDateValid}>Nur Speichern</button>
         </form>
     </>);
 };

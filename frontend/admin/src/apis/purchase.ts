@@ -24,6 +24,16 @@ export interface Purchase {
     createdAt: any,
 }
 
+export interface CreatePurchaseRequest {
+    supermarkets: any,
+    paymentMethod: string,
+    timing: string,
+    purchaseSize: string,
+    publicComments: string,
+    privateComments: string,
+    customer: string,
+}
+
 export interface UpdatePurchaseRequest {
     timing: string,
     publicComments: string,
@@ -78,7 +88,7 @@ export const usePurchase = (uuid: string) => {
     return { purchase, refresh };
 };
 
-async function createPurchase(purchase: string) {
+async function createPurchase(purchase: CreatePurchaseRequest) {
     const response = await client.post<string>(`/purchases`, purchase);
     return response.data;
 }
