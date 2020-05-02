@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useHistory } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import Toast from 'react-bootstrap/Toast';
 import PurchaseList from 'components/PurchaseList';
 import { purchaseAPI } from 'apis/purchase';
 import { usePurchase } from 'apis/purchase';
@@ -10,6 +9,7 @@ import { formatDate } from 'config/utils';
 import * as routes from 'routes';
 import Header from 'components/Header';
 import { useModerators } from 'apis/moderator';
+import { useToast } from 'toasts/useToast';
 
 
 const PurchaseDetail = () => {
@@ -36,64 +36,54 @@ const PurchaseDetailInternal = (props: any) => {
     const { register, handleSubmit } = useForm({
         defaultValues: purchase,
     });
+    const toast = useToast();
 
     const [supermarkets, setSupermarkets] = useState(purchase.supermarkets);
 
-    const [showSaveToast, setShowSaveToast] = useState(false);
-    const [showDeliverToast, setShowDeliverToast] = useState(false);
-    const [showAssignVolunteerToast, setShowAssignVolunteerToast] = useState(false);
-    const [showSearchHelperToast, setShowSearchHelperToast] = useState(false);
-    const [showCompleteToast, setShowCompleteToast] = useState(false);
     const history = useHistory();
 
     const publishPurchaseSearchHelper = () => {
         purchaseAPI.publish(purchase.uuid)
-            .then(() => {
-                setShowSearchHelperToast(true);
-            })
-            .catch();
+            .then(() =>
+                toast("Einkauf freigeben", "Einkauf wurde an Helfer-Gruppenchat gesendet.")
+            )
+            .catch(() =>
+                toast("Einkauf freigeben", "Einkauf konnte leider nicht freigegeben werden.")
+            );
     };
 
     const assignVolunteer = (uuid: string) => {
         purchaseAPI.assignVolunteer(purchase.uuid, uuid)
-            .then(() => {
-                setShowAssignVolunteerToast(true);
-            })
-            .catch();
+            .then(() =>
+                toast("Helferzuordnung", "Der Helfer wurde erfolgreich zugeordnet.")
+            )
+            .catch(() =>
+                toast("Helferzuordnung", "Der Helfer konnte leider nicht zugeordnet werden.")
+            );
     };
 
     const deletePurchase = () => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich löschen?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             purchaseAPI.delete(purchase.uuid)
                 .then(() => {
-                    setShowCompleteToast(true);
+                    toast("Einkauf löschen", "Einkauf wurde erfolgreich gelöscht.")
                     history.push(routes.purchaseList());
                 })
-                .catch();
+                .catch(() =>
+                    toast("Einkauf löschen", "Einkauf konnte leider nicht gelöscht werden.")
+                );
         }
-    };
-
-    const markPurchaseAsCompleted = () => {
-        if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
-            purchaseAPI.markCompleted(purchase.uuid)
-                .then(() => {
-                    setShowCompleteToast(true);
-                })
-                .catch();
-        }
-    };
-
-    const exportPurchase = () => {
-        window.location.href = routes.purchaseExport(purchase.uuid);
     };
 
     const onSubmit = (data: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, { supermarkets });
         purchaseAPI.update(purchase.uuid, updatedPurchase)
             .then(() => {
-                setShowSaveToast(true);
+                toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.")
             })
-            .catch();
+            .catch(() =>
+                toast("Einkauf speichern", "Speichern ist leider fehlgeschlagen")
+            );
     };
 
 
@@ -105,54 +95,31 @@ const PurchaseDetailInternal = (props: any) => {
 
             purchaseAPI.update(purchase.uuid, updatedPurchase)
                 .then(() => purchaseAPI.notifyCustomer(purchase.uuid, message))
-                .then(() => setShowDeliverToast(true))
-                .catch();
+                .then(() => toast("Lieferung freigeben", "Einkauf wurde gespeichert und Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann."))
+                .catch(() =>
+                    toast("Lieferung freigeben", "Einkauf konnte nicht gespeichert oder Lieferung nicht freigegeben werden.")
+                );
         }
+    };
+
+    const markPurchaseAsCompleted = () => {
+        if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
+            purchaseAPI.markCompleted(purchase.uuid)
+                .then(() =>
+                    toast("Einkauf abschliessen", "Der Einkauf wurde manuell abgeschlossen")
+                )
+                .catch(() =>
+                    toast("Einkauf abschliessen", "Einkauf konnte leider nicht manuell abgeschlossen werden.")
+                );
+        }
+    };
+
+    const exportPurchase = () => {
+        window.location.href = routes.purchaseExport(purchase.uuid);
     };
 
     return (<>
         <Header/>
-        <div className="position-absolute d-flex flex-column">
-            {showSearchHelperToast &&
-            <Toast className="mt-2 mb-2" onClose={() => setShowSearchHelperToast(false)} show={showSearchHelperToast}
-                   delay={3000} autohide>
-                <Toast.Header>
-                    <strong className="mr-auto">Einkauf freigeben</strong>
-                </Toast.Header>
-                <Toast.Body>Einkauf wurde an Helfer-Gruppenchat gesendet.</Toast.Body>
-            </Toast>
-            }
-            {showAssignVolunteerToast &&
-            <Toast className="mt-2 mb-2" onClose={() => setShowAssignVolunteerToast(false)}
-                   show={showAssignVolunteerToast} delay={3000} autohide>
-                <Toast.Header>
-                    <strong className="mr-auto">Helferzuordnung</strong>
-                </Toast.Header>
-                <Toast.Body>Der Helfer wurde zugeordnet.</Toast.Body>
-            </Toast>
-            }
-            {showDeliverToast &&
-            <Toast className="mt-2 mb-2" onClose={() => setShowDeliverToast(false)} show={showDeliverToast} delay={3000}
-                   autohide>
-                <Toast.Header>
-                    <strong className="mr-auto">Lieferung freigegeben</strong>
-                </Toast.Header>
-                <Toast.Body>Einkauf wurde gespeichert und Helfer wurde benachrichtigt, dass Einkauf geliefert werden
-                    kann.</Toast.Body>
-            </Toast>
-            }
-            {showCompleteToast &&
-            <Toast className="mt-2 mb-2" onClose={() => setShowCompleteToast(false)} show={showCompleteToast}
-                   delay={3000} autohide>
-                <Toast.Header>
-                    <strong className="mr-auto">Einkauf abgeschlossen</strong>
-                </Toast.Header>
-                <Toast.Body>Der Einkauf wurde manuell abgeschlossen.</Toast.Body>
-            </Toast>
-            }
-        </div>
-
-
         <div className="container mt-3 mb-5">
             <div className="flex-grow-0 justify-content-between align-items-bottom mb-3">
                 <h1>Details zum Einkauf vom {formatDate(purchase.createdAt)} für {purchase.customer.lastName}</h1>
@@ -377,15 +344,6 @@ const PurchaseDetailInternal = (props: any) => {
                 <div className="row">
                     <div className="col">
                         <Button type="submit">Speichern</Button>
-                        {showSaveToast &&
-                        <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
-                               delay={3000} autohide>
-                            <Toast.Header>
-                                <strong className="mr-auto">Einkauf gespeichert</strong>
-                            </Toast.Header>
-                            <Toast.Body>Einkauf wurde gespeichert</Toast.Body>
-                        </Toast>
-                        }
                     </div>
                     <div className="col">
                         <Button className="float-right" onClick={() => exportPurchase()}>Export</Button>

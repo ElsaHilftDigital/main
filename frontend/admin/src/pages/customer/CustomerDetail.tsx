@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Col, Row } from 'react-bootstrap';
-import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
 import { Customer, customerAPI, useCustomer } from 'apis/customer';
 import Header from 'components/Header';
@@ -33,7 +32,6 @@ const CustomerDetailInternal: React.FC<Props> = props => {
     const { handleSubmit, register } = useForm({
         defaultValues: selectedCustomer,
     });
-    const [showDeleteToast, setShowDeleteToast] = useState(false);
     const toast = useToast();
 
     const onSubmit = (values: any) => {
@@ -42,17 +40,21 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                 toast("Kunde speichern", "Auftraggeber wurde gespeichert");
                 props.refresh();
             })
-            .catch();
+            .catch(() => {
+                toast("Kunde speichern", "Speichern ist leider fehlgeschlagen")
+            });
     };
 
     const onDelete = () => {
         if (window.confirm('Bitte versichere dich, dass alle offenen Rechnungen oder Zahlungen von diesem/-r Kunden/-in vor dem Löschen erledigt sind.\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             customerAPI.delete(selectedCustomer.uuid)
                 .then(() => {
-                    setShowDeleteToast(true);
+                    toast("Kunde löschen", "Auftraggeber/-in wurde gelöscht");
                     props.refresh();
                 })
-                .catch();
+                .catch(() => {
+                    toast("Kunde löschen", "Löschen ist leider fehlgeschlagen")
+                });
         }
     };
 
@@ -126,16 +128,6 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                     </Col>
                     <Col>
                         <Button variant="danger" className="float-right" onClick={() => onDelete()}>Löschen</Button>
-                        {showDeleteToast &&
-                        <Toast className="mt-2 mb-2" onClose={() => setShowDeleteToast(false)}
-                               show={showDeleteToast}
-                               delay={3000} autohide>
-                            <Toast.Header>
-                                <strong className="mr-auto">Kunde löschen</strong>
-                            </Toast.Header>
-                            <Toast.Body>Auftraggeber/-in wurde gelöscht</Toast.Body>
-                        </Toast>
-                        }
                     </Col>
                 </Row>
             </form>

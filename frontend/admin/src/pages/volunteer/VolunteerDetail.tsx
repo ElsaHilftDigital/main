@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Col, Row } from 'react-bootstrap';
-import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
 import { useVolunteer, Volunteer, volunteerAPI } from 'apis/volunteer';
 import { formatDate, parseDate } from 'config/utils';
 import Header from 'components/Header';
+import { useToast } from 'toasts/useToast';
 
 const VolunteerDetail = () => {
     const { volunteerId } = useParams();
@@ -30,16 +30,16 @@ interface Props {
 const VolunteerDetailInternal: React.FC<Props> = (props) => {
     const { currentVolunteer } = props;
 
-    const [showSaveToast, setShowSaveToast] = useState(false);
-    const [showConfirmToast, setShowConfirmToast] = useState(false);
-    const [showDeleteToast, setShowDeleteToast] = useState(false);
+    const toast = useToast();
 
     const handleConfirmVolunteer = () => {
         volunteerAPI.validate(currentVolunteer.uuid)
-            .then(() => {
-                setShowConfirmToast(true);
-            })
-            .catch();
+            .then(() =>
+                toast("Helfer bestätigen", "Helfer wurde erfolgreich bestätigt.")
+            )
+            .catch(() =>
+                toast("Helfer bestätigen", "Helfer wurde leider nicht erfolgreich bestätigt.")
+            );
     };
 
     const onSubmit = (values: any) => {
@@ -47,19 +47,24 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
             ...values,
             wantsCompensation: !values.wantsNoCompensation,
             birthDate: parseDate(values.birthDate),
-        }).then(() => {
-            setShowSaveToast(true);
         })
-            .catch();
+            .then(() =>
+                toast("Helfer speichern", "Helfer wurde erfolgreich gespeichert.")
+            )
+            .catch(() =>
+                toast("Helfer speichern", "Helfer wurde leider nicht erfolgreich gespeichert.")
+            );
     };
 
     const onDelete = () => {
         if (window.confirm('Bitte versichere dich, dass alle offenen Zahlungen und Entschädigungen von diesem Helfer vor dem Löschen erledigt sind.\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             volunteerAPI.delete(currentVolunteer.uuid)
-                .then(() => {
-                    setShowDeleteToast(true);
-                })
-                .catch();
+                .then(() =>
+                    toast("Helfer löschen", "Helfer wurde erfolgreich gelöscht.")
+                )
+                .catch(() =>
+                    toast("Helfer löschen", "Helfer wurde leider nicht erfolgreich gelöscht.")
+                );
         }
     };
 
@@ -87,17 +92,6 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
 
     return (<>
         <Header/>
-        <div className="position-absolute d-flex flex-column">
-            {showConfirmToast &&
-            <Toast className="mt-2 mb-2" onClose={() => setShowConfirmToast(false)} show={showConfirmToast} delay={3000}
-                   autohide>
-                <Toast.Header>
-                    <strong className="mr-auto">Helfer bestätigen</strong>
-                </Toast.Header>
-                <Toast.Body>Der Helfer wurde bestätigt.</Toast.Body>
-            </Toast>
-            }
-        </div>
         <div className="container mt-3 mb-5">
             <div className="d-flex justify-content-between align-items-bottom">
                 <h1>Details von Helfer {currentVolunteer.lastName}</h1>
@@ -206,27 +200,9 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
                 <Row>
                     <Col>
                         <Button type="submit">Speichern</Button>
-                        {showSaveToast &&
-                        <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
-                               delay={3000} autohide>
-                            <Toast.Header>
-                                <strong className="mr-auto">Helfer speichern</strong>
-                            </Toast.Header>
-                            <Toast.Body>Helfer wurde gespeichert</Toast.Body>
-                        </Toast>
-                        }
                     </Col>
                     <Col>
                         <Button variant="danger" className="float-right" onClick={() => onDelete()}>Löschen</Button>
-                        {showDeleteToast &&
-                        <Toast className="mt-2 mb-2" onClose={() => setShowDeleteToast(false)} show={showDeleteToast}
-                               delay={3000} autohide>
-                            <Toast.Header>
-                                <strong className="mr-auto">Helfer löschen</strong>
-                            </Toast.Header>
-                            <Toast.Body>Helfer wurde gelöscht</Toast.Body>
-                        </Toast>
-                        }
                     </Col>
                 </Row>
             </form>
