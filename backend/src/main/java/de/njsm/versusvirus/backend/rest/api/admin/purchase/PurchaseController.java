@@ -97,9 +97,8 @@ public class PurchaseController {
     public void exportAll(@PathVariable("startDate") String inputStartDate,
                             @PathVariable("endDate") String inputEndDate,
                             HttpServletResponse response) throws IOException {
-        DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-        LocalDate startDate = LocalDate.parse(inputStartDate, europeanDateFormatter);
-        LocalDate endDate = LocalDate.parse(inputEndDate, europeanDateFormatter);
+        LocalDate startDate = LocalDate.parse(inputStartDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalDate endDate = LocalDate.parse(inputEndDate, DateTimeFormatter.ISO_LOCAL_DATE);
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"Einkaeufe_von_" + startDate.toString() + "_bis_" + endDate.toString() + ".csv\"");
         purchaseService.exportAll(response.getWriter(), startDate, endDate);

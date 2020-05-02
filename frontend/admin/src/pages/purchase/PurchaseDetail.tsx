@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useHistory } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { Button, Form, InputGroup } from 'react-bootstrap';
 import PurchaseList from 'components/PurchaseList';
 import { purchaseAPI } from 'apis/purchase';
 import { usePurchase } from 'apis/purchase';
-import { formatDate } from 'config/utils';
+import { formatDate, parseDate } from 'config/utils';
 import * as routes from 'routes';
 import Header from 'components/Header';
 import { useModerators } from 'apis/moderator';
@@ -39,6 +39,16 @@ const PurchaseDetailInternal = (props: any) => {
     const toast = useToast();
 
     const [supermarkets, setSupermarkets] = useState(purchase.supermarkets);
+    const [executionDate, setExecutionDate] = useState(formatDate(purchase.executionDate));
+    const [executionDateValid, setExecutionDateValid] = useState(true);
+
+    const handleExecutionDateUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setExecutionDate(e.target.value)
+    };
+
+    const validateExecutionDate = () => {
+        setExecutionDateValid(!!parseDate(executionDate))
+    };
 
     const history = useHistory();
 
@@ -76,7 +86,7 @@ const PurchaseDetailInternal = (props: any) => {
     };
 
     const onSubmit = (data: any) => {
-        const updatedPurchase = Object.assign({}, purchase, data, { supermarkets });
+        const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
         purchaseAPI.update(purchase.uuid, updatedPurchase)
             .then(() => {
                 toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.")
@@ -152,7 +162,7 @@ const PurchaseDetailInternal = (props: any) => {
                                 onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung
                             ansehen</Button>
                         <Button className="mr-3 mb-1"
-                                onClick={handleSubmit(onNotifyVolunteerToDeliver)}>Speichern & Lieferung
+                                onClick={handleSubmit(onNotifyVolunteerToDeliver)} disabled={!executionDateValid}>Speichern & Lieferung
                             freigeben</Button>
                     </>}
                     {(purchase.status === 'Kein Geld deponiert' || purchase.status === 'Ausgeliefert - Zahlung ausstehend' || purchase.status === 'Wird ausgeliefert') &&
@@ -288,6 +298,22 @@ const PurchaseDetailInternal = (props: any) => {
                     <label htmlFor="timing">Zeit</label>
                     <input name="timing" ref={register()} type="text" className="form-control" id="timing"/>
                 </div>
+                <Form.Group>
+                    <Form.Label htmlFor="executionDate">Ausführungsdatum</Form.Label>
+                    <InputGroup>
+                        <Form.Control
+                            id="executionDate"
+                            type="text"
+                            value={executionDate}
+                            onChange={handleExecutionDateUpdate}
+                            onBlur={validateExecutionDate}
+                            isInvalid={!executionDateValid}
+                        />
+                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={executionDateValid}>
+                        Datumsformat: DD.MM.YYYY
+                    </div>
+                    </InputGroup>
+                </Form.Group>
                 <div className="form-group">
                     <label htmlFor="size">Grösse des Einkaufs</label>
                     <select ref={register()} id="size" name="size" className="form-control"
@@ -343,7 +369,7 @@ const PurchaseDetailInternal = (props: any) => {
 
                 <div className="row">
                     <div className="col">
-                        <Button type="submit">Speichern</Button>
+                        <Button type="submit" disabled={!executionDateValid}>Speichern</Button>
                     </div>
                     <div className="col">
                         <Button className="float-right" onClick={() => exportPurchase()}>Export</Button>

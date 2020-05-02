@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class UpdatePurchaseRequest {
     public String timing;
+    public String executionDate;
     public String publicComments;
     public String privateComments;
     public String internalComments;

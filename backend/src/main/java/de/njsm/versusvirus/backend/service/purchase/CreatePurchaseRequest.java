@@ -10,6 +10,7 @@ public class CreatePurchaseRequest {
     public List<PurchaseSupermarketDTO> supermarkets;
     public Purchase.PaymentMethod paymentMethod;
     public String timing;
+    public String executionDate;
     public Purchase.PurchaseSize purchaseSize;
     public String publicComments;
     public String privateComments;

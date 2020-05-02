@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PurchaseList from '../../../components/PurchaseList';
+import { parseDate } from 'config/utils';
+import { Form, InputGroup } from 'react-bootstrap';
 
 interface Props {
     purchase: any,
@@ -18,9 +20,21 @@ const PurchaseStep: React.FC<Props> = props => {
         defaultValues: purchase ?? {},
     });
 
+    const today = new Date(Date.now()).toLocaleDateString('de-DE');
+    const [executionDate, setExecutionDate] = useState(today);
+    const [executionDateValid, setExecutionDateValid] = useState(true);
+
+    const handleExecutionDateUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setExecutionDate(e.target.value)
+    };
+
+    const validateExecutionDate = () => {
+        setExecutionDateValid(!!parseDate(executionDate))
+    };
+
     const setPurchaseList = (list: any) => {
         setPurchase((purchase: any) => Object.assign({}, purchase, {supermarkets: list}));
-    }
+    };
 
     const onReset = (data: any) => {
         setPurchase((purchase: any) => Object.assign({}, purchase, data));
@@ -28,8 +42,10 @@ const PurchaseStep: React.FC<Props> = props => {
     };
 
     const onSubmit = (data: any) => {
-        setPurchase((purchase: any) => Object.assign({}, purchase, data));
-        next();
+        if (executionDateValid) {
+            setPurchase((purchase: any) => Object.assign({}, purchase, data, { executionDate: parseDate(executionDate) }));
+            next();
+        }
     };
 
 
@@ -58,6 +74,22 @@ const PurchaseStep: React.FC<Props> = props => {
                     <option value="OTHER">Andere</option>
                 </select>
             </div>
+            <Form.Group>
+                <Form.Label htmlFor="executionDate">Ausführungsdatum</Form.Label>
+                <InputGroup>
+                    <Form.Control
+                        id="executionDate"
+                        type="text"
+                        value={executionDate}
+                        onChange={handleExecutionDateUpdate}
+                        onBlur={validateExecutionDate}
+                        isInvalid={!executionDateValid}
+                    />
+                <div className="invalid-tooltip" style={{ display: 'block' }} hidden={executionDateValid}>
+                    Datumsformat: DD.MM.YYYY
+                </div>
+                </InputGroup>
+            </Form.Group>
             <div className="form-group">
                 <label htmlFor="timing">Zeit</label>
                 <input name="timing" id="timing" type="text" ref={register} className="form-control"
@@ -76,7 +108,7 @@ const PurchaseStep: React.FC<Props> = props => {
 
             <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück
             </button>
-            <button type="submit" className="btn btn-primary float-right">Speichern</button>
+            <button type="submit" className="btn btn-primary float-right" disabled={!executionDateValid}>Speichern</button>
         </form>
     </>);
 };

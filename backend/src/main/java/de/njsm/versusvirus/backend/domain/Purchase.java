@@ -45,6 +45,8 @@ public class Purchase {
 
     private Instant createTime;
 
+    private Instant executionTime;
+
     private byte[] receipt;                   // picture of receipt
 
     private String receiptMimeType;
@@ -380,6 +382,14 @@ public class Purchase {
 
     public void setCreateTime() {
         this.createTime = Instant.now();
+    }
+
+    public Instant getExecutionTime() {
+        return executionTime;
+    }
+
+    public void setExecutionTime(Instant executionTime) {
+        this.executionTime = executionTime;
     }
 
     public List<Long> getVolunteerApplications() {

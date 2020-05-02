@@ -21,8 +21,11 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -107,6 +110,7 @@ public class PurchaseService {
 
         purchase.setPaymentMethod(req.paymentMethod);
         purchase.setTiming(req.timing);
+
         purchase.setPurchaseSize(req.purchaseSize);
         purchase.setPublicComments(req.publicComments);
         purchase.setPrivateComments(req.privateComments);
@@ -114,6 +118,8 @@ public class PurchaseService {
         purchase.setCustomerId(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
+        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(req.executionDate);
+        purchase.setExecutionTime(Instant.from(temporalAccessor));
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
@@ -219,6 +225,8 @@ public class PurchaseService {
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);
         purchase.setCost(updateRequest.cost);
+        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate);
+        purchase.setExecutionTime(Instant.from(temporalAccessor));
 
         purchase.getPurchaseSupermarketList().clear();
         for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
