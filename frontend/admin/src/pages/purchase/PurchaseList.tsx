@@ -158,7 +158,7 @@ const PurchaseListInternal = (props: any) => {
     }
 
     const purchaseDates: string[] = useMemo(() => Array.from(new Set<string>(purchases.map((purchase: any) => toDate(purchase.createdAt))))
-        .sort()
+        .sort((a, b) => parseDate(a)! < parseDate(b)! ? -1 : 1)
         .reverse(), [purchases]);
     const purchasesByDate = useMemo(() => {
         const result: Map<string, any[]> = new Map<string, any[]>(purchaseDates.map(date => [date, []]));
