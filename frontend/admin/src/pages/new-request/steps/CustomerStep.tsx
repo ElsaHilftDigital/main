@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CreateCustomerRequest, Customer, useCustomers } from 'apis/customer';
 import SearchBox from '../../../components/SearchBox';
 import { useForm } from 'react-hook-form';
-import { Button, Row } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 interface Props {
     customer?: Customer | CreateCustomerRequest,
