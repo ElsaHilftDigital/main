@@ -5,6 +5,7 @@ import Toast from 'react-bootstrap/Toast';
 import { useParams } from 'react-router-dom';
 import { Customer, customerAPI, useCustomer } from 'apis/customer';
 import Header from 'components/Header';
+import { useToast } from 'toasts/useToast';
 
 const CustomerDetail = () => {
     const { customerId } = useParams();
@@ -32,13 +33,13 @@ const CustomerDetailInternal: React.FC<Props> = props => {
     const { handleSubmit, register } = useForm({
         defaultValues: selectedCustomer,
     });
-    const [showSaveToast, setShowSaveToast] = useState(false);
     const [showDeleteToast, setShowDeleteToast] = useState(false);
+    const toast = useToast();
 
     const onSubmit = (values: any) => {
         customerAPI.update(selectedCustomer.uuid, values)
             .then(() => {
-                setShowSaveToast(true);
+                toast("Kunde speichern", "Auftraggeber wurde gespeichert");
                 props.refresh();
             })
             .catch();
@@ -122,16 +123,6 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                 <Row>
                     <Col>
                         <Button type="submit">Speichern</Button>
-                        {showSaveToast &&
-                        <Toast className="mt-2 mb-2" onClose={() => setShowSaveToast(false)} show={showSaveToast}
-                               delay={3000}
-                               autohide>
-                            <Toast.Header>
-                                <strong className="mr-auto">Kunde speichern</strong>
-                            </Toast.Header>
-                            <Toast.Body>Auftraggeber wurde gespeichert</Toast.Body>
-                        </Toast>
-                        }
                     </Col>
                     <Col>
                         <Button variant="danger" className="float-right" onClick={() => onDelete()}>Löschen</Button>
