@@ -44,7 +44,7 @@ const ToastProvider: React.FC = props => {
 export default ToastProvider;
 
 const ToastContainer = styled.div`
-    position: absolute;
+    position: fixed;
     z-index: 1000;
     padding-top: 6rem;
     padding-right: 1rem;
