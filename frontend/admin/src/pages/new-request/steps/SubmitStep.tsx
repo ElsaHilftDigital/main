@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CreatePurchaseRequest, Purchase, purchaseAPI } from 'apis/purchase';
+import { CreatePurchaseRequest, purchaseAPI } from 'apis/purchase';
 import { Link } from 'react-router-dom';
 import * as routes from 'routes';
 import { CreateCustomerRequest, Customer, customerAPI } from 'apis/customer';
@@ -44,7 +44,7 @@ const SubmitExistingCustomer: React.FC<SubmitExistingCustomerProps> = props => {
             })
             .catch()
             .finally(() => setLoading(false));
-    }, [props.purchase]);
+    }, [props.purchase, props.publish]);
 
     if (loading) {
         return <div className="spinner-border" role="status"/>;
@@ -94,7 +94,7 @@ const SubmitNewCustomer: React.FC<SubmitNewCustomerProps> = props => {
                     setCustomerLoading(false);
                     setPurchaseLoading(false);
                 });
-        }, [props.customer, props.purchase]);
+        }, [props.customer, props.purchase, props.publish]);
 
     return <>
         {(customerLoading || purchaseLoading) && <div className="spinner-border" role="status"/>}
