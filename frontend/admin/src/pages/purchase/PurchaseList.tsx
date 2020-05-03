@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { usePurchases } from 'apis/purchase';
 import * as routes from 'routes';
-import { formatBoolean, formatDateTime, formatMoment, parseDate } from 'config/utils';
+import { formatBoolean, formatDateTime, formatDate, formatMoment, parseDate } from 'config/utils';
 import StatusIndicator from 'components/StatusIndicator';
 import Title from 'components/Title';
 import moment from 'moment';
@@ -157,12 +157,12 @@ const PurchaseListInternal = (props: any) => {
         return formatMoment(moment(timestamp));
     }
 
-    const purchaseDates: string[] = useMemo(() => Array.from(new Set<string>(purchases.map((purchase: any) => toDate(purchase.createdAt))))
+    const purchaseDates: string[] = useMemo(() => Array.from(new Set<string>(purchases.map((purchase: any) => toDate(purchase.executionDate))))
         .sort((a, b) => parseDate(a)! < parseDate(b)! ? -1 : 1)
         .reverse(), [purchases]);
     const purchasesByDate = useMemo(() => {
         const result: Map<string, any[]> = new Map<string, any[]>(purchaseDates.map(date => [date, []]));
-        purchases.forEach((purchase: any) => result.get(toDate(purchase.createdAt))!.push(purchase));
+        purchases.forEach((purchase: any) => result.get(toDate(purchase.executionDate))!.push(purchase));
         for (const list of Array.from(result.values())) {
             list.sort((l: any, r: any) => {
                 const leftIndex = statusIndicators.indexOf(l.statusIndicator);
@@ -170,7 +170,7 @@ const PurchaseListInternal = (props: any) => {
                 if (leftIndex < rightIndex) {
                     return -1;
                 } else if (leftIndex === rightIndex) {
-                    if (new Date(l.createdAt) < new Date(r.createdAt)) {
+                    if (new Date(l.executionDate) < new Date(r.executionDate)) {
                         return -1;
                     } else {
                         return 1;
@@ -282,9 +282,9 @@ const PurchaseListItem = (props: any) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Form.Label column md={labelWidth}>Erstellt</Form.Label>
+                    <Form.Label column md={labelWidth}>Ausführung</Form.Label>
                     <Col>
-                        <Form.Control plaintext readOnly defaultValue={formatDateTime(purchase.createdAt)}/>
+                        <Form.Control plaintext readOnly defaultValue={formatDate(purchase.executionDate)}/>
                     </Col>
                 </Row>
             </Col>
@@ -342,6 +342,12 @@ const PurchaseListItem = (props: any) => {
                     <Form.Label column md={labelWidth}>Verantwortlich</Form.Label>
                     <Col>
                         <Form.Control plaintext readOnly defaultValue={purchase.responsible}/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Form.Label column md={labelWidth}>Erstellt</Form.Label>
+                    <Col>
+                        <Form.Control plaintext readOnly defaultValue={formatDateTime(purchase.createdAt)}/>
                     </Col>
                 </Row>
             </Col>
