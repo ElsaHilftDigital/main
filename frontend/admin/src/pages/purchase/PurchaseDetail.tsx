@@ -191,9 +191,33 @@ const PurchaseDetailInternal = (props: any) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="displayFormCreateDate">Erstellungsdatum</label>
-                    <input name="displayFormCreateDate" disabled type="tel" className="form-control"
-                           id="displayFormCreateDate" value={formatDate(purchase.createdAt)}/>
+                    <input name="displayFormCreateDate" disabled type="text" className="form-control"
+                        id="displayFormCreateDate" value={formatDate(purchase.createdAt)}/>
                 </div>
+                <div className="row">
+                    <Form.Group className="col-md-6">
+                        <Form.Label htmlFor="executionDate">Ausführungsdatum</Form.Label>
+                        <InputGroup>
+                            <Form.Control
+                                id="executionDate"
+                                type="text"
+                                value={executionDate}
+                                onChange={handleExecutionDateUpdate}
+                                onBlur={validateExecutionDate}
+                                isInvalid={!executionDateValid}
+                            />
+                        <div className="invalid-tooltip" style={{ display: 'block' }} hidden={executionDateValid}>
+                            Datumsformat: DD.MM.YYYY
+                        </div>
+                        </InputGroup>
+                    </Form.Group>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="displayFormNumber">Auftragsnummer</label>
+                        <input name="displayFormNumber" disabled type="text" className="form-control"
+                            id="displayFormNumber" value={purchase.purchaseNumber}/>
+                    </div>
+                </div>
+                
 
                 <h5 className="mt-2"> Helfer</h5>
                 {purchase.assignedVolunteer && (
@@ -298,22 +322,6 @@ const PurchaseDetailInternal = (props: any) => {
                     <label htmlFor="timing">Zeit</label>
                     <input name="timing" ref={register()} type="text" className="form-control" id="timing"/>
                 </div>
-                <Form.Group>
-                    <Form.Label htmlFor="executionDate">Ausführungsdatum</Form.Label>
-                    <InputGroup>
-                        <Form.Control
-                            id="executionDate"
-                            type="text"
-                            value={executionDate}
-                            onChange={handleExecutionDateUpdate}
-                            onBlur={validateExecutionDate}
-                            isInvalid={!executionDateValid}
-                        />
-                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={executionDateValid}>
-                        Datumsformat: DD.MM.YYYY
-                    </div>
-                    </InputGroup>
-                </Form.Group>
                 <div className="form-group">
                     <label htmlFor="size">Grösse des Einkaufs</label>
                     <select ref={register()} id="size" name="size" className="form-control"
