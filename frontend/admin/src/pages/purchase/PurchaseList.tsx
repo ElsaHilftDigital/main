@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { usePurchases } from 'apis/purchase';
 import * as routes from 'routes';
-import { formatBoolean, formatDateTime, formatDate, formatMoment, parseDate } from 'config/utils';
+import { formatDateTime, formatDate, formatMoment, parseDate } from 'config/utils';
 import StatusIndicator from 'components/StatusIndicator';
 import Title from 'components/Title';
 import moment from 'moment';
@@ -319,15 +319,15 @@ const PurchaseListItem = (props: any) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Form.Label column md={labelWidth}>Betrag</Form.Label>
+                    <Form.Label column md={labelWidth}>Auftragsnummer</Form.Label>
                     <Col>
-                        <Form.Control plaintext readOnly defaultValue={purchase.cost}/>
+                        <Form.Control plaintext readOnly defaultValue={purchase.purchaseNumber}/>
                     </Col>
                 </Row>
                 <Row>
-                    <Form.Label column md={labelWidth}>Betrag beglichen</Form.Label>
+                    <Form.Label column md={labelWidth}>Betrag</Form.Label>
                     <Col>
-                        <Form.Control plaintext readOnly defaultValue={formatBoolean(purchase.paid)}/>
+                        <Form.Control plaintext readOnly defaultValue={purchase.cost}/>
                     </Col>
                 </Row>
             </Col>

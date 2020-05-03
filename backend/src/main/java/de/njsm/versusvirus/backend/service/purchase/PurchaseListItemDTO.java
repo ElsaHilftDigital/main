@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 public class PurchaseListItemDTO {
@@ -25,6 +24,7 @@ public class PurchaseListItemDTO {
     public String createdBy;
     public Instant createdAt;
     public Instant executionDate;
+    public String purchaseNumber;
 
     public PurchaseListItemDTO(
             Purchase purchase,
@@ -60,6 +60,7 @@ public class PurchaseListItemDTO {
         this.createdBy = createdBy.getName();
         this.createdAt = purchase.getCreateTime();
         this.executionDate = purchase.getExecutionTime();
+        this.purchaseNumber = Long.toString(purchase.getId());
     }
 }
 
