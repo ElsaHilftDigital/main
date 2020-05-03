@@ -1,6 +1,5 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { Redirect, Router, Route, Switch } from 'react-router-dom';
+import {Redirect, Router, Route, Switch} from 'react-router-dom';
 
 import history from '../history';
 import AdminLogin from './home/AdminLogin';
@@ -13,11 +12,12 @@ import PurchaseList from './purchase/PurchaseList';
 import PurchaseDetail from './purchase/PurchaseDetail';
 import PrivateRoute from '../components/PrivateRoute';
 import PasswordChange from "./home/PasswordChange";
+import ToastProvider from "toasts/ToastProvider";
 
 
-const App = (props) => {
+const App = () => {
     return (
-        <Provider store={props.store}>
+        <ToastProvider>
             <Router history={history}>
                 <Switch>
                     <Route exact path="/login"><AdminLogin/></Route>
@@ -32,7 +32,7 @@ const App = (props) => {
                     <Redirect to="/purchases"/>
                 </Switch>
             </Router>
-        </Provider>
+        </ToastProvider>
     );
 };
 

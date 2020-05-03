@@ -10,12 +10,12 @@ import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.spring.web.InternalServerErrorException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
-import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.AdminMessageSender;
 import de.njsm.versusvirus.backend.telegram.InviteLinkGenerator;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,13 +48,16 @@ public class VolunteerService {
 
     private final OurMailSender mailSender;
 
+    private final long moderatorChatId;
+
     public VolunteerService(VolunteerRepository repository,
                             MessageSender messageSender,
                             AdminMessageSender adminMessageSender,
                             OrganizationRepository organizationRepository,
                             PurchaseRepository purchaseRepository,
                             InviteLinkGenerator inviteLinkGenerator,
-                            OurMailSender mailSender) {
+                            OurMailSender mailSender,
+                            @Value("${telegram.groupchat.id}") long moderatorChatId) {
         this.repository = repository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
@@ -62,6 +65,7 @@ public class VolunteerService {
         this.purchaseRepository = purchaseRepository;
         this.inviteLinkGenerator = inviteLinkGenerator;
         this.mailSender = mailSender;
+        this.moderatorChatId = moderatorChatId;
     }
 
     public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
@@ -93,11 +97,14 @@ public class VolunteerService {
         return new VolunteerDTO(volunteer, inviteLink);
     }
 
+    public void sendInvitationEmail(UUID volunteerId) {
+        var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
+        String inviteLink = inviteLinkGenerator.getInviteLink(volunteer.getUuid());
+        mailSender.sendRegistrationMail(volunteer, inviteLink);
+    }
+
     private void notifyModerators() {
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            return new TelegramShouldBeFineException("Organization not found");
-        });
-        adminMessageSender.newHelperHasRegistered(organization.getTelegramModeratorGroupChatId());
+        adminMessageSender.newHelperHasRegistered();
     }
 
     public List<VolunteerDTO> getVolunteers() {
@@ -130,7 +137,7 @@ public class VolunteerService {
 
     public List<PurchaseDTO> getCompletedPurchasesOf(UUID volunteerId) {
         var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
-        return purchaseRepository.findAllByAssignedVolunteerAndStatus(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+        return purchaseRepository.findAllByAssignedVolunteerAndStatusAndDeletedFalse(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
                 .stream()
                 .map(PurchaseDTO::new)
                 .collect(Collectors.toList());
@@ -138,7 +145,7 @@ public class VolunteerService {
 
     public List<PurchaseDTO> getOpenPurchasesOf(UUID volunteerId) {
         var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
-        return purchaseRepository.findAllByAssignedVolunteerAndStatusNot(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
+        return purchaseRepository.findAllByAssignedVolunteerAndStatusNotAndDeletedFalse(volunteer.getId(), Purchase.Status.PURCHASE_COMPLETED)
                 .stream()
                 .map(PurchaseDTO::new)
                 .collect(Collectors.toList());
@@ -146,10 +153,9 @@ public class VolunteerService {
 
     public void validate(UUID volunteerId) {
         var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
-        var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
 
         volunteer.setValidated(true);
-        messageSender.confirmRegistration(organization, volunteer);
+        messageSender.confirmRegistration(volunteer);
     }
 
     public void importVolunteers(String upload) {

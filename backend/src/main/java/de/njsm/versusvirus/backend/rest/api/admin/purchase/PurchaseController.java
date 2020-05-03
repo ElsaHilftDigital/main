@@ -34,7 +34,7 @@ public class PurchaseController {
     }
 
     @PostMapping()
-    public PurchaseDTO createNewPurchase(Principal principal, @RequestBody CreatePurchaseRequest req) {
+    public UUID createNewPurchase(Principal principal, @RequestBody CreatePurchaseRequest req) {
         return purchaseService.create(principal, req);
     }
 
@@ -42,6 +42,11 @@ public class PurchaseController {
     public void updatePurchase(@PathVariable("id") UUID purchaseId,
                                @RequestBody UpdatePurchaseRequest updateRequest) {
         purchaseService.updatePurchase(purchaseId, updateRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePurchase(@PathVariable("id") UUID purchaseId) {
+        purchaseService.deletePurchase(purchaseId);
     }
 
     @PostMapping("/{id}/publish")
@@ -61,8 +66,9 @@ public class PurchaseController {
     }
 
     @PostMapping("/{id}/customernotified")
-    public void customerNotified(@PathVariable("id") UUID purchaseId) {
-        purchaseService.customerNotified(purchaseId);
+    public void customerNotified(@PathVariable("id") UUID purchaseId,
+                                 @RequestBody(required = false) String messageToVolunteer) {
+        purchaseService.customerNotified(purchaseId, messageToVolunteer);
     }
 
     @PostMapping("/{id}/markcompleted")
@@ -74,7 +80,7 @@ public class PurchaseController {
     public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID purchaseId) {
         var image = purchaseService.getReceipt(purchaseId);
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"receipt." + image.getExtension() + "\"")
+                .header("Content-Disposition", "inline; filename=\"receipt." + image.getExtension() + "\"")
                 .contentType(org.springframework.http.MediaType.parseMediaType(image.getMimeType()))
                 .body(image.getReceipt());
     }
@@ -91,9 +97,8 @@ public class PurchaseController {
     public void exportAll(@PathVariable("startDate") String inputStartDate,
                             @PathVariable("endDate") String inputEndDate,
                             HttpServletResponse response) throws IOException {
-        DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-        LocalDate startDate = LocalDate.parse(inputStartDate, europeanDateFormatter);
-        LocalDate endDate = LocalDate.parse(inputEndDate, europeanDateFormatter);
+        LocalDate startDate = LocalDate.parse(inputStartDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalDate endDate = LocalDate.parse(inputEndDate, DateTimeFormatter.ISO_LOCAL_DATE);
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"Einkaeufe_von_" + startDate.toString() + "_bis_" + endDate.toString() + ".csv\"");
         purchaseService.exportAll(response.getWriter(), startDate, endDate);

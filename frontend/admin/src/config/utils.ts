@@ -1,5 +1,22 @@
 import history from '../history';
-import moment, { Moment } from "moment";
+import moment, {Moment} from "moment";
+import axios from "axios";
+import {Cookies} from "react-cookie";
+
+export function restClient(apiPath: string) {
+    const client = axios.create({baseURL: apiPath});
+    client.interceptors.response.use(response => {
+        return response
+    }, error => {
+        if (error.response && error.response.status === 401) {
+            const cookies = new Cookies()
+            cookies.remove('token');
+            window.location.href = "#login";
+        }
+        return Promise.reject(error);
+    })
+    return client;
+}
 
 export const parseError = (e: any) => {
     if (e.response && e.response.data) {

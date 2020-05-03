@@ -1,5 +1,6 @@
 import { Moment } from "moment";
 
+export const purchaseList = () => `/purchase`;
 export const purchaseDetails = (purchaseId: string) => `/purchase/${purchaseId}`;
 export const volunteerDetails = (volunteerId: string) => `/volunteer/${volunteerId}`;
 export const customerDetails = (customerId: string) => `/customer/${customerId}`;

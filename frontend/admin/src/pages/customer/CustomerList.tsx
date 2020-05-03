@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useCustomers } from 'hooks/useCustomers';
+import { useCustomers } from 'apis/customer';
 
 import * as routes from 'routes';
 import Title from 'components/Title';

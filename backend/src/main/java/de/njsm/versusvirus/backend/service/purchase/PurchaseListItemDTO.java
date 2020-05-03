@@ -24,6 +24,7 @@ public class PurchaseListItemDTO {
     public String responsible;
     public String createdBy;
     public Instant createdAt;
+    public Instant executionDate;
 
     public PurchaseListItemDTO(
             Purchase purchase,
@@ -58,6 +59,7 @@ public class PurchaseListItemDTO {
         this.responsible = responsibleModerator.getName();
         this.createdBy = createdBy.getName();
         this.createdAt = purchase.getCreateTime();
+        this.executionDate = purchase.getExecutionTime();
     }
 }
 

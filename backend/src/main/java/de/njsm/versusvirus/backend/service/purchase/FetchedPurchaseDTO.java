@@ -33,6 +33,7 @@ public class FetchedPurchaseDTO {
     public ModeratorDTO responsible;
     public CustomerDTO customer;
     public Instant createdAt;
+    public Instant executionDate;
 
     public FetchedPurchaseDTO(Purchase purchase,
                               Volunteer assignedVolunteer,
@@ -57,5 +58,6 @@ public class FetchedPurchaseDTO {
         this.createdBy = createdBy.getName();
         this.responsible = new ModeratorDTO(responsible);
         this.createdAt = purchase.getCreateTime();
+        this.executionDate = purchase.getExecutionTime();
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 const PurchaseListItem = styled.li`
@@ -24,17 +24,19 @@ const PurchaseList = (props) => {
         }
         ));
     const removeFromSupermarketList = index => setValue(value.filter((_, i) => i !== index));
-    const keyDownHandler = (e) => {
+    const keyPressHandler = (e) => {
         if (e.key === "Enter") {
-            const value = e.currentTarget.value;
-            value && addToSupermarketList(
+            supermarket && addToSupermarketList(
                 {
-                    name: value,
+                    name: supermarket,
                     orderItems: [],
                 }
             );
+            setSupermarket('');
         }
     };
+
+    const [supermarket, setSupermarket] = useState('');
 
     return <ul className="list-group mb-3">
         {value.map((supermarket, index) => <SupermarketListItem className="list-group-item" key={index}>
@@ -42,7 +44,7 @@ const PurchaseList = (props) => {
             <SinglePurchaseList autoFocus={autoFocus} supermarket={supermarket} onUpdate={updateSupermarket(supermarket)} />
         </SupermarketListItem>)}
         <SupermarketListItem className="list-group-item">
-            <input className="no-outline" type="text" onKeyDown={keyDownHandler} placeholder="Eingabe neuer Supermarkt"></input>
+            <input className="no-outline" type="text" value={supermarket} onChange={e => setSupermarket(e.target.value)} onKeyPress={keyPressHandler} placeholder="Eingabe neuer Supermarkt"/>
         </SupermarketListItem>
     </ul>
 }
@@ -84,7 +86,7 @@ const SinglePurchaseList = (props) => {
                 <i onClick={() => removeFromPurchaseList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />
             </PurchaseListItem>)}
             <PurchaseListItem className="list-group-item">
-                <input className="no-outline" type="text" onKeyPress={keyPressHandler} autoFocus={autoFocus} placeholder="Neues Einkaufsitem"></input>
+                <input className="no-outline" type="text" onKeyPress={keyPressHandler} autoFocus={autoFocus} placeholder="Neues Einkaufsitem"/>
             </PurchaseListItem>
         </ul>
     </>);

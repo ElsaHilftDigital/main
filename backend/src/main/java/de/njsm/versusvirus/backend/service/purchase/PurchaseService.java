@@ -7,11 +7,13 @@ import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import de.njsm.versusvirus.backend.spring.web.BadRequestException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
+import de.njsm.versusvirus.backend.telegram.TelegramApi;
 import io.prometheus.client.Gauge;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +21,11 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +53,10 @@ public class PurchaseService {
 
     private final MessageSender messageSender;
 
+    private final long groupChatId;
+
+    private final TelegramApi telegramApi;
+
     private static final Gauge PURCHASES = Gauge.build()
             .name("elsa_hilft_purchases")
             .labelNames("state")
@@ -56,7 +65,15 @@ public class PurchaseService {
 
     private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Bank", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
-    public PurchaseService(PurchaseRepository purchaseRepository, OrderItemRepository orderItemRepository, OrganizationRepository organizationRepository, CustomerRepository customerRepository, VolunteerRepository volunteerRepository, ModeratorRepository moderatorRepository, MessageSender messageSender) {
+    public PurchaseService(PurchaseRepository purchaseRepository,
+                           OrderItemRepository orderItemRepository,
+                           OrganizationRepository organizationRepository,
+                           CustomerRepository customerRepository,
+                           VolunteerRepository volunteerRepository,
+                           ModeratorRepository moderatorRepository,
+                           MessageSender messageSender,
+                           TelegramApi telegramApi,
+                           @Value("${telegram.groupchat.id}") long groupChatId) {
         this.purchaseRepository = purchaseRepository;
         this.orderItemRepository = orderItemRepository;
         this.organizationRepository = organizationRepository;
@@ -64,11 +81,13 @@ public class PurchaseService {
         this.volunteerRepository = volunteerRepository;
         this.moderatorRepository = moderatorRepository;
         this.messageSender = messageSender;
+        this.telegramApi = telegramApi;
+        this.groupChatId = groupChatId;
     }
 
-    public PurchaseDTO create(Principal principal, CreatePurchaseRequest req) {
+    public UUID create(Principal principal, CreatePurchaseRequest req) {
         Purchase purchase = createPurchase(principal, req);
-        return new PurchaseDTO(purchase);
+        return purchase.getUuid();
     }
 
     private Purchase createPurchase(Principal principal, CreatePurchaseRequest req) {
@@ -91,6 +110,7 @@ public class PurchaseService {
 
         purchase.setPaymentMethod(req.paymentMethod);
         purchase.setTiming(req.timing);
+
         purchase.setPurchaseSize(req.purchaseSize);
         purchase.setPublicComments(req.publicComments);
         purchase.setPrivateComments(req.privateComments);
@@ -98,6 +118,8 @@ public class PurchaseService {
         purchase.setCustomerId(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
+        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(req.executionDate);
+        purchase.setExecutionTime(Instant.from(temporalAccessor));
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
@@ -108,13 +130,12 @@ public class PurchaseService {
 
     public void publishPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
-        messageSender.broadcastPurchase(organization, customer, purchase);
+        messageSender.broadcastPurchase(customer, purchase);
     }
 
     public List<PurchaseListItemDTO> getPurchases() {
-        var purchases = purchaseRepository.findAll();
+        var purchases = purchaseRepository.findByDeletedFalse();
         var customers = customerRepository.findAllById(purchases.stream().map(Purchase::getCustomerId).collect(Collectors.toSet()))
                 .stream().collect(Collectors.toMap(Customer::getId, Function.identity()));
         var volunteers = volunteerRepository.findAllById(
@@ -141,21 +162,38 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
+    public void deletePurchase(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        if (purchase.getAssignedVolunteer().isPresent()) {
+            throw new IllegalStateException("Cannot delete purchase after volunteer is assigned");
+        }
+
+        purchase.setDeleted(true);
+        if (purchase.getStatus() == Purchase.Status.PUBLISHED ||
+                purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
+
+            telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
+            // The following entity is loaded from a not-null foreign key, it should never fail
+            //noinspection OptionalGetWithoutIsPresent
+            var customer = customerRepository.findById(purchase.getCustomerId()).get();
+            messageSender.rejectApplicants(customer, purchase, volunteerRepository.findAllById(purchase.getVolunteerApplications()));
+        }
+    }
+
     public FetchedPurchaseDTO getFetchedPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var assignedVolunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById).orElse(null);
         var volunteerApplications = volunteerRepository.findAllById(purchase.getVolunteerApplications());
 
         // The following entities are loaded from not-null foreign keys, they should never fail
+        //noinspection OptionalGetWithoutIsPresent
         var customer = customerRepository.findById(purchase.getCustomerId()).get();
+        //noinspection OptionalGetWithoutIsPresent
         var createdBy = moderatorRepository.findById(purchase.getCreatedByModerator()).get();
+        //noinspection OptionalGetWithoutIsPresent
         var responsible = moderatorRepository.findById(purchase.getResponsibleModeratorId()).get();
 
         return new FetchedPurchaseDTO(purchase, assignedVolunteer, volunteerApplications, customer, createdBy, responsible);
-    }
-
-    public Optional<PurchaseDTO> getPurchase(UUID purchaseId) {
-        return purchaseRepository.findByUuid(purchaseId).map(PurchaseDTO::new);
     }
 
     public void assignVolunteer(UUID purchaseId, UUID volunteerId) {
@@ -187,6 +225,8 @@ public class PurchaseService {
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);
         purchase.setCost(updateRequest.cost);
+        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate);
+        purchase.setExecutionTime(Instant.from(temporalAccessor));
 
         purchase.getPurchaseSupermarketList().clear();
         for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
@@ -205,16 +245,15 @@ public class PurchaseService {
         purchase.setResponsibleModeratorId(moderator.getId());
     }
 
-    public void customerNotified(UUID purchaseId) {
+    public void customerNotified(UUID purchaseId, String messageToVolunteer) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
-        var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
 
         if (purchase.getStatus() == Purchase.Status.PURCHASE_DONE) {
 
             purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
-            messageSender.informToDeliverPurchase(purchase, volunteer, customer, organization.getTelegramSupportChat());
+            messageSender.informToDeliverPurchase(purchase, volunteer, customer, messageToVolunteer);
         } else {
             LOG.warn("purchase is in wrong state {} to instruct helper for delivery", purchase.getStatus());
         }
@@ -248,7 +287,7 @@ public class PurchaseService {
     }
 
     public void exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
-        List<Purchase> allPurchases = purchaseRepository.findAll(Sort.by("createTime"));
+        List<Purchase> allPurchases = purchaseRepository.findByDeletedFalse(Sort.by("createTime"));
 
         CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withDelimiter(';')
                                     .withHeader(EXPORT_CSV_HEADER));
