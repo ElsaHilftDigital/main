@@ -50,7 +50,10 @@ const PurchaseStep: React.FC<Props> = props => {
     };
 
     const onPublish = (data: any) => {
-        setPurchase((purchase: any) => Object.assign({}, purchase, data, { publish: true }));
+        setPurchase((purchase: any) => Object.assign({}, purchase, data, {
+            executionDate: parseDate(executionDate),
+            publish: true 
+        }));
         next();
     };
 
@@ -112,12 +115,11 @@ const PurchaseStep: React.FC<Props> = props => {
                        id="privateComments" placeholder="Private Bemerkungen"/>
             </div>
 
-            <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück
+            <button type="button" onClick={handleSubmit(onReset)} className="btn btn-primary float-left">Zurück</button>
+            <button type="button" onClick={handleSubmit(onPublish)}
+                    className="btn btn-primary float-right ml-2 mb-3" disabled={!executionDateValid}>Speichern & Veröffentlichen
             </button>
-                <button type="button" onClick={handleSubmit(onPublish)}
-                        className="btn btn-primary float-right ml-2 mb-3" disabled={!executionDateValid}>Speichern & Veröffentlichen
-                </button>
-                <button type="submit" className="btn btn-primary float-right" disabled={!executionDateValid}>Nur Speichern</button>
+            <button type="submit" className="btn btn-primary float-right" disabled={!executionDateValid}>Nur Speichern</button>
         </form>
     </>);
 };
