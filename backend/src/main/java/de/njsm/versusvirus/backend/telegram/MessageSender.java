@@ -31,27 +31,12 @@ public class MessageSender {
 
     private final String domain;
 
-    private final String urlGroupChat;
-
-    private final long groupChatId;
-
-    private final String supportUserName;
-
     @Autowired
-    public MessageSender(@Value("${deployment.domain}") String domain,
-                         TelegramApi api,
-                         TelegramMessages telegramMessages,
-                         CustomerRepository customerRepository,
-                         @Value("${telegram.groupchat.url}") String urlGroupChat,
-                         @Value("${telegram.groupchat.id}") long groupChatId,
-                         @Value("${telegram.supportuser.name}") String supportUserName) {
+    public MessageSender(@Value("${deployment.domain}") String domain, TelegramApi api, TelegramMessages telegramMessages, CustomerRepository customerRepository) {
         this.api = api;
         this.telegramMessages = telegramMessages;
         this.customerRepository = customerRepository;
         this.domain = domain;
-        this.urlGroupChat = urlGroupChat;
-        this.groupChatId = groupChatId;
-        this.supportUserName = supportUserName;
     }
 
     public void directUserToRegistrationForm(long chatId) {
@@ -79,7 +64,7 @@ public class MessageSender {
         api.sendMessage(message);
     }
 
-    public void confirmRegistration(Volunteer volunteer) {
+    public void confirmRegistration(Organization organization, Volunteer volunteer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Volunteer {} has not yet talked to the bot",
                     volunteer.getUuid());
@@ -90,7 +75,8 @@ public class MessageSender {
         String escapedFirstName = AdminMessageSender.escapeMarkdownCharacters(volunteer.getFirstName());
         if (volunteer.isValidated()) {
             String template = telegramMessages.getConfirmRegistration();
-            text = MessageFormat.format(template, escapedFirstName, urlGroupChat);
+            String groupChatJoinUrl = organization.getUrlGroupChat();
+            text = MessageFormat.format(template, escapedFirstName, groupChatJoinUrl);
         } else {
             String template = telegramMessages.getPreconfirmRegistration();
             text = MessageFormat.format(template, escapedFirstName);
@@ -100,7 +86,12 @@ public class MessageSender {
         api.sendMessage(message);
     }
 
-    public void broadcastPurchase(Customer customer, Purchase purchase) {
+    public void broadcastPurchase(Organization organization, Customer customer, Purchase purchase) {
+        if (organization.getTelegramGroupChatId() == null) {
+            LOG.warn("Cannot broadcast as group chat id is null");
+            return;
+        }
+
         if (purchase.getStatus() != Purchase.Status.NEW) {
             LOG.warn("Tried to re-publish purchase {} in state {}. Rejected",
                     purchase.getUuid(),
@@ -108,7 +99,7 @@ public class MessageSender {
             return;
         }
 
-        MessageToBeSent message = composeBroadcastMessage(customer, purchase);
+        MessageToBeSent message = composeBroadcastMessage(organization, customer, purchase);
         Message sentMessage = api.sendMessage(message);
         purchase.setStatus(Purchase.Status.PUBLISHED);
 
@@ -119,7 +110,12 @@ public class MessageSender {
         }
     }
 
-    public void updateBroadcastMessage(Customer customer, Purchase purchase) {
+    public void updateBroadcastMessage(Organization organization, Customer customer, Purchase purchase) {
+        if (organization.getTelegramGroupChatId() == null) {
+            LOG.warn("Cannot broadcast as group chat id is null");
+            return;
+        }
+
         if (purchase.getStatus() != Purchase.Status.PUBLISHED && purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
             LOG.warn("Tried to edit purchase {} in state {}. Rejected",
                     purchase.getUuid(),
@@ -127,18 +123,18 @@ public class MessageSender {
             return;
         }
 
-        MessageToBeSent message = composeBroadcastMessage(customer, purchase);
+        MessageToBeSent message = composeBroadcastMessage(organization, customer, purchase);
         api.editMessage(new EditedMessage(message, purchase.getBroadcastMessageId()));
     }
 
-    private MessageToBeSent composeBroadcastMessage(Customer customer, Purchase purchase) {
+    private MessageToBeSent composeBroadcastMessage(Organization organization, Customer customer, Purchase purchase) {
         String purchaseDesc = renderBroadcastPurchaseDescription(customer, purchase);
 
         String template = telegramMessages.getBroadcastPurchase();
         String callbackQuery = CallbackCommand.HELP_OFFER.render(purchase.getUuid());
         String text = MessageFormat.format(template, purchaseDesc, purchase.getVolunteerApplications().size());
 
-        return new MessageToBeSent(groupChatId,
+        return new MessageToBeSent(organization.getTelegramGroupChatId(),
                 text,
                 new InlineKeyboardButton(telegramMessages.getOfferHelp(), callbackQuery));
     }
@@ -266,7 +262,7 @@ public class MessageSender {
         return result;
     }
 
-    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer, String messageToVolunteer) {
+    public void informToDeliverPurchase(Purchase purchase, Volunteer volunteer, Customer customer, String telegramSupportChat, String messageToVolunteer) {
         if (volunteer.getTelegramChatId() == null) {
             LOG.warn("Cannot send telegram message as chat id is null");
             return;
@@ -285,7 +281,7 @@ public class MessageSender {
         String text = MessageFormat.format(
                 template,
                 customerString,
-                AdminMessageSender.escapeMarkdownCharacters(supportUserName),
+                AdminMessageSender.escapeMarkdownCharacters(telegramSupportChat),
                 escapedMessageToVolunteer);
 
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
@@ -321,9 +317,9 @@ public class MessageSender {
         api.sendMessage(m);
     }
 
-    public void confirmConfirmation(long chatId) {
+    public void confirmConfirmation(long chatId, String telegramSupportChat) {
         var template = telegramMessages.getThankForDoingPurchaseMessage();
-        var text = MessageFormat.format(template, AdminMessageSender.escapeMarkdownCharacters(supportUserName));
+        var text = MessageFormat.format(template, AdminMessageSender.escapeMarkdownCharacters(telegramSupportChat));
         var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }

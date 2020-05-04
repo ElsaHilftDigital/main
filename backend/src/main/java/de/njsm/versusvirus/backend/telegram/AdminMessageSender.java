@@ -1,11 +1,11 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -16,45 +16,42 @@ public class AdminMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(AdminMessageSender.class);
 
-    private final TelegramApi api;
+    private TelegramApi api;
 
-    private final TelegramMessages telegramMessages;
-
-    private final long moderatorChatId;
+    private TelegramMessages telegramMessages;
 
     @Autowired
-    public AdminMessageSender(TelegramApi api, TelegramMessages telegramMessages, @Value("${telegram.moderatorchat.id}") long moderatorChatId) {
+    public AdminMessageSender(TelegramApi api, TelegramMessages telegramMessages) {
         this.api = api;
         this.telegramMessages = telegramMessages;
-        this.moderatorChatId = moderatorChatId;
     }
 
-    public void newHelperHasRegistered() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getNewHelperHasRegistered());
+    public void newHelperHasRegistered(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getNewHelperHasRegistered());
         api.sendMessage(m);
     }
 
-    public void helpersHaveApplied() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getHelpersAppliedForPurchase());
+    public void helpersHaveApplied(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getHelpersAppliedForPurchase());
         api.sendMessage(m);
     }
 
-    public void helperHasRejected() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getHelperRejectedPurchase());
+    public void helperHasRejected(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getHelperRejectedPurchase());
         api.sendMessage(m);
     }
 
-    public void receiptHasBeenSubmitted() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getReceiptHasBeenSubmitted());
+    public void receiptHasBeenSubmitted(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getReceiptHasBeenSubmitted());
         api.sendMessage(m);
     }
 
-    public void notifyAboutMissingMoney() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getMoneyIsMissing());
+    public void notifyAboutMissingMoney(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getMoneyIsMissing());
         api.sendMessage(m);
     }
 
-    public void forwardVolunteerMessage(Message message) {
+    public void forwardVolunteerMessage(long chatId, Message message, Volunteer v) {
         String purgedMessageText = message.getPurgedText();
         if (purgedMessageText.isEmpty()) {
             LOG.info("Not forwarding text '{}'", message.getText());
@@ -70,7 +67,7 @@ public class AdminMessageSender {
                 "tg://user?id=" + message.getFrom().getId(),
                 escapeMarkdownCharacters(message.getText()));
 
-        var m = new MessageToBeSent(moderatorChatId, forwardedMessage);
+        var m = new MessageToBeSent(chatId, forwardedMessage);
         api.sendMessage(m);
     }
 

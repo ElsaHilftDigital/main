@@ -10,12 +10,12 @@ import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.service.purchase.PurchaseDTO;
 import de.njsm.versusvirus.backend.spring.web.InternalServerErrorException;
 import de.njsm.versusvirus.backend.spring.web.NotFoundException;
+import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.AdminMessageSender;
 import de.njsm.versusvirus.backend.telegram.InviteLinkGenerator;
 import de.njsm.versusvirus.backend.telegram.MessageSender;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,16 +48,13 @@ public class VolunteerService {
 
     private final OurMailSender mailSender;
 
-    private final long moderatorChatId;
-
     public VolunteerService(VolunteerRepository repository,
                             MessageSender messageSender,
                             AdminMessageSender adminMessageSender,
                             OrganizationRepository organizationRepository,
                             PurchaseRepository purchaseRepository,
                             InviteLinkGenerator inviteLinkGenerator,
-                            OurMailSender mailSender,
-                            @Value("${telegram.groupchat.id}") long moderatorChatId) {
+                            OurMailSender mailSender) {
         this.repository = repository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
@@ -65,7 +62,6 @@ public class VolunteerService {
         this.purchaseRepository = purchaseRepository;
         this.inviteLinkGenerator = inviteLinkGenerator;
         this.mailSender = mailSender;
-        this.moderatorChatId = moderatorChatId;
     }
 
     public Optional<VolunteerDTO> getVolunteer(UUID uuid) {
@@ -104,7 +100,8 @@ public class VolunteerService {
     }
 
     private void notifyModerators() {
-        adminMessageSender.newHelperHasRegistered();
+        var organization = organizationRepository.findById(1).orElseThrow(() -> new TelegramShouldBeFineException("Organization not found"));
+        adminMessageSender.newHelperHasRegistered(organization.getTelegramModeratorGroupChatId());
     }
 
     public List<VolunteerDTO> getVolunteers() {
@@ -153,9 +150,10 @@ public class VolunteerService {
 
     public void validate(UUID volunteerId) {
         var volunteer = repository.findByUuid(volunteerId).orElseThrow(NotFoundException::new);
+        var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
 
         volunteer.setValidated(true);
-        messageSender.confirmRegistration(volunteer);
+        messageSender.confirmRegistration(organization, volunteer);
     }
 
     public void importVolunteers(String upload) {

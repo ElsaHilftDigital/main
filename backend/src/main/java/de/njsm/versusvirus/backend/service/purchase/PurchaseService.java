@@ -13,7 +13,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -53,10 +52,6 @@ public class PurchaseService {
 
     private final MessageSender messageSender;
 
-    private final long groupChatId;
-
-    private final TelegramApi telegramApi;
-
     private static final Gauge PURCHASES = Gauge.build()
             .name("elsa_hilft_purchases")
             .labelNames("state")
@@ -65,15 +60,9 @@ public class PurchaseService {
 
     private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Bank", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
-    public PurchaseService(PurchaseRepository purchaseRepository,
-                           OrderItemRepository orderItemRepository,
-                           OrganizationRepository organizationRepository,
-                           CustomerRepository customerRepository,
-                           VolunteerRepository volunteerRepository,
-                           ModeratorRepository moderatorRepository,
-                           MessageSender messageSender,
-                           TelegramApi telegramApi,
-                           @Value("${telegram.groupchat.id}") long groupChatId) {
+    private TelegramApi telegramApi;
+
+    public PurchaseService(PurchaseRepository purchaseRepository, OrderItemRepository orderItemRepository, OrganizationRepository organizationRepository, CustomerRepository customerRepository, VolunteerRepository volunteerRepository, ModeratorRepository moderatorRepository, MessageSender messageSender, TelegramApi telegramApi) {
         this.purchaseRepository = purchaseRepository;
         this.orderItemRepository = orderItemRepository;
         this.organizationRepository = organizationRepository;
@@ -82,7 +71,6 @@ public class PurchaseService {
         this.moderatorRepository = moderatorRepository;
         this.messageSender = messageSender;
         this.telegramApi = telegramApi;
-        this.groupChatId = groupChatId;
     }
 
     public UUID create(Principal principal, CreatePurchaseRequest req) {
@@ -130,8 +118,9 @@ public class PurchaseService {
 
     public void publishPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
-        messageSender.broadcastPurchase(customer, purchase);
+        messageSender.broadcastPurchase(organization, customer, purchase);
     }
 
     public List<PurchaseListItemDTO> getPurchases() {
@@ -172,7 +161,8 @@ public class PurchaseService {
         if (purchase.getStatus() == Purchase.Status.PUBLISHED ||
                 purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
 
-            telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
+            var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
+            telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
             // The following entity is loaded from a not-null foreign key, it should never fail
             //noinspection OptionalGetWithoutIsPresent
             var customer = customerRepository.findById(purchase.getCustomerId()).get();
@@ -249,11 +239,12 @@ public class PurchaseService {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var volunteer = purchase.getAssignedVolunteer().flatMap(volunteerRepository::findById).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(NotFoundException::new);
+        var organization = organizationRepository.findById(1).orElseThrow(NotFoundException::new);
 
         if (purchase.getStatus() == Purchase.Status.PURCHASE_DONE) {
 
             purchase.setStatus(Purchase.Status.CUSTOMER_NOTIFIED);
-            messageSender.informToDeliverPurchase(purchase, volunteer, customer, messageToVolunteer);
+            messageSender.informToDeliverPurchase(purchase, volunteer, customer, organization.getTelegramSupportChat(), messageToVolunteer);
         } else {
             LOG.warn("purchase is in wrong state {} to instruct helper for delivery", purchase.getStatus());
         }
