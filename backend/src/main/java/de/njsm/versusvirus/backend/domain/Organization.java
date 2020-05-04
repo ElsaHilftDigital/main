@@ -13,6 +13,10 @@ public class Organization {
 
     private String name;
     private long updateOffset;
+    private String urlGroupChat;
+    private Long telegramGroupChatId;
+    private Long telegramModeratorGroupChatId;
+    private String telegramSupportChat;
 
     @JoinColumn(name = "organization_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -36,5 +40,37 @@ public class Organization {
 
     public void setUpdateOffset(long updateOffset) {
         this.updateOffset = updateOffset;
+    }
+
+    public String getUrlGroupChat() {
+        return urlGroupChat;
+    }
+
+    public void setUrlGroupChat(String urlGroupChat) {
+        this.urlGroupChat = urlGroupChat;
+    }
+
+    public Long getTelegramGroupChatId() {
+        return telegramGroupChatId;
+    }
+
+    public void setTelegramGroupChatId(Long telegramGroupChatId) {
+        this.telegramGroupChatId = telegramGroupChatId;
+    }
+
+    public Long getTelegramModeratorGroupChatId() {
+        return telegramModeratorGroupChatId;
+    }
+
+    public void setTelegramModeratorGroupChatId(Long telegramModeratorGroupChatId) {
+        this.telegramModeratorGroupChatId = telegramModeratorGroupChatId;
+    }
+
+    public String getTelegramSupportChat() {
+        return telegramSupportChat;
+    }
+
+    public void setTelegramSupportChat(String telegramSupportChat) {
+        this.telegramSupportChat = telegramSupportChat;
     }
 }

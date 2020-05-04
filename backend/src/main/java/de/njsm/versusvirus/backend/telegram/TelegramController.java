@@ -54,10 +54,6 @@ public class TelegramController {
 
     private final CallbackQueryReplyer callbackQueryReplyer;
 
-    private final long groupChatId;
-
-    private final long moderatorChatId;
-
     public TelegramController(TelegramBotCommandDispatcher botCommandDispatcher,
                               UpdateService updateService,
                               OrganizationRepository organizationRepository,
@@ -65,9 +61,7 @@ public class TelegramController {
                               @Value("${telegram.bot.name}") String botName,
                               CallbackDispatcher callbackCommandDispatcher,
                               AdminMessageSender adminMessageSender,
-                              CallbackQueryReplyer callbackQueryReplyer,
-                              @Value("${telegram.groupchat.id}") long groupChatId,
-                              @Value("${telegram.groupchat.id}") long moderatorChatId) {
+                              CallbackQueryReplyer callbackQueryReplyer) {
         this.botCommandDispatcher = botCommandDispatcher;
         this.updateService = updateService;
         this.organizationRepository = organizationRepository;
@@ -76,8 +70,6 @@ public class TelegramController {
         this.callbackCommandDispatcher = callbackCommandDispatcher;
         this.adminMessageSender = adminMessageSender;
         this.callbackQueryReplyer = callbackQueryReplyer;
-        this.groupChatId = groupChatId;
-        this.moderatorChatId = moderatorChatId;
     }
 
     @PostMapping(TELEGRAM_WEBHOOK)
@@ -131,13 +123,15 @@ public class TelegramController {
     }
 
     private void forwardMessageFromPersonalChat(Message message) {
-        volunteerRepository.findByTelegramUserIdAndDeleted(message.getFrom().getId(), false).ifPresent(v -> {
-            if (message.getChat().getId() != moderatorChatId &&
-                    message.getChat().getId() != groupChatId) {
-                LOG.info("Forwarding message from " + message.getFrom().getUserName());
-                adminMessageSender.forwardVolunteerMessage(message);
-                FORWARDED_MESSAGES.inc();
-            }
+        organizationRepository.findById(1).ifPresent(o -> {
+            volunteerRepository.findByTelegramUserIdAndDeleted(message.getFrom().getId(), false).ifPresent(v -> {
+                if (message.getChat().getId() != o.getTelegramModeratorGroupChatId() &&
+                    message.getChat().getId() != o.getTelegramGroupChatId()) {
+                    LOG.info("Forwarding message from " + message.getFrom().getUserName());
+                    adminMessageSender.forwardVolunteerMessage(o.getTelegramModeratorGroupChatId(), message, v);
+                    FORWARDED_MESSAGES.inc();
+                }
+            });
         });
     }
 
@@ -179,7 +173,7 @@ public class TelegramController {
     private void lookForPhotos(Message message) {
         PhotoSize[] photos = message.getPhoto();
         if (photos != null && photos.length > 0) {
-            callbackCommandDispatcher.handleReceiptWithoutPurchaseContext(message, message.getFrom(), photos[photos.length - 1].getId());
+            callbackCommandDispatcher.handleReceiptWithoutPurchaseContext(message, message.getFrom(), photos[photos.length-1].getId());
         }
     }
 

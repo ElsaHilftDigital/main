@@ -6,10 +6,6 @@ After=network.target network-online.target nss-lookup.target
 Type=simple
 Environment=TELEGRAM_TOKEN={{ elsa_backend_telegram_token }}
 Environment=TELEGRAM_BOT_NAME={{ elsa_backend_bot_name }}
-Environment=TELEGRAM_GROUPCHAT_URL={{ elsa_backend_telegram_group_chat_url }}
-Environment=TELEGRAM_GROUPCHAT_ID={{ elsa_backend_telegram_group_chat_id }}
-Environment=TELEGRAM_MODERATORCHAT_ID={{ elsa_backend_telegram_moderator_chat_id }}
-Environment=TELEGRAM_SUPPORTUSER_NAME={{ elsa_backend_supportuser_name }}
 Environment=DEPLOYMENT_DOMAIN={{ ansible_fqdn }}
 Environment=SMTP_HOST=elsa-hilft.ch
 Environment=SMTP_PORT=
