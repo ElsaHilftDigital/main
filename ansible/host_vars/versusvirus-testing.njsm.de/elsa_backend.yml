@@ -1,6 +1,10 @@
 ---
 elsa_backend_telegram_token: "{{ vault_elsa_backend_telegram_token }}"
 elsa_backend_bot_name: elsahilfttestbot
+elsa_backend_telegram_group_chat_url: "{{ vault_elsa_backend_telegram_group_chat_url }}"
+elsa_backend_telegram_group_chat_id: "{{ vault_elsa_backend_telegram_group_chat_id }}"
+elsa_backend_telegram_moderator_chat_id: "{{ vault_elsa_backend_telegram_moderator_chat_id }}"
+elsa_backend_supportuser_name: "{{ vault_elsa_backend_supportuser_name }}"
 elsa_backend_spring_profile: "testing"
 elsa_backend_jwt_secret: "{{ vault_elsa_backend_jwt_secret }}"
 elsa_backend_metrics_secret: "{{ vault_elsa_backend_metrics_secret }}"
