@@ -68,7 +68,7 @@ public class PurchaseController {
     @PostMapping("/{id}/customernotified")
     public void customerNotified(@PathVariable("id") UUID purchaseId,
                                  @RequestBody(required = false) String messageToVolunteer) {
-        purchaseService.customerNotified(purchaseId, messageToVolunteer);
+        purchaseService.customerNotified(purchaseId, messageToVolunteer == null ? "" : messageToVolunteer);
     }
 
     @PostMapping("/{id}/markcompleted")

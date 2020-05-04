@@ -99,7 +99,7 @@ spec:
               key: supportusername
               name: telegram
         - name: DEPLOYMENT_DOMAIN
-          value: elsa-hilft.ch
+          value: staging.elsa-hilft.ch
         - name: SMTP_HOST
           valueFrom:
             secretKeyRef:
