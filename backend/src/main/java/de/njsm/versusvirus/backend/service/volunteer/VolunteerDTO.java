@@ -24,6 +24,8 @@ public class VolunteerDTO {
     public boolean validated;
     public String telegramJoinBotChatUrl;
 
+    public Integer assignedPurchaseCount;
+
     public VolunteerDTO(Volunteer volunteer) {
         if (volunteer.isDeleted()) {
             id = volunteer.getId();
@@ -40,6 +42,7 @@ public class VolunteerDTO {
             bankName = null;
             wantsCompensation = volunteer.wantsCompensation();
             validated = volunteer.isValidated();
+            assignedPurchaseCount = volunteer.getAssignedPurchases().size();
         } else {
             id = volunteer.getId();
             uuid = volunteer.getUuid();
