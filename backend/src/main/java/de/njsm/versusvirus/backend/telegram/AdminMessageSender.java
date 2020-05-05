@@ -1,5 +1,6 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.domain.Moderator;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.MessageToBeSent;
 import org.slf4j.Logger;
@@ -34,24 +35,33 @@ public class AdminMessageSender {
         api.sendMessage(m);
     }
 
-    public void helpersHaveApplied() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getHelpersAppliedForPurchase());
+    public void helpersHaveApplied(Moderator moderator) {
+        String template = telegramMessages.getHelpersAppliedForPurchase();
+        var m = formatWithResponsibleModerator(template, moderator.getName());
         api.sendMessage(m);
     }
 
-    public void helperHasRejected() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getHelperRejectedPurchase());
+    public void helperHasRejected(Moderator moderator) {
+        String template = telegramMessages.getHelperRejectedPurchase();
+        var m = formatWithResponsibleModerator(template, moderator.getName());
         api.sendMessage(m);
     }
 
-    public void receiptHasBeenSubmitted() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getReceiptHasBeenSubmitted());
+    public void receiptHasBeenSubmitted(Moderator moderator) {
+        String template = telegramMessages.getReceiptHasBeenSubmitted();
+        var m = formatWithResponsibleModerator(template, moderator.getName());
         api.sendMessage(m);
     }
 
-    public void notifyAboutMissingMoney() {
-        var m = new MessageToBeSent(moderatorChatId, telegramMessages.getMoneyIsMissing());
+    public void notifyAboutMissingMoney(Moderator moderator) {
+        String template = telegramMessages.getMoneyIsMissing();
+        var m = formatWithResponsibleModerator(template, moderator.getName());
         api.sendMessage(m);
+    }
+
+    private MessageToBeSent formatWithResponsibleModerator(String template, String moderatorName) {
+        String text = MessageFormat.format(template, moderatorName);
+        return new MessageToBeSent(moderatorChatId, text);
     }
 
     public void forwardVolunteerMessage(Message message) {
