@@ -146,6 +146,11 @@ const PurchaseDetailInternal = (props: any) => {
                     </b>
                 </p>
                 }
+                {(purchase.status === 'Helfer gefunden' && !!purchase.assignedVolunteer) &&
+                <p className="mt-2">
+                    <b>Helfer wurde ausgewählt und wurde benachrichtigt, hat aber noch nicht bestätigt.</b>
+                </p>
+                }
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
