@@ -186,7 +186,8 @@ public class MessageSender {
         for (PurchaseSupermarket m : purchase.getPurchaseSupermarketList()) {
             // This is telegram markdownv2 -> escape dashes
             purchaseList.append("*");
-            purchaseList.append(m.getName());
+            var market = AdminMessageSender.escapeMarkdownCharacters(m.getName());
+            purchaseList.append(market);
             purchaseList.append("*\n");
 
             for (OrderItem i : m.getPurchaseList()) {
