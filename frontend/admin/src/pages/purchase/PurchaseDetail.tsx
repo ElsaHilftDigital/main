@@ -260,6 +260,7 @@ const PurchaseDetailInternal = (props: any) => {
                                         <th>Vorname</th>
                                         <th>Nachname</th>
                                         <th>Kommt aus</th>
+                                        <th># Einkäufe</th>
                                         <th>Auswahl</th>
                                     </tr>
                                     </thead>
@@ -269,6 +270,7 @@ const PurchaseDetailInternal = (props: any) => {
                                             <td>{v.firstName}</td>
                                             <td>{v.lastName}</td>
                                             <td>{v.city}</td>
+                                            <td>{v.assignedPurchaseCount}</td>
                                             <td>
                                                 <button type="button" className="btn btn-primary"
                                                         onClick={() => assignVolunteer(v.uuid)}>Bestätigen
