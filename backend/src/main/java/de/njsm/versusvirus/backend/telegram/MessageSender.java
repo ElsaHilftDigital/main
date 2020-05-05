@@ -295,7 +295,7 @@ public class MessageSender {
         }
 
         String template = telegramMessages.getInformToDeliverPurchase();
-        var escapedMessageToVolunteer = AdminMessageSender.escapeMarkdownCharacters("\nWICHTIG: " + messageToVolunteer);
+        var escapedMessageToVolunteer = messageToVolunteer.isEmpty() ? "" : AdminMessageSender.escapeMarkdownCharacters("\nWICHTIG: " + messageToVolunteer);
         var customerString = AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
         String text = MessageFormat.format(
                 template,
