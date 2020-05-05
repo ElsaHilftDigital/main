@@ -78,8 +78,28 @@ spec:
             secretKeyRef:
               key: name
               name: telegram
+        - name: TELEGRAM_GROUPCHAT_URL
+          valueFrom:
+            secretKeyRef:
+              key: groupchaturl
+              name: telegram
+        - name: TELEGRAM_GROUPCHAT_ID
+          valueFrom:
+            secretKeyRef:
+              key: groupchatid
+              name: telegram
+        - name: TELEGRAM_MODERATORCHAT_ID
+          valueFrom:
+            secretKeyRef:
+              key: moderatorchatid
+              name: telegram
+        - name: TELEGRAM_SUPPORTUSER_NAME
+          valueFrom:
+            secretKeyRef:
+              key: supportusername
+              name: telegram
         - name: DEPLOYMENT_DOMAIN
-          value: elsa-hilft.ch
+          value: staging.elsa-hilft.ch
         - name: SMTP_HOST
           valueFrom:
             secretKeyRef:

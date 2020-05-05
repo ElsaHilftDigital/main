@@ -33,6 +33,11 @@ public class VolunteerController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{id}/send-invitation-email")
+    public void sendInvitationEmail(@PathVariable("id") UUID volunteerId) {
+        volunteerService.sendInvitationEmail(volunteerId);
+    }
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateVolunteer(@PathVariable("id") UUID volunteerId,

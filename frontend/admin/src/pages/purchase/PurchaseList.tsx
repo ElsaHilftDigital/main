@@ -1,18 +1,17 @@
-import React, {useMemo, useState} from 'react';
-import {Col, Container, Dropdown, Form, InputGroup, ListGroup, Row} from 'react-bootstrap';
-import {useHistory} from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import { Col, Container, Dropdown, Form, InputGroup, ListGroup, Row } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-
-import {usePurchases} from 'hooks/usePurchases';
+import { usePurchases } from 'apis/purchase';
 import * as routes from 'routes';
-import {formatBoolean, formatDateTime, formatMoment, parseDate} from 'config/utils';
+import { formatDateTime, formatDate, formatMoment, parseDate } from 'config/utils';
 import StatusIndicator from 'components/StatusIndicator';
 import Title from 'components/Title';
-import moment from "moment";
-import Header from "components/Header";
+import moment from 'moment';
+import Header from 'components/Header';
 
 const PurchaseList = () => {
-    const {purchases} = usePurchases();
+    const { purchases } = usePurchases();
 
     if (!purchases?.length) {
         return (<>
@@ -29,7 +28,7 @@ const PurchaseList = () => {
                             </div>
                         </div>
                         <ListGroup.Item>
-                            <Row><b style={{padding: "1rem"}}>Keine Aufträge vorhanden</b></Row>
+                            <Row><b style={{ padding: '1rem' }}>Keine Aufträge vorhanden</b></Row>
                         </ListGroup.Item>
                     </Col>
                 </FlexRow>
@@ -51,15 +50,17 @@ const PurchaseListHeader = () => {
             <Col>
                 <Title>Aufträge</Title>
             </Col>
-            <ExportForm/>
+            <Col style={{padding: "1rem"}}>
+                <ExportForm/>
+            </Col>
         </Row>
     </>;
-}
+};
 
 const ExportForm = () => {
     const today = new Date(Date.now()).toLocaleDateString('de-DE');
 
-    const [startDate, setStartDate] = useState("01.01.2020");
+    const [startDate, setStartDate] = useState('01.01.2020');
     const [endDate, setEndDate] = useState(today);
     const [startDateValid, setStartDateValid] = useState(true);
     const [endDateValid, setEndDateValid] = useState(true);
@@ -70,7 +71,7 @@ const ExportForm = () => {
 
     const validateStartDate = () => {
         setStartDateValid(!!parseDate(startDate));
-    }
+    };
 
     const handleEndDateUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEndDate(e.target.value);
@@ -78,15 +79,15 @@ const ExportForm = () => {
 
     const validateEndDate = () => {
         setEndDateValid(!!parseDate(endDate));
-    }
+    };
 
     const exportPurchases = () => {
         window.location.href = routes.purchaseExportAll(parseDate(startDate)!, parseDate(endDate)!);
-    }
+    };
 
     const exportReceipts = () => {
         window.location.href = routes.receiptExport(parseDate(startDate)!, parseDate(endDate)!);
-    }
+    };
 
     return <Form inline>
         <Form.Row className="mr-0">
@@ -106,7 +107,7 @@ const ExportForm = () => {
                             isInvalid={!startDateValid}
                         />
                     </InputGroup>
-                    <div className="invalid-tooltip" style={{display: 'block'}} hidden={startDateValid}>
+                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={startDateValid}>
                         Datumsformat: DD.MM.YYYY
                     </div>
                 </Form.Group>
@@ -127,7 +128,7 @@ const ExportForm = () => {
                             isInvalid={!endDateValid}
                         />
                     </InputGroup>
-                    <div className="invalid-tooltip" style={{display: 'block'}} hidden={endDateValid}>
+                    <div className="invalid-tooltip" style={{ display: 'block' }} hidden={endDateValid}>
                         Datumsformat: DD.MM.YYYY
                     </div>
                 </Form.Group>
@@ -143,25 +144,25 @@ const ExportForm = () => {
                 </Dropdown>
             </Col>
         </Form.Row>
-    </Form>
+    </Form>;
 
 };
 
-const statusIndicators = ["RED", "AMBER", "GREEN"];
+const statusIndicators = ['RED', 'AMBER', 'GREEN'];
 
 const PurchaseListInternal = (props: any) => {
-    const {purchases} = props;
+    const { purchases } = props;
 
     function toDate(timestamp: string): string {
         return formatMoment(moment(timestamp));
     }
 
-    const purchaseDates: string[] = useMemo(() => Array.from(new Set<string>(purchases.map((purchase: any) => toDate(purchase.createdAt))))
-        .sort()
+    const purchaseDates: string[] = useMemo(() => Array.from(new Set<string>(purchases.map((purchase: any) => toDate(purchase.executionDate))))
+        .sort((a, b) => parseDate(a)! < parseDate(b)! ? -1 : 1)
         .reverse(), [purchases]);
     const purchasesByDate = useMemo(() => {
         const result: Map<string, any[]> = new Map<string, any[]>(purchaseDates.map(date => [date, []]));
-        purchases.forEach((purchase: any) => result.get(toDate(purchase.createdAt))!.push(purchase));
+        purchases.forEach((purchase: any) => result.get(toDate(purchase.executionDate))!.push(purchase));
         for (const list of Array.from(result.values())) {
             list.sort((l: any, r: any) => {
                 const leftIndex = statusIndicators.indexOf(l.statusIndicator);
@@ -169,7 +170,7 @@ const PurchaseListInternal = (props: any) => {
                 if (leftIndex < rightIndex) {
                     return -1;
                 } else if (leftIndex === rightIndex) {
-                    if (new Date(l.createdAt) < new Date(r.createdAt)) {
+                    if (new Date(l.executionDate) < new Date(r.executionDate)) {
                         return -1;
                     } else {
                         return 1;
@@ -204,22 +205,42 @@ const PurchaseListInternal = (props: any) => {
                 </DateListGroup>
             </DateCol>
             <Col>
-                <PurchaseListHeader/>
-                <ListGroup variant="flush">
-                    <ListGroup.Item className="pl-3">
-                        <Row>
-                            <Col><h3>Kunde</h3></Col>
-                            <Col><h3>Helfer</h3></Col>
-                            <Col><h3>Status</h3></Col>
-                            <Col><h3>Moderator</h3></Col>
-                        </Row>
-                    </ListGroup.Item>
-                    {purchasesByDate.get(selectedDate)!.map(p => <PurchaseListItem purchase={p} key={p.uuid}/>)}
-                </ListGroup>
+                <ListHeaderContainer>
+                    <PurchaseListHeader/>
+                    <ListGroup variant="flush">
+                        <ListGroup.Item className="pl-3">
+                            <Row>
+                                <Col><h3>Kunde</h3></Col>
+                                <Col><h3>Helfer</h3></Col>
+                                <Col><h3>Status</h3></Col>
+                                <Col><h3>Moderator</h3></Col>
+                            </Row>
+                        </ListGroup.Item>
+                    </ListGroup>
+                </ListHeaderContainer>
+                
+                <ListContainer>
+                    <ListGroup variant="flush">
+                        {purchasesByDate.get(selectedDate)!.map(p => <PurchaseListItem purchase={p} key={p.uuid}/>)}
+                    </ListGroup>
+                </ListContainer>
             </Col>
         </FlexRow>
-    </>)
+    </>);
 };
+
+const ListHeaderContainer: React.FC = styled.div`
+    position: sticky;
+    width: 100%;
+    background: white;
+    z-index: 2;
+`;
+
+const ListContainer: React.FC = styled.div`
+    position: sticky;
+    width: 100%;
+    z-index: 1;
+`;
 
 const DateCol = styled(Col)`
     position: sticky;
@@ -241,7 +262,7 @@ const DateListGroup = styled(ListGroup)`
 `;
 
 const PurchaseListItem = (props: any) => {
-    const {purchase} = props;
+    const { purchase } = props;
     const history = useHistory();
     const labelWidth = 5;
 
@@ -261,9 +282,9 @@ const PurchaseListItem = (props: any) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Form.Label column md={labelWidth}>Erstellt</Form.Label>
+                    <Form.Label column md={labelWidth}>Ausführung</Form.Label>
                     <Col>
-                        <Form.Control plaintext readOnly defaultValue={formatDateTime(purchase.createdAt)}/>
+                        <Form.Control plaintext readOnly defaultValue={formatDate(purchase.executionDate)}/>
                     </Col>
                 </Row>
             </Col>
@@ -298,15 +319,15 @@ const PurchaseListItem = (props: any) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Form.Label column md={labelWidth}>Betrag</Form.Label>
+                    <Form.Label column md={labelWidth}>Auftragsnummer</Form.Label>
                     <Col>
-                        <Form.Control plaintext readOnly defaultValue={purchase.cost}/>
+                        <Form.Control plaintext readOnly defaultValue={purchase.purchaseNumber}/>
                     </Col>
                 </Row>
                 <Row>
-                    <Form.Label column md={labelWidth}>Betrag beglichen</Form.Label>
+                    <Form.Label column md={labelWidth}>Betrag</Form.Label>
                     <Col>
-                        <Form.Control plaintext readOnly defaultValue={formatBoolean(purchase.paid)}/>
+                        <Form.Control plaintext readOnly defaultValue={purchase.cost}/>
                     </Col>
                 </Row>
             </Col>
@@ -321,6 +342,12 @@ const PurchaseListItem = (props: any) => {
                     <Form.Label column md={labelWidth}>Verantwortlich</Form.Label>
                     <Col>
                         <Form.Control plaintext readOnly defaultValue={purchase.responsible}/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Form.Label column md={labelWidth}>Erstellt</Form.Label>
+                    <Col>
+                        <Form.Control plaintext readOnly defaultValue={formatDateTime(purchase.createdAt)}/>
                     </Col>
                 </Row>
             </Col>

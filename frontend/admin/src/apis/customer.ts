@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { restClient } from 'config/utils';
+import { useEffect, useState } from 'react';
 
-const client = axios.create({baseURL: `/api/v1/admin`});
+const client = restClient('/api/v1/admin');
 
 export interface Customer {
     uuid: string,
@@ -34,25 +36,63 @@ export interface UpdateCustomerRequest {
     zipCode?: string,
 }
 
-export async function getCustomers() {
-    const response = await client.get(`/customers`);
-    return response.data;
-}
+export const useCustomers = () => {
+    const [customers, setCustomers] = useState<Customer[]>([]);
 
-export async function getCustomer(uuid: string) {
-    const response = await client.get<Customer>(`/customers/${uuid}`);
-    return response.data;
-}
+    useEffect(() => {
+        const source = axios.CancelToken.source();
 
-export async function createCustomer(customer: CreateCustomerRequest) {
+        client.get<Customer[]>('/customers', {
+            cancelToken: source.token,
+        })
+            .then(response => setCustomers(response.data))
+            .catch();
+
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
+    return { customers };
+};
+
+export const useCustomer = (uuid: string) => {
+    const [customer, setCustomer] = useState<Customer>();
+    const [dummy, setDummy] = useState({});
+    const refresh = () => setDummy({});
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+
+        client.get<Customer>(`/customers/${uuid}`, {
+            cancelToken: source.token,
+        })
+            .then(response => setCustomer(response.data))
+            .catch();
+
+        return () => {
+            source.cancel();
+        };
+    }, [uuid, dummy]);
+
+    return { customer, refresh };
+};
+
+async function createCustomer(customer: CreateCustomerRequest) {
     const response = await client.post<Customer>('/customers', customer);
     return response.data;
 }
 
-export function updateCustomer(uuid: string, customer: UpdateCustomerRequest) {
+function updateCustomer(uuid: string, customer: UpdateCustomerRequest) {
     return client.put<void>(`/customers/${uuid}`, customer);
 }
 
-export function deleteCustomer(uuid: string) {
+function deleteCustomer(uuid: string) {
     return client.delete<void>(`/customers/${uuid}`);
 }
+
+export const customerAPI = {
+    create: createCustomer,
+    update: updateCustomer,
+    delete: deleteCustomer,
+};

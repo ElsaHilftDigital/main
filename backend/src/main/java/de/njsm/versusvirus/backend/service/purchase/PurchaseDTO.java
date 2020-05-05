@@ -27,6 +27,8 @@ public class PurchaseDTO {
     public long createdByModerator;
     public long customer;
     public String createDate;
+    public String executionDate;
+    public String purchaseNumber;
 
     public PurchaseDTO(Purchase p) {
         id = p.getId();
@@ -46,5 +48,7 @@ public class PurchaseDTO {
         createdByModerator = p.getCreatedByModerator();
         customer = p.getCustomerId();
         createDate = p.getCreateTime().toString();
+        executionDate = p.getExecutionTime().toString();
+        purchaseNumber = Long.toString(p.getId());
     }
 }

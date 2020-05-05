@@ -1,9 +1,7 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.domain.Customer;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
-import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
@@ -13,6 +11,7 @@ import io.prometheus.client.Counter;
 import io.prometheus.client.Histogram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -24,8 +23,6 @@ import java.util.UUID;
 public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(InlineButtonCallbackDispatcher.class);
-
-    private final OrganizationRepository organizationRepository;
 
     private final VolunteerRepository volunteerRepository;
 
@@ -39,6 +36,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private final CustomerRepository customerRepository;
 
+    private final long groupChatId;
+
     private static final Counter LEAVING_VOLUNTEERS = Counter.build()
             .name("elsa_hilft_telegram_leaving_volunteers")
             .help("Number of leaving volunteers")
@@ -50,20 +49,21 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             .help("Number of volunteers per purchase")
             .register();
 
-    public InlineButtonCallbackDispatcher(OrganizationRepository organizationRepository,
-                                          VolunteerRepository volunteerRepository,
+    public InlineButtonCallbackDispatcher(VolunteerRepository volunteerRepository,
                                           PurchaseRepository purchaseRepository,
                                           MessageSender messageSender,
-                                          AdminMessageSender adminMessageSender, TelegramApi telegramApi, CustomerRepository customerRepository) {
-        this.organizationRepository = organizationRepository;
+                                          AdminMessageSender adminMessageSender,
+                                          TelegramApi telegramApi,
+                                          CustomerRepository customerRepository,
+                                          @Value("${telegram.groupchat.id}") long groupChatId) {
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.telegramApi = telegramApi;
         this.customerRepository = customerRepository;
+        this.groupChatId = groupChatId;
     }
-
 
     @Override
     public void handleHelpOffer(Message message, User user, UUID data) {
@@ -74,10 +74,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
-        });
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            messageSender.sendUnexpectedMessage(message.getChat().getId());
-            return new TelegramShouldBeFineException("Organization not found");
         });
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
@@ -91,9 +87,9 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         if (!purchase.getVolunteerApplications().contains(volunteer.getId())) {
             purchase.getVolunteerApplications().add(volunteer.getId());
             purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
-            adminMessageSender.helpersHaveApplied(organization.getTelegramModeratorGroupChatId());
+            adminMessageSender.helpersHaveApplied();
         }
-        messageSender.updateBroadcastMessage(organization, customer, purchase);
+        messageSender.updateBroadcastMessage(customer, purchase);
         messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId());
     }
 
@@ -106,10 +102,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
-        });
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            messageSender.sendUnexpectedMessage(message.getChat().getId());
-            return new TelegramShouldBeFineException("Organization not found");
         });
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
@@ -125,27 +117,15 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         if (purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
             purchase.setStatus(Purchase.Status.VOLUNTEER_ACCEPTED);
             VOLUNTEERS_PER_PURCHASE.observe(purchase.getVolunteerApplications().size());
-            rejectApplicants(customer, purchase);
+            messageSender.rejectApplicants(customer, purchase, volunteerRepository.findAllById(purchase.getVolunteerApplications()));
             purchase.getVolunteerApplications().clear();
-            telegramApi.deleteMessage(organization.getTelegramGroupChatId(), purchase.getBroadcastMessageId());
+            telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
             messageSender.removePurchaseDetailButtons(message.getChat().getId(), message.getId(), purchase, customer);
-            messageSender.confirmConfirmation(message.getChat().getId(), organization.getTelegramSupportChat());
+            messageSender.confirmConfirmation(message.getChat().getId());
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was confirmed unexpectedly");
             messageSender.sendUnexpectedMessage(message.getChat().getId());
         }
-    }
-
-    private void rejectApplicants(Customer customer, Purchase purchase) {
-        purchase.getVolunteerApplications().forEach(id -> {
-            if (purchase.getAssignedVolunteer().isPresent() &&
-                !purchase.getAssignedVolunteer().get().equals(id)) {
-
-                volunteerRepository.findById(id).ifPresent(v -> {
-                    messageSender.sendRejectionToApplicant(v.getTelegramChatId(), customer, purchase);
-                });
-            }
-        });
     }
 
     @Override
@@ -158,10 +138,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
-        });
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            messageSender.sendUnexpectedMessage(message.getChat().getId());
-            return new TelegramShouldBeFineException("Organization not found");
         });
         var customer = customerRepository.findById(purchase.getCustomerId()).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
@@ -182,8 +158,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             purchase.setAssignedVolunteer(null);
             telegramApi.deleteMessage(message.getChat().getId(), message.getId());
             messageSender.confirmRejection(chatId);
-            messageSender.updateBroadcastMessage(organization, customer, purchase);
-            adminMessageSender.helperHasRejected(organization.getTelegramModeratorGroupChatId());
+            messageSender.updateBroadcastMessage(customer, purchase);
+            adminMessageSender.helperHasRejected();
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was rejected unexpectedly");
             messageSender.sendUnexpectedMessage(chatId);
@@ -196,7 +172,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
-        List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteerAndStatus(volunteer.getId(), Purchase.Status.VOLUNTEER_ACCEPTED);
+        List<Purchase> activePurchases = purchaseRepository.findAllByAssignedVolunteerAndStatusAndDeletedFalse(volunteer.getId(), Purchase.Status.VOLUNTEER_ACCEPTED);
         volunteer.setTelegramFileId(fileId);
         messageSender.confirmReceiptPurchaseMapping(volunteer, activePurchases);
     }
@@ -210,10 +186,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
-        });
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            messageSender.sendUnexpectedMessage(message.getChat().getId());
-            return new TelegramShouldBeFineException("Organization not found");
         });
 
         if (purchase.getAssignedVolunteer().isPresent() &&
@@ -239,7 +211,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             purchase.setStatus(Purchase.Status.PURCHASE_DONE);
             volunteer.setTelegramFileId(null);
             messageSender.confirmReceiptUpload(message.getChat().getId());
-            adminMessageSender.receiptHasBeenSubmitted(organization.getTelegramModeratorGroupChatId());
+            adminMessageSender.receiptHasBeenSubmitted();
         } else {
             LOG.warn("volunteer {} wants to map a receipt to purchase {} without having submitted a receipt",
                     volunteer.getUuid(),
@@ -293,10 +265,6 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(chatId);
             return new TelegramShouldBeFineException("volunteer not found");
         });
-        var organization = organizationRepository.findById(1).orElseThrow(() -> {
-            messageSender.sendUnexpectedMessage(chatId);
-            return new TelegramShouldBeFineException("Organization not found");
-        });
 
         if (purchase.getAssignedVolunteer().isPresent() &&
                 purchase.getAssignedVolunteer().get() != volunteer.getId()) {
@@ -314,7 +282,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         purchase.setStatus(Purchase.Status.MONEY_NOT_FOUND);
         messageSender.confirmInvestigation(chatId);
-        adminMessageSender.notifyAboutMissingMoney(organization.getTelegramModeratorGroupChatId());
+        adminMessageSender.notifyAboutMissingMoney();
     }
 
     @Override

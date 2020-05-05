@@ -45,6 +45,8 @@ public class Purchase {
 
     private Instant createTime;
 
+    private Instant executionTime;
+
     private byte[] receipt;                   // picture of receipt
 
     private String receiptMimeType;
@@ -62,6 +64,8 @@ public class Purchase {
     private Long responsibleModeratorId;
 
     private Long customer;
+
+    private boolean deleted;
 
     @ElementCollection
     @CollectionTable(name = "purchase_applications")
@@ -125,6 +129,14 @@ public class Purchase {
 
     public void setInternalComments(String internalComments) {
         this.internalComments = internalComments;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public enum Status {
@@ -370,6 +382,14 @@ public class Purchase {
 
     public void setCreateTime() {
         this.createTime = Instant.now();
+    }
+
+    public Instant getExecutionTime() {
+        return executionTime;
+    }
+
+    public void setExecutionTime(Instant executionTime) {
+        this.executionTime = executionTime;
     }
 
     public List<Long> getVolunteerApplications() {

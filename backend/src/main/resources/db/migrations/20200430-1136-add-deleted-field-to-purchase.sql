@@ -1,0 +1,1 @@
+alter table purchase add column deleted bool not null default false;
