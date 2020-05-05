@@ -58,6 +58,7 @@ public class VolunteerDTO {
             bankName = volunteer.getBankName();
             wantsCompensation = volunteer.wantsCompensation();
             validated = volunteer.isValidated();
+            assignedPurchaseCount = volunteer.getAssignedPurchases().size();
         }
     }
 
