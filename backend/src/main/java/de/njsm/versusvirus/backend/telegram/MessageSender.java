@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -147,8 +151,13 @@ public class MessageSender {
         String purchaseDescTemplate = telegramMessages.getBroadcastPurchaseDescription();
         String supermarketList = purchase.getPurchaseSupermarketList().stream().map(PurchaseSupermarket::getName).collect(Collectors.joining(", "));
         String comment = purchase.getPublicComments();
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                                            .withLocale(Locale.GERMAN)
+                                            .withZone(ZoneId.systemDefault());
         return MessageFormat.format(
                 purchaseDescTemplate,
+                AdminMessageSender.escapeMarkdownCharacters(Long.toString(purchase.getId())),
+                AdminMessageSender.escapeMarkdownCharacters(formatter.format(purchase.getExecutionTime())),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
                 AdminMessageSender.escapeMarkdownCharacters(supermarketList),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
@@ -200,17 +209,22 @@ public class MessageSender {
         }
 
         String purchaseDescTemplate = telegramMessages.getPersonalPurchaseDescription();
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                .withLocale(Locale.GERMAN)
+                .withZone(ZoneId.systemDefault());
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
+                AdminMessageSender.escapeMarkdownCharacters(Long.toString(purchase.getId())),
+                AdminMessageSender.escapeMarkdownCharacters(formatter.format(purchase.getExecutionTime())),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getLastName()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getAddress()),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getZipCode().orElse("")),
                 AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
+                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPrivateComments()),
                 AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
-                purchaseList.toString(),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming())
+                purchaseList.toString()
         );
 
         String template = telegramMessages.getOfferPurchase();
@@ -281,7 +295,7 @@ public class MessageSender {
         }
 
         String template = telegramMessages.getInformToDeliverPurchase();
-        var escapedMessageToVolunteer = AdminMessageSender.escapeMarkdownCharacters(messageToVolunteer);
+        var escapedMessageToVolunteer = AdminMessageSender.escapeMarkdownCharacters("\nWICHTIG: " + messageToVolunteer);
         var customerString = AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
         String text = MessageFormat.format(
                 template,
