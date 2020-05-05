@@ -272,9 +272,9 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
-    public ReceiptDTO getReceipt(UUID purchaseId) {
+    public List<ReceiptDTO> getReceipts(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType(), purchase.getReceiptFileExtension());
+        return purchase.getPurchaseSupermarketList().stream().map(ReceiptDTO::new).collect(Collectors.toList());
     }
 
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {
