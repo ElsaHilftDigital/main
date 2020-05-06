@@ -1,9 +1,11 @@
 package de.njsm.versusvirus.backend.telegram;
 
+import de.njsm.versusvirus.backend.domain.Moderator;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
+import de.njsm.versusvirus.backend.repository.ModeratorRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.User;
@@ -36,6 +38,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private final CustomerRepository customerRepository;
 
+    private final ModeratorRepository moderatorRepository;
+
     private final long groupChatId;
 
     private static final Counter LEAVING_VOLUNTEERS = Counter.build()
@@ -55,6 +59,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                                           AdminMessageSender adminMessageSender,
                                           TelegramApi telegramApi,
                                           CustomerRepository customerRepository,
+                                          ModeratorRepository moderatorRepository,
                                           @Value("${telegram.groupchat.id}") long groupChatId) {
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;
@@ -62,6 +67,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         this.adminMessageSender = adminMessageSender;
         this.telegramApi = telegramApi;
         this.customerRepository = customerRepository;
+        this.moderatorRepository = moderatorRepository;
         this.groupChatId = groupChatId;
     }
 
@@ -87,7 +93,11 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         if (!purchase.getVolunteerApplications().contains(volunteer.getId())) {
             purchase.getVolunteerApplications().add(volunteer.getId());
             purchase.setStatus(Purchase.Status.VOLUNTEER_FOUND);
-            adminMessageSender.helpersHaveApplied();
+            var moderator = moderatorRepository.findById(purchase.getResponsibleModeratorId()).orElseThrow(() -> {
+                messageSender.sendUnexpectedMessage(message.getChat().getId());
+                return new TelegramShouldBeFineException("responsible moderator not found");
+            });
+            adminMessageSender.helpersHaveApplied(moderator);
         }
         messageSender.updateBroadcastMessage(customer, purchase);
         messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId());
@@ -159,7 +169,11 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             telegramApi.deleteMessage(message.getChat().getId(), message.getId());
             messageSender.confirmRejection(chatId);
             messageSender.updateBroadcastMessage(customer, purchase);
-            adminMessageSender.helperHasRejected();
+            var moderator = moderatorRepository.findById(purchase.getResponsibleModeratorId()).orElseThrow(() -> {
+                messageSender.sendUnexpectedMessage(message.getChat().getId());
+                return new TelegramShouldBeFineException("responsible moderator not found");
+            });
+            adminMessageSender.helperHasRejected(moderator);
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was rejected unexpectedly");
             messageSender.sendUnexpectedMessage(chatId);
@@ -211,7 +225,11 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             purchase.setStatus(Purchase.Status.PURCHASE_DONE);
             volunteer.setTelegramFileId(null);
             messageSender.confirmReceiptUpload(message.getChat().getId());
-            adminMessageSender.receiptHasBeenSubmitted();
+            var moderator = moderatorRepository.findById(purchase.getResponsibleModeratorId()).orElseThrow(() -> {
+                messageSender.sendUnexpectedMessage(message.getChat().getId());
+                return new TelegramShouldBeFineException("responsible moderator not found");
+            });
+            adminMessageSender.receiptHasBeenSubmitted(moderator);
         } else {
             LOG.warn("volunteer {} wants to map a receipt to purchase {} without having submitted a receipt",
                     volunteer.getUuid(),
@@ -282,7 +300,11 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         purchase.setStatus(Purchase.Status.MONEY_NOT_FOUND);
         messageSender.confirmInvestigation(chatId);
-        adminMessageSender.notifyAboutMissingMoney();
+        var moderator = moderatorRepository.findById(purchase.getResponsibleModeratorId()).orElseThrow(() -> {
+            messageSender.sendUnexpectedMessage(message.getChat().getId());
+            return new TelegramShouldBeFineException("responsible moderator not found");
+        });
+        adminMessageSender.notifyAboutMissingMoney(moderator);
     }
 
     @Override

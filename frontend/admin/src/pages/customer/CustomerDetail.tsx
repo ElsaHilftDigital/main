@@ -1,10 +1,11 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Col, Row } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { Customer, customerAPI, useCustomer } from 'apis/customer';
 import Header from 'components/Header';
 import { useToast } from 'toasts/useToast';
+import * as routes from 'routes';
 
 const CustomerDetail = () => {
     const { customerId } = useParams();
@@ -33,6 +34,7 @@ const CustomerDetailInternal: React.FC<Props> = props => {
         defaultValues: selectedCustomer,
     });
     const toast = useToast();
+    const history = useHistory();
 
     const onSubmit = (values: any) => {
         customerAPI.update(selectedCustomer.uuid, values)
@@ -40,9 +42,9 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                 toast("Kunde speichern", "Auftraggeber wurde gespeichert");
                 props.refresh();
             })
-            .catch(() => {
+            .catch(() =>
                 toast("Kunde speichern", "Speichern ist leider fehlgeschlagen")
-            });
+            );
     };
 
     const onDelete = () => {
@@ -50,11 +52,12 @@ const CustomerDetailInternal: React.FC<Props> = props => {
             customerAPI.delete(selectedCustomer.uuid)
                 .then(() => {
                     toast("Kunde löschen", "Auftraggeber/-in wurde gelöscht");
-                    props.refresh();
+                    history.push(routes.customerList());
+                    
                 })
-                .catch(() => {
+                .catch(() =>
                     toast("Kunde löschen", "Löschen ist leider fehlgeschlagen")
-                });
+                );
         }
     };
 
