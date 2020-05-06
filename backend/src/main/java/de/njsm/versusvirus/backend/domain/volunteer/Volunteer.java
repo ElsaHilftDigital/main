@@ -1,11 +1,11 @@
 package de.njsm.versusvirus.backend.domain.volunteer;
 
 import de.njsm.versusvirus.backend.domain.common.Address;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +34,11 @@ public class Volunteer {
     private Long telegramChatId;
     private Long telegramUserId;
     private String telegramFileId;
+
+    @ElementCollection
+    @CollectionTable(name = "purchase_applications")
+    @Column(name = "purchase_id")
+    private List<Long> assignedPurchases;
 
     public long getId() {
         return id;
@@ -155,6 +160,10 @@ public class Volunteer {
 
     public void setTelegramFileId(String telegramFileId) {
         this.telegramFileId = telegramFileId;
+    }
+
+    public List<Long> getAssignedPurchases() {
+        return assignedPurchases;
     }
 
     public boolean isDeleted() {

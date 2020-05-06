@@ -37,6 +37,8 @@ const PurchaseDetailInternal = (props: any) => {
         defaultValues: purchase,
     });
     const toast = useToast();
+    const history = useHistory();
+
 
     const [supermarkets, setSupermarkets] = useState(purchase.supermarkets);
     const [executionDate, setExecutionDate] = useState(formatDate(purchase.executionDate));
@@ -49,8 +51,6 @@ const PurchaseDetailInternal = (props: any) => {
     const validateExecutionDate = () => {
         setExecutionDateValid(!!parseDate(executionDate))
     };
-
-    const history = useHistory();
 
     const publishPurchaseSearchHelper = () => {
         purchaseAPI.publish(purchase.uuid)
@@ -144,6 +144,11 @@ const PurchaseDetailInternal = (props: any) => {
                             <li>Auf "Speichern & Lieferung freigeben" klicken</li>
                         </ol>
                     </b>
+                </p>
+                }
+                {(purchase.status === 'Helfer gefunden' && !!purchase.assignedVolunteer) &&
+                <p className="mt-2">
+                    <b>Helfer wurde ausgewählt und wurde benachrichtigt, hat aber noch nicht bestätigt.</b>
                 </p>
                 }
             </div>
@@ -255,6 +260,7 @@ const PurchaseDetailInternal = (props: any) => {
                                         <th>Vorname</th>
                                         <th>Nachname</th>
                                         <th>Kommt aus</th>
+                                        <th># Einkäufe</th>
                                         <th>Auswahl</th>
                                     </tr>
                                     </thead>
@@ -264,6 +270,7 @@ const PurchaseDetailInternal = (props: any) => {
                                             <td>{v.firstName}</td>
                                             <td>{v.lastName}</td>
                                             <td>{v.city}</td>
+                                            <td>{v.assignedPurchaseCount}</td>
                                             <td>
                                                 <button type="button" className="btn btn-primary"
                                                         onClick={() => assignVolunteer(v.uuid)}>Bestätigen

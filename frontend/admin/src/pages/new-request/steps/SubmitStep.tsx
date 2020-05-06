@@ -52,8 +52,7 @@ const SubmitExistingCustomer: React.FC<SubmitExistingCustomerProps> = props => {
     if (uuid) {
         return <>
             <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-            <Link to={routes.purchaseDetails(uuid)}>Hier geht es zum Auftrag. Bitte Auftrag
-                freigeben.</Link>
+            <Link to={routes.purchaseDetails(uuid)}>Hier geht es zum neu erstellten Auftrag.</Link>
         </>;
     }
     return <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>;
@@ -111,8 +110,7 @@ const SubmitNewCustomer: React.FC<SubmitNewCustomerProps> = props => {
             {purchaseUuid
                 ? <>
                     <div className="alert alert-success" role="alert">Auftrag erfolgreich erstellt</div>
-                    <Link to={routes.purchaseDetails(purchaseUuid)}>Hier geht es zum Auftrag. Bitte Auftrag
-                        freigeben.</Link>
+                    <Link to={routes.purchaseDetails(purchaseUuid)}>Hier geht es zum neu erstellten Auftrag.</Link>
                 </>
                 : <div className="alert alert-danger" role="alert">Fehler beim Erstellen des Auftrags</div>
             }
