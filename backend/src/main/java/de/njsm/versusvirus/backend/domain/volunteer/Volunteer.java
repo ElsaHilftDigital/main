@@ -1,7 +1,6 @@
 package de.njsm.versusvirus.backend.domain.volunteer;
 
 import de.njsm.versusvirus.backend.domain.common.Address;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

@@ -40,9 +40,9 @@ public class VolunteerDTO {
             birthDate = volunteer.getBirthDate();
             iban = null;
             bankName = null;
-            wantsCompensation = volunteer.wantsCompensation();
+            wantsCompensation = false;
             validated = volunteer.isValidated();
-            assignedPurchaseCount = volunteer.getAssignedPurchases().size();
+            assignedPurchaseCount = 0;
         } else {
             id = volunteer.getId();
             uuid = volunteer.getUuid();
@@ -58,7 +58,11 @@ public class VolunteerDTO {
             bankName = volunteer.getBankName();
             wantsCompensation = volunteer.wantsCompensation();
             validated = volunteer.isValidated();
-            assignedPurchaseCount = volunteer.getAssignedPurchases().size();
+            if (volunteer.getAssignedPurchases() == null || volunteer.getAssignedPurchases().isEmpty()) {
+                assignedPurchaseCount = 0;
+            } else {
+                assignedPurchaseCount = volunteer.getAssignedPurchases().size();
+            }
         }
     }
 
