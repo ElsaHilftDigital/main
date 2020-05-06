@@ -37,6 +37,8 @@ const PurchaseDetailInternal = (props: any) => {
         defaultValues: purchase,
     });
     const toast = useToast();
+    const history = useHistory();
+
 
     const [supermarkets, setSupermarkets] = useState(purchase.supermarkets);
     const [executionDate, setExecutionDate] = useState(formatDate(purchase.executionDate));
@@ -49,8 +51,6 @@ const PurchaseDetailInternal = (props: any) => {
     const validateExecutionDate = () => {
         setExecutionDateValid(!!parseDate(executionDate))
     };
-
-    const history = useHistory();
 
     const publishPurchaseSearchHelper = () => {
         purchaseAPI.publish(purchase.uuid)

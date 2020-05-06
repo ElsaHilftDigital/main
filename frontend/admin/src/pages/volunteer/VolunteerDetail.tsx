@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Col, Row } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useVolunteer, Volunteer, volunteerAPI } from 'apis/volunteer';
 import { formatDate, parseDate } from 'config/utils';
 import Header from 'components/Header';
 import { useToast } from 'toasts/useToast';
+import * as routes from 'routes';
 
 const VolunteerDetail = () => {
     const { volunteerId } = useParams();
@@ -31,6 +32,7 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
     const { currentVolunteer } = props;
 
     const toast = useToast();
+    const history = useHistory();
 
     const handleConfirmVolunteer = () => {
         volunteerAPI.validate(currentVolunteer.uuid)
@@ -59,9 +61,10 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
     const onDelete = () => {
         if (window.confirm('Bitte versichere dich, dass alle offenen Zahlungen und Entschädigungen von diesem Helfer vor dem Löschen erledigt sind.\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             volunteerAPI.delete(currentVolunteer.uuid)
-                .then(() =>
-                    toast("Helfer löschen", "Helfer wurde erfolgreich gelöscht.")
-                )
+                .then(() => {
+                    toast("Helfer löschen", "Helfer wurde erfolgreich gelöscht.");
+                    history.push(routes.volunteerList());
+                })
                 .catch(() =>
                     toast("Helfer löschen", "Helfer wurde leider nicht erfolgreich gelöscht.")
                 );

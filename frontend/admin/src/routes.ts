@@ -1,8 +1,10 @@
 import { Moment } from "moment";
 
-export const purchaseList = () => `/purchase`;
+export const purchaseList = () => `/purchases`;
 export const purchaseDetails = (purchaseId: string) => `/purchase/${purchaseId}`;
+export const volunteerList = () => `/volunteers`;
 export const volunteerDetails = (volunteerId: string) => `/volunteer/${volunteerId}`;
+export const customerList = () => `/customers`;
 export const customerDetails = (customerId: string) => `/customer/${customerId}`;
 export const purchaseReceipt = (purchaseId: string) => `/api/v1/admin/purchases/${purchaseId}/receipt`;
 export const purchaseExport = (purchaseId: string) => `/api/v1/admin/purchases/${purchaseId}/export`;
