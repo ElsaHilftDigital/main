@@ -93,7 +93,7 @@ public class Purchase {
         csvPrinter.printRecord(
                 getId(),
                 getStatus().displayName(),
-                format.format(getCreateTime()),
+                format.format(getExecutionTime()),
                 getPaymentMethod().displayName(),
                 getCost().map(BigDecimal::toPlainString).orElse(""),
 
