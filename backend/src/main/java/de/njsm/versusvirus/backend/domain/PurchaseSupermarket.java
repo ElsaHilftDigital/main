@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.domain;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class PurchaseSupermarket {
@@ -10,6 +11,8 @@ public class PurchaseSupermarket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    private UUID uuid;
 
     private String name;
 
@@ -33,6 +36,17 @@ public class PurchaseSupermarket {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    @PrePersist
+    private void setUuid() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
     }
 
     public String getName() {

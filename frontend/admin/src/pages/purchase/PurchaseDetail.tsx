@@ -344,12 +344,12 @@ const PurchaseDetailInternal = (props: any) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {purchase.supermarkets.map((s: any, index: any) => {
-                                return <tr key={index}>
+                            {purchase.supermarkets.map((s: any) => {
+                                return <tr key={s.uuid}>
                                     <td>{s.name}</td>
                                     <td>
                                         <button type="button" className="btn btn-primary"
-                                                onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Öffnen
+                                                onClick={() => window.location.href = routes.purchaseReceipt(s.uuid)}>Öffnen
                                         </button>
                                     </td>
                                 </tr>;

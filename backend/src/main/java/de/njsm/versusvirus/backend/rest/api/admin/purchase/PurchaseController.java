@@ -77,8 +77,8 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}/receipt")
-    public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID purchaseId) {
-        var image = purchaseService.getReceipts(purchaseId);
+    public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID supermarketId) {
+        var image = purchaseService.getReceipt(supermarketId);
         return ResponseEntity.ok()
                 .header("Content-Disposition", "inline; filename=\"receipt." + image.getExtension() + "\"")
                 .contentType(org.springframework.http.MediaType.parseMediaType(image.getMimeType()))

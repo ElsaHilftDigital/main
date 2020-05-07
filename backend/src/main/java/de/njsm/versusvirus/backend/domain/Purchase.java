@@ -31,6 +31,8 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseSupermarket> purchaseSupermarketList = new ArrayList<>();
 
+    private Integer numberReceipts;
+
     @Enumerated(EnumType.STRING)
     private PurchaseSize purchaseSize;        // depending on number of purchase items
 
@@ -372,6 +374,14 @@ public class Purchase {
 
     public void setPurchaseList(List<PurchaseSupermarket> purchaseList) {
         this.purchaseSupermarketList = purchaseList;
+    }
+
+    public Integer getNumberReceipts() {
+        return numberReceipts;
+    }
+
+    public void setNumberReceipts(Integer numberReceipts) {
+        this.numberReceipts = numberReceipts;
     }
 
     public Long getResponsibleModeratorId() {

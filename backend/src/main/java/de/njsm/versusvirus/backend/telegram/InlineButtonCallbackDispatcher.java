@@ -3,6 +3,7 @@ package de.njsm.versusvirus.backend.telegram;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
+import de.njsm.versusvirus.backend.repository.PurchaseSupermarketRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
@@ -28,6 +29,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private final PurchaseRepository purchaseRepository;
 
+    private final PurchaseSupermarketRepository purchaseSupermarketRepository;
+
     private final MessageSender messageSender;
 
     private final AdminMessageSender adminMessageSender;
@@ -51,6 +54,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     public InlineButtonCallbackDispatcher(VolunteerRepository volunteerRepository,
                                           PurchaseRepository purchaseRepository,
+                                          PurchaseSupermarketRepository purchaseSupermarketRepository,
                                           MessageSender messageSender,
                                           AdminMessageSender adminMessageSender,
                                           TelegramApi telegramApi,
@@ -58,6 +62,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                                           @Value("${telegram.groupchat.id}") long groupChatId) {
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;
+        this.purchaseSupermarketRepository = purchaseSupermarketRepository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.telegramApi = telegramApi;
@@ -178,16 +183,16 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
     }
 
     @Override
-    public void handleReceiptSubmission(Message message, User user, UUID purchaseId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(() -> {
+    public void handleReceiptSubmission(Message message, User user, UUID supermarketId) {
+        var supermarket = purchaseSupermarketRepository.findByUuid(supermarketId).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
-            return new TelegramShouldBeFineException("purchase not found");
+            return new TelegramShouldBeFineException("supermarket not found");
         });
         var volunteer = volunteerRepository.findByTelegramUserIdAndDeleted(user.getId(), false).orElseThrow(() -> {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("volunteer not found");
         });
-
+        var purchase = supermarket.getPurchase();
         if (purchase.getAssignedVolunteer().isPresent() &&
                 purchase.getAssignedVolunteer().get() != volunteer.getId()) {
             messageSender.blameHackingUser(message.getChat().getId());
@@ -204,18 +209,24 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         if (volunteer.getTelegramFileId() != null) {
             var image = telegramApi.getFile(volunteer.getTelegramFileId());
-            purchase.setReceipt(image.getData());
-            purchase.setReceiptMimeType(image.getMimeType());
-            purchase.setReceiptFileExtension(image.getFileExtension());
-            purchase.setReceiptFileId(volunteer.getTelegramFileId());
-            purchase.setStatus(Purchase.Status.PURCHASE_DONE);
+            supermarket.setReceipt(image.getData());
+            supermarket.setReceiptMimeType(image.getMimeType());
+            supermarket.setReceiptFileExtension(image.getFileExtension());
+            supermarket.setReceiptFileId(volunteer.getTelegramFileId());
+            purchase.setNumberReceipts(purchase.getNumberReceipts() + 1);
             volunteer.setTelegramFileId(null);
-            messageSender.confirmReceiptUpload(message.getChat().getId());
-            adminMessageSender.receiptHasBeenSubmitted();
+            if (purchase.getPurchaseSupermarketList().size() == purchase.getNumberReceipts()) {
+                purchase.setStatus(Purchase.Status.PURCHASE_DONE);
+                messageSender.confirmReceiptUpload(message.getChat().getId());
+                adminMessageSender.receiptHasBeenSubmitted();
+            } else {
+                messageSender.confirmReceiptWaitingForNext(message.getChat().getId());
+            }
         } else {
-            LOG.warn("volunteer {} wants to map a receipt to purchase {} without having submitted a receipt",
+            LOG.warn("volunteer {} wants to map a receipt to purchase {} and supermarket {} without having submitted a receipt",
                     volunteer.getUuid(),
-                    purchaseId);
+                    purchase.getUuid(),
+                    supermarket.getUuid());
             messageSender.sendUnexpectedMessage(message.getChat().getId());
         }
     }
