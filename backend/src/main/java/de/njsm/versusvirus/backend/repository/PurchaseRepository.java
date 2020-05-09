@@ -37,4 +37,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
         Purchase.Status getStatus();
         double getNumberOfPurchases();
     }
+
+    @Query(value = "select coalesce((select max(purchase_number) + 1 from purchase group by date_trunc('day', execution_time)), 1)", nativeQuery = true)
+    Integer generatePurchaseNumber();
 }

@@ -123,6 +123,9 @@ databaseChangeLog:
       file: 20200502-2050-purchase-add-execution-time.sql
       relativeToChangelogFile: true
   - include:
+      file: 20200509-1135-introduce-purchase-number.sql
+      relativeToChangelogFile: true
+  - include:
       file: 20200504-1655-multiple-receipts-per-purchase.sql
       relativeToChangelogFile: true
   - include:

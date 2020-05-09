@@ -39,6 +39,8 @@ public class Purchase {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
+    private Integer purchaseNumber;
+
     private String publicComments;
 
     private String privateComments;
@@ -391,6 +393,15 @@ public class Purchase {
     public void setResponsibleModeratorId(Long responsibleModeratorId) {
         this.responsibleModeratorId = responsibleModeratorId;
     }
+
+    public Integer getPurchaseNumber() {
+        return purchaseNumber;
+    }
+
+    public void setPurchaseNumber(Integer purchaseNumber) {
+        this.purchaseNumber = purchaseNumber;
+    }
+
 
     @PrePersist
     private void setUuid() {
