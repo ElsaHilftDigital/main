@@ -120,6 +120,7 @@ public class PurchaseService {
         purchase.setCreateTime();
         TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(req.executionDate);
         purchase.setExecutionTime(Instant.from(temporalAccessor));
+        purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber());
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
@@ -225,8 +226,12 @@ public class PurchaseService {
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);
         purchase.setCost(updateRequest.cost);
-        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate);
-        purchase.setExecutionTime(Instant.from(temporalAccessor));
+        var newExecutionDate = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate));
+
+        if (!newExecutionDate.atZone(ZoneId.of("Europe/Zurich")).equals(purchase.getExecutionTime().atZone(ZoneId.of("Europe/Zurich")))) {
+            purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber());
+        }
+        purchase.setExecutionTime(newExecutionDate);
 
         purchase.getPurchaseSupermarketList().clear();
         for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
