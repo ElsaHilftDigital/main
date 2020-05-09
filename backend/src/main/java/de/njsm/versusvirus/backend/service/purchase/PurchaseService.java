@@ -125,6 +125,7 @@ public class PurchaseService {
         var executionTime = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(req.executionDate));
         purchase.setExecutionTime(executionTime);
         purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(executionTime));
+        purchase.setNumberReceipts(0);
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
