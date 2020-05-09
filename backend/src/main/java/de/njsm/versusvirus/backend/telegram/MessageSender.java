@@ -276,8 +276,10 @@ public class MessageSender {
             Customer customer = customerRepository.findById(p.getCustomerId()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
 
             for (PurchaseSupermarket s : p.getPurchaseSupermarketList()) {
-                possibleButtons.add(new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName() + ": " + s.getName(),
-                        CallbackCommand.SUBMIT_RECEIPT.render(s.getUuid())));
+                if (s.getReceiptFileId() == null) {
+                    possibleButtons.add(new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName() + ": " + s.getName(),
+                            CallbackCommand.SUBMIT_RECEIPT.render(s.getUuid())));
+                }
             }
         }
         InlineKeyboardButton[] result = new InlineKeyboardButton[possibleButtons.size()];
