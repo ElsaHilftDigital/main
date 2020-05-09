@@ -31,6 +31,8 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseSupermarket> purchaseSupermarketList = new ArrayList<>();
 
+    private Integer numberReceipts;
+
     @Enumerated(EnumType.STRING)
     private PurchaseSize purchaseSize;        // depending on number of purchase items
 
@@ -46,12 +48,6 @@ public class Purchase {
     private Instant createTime;
 
     private Instant executionTime;
-
-    private byte[] receipt;                   // picture of receipt
-
-    private String receiptMimeType;
-
-    private String receiptFileExtension;
 
     private BigDecimal cost;                  // cost of purchase in "Rappen"
 
@@ -73,16 +69,7 @@ public class Purchase {
     private List<Long> volunteerApplications;
 
     // telegram parameters
-    private String receiptFileId;
     private Long broadcastMessageId;
-
-    public String getReceiptMimeType() {
-        return receiptMimeType;
-    }
-
-    public void setReceiptMimeType(String receiptMimeType) {
-        this.receiptMimeType = receiptMimeType;
-    }
 
     public void writeToCsv(CSVPrinter csvPrinter, Optional<Customer> customer,
                            Optional<Volunteer> volunteer) throws IOException {
@@ -113,14 +100,6 @@ public class Purchase {
                 customer.map(Customer::getAddress).flatMap(Address::getZipCode).orElse(""),
                 customer.map(Customer::getAddress).map(Address::getCity).orElse("")
         );
-    }
-
-    public String getReceiptFileExtension() {
-        return receiptFileExtension;
-    }
-
-    public void setReceiptFileExtension(String receiptFileExtension) {
-        this.receiptFileExtension = receiptFileExtension;
     }
 
     public String getInternalComments() {
@@ -312,14 +291,6 @@ public class Purchase {
         this.privateComments = privateComments;
     }
 
-    public byte[] getReceipt() {
-        return receipt;
-    }
-
-    public void setReceipt(byte[] receipt) {
-        this.receipt = receipt;
-    }
-
     public Optional<BigDecimal> getCost() {
         return Optional.ofNullable(cost);
     }
@@ -334,14 +305,6 @@ public class Purchase {
 
     public void setExpensesPaid(boolean expensesPaid) {
         this.expensesPaid = expensesPaid;
-    }
-
-    public String getReceiptFileId() {
-        return receiptFileId;
-    }
-
-    public void setReceiptFileId(String receiptFileId) {
-        this.receiptFileId = receiptFileId;
     }
 
     public long getBroadcastMessageId() {
@@ -411,6 +374,14 @@ public class Purchase {
 
     public void setPurchaseList(List<PurchaseSupermarket> purchaseList) {
         this.purchaseSupermarketList = purchaseList;
+    }
+
+    public Integer getNumberReceipts() {
+        return numberReceipts;
+    }
+
+    public void setNumberReceipts(Integer numberReceipts) {
+        this.numberReceipts = numberReceipts;
     }
 
     public Long getResponsibleModeratorId() {

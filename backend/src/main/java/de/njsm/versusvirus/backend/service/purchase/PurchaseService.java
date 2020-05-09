@@ -41,6 +41,8 @@ public class PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
 
+    private final PurchaseSupermarketRepository purchaseSupermarketRepository;
+
     private final OrderItemRepository orderItemRepository;
 
     private final OrganizationRepository organizationRepository;
@@ -66,6 +68,7 @@ public class PurchaseService {
     private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Bank", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
     public PurchaseService(PurchaseRepository purchaseRepository,
+                           PurchaseSupermarketRepository purchaseSupermarketRepository,
                            OrderItemRepository orderItemRepository,
                            OrganizationRepository organizationRepository,
                            CustomerRepository customerRepository,
@@ -75,6 +78,7 @@ public class PurchaseService {
                            TelegramApi telegramApi,
                            @Value("${telegram.groupchat.id}") long groupChatId) {
         this.purchaseRepository = purchaseRepository;
+        this.purchaseSupermarketRepository = purchaseSupermarketRepository;
         this.orderItemRepository = orderItemRepository;
         this.organizationRepository = organizationRepository;
         this.customerRepository = customerRepository;
@@ -272,9 +276,9 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
-    public ReceiptDTO getReceipt(UUID purchaseId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType(), purchase.getReceiptFileExtension());
+    public ReceiptDTO getReceipt(UUID supermarketId) {
+        var supermarket = purchaseSupermarketRepository.findByUuid(supermarketId).orElseThrow(NotFoundException::new);
+        return new ReceiptDTO(supermarket);
     }
 
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {
