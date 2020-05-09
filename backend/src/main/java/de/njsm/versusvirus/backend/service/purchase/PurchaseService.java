@@ -118,9 +118,9 @@ public class PurchaseService {
         purchase.setCustomerId(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
-        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(req.executionDate);
-        purchase.setExecutionTime(Instant.from(temporalAccessor));
-        purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber());
+        var executionTime = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(req.executionDate));
+        purchase.setExecutionTime(executionTime);
+        purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(executionTime));
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
@@ -229,7 +229,7 @@ public class PurchaseService {
         var newExecutionDate = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate));
 
         if (!newExecutionDate.atZone(ZoneId.of("Europe/Zurich")).equals(purchase.getExecutionTime().atZone(ZoneId.of("Europe/Zurich")))) {
-            purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber());
+            purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(newExecutionDate));
         }
         purchase.setExecutionTime(newExecutionDate);
 
