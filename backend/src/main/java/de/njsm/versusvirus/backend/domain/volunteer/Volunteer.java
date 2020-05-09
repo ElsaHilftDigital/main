@@ -36,13 +36,19 @@ public class Volunteer {
     private String telegramFileId;
 
     @ElementCollection
-    @CollectionTable(name = "purchase_applications")
-    @Column(name = "purchase_id")
+    @CollectionTable(
+            name = "purchase",
+            joinColumns = @JoinColumn(name = "assignedVolunteer",
+                    updatable = false,
+                    insertable = false)
+    )
+    @Column(name = "id")
     private List<Long> assignedPurchases;
 
     public long getId() {
         return id;
     }
+
     public UUID getUuid() {
         return uuid;
     }
