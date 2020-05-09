@@ -128,3 +128,6 @@ databaseChangeLog:
   - include:
       file: 20200507-2241-add-supermarket-uuid-purchase-number-receipts.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200509-1051-update-supermarket-uuid-not-null.sql
+      relativeToChangelogFile: true
