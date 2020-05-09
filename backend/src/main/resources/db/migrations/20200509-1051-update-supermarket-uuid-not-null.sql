@@ -1,5 +1,3 @@
-create extension if not exists "uuid-ossp";
-
 update purchase_supermarket
 set uuid = uuid_generate_v4()
 where uuid is null;

@@ -159,9 +159,6 @@ const PurchaseDetailInternal = (props: any) => {
                     </>}
                     {purchase.status === 'Einkauf abgeschlossen' && <>
                         <Button className="mr-3 mb-1"
-                                onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung
-                            ansehen</Button>
-                        <Button className="mr-3 mb-1"
                                 onClick={handleSubmit(onNotifyVolunteerToDeliver)} disabled={!executionDateValid}>Speichern & Lieferung
                             freigeben</Button>
                     </>}
