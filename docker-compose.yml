@@ -12,6 +12,7 @@ services:
       - "1025:1025"
 
   db:
+    build: "./docker/postgres"
     image: "postgres:11.7"
     logging:
       driver: none
