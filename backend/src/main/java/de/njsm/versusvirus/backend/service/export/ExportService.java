@@ -40,7 +40,7 @@ public class ExportService {
 
             var groupedPurchases = purchaseRepository.findAllInRange(from.atStartOfDay(ZoneId.systemDefault()).toInstant(), to.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
                     .stream()
-                    .filter(purchase -> Objects.nonNull(purchase.getReceipt()))
+                    .filter(purchase -> purchase.getNumberReceipts() > 0)
                     .collect(Collectors.groupingBy(Purchase::getCustomerId));
             var customers = customerRepository.findAllById(groupedPurchases.keySet())
                     .stream()
@@ -52,9 +52,13 @@ public class ExportService {
                 var currentDirectory = String.format("%s%s_%s_%s/", rootDirectoryName, customer.getId(), customer.getFirstName(), customer.getLastName());
                 zipStream.putNextEntry(new ZipEntry(currentDirectory));
                 for (var purchase : purchases) {
-                    var fileName = currentDirectory + purchase.getId() + "." + purchase.getReceiptFileExtension();
-                    zipStream.putNextEntry(new ZipEntry(fileName));
-                    zipStream.write(purchase.getReceipt());
+                    int i = 1;
+                    for (var supermarket : purchase.getPurchaseSupermarketList()) {
+                        var fileName = currentDirectory + purchase.getId() + "_" + i + "." + supermarket.getReceiptFileExtension();
+                        zipStream.putNextEntry(new ZipEntry(fileName));
+                        zipStream.write(supermarket.getReceipt());
+                        i++;
+                    }
                 }
             }
         } catch (Exception e) {

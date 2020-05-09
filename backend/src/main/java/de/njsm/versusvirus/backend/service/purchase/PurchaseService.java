@@ -41,6 +41,8 @@ public class PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
 
+    private final PurchaseSupermarketRepository purchaseSupermarketRepository;
+
     private final OrderItemRepository orderItemRepository;
 
     private final OrganizationRepository organizationRepository;
@@ -66,6 +68,7 @@ public class PurchaseService {
     private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Bank", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
     public PurchaseService(PurchaseRepository purchaseRepository,
+                           PurchaseSupermarketRepository purchaseSupermarketRepository,
                            OrderItemRepository orderItemRepository,
                            OrganizationRepository organizationRepository,
                            CustomerRepository customerRepository,
@@ -75,6 +78,7 @@ public class PurchaseService {
                            TelegramApi telegramApi,
                            @Value("${telegram.groupchat.id}") long groupChatId) {
         this.purchaseRepository = purchaseRepository;
+        this.purchaseSupermarketRepository = purchaseSupermarketRepository;
         this.orderItemRepository = orderItemRepository;
         this.organizationRepository = organizationRepository;
         this.customerRepository = customerRepository;
@@ -118,8 +122,10 @@ public class PurchaseService {
         purchase.setCustomerId(customer.getId());
         purchase.setStatus(Purchase.Status.NEW);
         purchase.setCreateTime();
-        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(req.executionDate);
-        purchase.setExecutionTime(Instant.from(temporalAccessor));
+        var executionTime = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(req.executionDate));
+        purchase.setExecutionTime(executionTime);
+        purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(executionTime));
+        purchase.setNumberReceipts(0);
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
@@ -225,8 +231,12 @@ public class PurchaseService {
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);
         purchase.setCost(updateRequest.cost);
-        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate);
-        purchase.setExecutionTime(Instant.from(temporalAccessor));
+        var newExecutionDate = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate));
+
+        if (!newExecutionDate.atZone(ZoneId.of("Europe/Zurich")).equals(purchase.getExecutionTime().atZone(ZoneId.of("Europe/Zurich")))) {
+            purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(newExecutionDate));
+        }
+        purchase.setExecutionTime(newExecutionDate);
 
         purchase.getPurchaseSupermarketList().clear();
         for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
@@ -272,9 +282,9 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
-    public ReceiptDTO getReceipt(UUID purchaseId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType(), purchase.getReceiptFileExtension());
+    public ReceiptDTO getReceipt(UUID supermarketId) {
+        var supermarket = purchaseSupermarketRepository.findByUuid(supermarketId).orElseThrow(NotFoundException::new);
+        return new ReceiptDTO(supermarket);
     }
 
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {

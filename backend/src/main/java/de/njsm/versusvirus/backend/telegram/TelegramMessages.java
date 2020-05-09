@@ -30,6 +30,7 @@ public class TelegramMessages {
     private String thankForDoingPurchase;
     private String unexpectedMessage;
     private String confirmReceiptUpload;
+    private String confirmReceiptWaitingForNext;
     private String confirmRejection;
     private String broadcastPurchaseDescription;
     private String personalPurchaseDescription;
@@ -186,6 +187,14 @@ public class TelegramMessages {
 
     public void setConfirmReceiptUpload(String confirmReceiptUpload) {
         this.confirmReceiptUpload = confirmReceiptUpload;
+    }
+
+    public String getConfirmReceiptWaitingForNext() {
+        return confirmReceiptWaitingForNext;
+    }
+
+    public void setConfirmReceiptWaitingForNext(String confirmReceiptWaitingForNext) {
+        this.confirmReceiptWaitingForNext = confirmReceiptWaitingForNext;
     }
 
     public String getConfirmRejection() {

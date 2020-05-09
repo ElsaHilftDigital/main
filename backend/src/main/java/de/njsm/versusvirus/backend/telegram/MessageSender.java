@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -270,14 +271,19 @@ public class MessageSender {
     }
 
     private InlineKeyboardButton[] renderPurchaseList(List<Purchase> purchases) {
-        InlineKeyboardButton[] result = new InlineKeyboardButton[purchases.size()];
-        int i = 0;
+        List<InlineKeyboardButton> possibleButtons = new ArrayList<>();
         for (Purchase p : purchases) {
             Customer customer = customerRepository.findById(p.getCustomerId()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
-            result[i] = new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName(),
-                    CallbackCommand.SUBMIT_RECEIPT.render(p.getUuid()));
-            i++;
+
+            for (PurchaseSupermarket s : p.getPurchaseSupermarketList()) {
+                if (s.getReceiptFileId() == null) {
+                    possibleButtons.add(new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName() + ": " + s.getName(),
+                            CallbackCommand.SUBMIT_RECEIPT.render(s.getUuid())));
+                }
+            }
         }
+        InlineKeyboardButton[] result = new InlineKeyboardButton[possibleButtons.size()];
+        possibleButtons.toArray(result);
         return result;
     }
 
@@ -350,6 +356,11 @@ public class MessageSender {
 
     public void confirmReceiptUpload(long chatId) {
         var m = new MessageToBeSent(chatId, telegramMessages.getConfirmReceiptUpload());
+        api.sendMessage(m);
+    }
+
+    public void confirmReceiptWaitingForNext(long chatId) {
+        var m = new MessageToBeSent(chatId, telegramMessages.getConfirmReceiptWaitingForNext());
         api.sendMessage(m);
     }
 

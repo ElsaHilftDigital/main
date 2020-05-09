@@ -90,6 +90,7 @@ const PurchaseDetailInternal = (props: any) => {
         purchaseAPI.update(purchase.uuid, updatedPurchase)
             .then(() => {
                 toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.")
+                history.push(routes.purchaseList());
             })
             .catch(() =>
                 toast("Einkauf speichern", "Speichern ist leider fehlgeschlagen")
@@ -136,10 +137,10 @@ const PurchaseDetailInternal = (props: any) => {
                 <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
                 {(purchase.status === 'Einkauf abgeschlossen' || purchase.status === 'Kunde benachrichtigt') &&
                 <p className="mt-2">
-                    <b>Einkauf wurde erledigt. Die nächsten Schritte sind die folgenden:
+                    <b>Einkauf wurde abgeschlossen. Die nächsten Schritte sind die folgenden:
                         <ol>
-                            <li>Quittung überprüfen über "Quittung ansehen"</li>
-                            <li>Quittungsbetrag bei "Kosten" eintragen</li>
+                            <li>Bitte überprüfe unten, ob alle Quittungen vorhanden sind</li>
+                            <li>Gesamter Betrag bei "Kosten" eintragen</li>
                             <li>Kunde/-in anrufen und Betrag kommunizieren</li>
                             <li>Auf "Speichern & Lieferung freigeben" klicken</li>
                         </ol>
@@ -163,9 +164,6 @@ const PurchaseDetailInternal = (props: any) => {
                                 onClick={() => deletePurchase()}>Löschen</Button>
                     </>}
                     {purchase.status === 'Einkauf abgeschlossen' && <>
-                        <Button className="mr-3 mb-1"
-                                onClick={() => window.location.href = routes.purchaseReceipt(purchase.uuid)}>Quittung
-                            ansehen</Button>
                         <Button className="mr-3 mb-1"
                                 onClick={handleSubmit(onNotifyVolunteerToDeliver)} disabled={!executionDateValid}>Speichern & Lieferung
                             freigeben</Button>
@@ -339,10 +337,36 @@ const PurchaseDetailInternal = (props: any) => {
                     </select>
                 </div>
                 <div className="form-group">
+                    {(!(purchase.status === 'Neu') && !(purchase.status === 'Veröffentlicht') && !(purchase.status === 'Helfer gefunden') && !(purchase.status === 'Helfer bestätigt')) && <>
+                        <p>
+                            <i>Quittungen der Einkäufe:</i>
+                        </p>
+                        <table className="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Supermarkt</th>
+                                <th>Quittung</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {purchase.supermarkets.map((s: any) => {
+                                return <tr key={s.uuid}>
+                                    <td>{s.name}</td>
+                                    <td>
+                                        <button type="button" className="btn btn-primary"
+                                                onClick={() => window.location.href = routes.purchaseReceipt(s.uuid)}>Öffnen
+                                        </button>
+                                    </td>
+                                </tr>;
+                            })}
+                            </tbody>
+                        </table>
+                    </>}
+                </div>
+                <div className="form-group">
                     <label htmlFor="cost">Kosten</label>
                     <input name="cost" ref={register()} type="text" className="form-control" id="cost"/>
                 </div>
-
                 <div className="form-group">
                     <label htmlFor="paymentMethod">Zahlungsmethode</label>
                     <select ref={register()} id="paymentMethod" name="paymentMethod" className="form-control"
@@ -352,12 +376,6 @@ const PurchaseDetailInternal = (props: any) => {
                         <option value="TWINT">TWINT</option>
                         <option value="OTHER">Andere</option>
                     </select>
-                </div>
-                <div className="form-group">
-                    {(!(purchase.status === 'Neu') && !(purchase.status === 'Veröffentlicht') && !(purchase.status === 'Helfer gefunden') && !(purchase.status === 'Helfer bestätigt')) &&
-                    <i><a href={routes.purchaseReceipt(purchase.uuid)} target="_blank" rel="noopener noreferrer">Hier
-                        ist der Link zur Quittung.</a></i>
-                    }
                 </div>
                 <div className="form-group">
                     <label htmlFor="publicComments">Gruppenchat Kommentare</label>
