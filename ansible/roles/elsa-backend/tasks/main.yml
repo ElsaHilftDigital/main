@@ -39,7 +39,7 @@
 - name: Create GCP Credentials
   become: True
   copy:
-    content: {{ vault_elsa_backend_gcp_credentials }}
+    content: "{{ vault_elsa_backend_gcp_credentials }}"
     dest: /usr/local/share/gcp-testing.json
     owner: elsa
     group: elsa
