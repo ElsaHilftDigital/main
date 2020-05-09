@@ -90,6 +90,7 @@ const PurchaseDetailInternal = (props: any) => {
         purchaseAPI.update(purchase.uuid, updatedPurchase)
             .then(() => {
                 toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.")
+                history.push(routes.purchaseList());
             })
             .catch(() =>
                 toast("Einkauf speichern", "Speichern ist leider fehlgeschlagen")
