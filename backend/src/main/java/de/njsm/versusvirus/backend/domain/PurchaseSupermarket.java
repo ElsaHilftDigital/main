@@ -22,6 +22,8 @@ public class PurchaseSupermarket {
     @OneToMany(mappedBy = "purchaseSupermarket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> purchaseList = new ArrayList<>();
 
+    private boolean receiptUploaded;
+
     private byte[] receipt;
 
     private String receiptFileExtension;
@@ -104,5 +106,13 @@ public class PurchaseSupermarket {
 
     public void setReceiptFileId(String receiptFileId) {
         this.receiptFileId = receiptFileId;
+    }
+
+    public boolean isReceiptUploaded() {
+        return receiptUploaded;
+    }
+
+    public void setReceiptUploaded(boolean receiptUploaded) {
+        this.receiptUploaded = receiptUploaded;
     }
 }

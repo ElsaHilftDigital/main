@@ -134,3 +134,6 @@ databaseChangeLog:
   - include:
       file: 20200509-1051-update-supermarket-uuid-not-null.sql
       relativeToChangelogFile: true
+  - include:
+      file: 20200509-1807-fix-receipt-counting.sql
+      relativeToChangelogFile: true

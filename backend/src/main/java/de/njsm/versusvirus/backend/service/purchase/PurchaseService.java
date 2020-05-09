@@ -125,7 +125,6 @@ public class PurchaseService {
         var executionTime = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(req.executionDate));
         purchase.setExecutionTime(executionTime);
         purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(executionTime));
-        purchase.setNumberReceipts(0);
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
@@ -280,11 +279,6 @@ public class PurchaseService {
                 .stream()
                 .map(VolunteerDTO::new)
                 .collect(Collectors.toList());
-    }
-
-    public ReceiptDTO getReceipt(UUID supermarketId) {
-        var supermarket = purchaseSupermarketRepository.findByUuid(supermarketId).orElseThrow(NotFoundException::new);
-        return new ReceiptDTO(supermarket);
     }
 
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {

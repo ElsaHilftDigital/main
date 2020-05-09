@@ -36,6 +36,16 @@
     mode: 0644
   notify: Restart service
 
+- name: Create GCP Credentials
+  become: True
+  copy:
+    content: {{ vault_elsa_backend_gcp_credentials }}
+    dest: /usr/local/share/gcp-testing.json
+    owner: elsa
+    group: elsa
+    mode: 0400
+  notify: Restart service
+
 - name: Start service
   become: True
   systemd:
