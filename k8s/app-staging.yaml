@@ -1,3 +1,20 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: elsahilft-digital-staging
+  labels:
+    name: backend-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 4000
+      protocol: TCP
+  selector:
+    app: backend
+  type: ClusterIP
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -122,7 +139,7 @@ spec:
               name: database
         - name: SPRING_PROFILES_ACTIVE
           value: production
-        image: docker.pkg.github.com/elsahilftdigital/main/backend-staging:51ec434
+        image: docker.pkg.github.com/elsahilftdigital/main/backend-staging:8df54d4
         imagePullPolicy: IfNotPresent
         name: backend
         ports:
