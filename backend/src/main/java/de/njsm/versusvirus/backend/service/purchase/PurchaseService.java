@@ -33,6 +33,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.versusvirus.backend.domain.Purchase.Status.*;
+
 @Service
 @Transactional
 public class PurchaseService {
@@ -120,7 +122,7 @@ public class PurchaseService {
         purchase.setPrivateComments(req.privateComments);
         purchase.setCreatedByModerator(moderator.getId());
         purchase.setCustomerId(customer.getId());
-        purchase.setStatus(Purchase.Status.NEW);
+        purchase.setStatus(NEW);
         purchase.setCreateTime();
         var executionTime = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(req.executionDate));
         purchase.setExecutionTime(executionTime);
@@ -174,8 +176,8 @@ public class PurchaseService {
         }
 
         purchase.setDeleted(true);
-        if (purchase.getStatus() == Purchase.Status.PUBLISHED ||
-                purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
+        if (purchase.getStatus() == PUBLISHED ||
+                purchase.getStatus() == VOLUNTEER_FOUND) {
 
             telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
             // The following entity is loaded from a not-null foreign key, it should never fail
@@ -211,7 +213,7 @@ public class PurchaseService {
             return;
         }
 
-        if (purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
+        if (purchase.getStatus() != VOLUNTEER_FOUND) {
             LOG.error("This purchase is in the unexpected state " + purchase.getStatus().name());
             return;
         }
@@ -237,17 +239,19 @@ public class PurchaseService {
         }
         purchase.setExecutionTime(newExecutionDate);
 
-        purchase.getPurchaseSupermarketList().clear();
-        for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
-            var persistentMarket = new PurchaseSupermarket();
-            persistentMarket.setName(market.name);
-            for (String orderItemName : market.orderItems) {
-                var orderItem = new OrderItem();
-                orderItem.setPurchaseItem(orderItemName);
-                persistentMarket.addOrderItem(orderItem);
+        if (List.of(NEW, PUBLISHED, VOLUNTEER_FOUND).contains(purchase.getStatus())) {
+            purchase.getPurchaseSupermarketList().clear();
+            for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
+                var persistentMarket = new PurchaseSupermarket();
+                persistentMarket.setName(market.name);
+                for (String orderItemName : market.orderItems) {
+                    var orderItem = new OrderItem();
+                    orderItem.setPurchaseItem(orderItemName);
+                    persistentMarket.addOrderItem(orderItem);
+                }
+                persistentMarket.setPurchase(purchase);
+                purchase.addSupermarket(persistentMarket);
             }
-            persistentMarket.setPurchase(purchase);
-            purchase.addSupermarket(persistentMarket);
         }
 
         var moderator = moderatorRepository.findByUuid(updateRequest.responsibleModerator).orElseThrow(BadRequestException::new);
