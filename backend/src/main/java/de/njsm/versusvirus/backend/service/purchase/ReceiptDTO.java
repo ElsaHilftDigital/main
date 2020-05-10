@@ -1,15 +1,19 @@
 package de.njsm.versusvirus.backend.service.purchase;
 
+import de.njsm.versusvirus.backend.domain.PurchaseSupermarket;
+
 public class ReceiptDTO {
 
-    private byte[] receipt;
-    private String mimeType;
-    private String extension;
+    private final String supermarket;
+    private final byte[] receipt;
+    private final String mimeType;
+    private final String extension;
 
-    public ReceiptDTO(byte[] receipt, String mimeType, String extension) {
-        this.mimeType = mimeType;
-        this.receipt = receipt;
-        this.extension = extension;
+    public ReceiptDTO(PurchaseSupermarket supermarket) {
+        this.receipt = supermarket.getReceipt();
+        this.mimeType = supermarket.getReceiptMimeType();
+        this.extension = supermarket.getReceiptFileExtension();
+        this.supermarket = supermarket.getName();
     }
 
     public byte[] getReceipt() {
@@ -22,5 +26,9 @@ public class ReceiptDTO {
 
     public String getExtension() {
         return extension;
+    }
+
+    public String getSupermarket() {
+        return supermarket;
     }
 }

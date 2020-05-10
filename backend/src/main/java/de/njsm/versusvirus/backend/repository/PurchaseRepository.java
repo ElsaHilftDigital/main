@@ -35,6 +35,10 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
     interface PurchaseSummary {
         Purchase.Status getStatus();
+
         double getNumberOfPurchases();
     }
+
+    @Query(value = "select coalesce((select max(purchase_number) + 1 from purchase where date_trunc('day', execution_time at time zone 'Europe/Zurich') = date_trunc('day', :date at time zone 'Europe/Zurich')), 1)", nativeQuery = true)
+    Integer generatePurchaseNumber(@Param("date") Instant date);
 }

@@ -33,6 +33,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.versusvirus.backend.domain.Purchase.Status.*;
+
 @Service
 @Transactional
 public class PurchaseService {
@@ -40,6 +42,8 @@ public class PurchaseService {
     private static final Logger LOG = LoggerFactory.getLogger(PurchaseService.class);
 
     private final PurchaseRepository purchaseRepository;
+
+    private final PurchaseSupermarketRepository purchaseSupermarketRepository;
 
     private final OrderItemRepository orderItemRepository;
 
@@ -66,6 +70,7 @@ public class PurchaseService {
     private final String[] EXPORT_CSV_HEADER = {"Auftrag #", "Auftrag Status", "Auftrag Datum", "Auftrag Zahlungsmethode", "Auftrag Kosten", "Helfer Name", "Helfer Vorname", "Helfer Adresse", "Helfer PLZ", " Helfer Wohnort", "Helfer Geb.Dat.", "Helfer IBAN", "Helfer Bank", "Helfer Entschädigung", "Kunde Name", "Kunde Vorname", "Kunde Adresse", "Kunde PLZ", "Kunde Wohnort"};
 
     public PurchaseService(PurchaseRepository purchaseRepository,
+                           PurchaseSupermarketRepository purchaseSupermarketRepository,
                            OrderItemRepository orderItemRepository,
                            OrganizationRepository organizationRepository,
                            CustomerRepository customerRepository,
@@ -75,6 +80,7 @@ public class PurchaseService {
                            TelegramApi telegramApi,
                            @Value("${telegram.groupchat.id}") long groupChatId) {
         this.purchaseRepository = purchaseRepository;
+        this.purchaseSupermarketRepository = purchaseSupermarketRepository;
         this.orderItemRepository = orderItemRepository;
         this.organizationRepository = organizationRepository;
         this.customerRepository = customerRepository;
@@ -116,10 +122,11 @@ public class PurchaseService {
         purchase.setPrivateComments(req.privateComments);
         purchase.setCreatedByModerator(moderator.getId());
         purchase.setCustomerId(customer.getId());
-        purchase.setStatus(Purchase.Status.NEW);
+        purchase.setStatus(NEW);
         purchase.setCreateTime();
-        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(req.executionDate);
-        purchase.setExecutionTime(Instant.from(temporalAccessor));
+        var executionTime = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(req.executionDate));
+        purchase.setExecutionTime(executionTime);
+        purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(executionTime));
 
         // responsible is creator by default
         purchase.setResponsibleModeratorId(moderator.getId());
@@ -169,8 +176,8 @@ public class PurchaseService {
         }
 
         purchase.setDeleted(true);
-        if (purchase.getStatus() == Purchase.Status.PUBLISHED ||
-                purchase.getStatus() == Purchase.Status.VOLUNTEER_FOUND) {
+        if (purchase.getStatus() == PUBLISHED ||
+                purchase.getStatus() == VOLUNTEER_FOUND) {
 
             telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
             // The following entity is loaded from a not-null foreign key, it should never fail
@@ -206,7 +213,7 @@ public class PurchaseService {
             return;
         }
 
-        if (purchase.getStatus() != Purchase.Status.VOLUNTEER_FOUND) {
+        if (purchase.getStatus() != VOLUNTEER_FOUND) {
             LOG.error("This purchase is in the unexpected state " + purchase.getStatus().name());
             return;
         }
@@ -225,20 +232,26 @@ public class PurchaseService {
         purchase.setPaymentMethod(updateRequest.paymentMethod);
         purchase.setTiming(updateRequest.timing);
         purchase.setCost(updateRequest.cost);
-        TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate);
-        purchase.setExecutionTime(Instant.from(temporalAccessor));
+        var newExecutionDate = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(updateRequest.executionDate));
 
-        purchase.getPurchaseSupermarketList().clear();
-        for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
-            var persistentMarket = new PurchaseSupermarket();
-            persistentMarket.setName(market.name);
-            for (String orderItemName : market.orderItems) {
-                var orderItem = new OrderItem();
-                orderItem.setPurchaseItem(orderItemName);
-                persistentMarket.addOrderItem(orderItem);
+        if (!newExecutionDate.atZone(ZoneId.of("Europe/Zurich")).equals(purchase.getExecutionTime().atZone(ZoneId.of("Europe/Zurich")))) {
+            purchase.setPurchaseNumber(purchaseRepository.generatePurchaseNumber(newExecutionDate));
+        }
+        purchase.setExecutionTime(newExecutionDate);
+
+        if (List.of(NEW, PUBLISHED, VOLUNTEER_FOUND).contains(purchase.getStatus())) {
+            purchase.getPurchaseSupermarketList().clear();
+            for (PurchaseSupermarketDTO market : updateRequest.supermarkets) {
+                var persistentMarket = new PurchaseSupermarket();
+                persistentMarket.setName(market.name);
+                for (String orderItemName : market.orderItems) {
+                    var orderItem = new OrderItem();
+                    orderItem.setPurchaseItem(orderItemName);
+                    persistentMarket.addOrderItem(orderItem);
+                }
+                persistentMarket.setPurchase(purchase);
+                purchase.addSupermarket(persistentMarket);
             }
-            persistentMarket.setPurchase(purchase);
-            purchase.addSupermarket(persistentMarket);
         }
 
         var moderator = moderatorRepository.findByUuid(updateRequest.responsibleModerator).orElseThrow(BadRequestException::new);
@@ -272,9 +285,9 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
-    public ReceiptDTO getReceipt(UUID purchaseId) {
-        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        return new ReceiptDTO(purchase.getReceipt(), purchase.getReceiptMimeType(), purchase.getReceiptFileExtension());
+    public ReceiptDTO getReceipt(UUID supermarketId) {
+        var supermarket = purchaseSupermarketRepository.findByUuid(supermarketId).orElseThrow(NotFoundException::new);
+        return new ReceiptDTO(supermarket);
     }
 
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {

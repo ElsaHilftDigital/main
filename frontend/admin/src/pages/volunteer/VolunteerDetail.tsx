@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useParams, useHistory } from 'react-router-dom';
 import { useVolunteer, Volunteer, volunteerAPI } from 'apis/volunteer';
-import { formatDate, parseDate } from 'config/utils';
+import { formatDate, formatDateForApiCall, parseDate } from 'config/utils';
 import Header from 'components/Header';
 import { useToast } from 'toasts/useToast';
 import * as routes from 'routes';
@@ -48,11 +48,12 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
         volunteerAPI.update(currentVolunteer.uuid, {
             ...values,
             wantsCompensation: !values.wantsNoCompensation,
-            birthDate: parseDate(values.birthDate),
+            birthDate: formatDateForApiCall(parseDate(values.birthDate)),
         })
-            .then(() =>
-                toast("Helfer speichern", "Helfer wurde erfolgreich gespeichert.")
-            )
+            .then(() => {
+                toast("Helfer speichern", "Helfer wurde erfolgreich gespeichert.");
+                history.push(routes.volunteerList());
+            })
             .catch(() =>
                 toast("Helfer speichern", "Helfer wurde leider nicht erfolgreich gespeichert.")
             );
