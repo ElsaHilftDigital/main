@@ -154,7 +154,7 @@ public class MessageSender {
         String comment = purchase.getPublicComments();
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
                                             .withLocale(Locale.GERMAN)
-                                            .withZone(ZoneId.systemDefault());
+                                            .withZone(ZoneId.of("Europe/Zurich"));
         return MessageFormat.format(
                 purchaseDescTemplate,
                 AdminMessageSender.escapeMarkdownCharacters(Long.toString(purchase.getId())),
@@ -212,7 +212,7 @@ public class MessageSender {
         String purchaseDescTemplate = telegramMessages.getPersonalPurchaseDescription();
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
                 .withLocale(Locale.GERMAN)
-                .withZone(ZoneId.systemDefault());
+                .withZone(ZoneId.of("Europe/Zurich"));
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
                 AdminMessageSender.escapeMarkdownCharacters(Long.toString(purchase.getId())),
