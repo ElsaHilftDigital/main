@@ -168,8 +168,8 @@ public class VolunteerService {
         }
         for (CSVRecord record : records) {
             SignupRequest req = new SignupRequest();
-            req.firstName = record.get("Name");
-            req.lastName = record.get("Vorname");
+            req.firstName = record.get("Vorname");
+            req.lastName = record.get("Name");
             req.phone = record.get("Telefonnummer");
             req.email = record.get("Email");
             req.address = record.get("Adresse");
