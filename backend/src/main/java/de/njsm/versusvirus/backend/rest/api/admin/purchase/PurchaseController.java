@@ -1,7 +1,6 @@
 package de.njsm.versusvirus.backend.rest.api.admin.purchase;
 
 import de.njsm.versusvirus.backend.service.purchase.*;
-import de.njsm.versusvirus.backend.service.receipt.ReceiptService;
 import de.njsm.versusvirus.backend.service.volunteer.VolunteerDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +18,9 @@ import java.util.UUID;
 public class PurchaseController {
 
     private final PurchaseService purchaseService;
-    private final ReceiptService receiptService;
 
-    public PurchaseController(PurchaseService purchaseService,
-                              ReceiptService receiptService) {
+    public PurchaseController(PurchaseService purchaseService) {
         this.purchaseService = purchaseService;
-        this.receiptService = receiptService;
     }
 
     @GetMapping()
@@ -81,8 +77,13 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}/receipt")
-    public void getReceipt(@PathVariable("id") UUID supermarketId, HttpServletResponse response) throws IOException {
-        response.sendRedirect(receiptService.getUrl(supermarketId).toString());
+    public ResponseEntity<byte[]> getReceipt(@PathVariable("id") UUID supermarketId, HttpServletResponse response) throws IOException {
+        var image = purchaseService.getReceipt(supermarketId);
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "inline; filename=\"receipt." + image.getExtension() + "\"")
+                .contentType(org.springframework.http.MediaType.parseMediaType(image.getMimeType()))
+                .body(image.getReceipt());
+
     }
 
     @GetMapping("/{id}/export")
