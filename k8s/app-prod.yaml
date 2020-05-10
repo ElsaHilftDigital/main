@@ -1,20 +1,3 @@
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend-service
-  namespace: elsahilft-digital-production
-  labels:
-    name: backend-service
-spec:
-  ports:
-    - port: 80
-      targetPort: 4000
-      protocol: TCP
-  selector:
-    app: backend
-  type: ClusterIP
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -26,7 +9,7 @@ metadata:
   namespace: elsahilft-digital-production
 spec:
   progressDeadlineSeconds: 600
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -100,6 +83,8 @@ spec:
               name: telegram
         - name: DEPLOYMENT_DOMAIN
           value: elsa-hilft.ch
+        - name: GCS_STORAGE_BUCKET
+          value: ehd-production-storage
         - name: SMTP_HOST
           valueFrom:
             secretKeyRef:
@@ -137,7 +122,7 @@ spec:
               name: database
         - name: SPRING_PROFILES_ACTIVE
           value: production
-        image: docker.pkg.github.com/elsahilftdigital/main/backend:0db473c
+        image: docker.pkg.github.com/elsahilftdigital/main/backend:b84d45f
         imagePullPolicy: IfNotPresent
         name: backend
         ports:

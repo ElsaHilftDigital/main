@@ -22,13 +22,7 @@ public class PurchaseSupermarket {
     @OneToMany(mappedBy = "purchaseSupermarket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> purchaseList = new ArrayList<>();
 
-    private byte[] receipt;
-
-    private String receiptFileExtension;
-
-    private String receiptMimeType;
-
-    private String receiptFileId;
+    private boolean receiptUploaded;
 
     public long getId() {
         return id;
@@ -74,35 +68,11 @@ public class PurchaseSupermarket {
         purchaseItem.setPurchaseSupermarket(this);
     }
 
-    public byte[] getReceipt() {
-        return receipt;
+    public boolean isReceiptUploaded() {
+        return receiptUploaded;
     }
 
-    public void setReceipt(byte[] receipt) {
-        this.receipt = receipt;
-    }
-
-    public String getReceiptFileExtension() {
-        return receiptFileExtension;
-    }
-
-    public void setReceiptFileExtension(String receiptFileExtension) {
-        this.receiptFileExtension = receiptFileExtension;
-    }
-
-    public String getReceiptMimeType() {
-        return receiptMimeType;
-    }
-
-    public void setReceiptMimeType(String receiptMimeType) {
-        this.receiptMimeType = receiptMimeType;
-    }
-
-    public String getReceiptFileId() {
-        return receiptFileId;
-    }
-
-    public void setReceiptFileId(String receiptFileId) {
-        this.receiptFileId = receiptFileId;
+    public void setReceiptUploaded(boolean receiptUploaded) {
+        this.receiptUploaded = receiptUploaded;
     }
 }

@@ -1,12 +1,12 @@
 package de.njsm.versusvirus.backend.telegram;
 
-import de.njsm.versusvirus.backend.domain.Moderator;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseSupermarketRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.repository.ModeratorRepository;
+import de.njsm.versusvirus.backend.service.receipt.ReceiptService;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.User;
@@ -32,6 +32,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
     private final PurchaseRepository purchaseRepository;
 
     private final PurchaseSupermarketRepository purchaseSupermarketRepository;
+
+    private final ReceiptService receiptService;
 
     private final MessageSender messageSender;
 
@@ -59,6 +61,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
     public InlineButtonCallbackDispatcher(VolunteerRepository volunteerRepository,
                                           PurchaseRepository purchaseRepository,
                                           PurchaseSupermarketRepository purchaseSupermarketRepository,
+                                          ReceiptService receiptService,
                                           MessageSender messageSender,
                                           AdminMessageSender adminMessageSender,
                                           TelegramApi telegramApi,
@@ -68,6 +71,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;
         this.purchaseSupermarketRepository = purchaseSupermarketRepository;
+        this.receiptService = receiptService;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
         this.telegramApi = telegramApi;
@@ -223,13 +227,10 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         if (volunteer.getTelegramFileId() != null) {
             var image = telegramApi.getFile(volunteer.getTelegramFileId());
-            supermarket.setReceipt(image.getData());
-            supermarket.setReceiptMimeType(image.getMimeType());
-            supermarket.setReceiptFileExtension(image.getFileExtension());
-            supermarket.setReceiptFileId(volunteer.getTelegramFileId());
-            purchase.setNumberReceipts(purchase.getNumberReceipts() + 1);
+            receiptService.uploadReceipt(supermarket.getUuid(), image.getData());
+            supermarket.setReceiptUploaded(true);
             volunteer.setTelegramFileId(null);
-            if (purchase.getPurchaseSupermarketList().size() == purchase.getNumberReceipts()) {
+            if (purchase.getPurchaseSupermarketList().size() == purchase.numberOfReceipts()) {
                 purchase.setStatus(Purchase.Status.PURCHASE_DONE);
                 messageSender.confirmReceiptUpload(message.getChat().getId());
                 var moderator = moderatorRepository.findById(purchase.getResponsibleModeratorId()).orElseThrow(() -> {

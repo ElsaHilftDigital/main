@@ -2,8 +2,10 @@ package de.njsm.versusvirus.backend.service.export;
 
 import de.njsm.versusvirus.backend.domain.Customer;
 import de.njsm.versusvirus.backend.domain.Purchase;
+import de.njsm.versusvirus.backend.domain.PurchaseSupermarket;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
+import de.njsm.versusvirus.backend.service.receipt.ReceiptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,11 +29,14 @@ public class ExportService {
 
     private final PurchaseRepository purchaseRepository;
     private final CustomerRepository customerRepository;
+    private final ReceiptService receiptService;
 
     public ExportService(PurchaseRepository purchaseRepository,
-                         CustomerRepository customerRepository) {
+                         CustomerRepository customerRepository,
+                         ReceiptService receiptService) {
         this.purchaseRepository = purchaseRepository;
         this.customerRepository = customerRepository;
+        this.receiptService = receiptService;
     }
 
     public void exportReceiptsZip(OutputStream outputStream, LocalDate from, LocalDate to) {
@@ -40,7 +46,7 @@ public class ExportService {
 
             var groupedPurchases = purchaseRepository.findAllInRange(from.atStartOfDay(ZoneId.systemDefault()).toInstant(), to.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
                     .stream()
-                    .filter(purchase -> purchase.getNumberReceipts() > 0)
+                    .filter(purchase -> purchase.numberOfReceipts() > 0)
                     .collect(Collectors.groupingBy(Purchase::getCustomerId));
             var customers = customerRepository.findAllById(groupedPurchases.keySet())
                     .stream()
@@ -52,12 +58,12 @@ public class ExportService {
                 var currentDirectory = String.format("%s%s_%s_%s/", rootDirectoryName, customer.getId(), customer.getFirstName(), customer.getLastName());
                 zipStream.putNextEntry(new ZipEntry(currentDirectory));
                 for (var purchase : purchases) {
-                    int i = 1;
-                    for (var supermarket : purchase.getPurchaseSupermarketList()) {
-                        var fileName = currentDirectory + purchase.getId() + "_" + i + "." + supermarket.getReceiptFileExtension();
+                    List<PurchaseSupermarket> purchaseSupermarketList = purchase.getPurchaseSupermarketList();
+                    for (int i = 0; i < purchaseSupermarketList.size(); i++) {
+                        var supermarket = purchaseSupermarketList.get(i);
+                        var fileName = currentDirectory + purchase.getId() + "_" + i + ".jpg";
                         zipStream.putNextEntry(new ZipEntry(fileName));
-                        zipStream.write(supermarket.getReceipt());
-                        i++;
+                        zipStream.write(receiptService.getContent(supermarket.getUuid()));
                     }
                 }
             }

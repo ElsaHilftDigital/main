@@ -13,15 +13,12 @@ services:
 
   db:
     build: "./docker/postgres"
-    image: "postgres:11.7"
     logging:
       driver: none
     environment:
      - POSTGRES_PASSWORD=db
      - POSTGRES_USER=db
      - POSTGRES_DB=db
-    expose:
-     - 5432
     ports:
       - "5434:5432"
 
