@@ -160,7 +160,7 @@ public class VolunteerService {
 
     public void importVolunteers(String upload) {
         Iterable<CSVRecord> records;
-        var format = DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(Locale.GERMAN).withZone(ZoneId.of("Europe/Zurich"));
+        var format = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.GERMAN).withZone(ZoneId.of("Europe/Zurich"));
         try {
             records = CSVFormat.DEFAULT.withHeader().parse(new StringReader(upload));
         } catch (IOException e) {
@@ -168,8 +168,8 @@ public class VolunteerService {
         }
         for (CSVRecord record : records) {
             SignupRequest req = new SignupRequest();
-            req.firstName = record.get("Name");
-            req.lastName = record.get("Vorname");
+            req.firstName = record.get("Vorname");
+            req.lastName = record.get("Name");
             req.phone = record.get("Telefonnummer");
             req.email = record.get("Email");
             req.address = record.get("Adresse");
