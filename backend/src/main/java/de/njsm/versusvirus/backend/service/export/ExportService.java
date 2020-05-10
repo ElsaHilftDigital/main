@@ -5,7 +5,6 @@ import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.PurchaseSupermarket;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
-import de.njsm.versusvirus.backend.service.receipt.ReceiptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -29,14 +27,11 @@ public class ExportService {
 
     private final PurchaseRepository purchaseRepository;
     private final CustomerRepository customerRepository;
-    private final ReceiptService receiptService;
 
     public ExportService(PurchaseRepository purchaseRepository,
-                         CustomerRepository customerRepository,
-                         ReceiptService receiptService) {
+                         CustomerRepository customerRepository) {
         this.purchaseRepository = purchaseRepository;
         this.customerRepository = customerRepository;
-        this.receiptService = receiptService;
     }
 
     public void exportReceiptsZip(OutputStream outputStream, LocalDate from, LocalDate to) {
@@ -63,7 +58,7 @@ public class ExportService {
                         var supermarket = purchaseSupermarketList.get(i);
                         var fileName = currentDirectory + purchase.getId() + "_" + i + ".jpg";
                         zipStream.putNextEntry(new ZipEntry(fileName));
-                        zipStream.write(receiptService.getContent(supermarket.getUuid()));
+                        zipStream.write(supermarket.getReceipt());
                     }
                 }
             }

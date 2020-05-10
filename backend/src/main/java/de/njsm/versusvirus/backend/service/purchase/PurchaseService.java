@@ -281,6 +281,11 @@ public class PurchaseService {
                 .collect(Collectors.toList());
     }
 
+    public ReceiptDTO getReceipt(UUID supermarketId) {
+        var supermarket = purchaseSupermarketRepository.findByUuid(supermarketId).orElseThrow(NotFoundException::new);
+        return new ReceiptDTO(supermarket);
+    }
+
     public void export(PrintWriter writer, UUID purchaseId) throws IOException {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         var customer = customerRepository.findById(purchase.getCustomerId());

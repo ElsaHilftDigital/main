@@ -86,14 +86,14 @@ const CustomerDetailInternal: React.FC<Props> = props => {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="phone" className="col-sm-3 col-form-label">Festnetz</label>
+                            <label htmlFor="phone" className="col-sm-3 col-form-label">Telefonnummer</label>
                             <div className="col-sm-9">
                                 <input name="phone" ref={register()} type="text" className="form-control"
                                        id="phone"/>
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="mobile" className="col-sm-3 col-form-label">Mobil</label>
+                            <label htmlFor="mobile" className="col-sm-3 col-form-label">Notfallnummer</label>
                             <div className="col-sm-9">
                                 <input name="mobile" ref={register()} type="text" className="form-control"
                                        id="mobile"/>
