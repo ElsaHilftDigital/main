@@ -276,7 +276,7 @@ public class MessageSender {
             Customer customer = customerRepository.findById(p.getCustomerId()).orElseThrow(() -> new RuntimeException("the purchase must have a customer"));
 
             for (PurchaseSupermarket s : p.getPurchaseSupermarketList()) {
-                if (s.getReceiptFileId() == null) {
+                if (!s.isReceiptUploaded()) {
                     possibleButtons.add(new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName() + ": " + s.getName(),
                             CallbackCommand.SUBMIT_RECEIPT.render(s.getUuid())));
                 }

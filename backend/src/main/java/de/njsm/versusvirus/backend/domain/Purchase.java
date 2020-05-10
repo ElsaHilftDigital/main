@@ -393,7 +393,7 @@ public class Purchase {
     }
 
     public long numberOfReceipts() {
-        return purchaseSupermarketList.stream().filter(supermarket -> supermarket.getReceipt() != null).count();
+        return purchaseSupermarketList.stream().filter(PurchaseSupermarket::isReceiptUploaded).count();
     }
 
     @PrePersist

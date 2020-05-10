@@ -61,7 +61,7 @@ public class ExportService {
                     List<PurchaseSupermarket> purchaseSupermarketList = purchase.getPurchaseSupermarketList();
                     for (int i = 0; i < purchaseSupermarketList.size(); i++) {
                         var supermarket = purchaseSupermarketList.get(i);
-                        var fileName = currentDirectory + purchase.getId() + "_" + i + "." + supermarket.getReceiptFileExtension();
+                        var fileName = currentDirectory + purchase.getId() + "_" + i + ".jpg";
                         zipStream.putNextEntry(new ZipEntry(fileName));
                         zipStream.write(receiptService.getContent(supermarket.getUuid()));
                     }
