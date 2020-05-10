@@ -133,7 +133,7 @@ const PurchaseDetailInternal = (props: any) => {
         <Header/>
         <div className="container mt-3 mb-5">
             <div className="flex-grow-0 justify-content-between align-items-bottom mb-3">
-                <h1>Details zum Einkauf vom {formatDate(purchase.createdAt)} für {purchase.customer.lastName}</h1>
+                <h1>Details zum Einkauf vom {formatDate(executionDate)} für {purchase.customer.lastName}</h1>
                 <i>Die Felder von Helfern können von Moderatoren angepasst und gespeichert werden.</i>
                 {(purchase.status === 'Einkauf abgeschlossen' || purchase.status === 'Kunde benachrichtigt') &&
                 <p className="mt-2">

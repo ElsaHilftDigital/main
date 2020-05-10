@@ -50,9 +50,10 @@ const VolunteerDetailInternal: React.FC<Props> = (props) => {
             wantsCompensation: !values.wantsNoCompensation,
             birthDate: parseDate(values.birthDate),
         })
-            .then(() =>
-                toast("Helfer speichern", "Helfer wurde erfolgreich gespeichert.")
-            )
+            .then(() => {
+                toast("Helfer speichern", "Helfer wurde erfolgreich gespeichert.");
+                history.push(routes.volunteerList());
+            })
             .catch(() =>
                 toast("Helfer speichern", "Helfer wurde leider nicht erfolgreich gespeichert.")
             );
