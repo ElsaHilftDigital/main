@@ -75,7 +75,7 @@ public class Purchase {
                            Optional<Volunteer> volunteer) throws IOException {
         DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE
                 .withLocale(Locale.GERMANY)
-                .withZone(ZoneId.systemDefault());
+                .withZone(ZoneId.of("Europe/Zurich"));
 
         csvPrinter.printRecord(
                 getId(),
