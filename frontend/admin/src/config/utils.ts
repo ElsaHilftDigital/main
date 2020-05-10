@@ -59,4 +59,8 @@ export function parseDate(dateString: string): Moment | undefined {
     }
 }
 
+export function formatDateForApiCall(date?: Moment): string | undefined {
+    return date?.format('YYYY-MM-DD');
+}
+
 export const formatBoolean = (value?: boolean) => value ? "Ja" : "Nein";
