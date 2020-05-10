@@ -160,7 +160,7 @@ public class VolunteerService {
 
     public void importVolunteers(String upload) {
         Iterable<CSVRecord> records;
-        var format = DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(Locale.GERMAN).withZone(ZoneId.of("Europe/Zurich"));
+        var format = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.GERMAN).withZone(ZoneId.of("Europe/Zurich"));
         try {
             records = CSVFormat.DEFAULT.withHeader().parse(new StringReader(upload));
         } catch (IOException e) {
