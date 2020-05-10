@@ -40,7 +40,7 @@ const CustomerDetailInternal: React.FC<Props> = props => {
         customerAPI.update(selectedCustomer.uuid, values)
             .then(() => {
                 toast("Kunde speichern", "Auftraggeber wurde gespeichert");
-                props.refresh();
+                history.push(routes.customerList());
             })
             .catch(() =>
                 toast("Kunde speichern", "Speichern ist leider fehlgeschlagen")
