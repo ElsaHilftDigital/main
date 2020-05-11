@@ -59,13 +59,13 @@ const CustomerListItem: React.FC<ListItemProps> = props => {
             </Col>
             <Col>
                 <Row>
-                    <Form.Label column md={labelWidth}>Festnetz</Form.Label>
+                    <Form.Label column md={labelWidth}>Telefonnummer</Form.Label>
                     <Col>
                         <Form.Control plaintext readOnly defaultValue={customer.phone}/>
                     </Col>
                 </Row>
                 <Row>
-                    <Form.Label column md={labelWidth}>Mobil</Form.Label>
+                    <Form.Label column md={labelWidth}>Notfallnummer</Form.Label>
                     <Col>
                         <Form.Control plaintext readOnly defaultValue={customer.mobile}/>
                     </Col>
