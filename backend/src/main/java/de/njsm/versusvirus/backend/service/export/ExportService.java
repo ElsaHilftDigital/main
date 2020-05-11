@@ -39,7 +39,7 @@ public class ExportService {
             var rootDirectoryName = String.format("Quittungen_von_%s_bis_%s/", from, to);
             zipStream.putNextEntry(new ZipEntry(rootDirectoryName));
 
-            var groupedPurchases = purchaseRepository.findAllInRange(from.atStartOfDay(ZoneId.systemDefault()).toInstant(), to.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+            var groupedPurchases = purchaseRepository.findAllInRange(from.atStartOfDay(ZoneId.of("Europe/Zurich")).toInstant(), to.plusDays(1).atStartOfDay(ZoneId.of("Europe/Zurich")).toInstant())
                     .stream()
                     .filter(purchase -> purchase.numberOfReceipts() > 0)
                     .collect(Collectors.groupingBy(Purchase::getCustomerId));
