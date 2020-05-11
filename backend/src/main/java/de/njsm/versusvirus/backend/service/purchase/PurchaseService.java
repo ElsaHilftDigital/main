@@ -306,11 +306,11 @@ public class PurchaseService {
                                     .withHeader(EXPORT_CSV_HEADER));
 
         for(Purchase purchase : allPurchases) {
-            LocalDate createDate = LocalDate.ofInstant(purchase.getCreateTime(), ZoneId.systemDefault());
-            if (createDate.isBefore(startDate)) {
+            LocalDate executionDate = LocalDate.ofInstant(purchase.getExecutionTime(), ZoneId.of("Europe/Zurich"));
+            if (executionDate.isBefore(startDate)) {
                 continue;
             }
-            if (createDate.isAfter(endDate)) {
+            if (executionDate.isAfter(endDate)) {
                 break;
             }
             var customer = customerRepository.findById(purchase.getCustomerId());
