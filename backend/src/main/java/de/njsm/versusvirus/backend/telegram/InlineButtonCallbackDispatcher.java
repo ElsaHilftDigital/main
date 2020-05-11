@@ -6,6 +6,7 @@ import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseSupermarketRepository;
 import de.njsm.versusvirus.backend.repository.VolunteerRepository;
 import de.njsm.versusvirus.backend.repository.ModeratorRepository;
+import de.njsm.versusvirus.backend.service.receipt.ReceiptService;
 import de.njsm.versusvirus.backend.spring.web.TelegramShouldBeFineException;
 import de.njsm.versusvirus.backend.telegram.dto.Message;
 import de.njsm.versusvirus.backend.telegram.dto.User;
@@ -42,6 +43,8 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
     private final ModeratorRepository moderatorRepository;
 
+    private final ReceiptService receiptService;
+
     private final long groupChatId;
 
     private static final Counter LEAVING_VOLUNTEERS = Counter.build()
@@ -63,6 +66,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                                           TelegramApi telegramApi,
                                           CustomerRepository customerRepository,
                                           ModeratorRepository moderatorRepository,
+                                          ReceiptService receiptService,
                                           @Value("${telegram.groupchat.id}") long groupChatId) {
         this.volunteerRepository = volunteerRepository;
         this.purchaseRepository = purchaseRepository;
@@ -73,6 +77,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         this.customerRepository = customerRepository;
         this.moderatorRepository = moderatorRepository;
         this.groupChatId = groupChatId;
+        this.receiptService = receiptService;
     }
 
     @Override
@@ -222,6 +227,11 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
 
         if (volunteer.getTelegramFileId() != null) {
             var image = telegramApi.getFile(volunteer.getTelegramFileId());
+            try {
+                receiptService.uploadReceipt(supermarket.getUuid(), image.getData());
+            } catch (Exception e) {
+                LOG.error("Upload to GCS failed", e);
+            }
             supermarket.setReceipt(image.getData());
             supermarket.setReceiptMimeType(image.getMimeType());
             supermarket.setReceiptUploaded(true);
