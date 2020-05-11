@@ -300,7 +300,7 @@ public class PurchaseService {
     }
 
     public void exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
-        List<Purchase> allPurchases = purchaseRepository.findByDeletedFalse(Sort.by("createTime"));
+        List<Purchase> allPurchases = purchaseRepository.findByDeletedFalse(Sort.by("executionTime"));
 
         CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withDelimiter(';')
                                     .withHeader(EXPORT_CSV_HEADER));
