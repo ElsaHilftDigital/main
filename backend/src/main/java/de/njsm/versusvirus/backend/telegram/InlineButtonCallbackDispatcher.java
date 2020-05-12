@@ -106,7 +106,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 messageSender.sendUnexpectedMessage(message.getChat().getId());
                 return new TelegramShouldBeFineException("responsible moderator not found");
             });
-            adminMessageSender.helpersHaveApplied(moderator);
+            adminMessageSender.helpersHaveApplied(moderator, purchase.getId());
         }
         messageSender.updateBroadcastMessage(customer, purchase);
         messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId(), purchase.getId());
@@ -182,7 +182,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 messageSender.sendUnexpectedMessage(message.getChat().getId());
                 return new TelegramShouldBeFineException("responsible moderator not found");
             });
-            adminMessageSender.helperHasRejected(moderator);
+            adminMessageSender.helperHasRejected(moderator, purchase.getId());
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was rejected unexpectedly");
             messageSender.sendUnexpectedMessage(chatId);
@@ -245,7 +245,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                     messageSender.sendUnexpectedMessage(message.getChat().getId());
                     return new TelegramShouldBeFineException("responsible moderator not found");
                 });
-                adminMessageSender.receiptHasBeenSubmitted(moderator);
+                adminMessageSender.receiptHasBeenSubmitted(moderator, purchase.getId());
             } else {
                 messageSender.confirmReceiptWaitingForNext(message.getChat().getId());
             }
@@ -324,7 +324,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("responsible moderator not found");
         });
-        adminMessageSender.notifyAboutMissingMoney(moderator);
+        adminMessageSender.notifyAboutMissingMoney(moderator, purchase.getId());
     }
 
     @Override
