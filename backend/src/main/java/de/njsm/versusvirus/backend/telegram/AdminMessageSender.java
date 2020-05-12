@@ -60,7 +60,8 @@ public class AdminMessageSender {
     }
 
     private MessageToBeSent formatWithModeratorAndPurchaseNumber(String template, String moderatorName, long purchaseNumber) {
-        String text = MessageFormat.format(template, moderatorName, String.valueOf(purchaseNumber));
+        var escapedModerator = AdminMessageSender.escapeMarkdownCharacters(moderatorName);
+        String text = MessageFormat.format(template, escapedModerator, String.valueOf(purchaseNumber));
         return new MessageToBeSent(moderatorChatId, text);
     }
 
