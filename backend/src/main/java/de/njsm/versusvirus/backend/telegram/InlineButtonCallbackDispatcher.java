@@ -109,7 +109,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             adminMessageSender.helpersHaveApplied(moderator);
         }
         messageSender.updateBroadcastMessage(customer, purchase);
-        messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId());
+        messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId(), purchase.getId());
     }
 
     @Override
@@ -240,7 +240,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             volunteer.setTelegramFileId(null);
             if (purchase.getPurchaseSupermarketList().size() == purchase.numberOfReceipts()) {
                 purchase.setStatus(Purchase.Status.PURCHASE_DONE);
-                messageSender.confirmReceiptUpload(message.getChat().getId());
+                messageSender.confirmReceiptUpload(message.getChat().getId(), purchase.getId());
                 var moderator = moderatorRepository.findById(purchase.getResponsibleModeratorId()).orElseThrow(() -> {
                     messageSender.sendUnexpectedMessage(message.getChat().getId());
                     return new TelegramShouldBeFineException("responsible moderator not found");
@@ -289,7 +289,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         } else {
             purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
         }
-        messageSender.confirmCompletion(chatId);
+        messageSender.confirmCompletion(chatId, purchase.getId());
     }
 
     @Override

@@ -277,7 +277,7 @@ public class MessageSender {
 
             for (PurchaseSupermarket s : p.getPurchaseSupermarketList()) {
                 if (!s.isReceiptUploaded()) {
-                    possibleButtons.add(new InlineKeyboardButton(customer.getFirstName() + " " + customer.getLastName() + ": " + s.getName(),
+                    possibleButtons.add(new InlineKeyboardButton(p.getId() + ": " + customer.getFirstName() + " " + customer.getLastName() + ": " + s.getName(),
                             CallbackCommand.SUBMIT_RECEIPT.render(s.getUuid())));
                 }
             }
@@ -307,7 +307,8 @@ public class MessageSender {
                 template,
                 customerString,
                 AdminMessageSender.escapeMarkdownCharacters(supportUserName),
-                escapedMessageToVolunteer);
+                escapedMessageToVolunteer,
+                String.valueOf(purchase.getId()));
 
         String finishCommand = CallbackCommand.COMPLETE_PURCHASE.render(purchase.getUuid());
         String moneyMissingCommand = CallbackCommand.MONEY_MISSING.render(purchase.getUuid());
@@ -337,8 +338,10 @@ public class MessageSender {
         api.sendMessage(message);
     }
 
-    public void confirmHelpOfferingReceived(long chatId) {
-        MessageToBeSent m = new MessageToBeSent(chatId, telegramMessages.getThankForOfferingHelp());
+    public void confirmHelpOfferingReceived(long chatId, long purchaseNumber) {
+        var template = telegramMessages.getThankForOfferingHelp();
+        var text = MessageFormat.format(template, String.valueOf(purchaseNumber));
+        var m  = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }
 
@@ -354,8 +357,10 @@ public class MessageSender {
         api.sendMessage(m);
     }
 
-    public void confirmReceiptUpload(long chatId) {
-        var m = new MessageToBeSent(chatId, telegramMessages.getConfirmReceiptUpload());
+    public void confirmReceiptUpload(long chatId, long purchaseNumber) {
+        var template = telegramMessages.getConfirmReceiptUpload();
+        var text = MessageFormat.format(template, purchaseNumber);
+        var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }
 
@@ -369,8 +374,10 @@ public class MessageSender {
         api.sendMessage(m);
     }
 
-    public void confirmCompletion(long chatId) {
-        var m = new MessageToBeSent(chatId, telegramMessages.getConfirmCompletion());
+    public void confirmCompletion(long chatId, long purchaseNumber) {
+        var template = telegramMessages.getConfirmCompletion();
+        var text = MessageFormat.format(template, purchaseNumber);
+        var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }
 
