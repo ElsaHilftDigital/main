@@ -35,32 +35,33 @@ public class AdminMessageSender {
         api.sendMessage(m);
     }
 
-    public void helpersHaveApplied(Moderator moderator) {
+    public void helpersHaveApplied(Moderator moderator, long purchaseNumber) {
         String template = telegramMessages.getHelpersAppliedForPurchase();
-        var m = formatWithResponsibleModerator(template, moderator.getName());
+        var m = formatWithModeratorAndPurchaseNumber(template, moderator.getName(), purchaseNumber);
         api.sendMessage(m);
     }
 
-    public void helperHasRejected(Moderator moderator) {
+    public void helperHasRejected(Moderator moderator, long purchaseNumber) {
         String template = telegramMessages.getHelperRejectedPurchase();
-        var m = formatWithResponsibleModerator(template, moderator.getName());
+        var m = formatWithModeratorAndPurchaseNumber(template, moderator.getName(), purchaseNumber);
         api.sendMessage(m);
     }
 
-    public void receiptHasBeenSubmitted(Moderator moderator) {
+    public void receiptHasBeenSubmitted(Moderator moderator, long purchaseNumber) {
         String template = telegramMessages.getReceiptHasBeenSubmitted();
-        var m = formatWithResponsibleModerator(template, moderator.getName());
+        var m = formatWithModeratorAndPurchaseNumber(template, moderator.getName(), purchaseNumber);
         api.sendMessage(m);
     }
 
-    public void notifyAboutMissingMoney(Moderator moderator) {
+    public void notifyAboutMissingMoney(Moderator moderator, long purchaseNumber) {
         String template = telegramMessages.getMoneyIsMissing();
-        var m = formatWithResponsibleModerator(template, moderator.getName());
+        var m = formatWithModeratorAndPurchaseNumber(template, moderator.getName(), purchaseNumber);
         api.sendMessage(m);
     }
 
-    private MessageToBeSent formatWithResponsibleModerator(String template, String moderatorName) {
-        String text = MessageFormat.format(template, moderatorName);
+    private MessageToBeSent formatWithModeratorAndPurchaseNumber(String template, String moderatorName, long purchaseNumber) {
+        var escapedModerator = AdminMessageSender.escapeMarkdownCharacters(moderatorName);
+        String text = MessageFormat.format(template, escapedModerator, String.valueOf(purchaseNumber));
         return new MessageToBeSent(moderatorChatId, text);
     }
 

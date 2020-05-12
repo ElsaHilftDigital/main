@@ -106,10 +106,10 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 messageSender.sendUnexpectedMessage(message.getChat().getId());
                 return new TelegramShouldBeFineException("responsible moderator not found");
             });
-            adminMessageSender.helpersHaveApplied(moderator);
+            adminMessageSender.helpersHaveApplied(moderator, purchase.getId());
         }
         messageSender.updateBroadcastMessage(customer, purchase);
-        messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId());
+        messageSender.confirmHelpOfferingReceived(volunteer.getTelegramChatId(), purchase.getId());
     }
 
     @Override
@@ -182,7 +182,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 messageSender.sendUnexpectedMessage(message.getChat().getId());
                 return new TelegramShouldBeFineException("responsible moderator not found");
             });
-            adminMessageSender.helperHasRejected(moderator);
+            adminMessageSender.helperHasRejected(moderator, purchase.getId());
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was rejected unexpectedly");
             messageSender.sendUnexpectedMessage(chatId);
@@ -240,12 +240,12 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             volunteer.setTelegramFileId(null);
             if (purchase.getPurchaseSupermarketList().size() == purchase.numberOfReceipts()) {
                 purchase.setStatus(Purchase.Status.PURCHASE_DONE);
-                messageSender.confirmReceiptUpload(message.getChat().getId());
+                messageSender.confirmReceiptUpload(message.getChat().getId(), purchase.getId());
                 var moderator = moderatorRepository.findById(purchase.getResponsibleModeratorId()).orElseThrow(() -> {
                     messageSender.sendUnexpectedMessage(message.getChat().getId());
                     return new TelegramShouldBeFineException("responsible moderator not found");
                 });
-                adminMessageSender.receiptHasBeenSubmitted(moderator);
+                adminMessageSender.receiptHasBeenSubmitted(moderator, purchase.getId());
             } else {
                 messageSender.confirmReceiptWaitingForNext(message.getChat().getId());
             }
@@ -289,7 +289,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         } else {
             purchase.setStatus(Purchase.Status.PURCHASE_COMPLETED);
         }
-        messageSender.confirmCompletion(chatId);
+        messageSender.confirmCompletion(chatId, purchase.getId());
     }
 
     @Override
@@ -324,7 +324,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             messageSender.sendUnexpectedMessage(message.getChat().getId());
             return new TelegramShouldBeFineException("responsible moderator not found");
         });
-        adminMessageSender.notifyAboutMissingMoney(moderator);
+        adminMessageSender.notifyAboutMissingMoney(moderator, purchase.getId());
     }
 
     @Override
