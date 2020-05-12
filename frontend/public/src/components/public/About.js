@@ -27,7 +27,7 @@ const About = () => {
                     <p>
                         <b>Tel. 056 200 81 85</b> (Montag bis Samstag, 8 bis 16 Uhr)
                         <br />
-                        <a href="https://www.baden.ch/public/upload/assets/116736/Infoblatt%20Empf%C3%A4nger_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Empfänger/-innen</a>
+                        <a href="https://www.baden.ch/public/upload/assets/116736/Infoblatt_Empfaenger_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Empfänger/-innen</a>
                     </p>
                 </div>
 

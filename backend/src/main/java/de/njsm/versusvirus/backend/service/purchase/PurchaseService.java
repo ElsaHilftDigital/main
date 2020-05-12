@@ -300,17 +300,17 @@ public class PurchaseService {
     }
 
     public void exportAll(PrintWriter writer, LocalDate startDate, LocalDate endDate) throws IOException {
-        List<Purchase> allPurchases = purchaseRepository.findByDeletedFalse(Sort.by("createTime"));
+        List<Purchase> allPurchases = purchaseRepository.findByDeletedFalse(Sort.by("executionTime"));
 
         CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withDelimiter(';')
                                     .withHeader(EXPORT_CSV_HEADER));
 
         for(Purchase purchase : allPurchases) {
-            LocalDate createDate = LocalDate.ofInstant(purchase.getCreateTime(), ZoneId.systemDefault());
-            if (createDate.isBefore(startDate)) {
+            LocalDate executionDate = LocalDate.ofInstant(purchase.getExecutionTime(), ZoneId.of("Europe/Zurich"));
+            if (executionDate.isBefore(startDate)) {
                 continue;
             }
-            if (createDate.isAfter(endDate)) {
+            if (executionDate.isAfter(endDate)) {
                 break;
             }
             var customer = customerRepository.findById(purchase.getCustomerId());

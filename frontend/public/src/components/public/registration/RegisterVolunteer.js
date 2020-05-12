@@ -175,7 +175,7 @@ const RegisterVolunteer = () => {
             backgroundRepeat:"no-repeat",backgroundColor: "hsl(240, 100%, 99%)", paddingBottom: "10%"}}>
         <div className="container pt-4 mb-5">
             <h1>Als Helfer/in registrieren</h1>
-            <i>Bitte lese zuerst das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt%20Helfer_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Helfende</a> gut durch.</i>
+            <i>Bitte lese zuerst das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt_Helfer_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Helfende</a> gut durch.</i>
             <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
                 <div className="row">
                     <div className="form-group col-md-6">

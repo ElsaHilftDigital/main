@@ -27,7 +27,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
     List<Purchase> findAllByAssignedVolunteerAndStatusNotAndDeletedFalse(Long volunteer, Purchase.Status status);
 
-    @Query("SELECT p FROM Purchase p WHERE p.createTime >= :from AND p.createTime < :to AND p.deleted = false")
+    @Query("SELECT p FROM Purchase p WHERE p.executionTime >= :from AND p.executionTime < :to AND p.deleted = false")
     List<Purchase> findAllInRange(@Param("from") Instant from, @Param("to") Instant to);
 
     @Query("select status as status, count(status) as numberOfPurchases from Purchase where deleted = false group by status")

@@ -24,7 +24,7 @@ const Home = () => {
                     </ul>
 
                 <p>
-                <i>Bitte lese zudem das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt%20Helfer_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Helfende</a> durch.</i>
+                <i>Bitte lese zudem das folgende <a href="https://www.baden.ch/public/upload/assets/116725/Infoblatt_Helfer_innen.pdf" target="_blank" rel="noopener noreferrer">Infoblatt für Helfende</a> durch.</i>
                 </p>
                 <p>
                     "Elsa hilft" ist ein Projekt der Elsa Benz-von Arx-Stiftung in Zusammenarbeit mit der Stadt Baden und der Unterstützung von hilf-jetzt.ch und vielen weiteren unverzichtbaren Helfenden.
