@@ -39,7 +39,7 @@ const PasswordChange = () => {
         })
             .then(() => history.push("/"))
             .catch((error) => {
-                if (error.response.status === 401) {
+                if (error.response.status === 412) {
                     setInvalidPassword(true);
                 } else {
                     setUnknownError(true);
@@ -58,7 +58,7 @@ const PasswordChange = () => {
                                   isInvalid={invalidPassword}
                                   autoComplete='current-password'
                                   onChange={handleOldPasswordUpdate}/>
-                    <Form.Control.Feedback type='invalid'>Ungültiges Passwort</Form.Control.Feedback>
+                    <Form.Control.Feedback type='invalid'>Passwort falsch</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="newPassword">
                     <Form.Label>Neues Passwort</Form.Label>
@@ -80,8 +80,7 @@ const PasswordChange = () => {
                 </Form.Group>
                 {unknownError &&
                 <Alert variant="danger">Es ist ein Fehler beim Ändern des Passworts aufgetreten.</Alert>}
-                <Button onClick={changePassword} type="submit"
-                        disabled={!isValid}>Speichern</Button>
+                <Button type="submit" disabled={!isValid}>Speichern</Button>
             </Form>
         </Container>
     </>;

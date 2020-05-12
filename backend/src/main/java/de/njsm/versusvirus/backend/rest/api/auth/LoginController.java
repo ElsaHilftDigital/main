@@ -55,7 +55,7 @@ public class LoginController {
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequest request,
-                               Principal principal) {
+                                               Principal principal) {
         if (principal == null) {
             LOG.error("Unauthenticated user was able to access change-password endpoint");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -63,7 +63,7 @@ public class LoginController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(principal.getName(), request.oldPassword));
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
 
         if (request.newPassword.length() < 8) {
@@ -71,6 +71,6 @@ public class LoginController {
         }
 
         moderatorService.changePassword(principal.getName(), request.newPassword);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
