@@ -277,7 +277,7 @@ public class MessageSender {
 
             for (PurchaseSupermarket s : p.getPurchaseSupermarketList()) {
                 if (!s.isReceiptUploaded()) {
-                    possibleButtons.add(new InlineKeyboardButton(p.getId() + ": " + customer.getFirstName() + " " + customer.getLastName() + ": " + s.getName(),
+                    possibleButtons.add(new InlineKeyboardButton(p.getId() + ": " + s.getName() + ", " + customer.getLastName(),
                             CallbackCommand.SUBMIT_RECEIPT.render(s.getUuid())));
                 }
             }
