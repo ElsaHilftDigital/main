@@ -141,6 +141,17 @@ public class PurchaseService {
         messageSender.broadcastPurchase(customer, purchase);
     }
 
+    public void withdrawPurchase(UUID purchaseId) {
+        var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
+        if (purchase.getAssignedVolunteer().isPresent() || !purchase.getVolunteerApplications().isEmpty()) {
+            throw new IllegalStateException("Cannot withdraw purchase after volunteers have applied");
+        }
+        if (purchase.getStatus() == PUBLISHED) {
+            telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
+            purchase.setStatus(NEW);
+        }
+    }
+
     public List<PurchaseListItemDTO> getPurchases() {
         var purchases = purchaseRepository.findByDeletedFalse();
         var customers = customerRepository.findAllById(purchases.stream().map(Purchase::getCustomerId).collect(Collectors.toSet()))

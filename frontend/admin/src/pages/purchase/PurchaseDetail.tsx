@@ -62,6 +62,16 @@ const PurchaseDetailInternal = (props: any) => {
             );
     };
 
+    const withdrawPurchase = () => {
+        purchaseAPI.withdraw(purchase.uuid)
+            .then(() =>
+                toast("Einkauf zurückziehen", "Einkauf wurde von Helfer-Gruppenchat zurückgezogen.")
+            )
+            .catch(() =>
+                toast("Einkauf zurückziehen", "Einkauf konnte leider nicht zurückgezogen werden.")
+            );
+    }
+
     const assignVolunteer = (uuid: string) => {
         purchaseAPI.assignVolunteer(purchase.uuid, uuid)
             .then(() =>
@@ -159,6 +169,9 @@ const PurchaseDetailInternal = (props: any) => {
                     {purchase.status === 'Neu' &&
                     <Button className="mr-3 mb-1"
                             onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
+                    {purchase.status === 'Veröffentlicht' &&
+                    <Button className="mr-3 mb-1"
+                            onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
                     {!purchase.assignedVolunteer && <>
                         <Button variant="danger" className="mr-3 mb-1"
                                 onClick={() => deletePurchase()}>Löschen</Button>

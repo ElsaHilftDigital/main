@@ -50,9 +50,12 @@ public class PurchaseController {
     }
 
     @PostMapping("/{id}/publish")
-    public void publishPurchase(@PathVariable("id") UUID purchase) {
-        purchaseService.publishPurchase(purchase);
+    public void publishPurchase(@PathVariable("id") UUID purchaseId) {
+        purchaseService.publishPurchase(purchaseId);
     }
+
+    @PostMapping("/{id}/withdraw")
+    public void withdrawPurchase(@PathVariable("id") UUID purchaseId) { purchaseService.withdrawPurchase(purchaseId); }
 
     @GetMapping("/{id}/availablevolunteers")
     public List<VolunteerDTO> getAvailableVolunteers(@PathVariable("id") UUID purchaseId) {
