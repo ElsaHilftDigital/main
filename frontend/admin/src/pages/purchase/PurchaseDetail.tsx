@@ -89,8 +89,8 @@ const PurchaseDetailInternal = (props: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
         purchaseAPI.update(purchase.uuid, updatedPurchase)
             .then(() => {
-                toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.")
-                history.push(routes.purchaseList());
+                toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.");
+                props.refresh();
             })
             .catch(() =>
                 toast("Einkauf speichern", "Speichern ist leider fehlgeschlagen")

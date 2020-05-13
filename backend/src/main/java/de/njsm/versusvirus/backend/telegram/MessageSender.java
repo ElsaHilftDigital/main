@@ -278,6 +278,7 @@ public class MessageSender {
 
             for (PurchaseSupermarket s : p.getPurchaseSupermarketList()) {
                 if (!s.isReceiptUploaded()) {
+                    // Text for Telegram InlineKeyboardButtons do not have to be escaped (no formatting allowed)
                     possibleButtons.add(new InlineKeyboardButton(p.getId() + ": " + s.getName() + ", " + customer.getLastName(),
                             CallbackCommand.SUBMIT_RECEIPT.render(s.getUuid())));
                 }
