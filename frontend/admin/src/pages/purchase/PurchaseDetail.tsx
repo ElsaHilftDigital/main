@@ -52,24 +52,18 @@ const PurchaseDetailInternal = (props: any) => {
         setExecutionDateValid(!!parseDate(executionDate))
     };
 
-    const publishPurchaseSearchHelper = () => {
-        purchaseAPI.publish(purchase.uuid)
-            .then(() =>
-                toast("Einkauf freigeben", "Einkauf wurde an Helfer-Gruppenchat gesendet.")
-            )
-            .catch(() =>
-                toast("Einkauf freigeben", "Einkauf konnte leider nicht freigegeben werden.")
-            );
+    const publishPurchaseSearchHelper = (data: any) => {
+        const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
+        purchaseAPI.update(purchase.uuid, updatedPurchase)
+            .then(() => purchaseAPI.publish(purchase.uuid))
+            .then(() => toast("Einkauf freigeben", "Einkauf wurde an Helfer-Gruppenchat gesendet."))
+            .catch(() => toast("Einkauf freigeben", "Einkauf konnte leider nicht freigegeben werden."));
     };
 
     const withdrawPurchase = () => {
         purchaseAPI.withdraw(purchase.uuid)
-            .then(() =>
-                toast("Einkauf zurückziehen", "Einkauf wurde von Helfer-Gruppenchat zurückgezogen.")
-            )
-            .catch(() =>
-                toast("Einkauf zurückziehen", "Einkauf konnte leider nicht zurückgezogen werden.")
-            );
+            .then(() => toast("Einkauf zurückziehen", "Einkauf wurde von Helfer-Gruppenchat zurückgezogen."))
+            .catch(() => toast("Einkauf zurückziehen", "Einkauf konnte leider nicht zurückgezogen werden."));
     }
 
     const assignVolunteer = (uuid: string) => {
@@ -98,9 +92,9 @@ const PurchaseDetailInternal = (props: any) => {
     const onSubmit = (data: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
         purchaseAPI.update(purchase.uuid, updatedPurchase)
-            .then(() => {
-                toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.");
-            })
+            .then(() =>
+                toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.")
+            )
             .catch(() =>
                 toast("Einkauf speichern", "Speichern ist leider fehlgeschlagen")
             );
@@ -111,7 +105,7 @@ const PurchaseDetailInternal = (props: any) => {
         const message = window.prompt('Bitte Lieferung freigeben und Einkauf speichern mit "OK" bestätigen.\n\nBitte hier Nachricht angeben, welche über Telegram Bot an Helfer geschickt werden soll (kann leer gelassen werden):');
 
         if (message || message === '') {
-            const updatedPurchase = Object.assign({}, purchase, data, { supermarkets });
+            const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
 
             purchaseAPI.update(purchase.uuid, updatedPurchase)
                 .then(() => purchaseAPI.notifyCustomer(purchase.uuid, message))
@@ -167,7 +161,7 @@ const PurchaseDetailInternal = (props: any) => {
                 <div className="flex-grow-0">
                     {purchase.status === 'Neu' &&
                     <Button className="mr-3 mb-1"
-                            onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
+                            onClick={handleSubmit(publishPurchaseSearchHelper)} disabled={!executionDateValid}>Speichern & Einkauf freigeben (Helfer suchen)</Button>}
                     {(purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') &&
                     <Button className="mr-3 mb-1"
                             onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
