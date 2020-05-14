@@ -56,21 +56,28 @@ const PurchaseDetailInternal = (props: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
         purchaseAPI.update(purchase.uuid, updatedPurchase)
             .then(() => purchaseAPI.publish(purchase.uuid))
-            .then(() => toast("Einkauf freigeben", "Einkauf wurde an Helfer-Gruppenchat gesendet."))
+            .then(() => {
+                toast("Einkauf freigeben", "Einkauf wurde an Helfer-Gruppenchat gesendet.");
+                history.go(0);
+            })
             .catch(() => toast("Einkauf freigeben", "Einkauf konnte leider nicht freigegeben werden."));
     };
 
     const withdrawPurchase = () => {
         purchaseAPI.withdraw(purchase.uuid)
-            .then(() => toast("Einkauf zurückziehen", "Einkauf wurde von Helfer-Gruppenchat zurückgezogen."))
+            .then(() => {
+                toast("Einkauf zurückziehen", "Einkauf wurde von Helfer-Gruppenchat zurückgezogen.");
+                history.go(0);
+            })
             .catch(() => toast("Einkauf zurückziehen", "Einkauf konnte leider nicht zurückgezogen werden."));
     }
 
     const assignVolunteer = (uuid: string) => {
         purchaseAPI.assignVolunteer(purchase.uuid, uuid)
-            .then(() =>
-                toast("Helferzuordnung", "Der Helfer wurde erfolgreich zugeordnet.")
-            )
+            .then(() => {
+                toast("Helferzuordnung", "Der Helfer wurde erfolgreich zugeordnet.");
+                history.go(0);
+            })
             .catch(() =>
                 toast("Helferzuordnung", "Der Helfer konnte leider nicht zugeordnet werden.")
             );
@@ -109,7 +116,10 @@ const PurchaseDetailInternal = (props: any) => {
 
             purchaseAPI.update(purchase.uuid, updatedPurchase)
                 .then(() => purchaseAPI.notifyCustomer(purchase.uuid, message))
-                .then(() => toast("Lieferung freigeben", "Einkauf wurde gespeichert und Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann."))
+                .then(() => {
+                    toast("Lieferung freigeben", "Einkauf wurde gespeichert und Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann.");
+                    history.go(0);
+                })
                 .catch(() =>
                     toast("Lieferung freigeben", "Einkauf konnte nicht gespeichert oder Lieferung nicht freigegeben werden.")
                 );
@@ -119,9 +129,10 @@ const PurchaseDetailInternal = (props: any) => {
     const markPurchaseAsCompleted = () => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             purchaseAPI.markCompleted(purchase.uuid)
-                .then(() =>
-                    toast("Einkauf abschliessen", "Der Einkauf wurde manuell abgeschlossen")
-                )
+                .then(() => {
+                    toast("Einkauf abschliessen", "Der Einkauf wurde manuell abgeschlossen");
+                    history.go(0);
+                })
                 .catch(() =>
                     toast("Einkauf abschliessen", "Einkauf konnte leider nicht manuell abgeschlossen werden.")
                 );
