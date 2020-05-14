@@ -169,7 +169,7 @@ const PurchaseDetailInternal = (props: any) => {
                     {purchase.status === 'Neu' &&
                     <Button className="mr-3 mb-1"
                             onClick={() => publishPurchaseSearchHelper()}>Einkauf freigeben (Helfer suchen)</Button>}
-                    {purchase.status === 'Veröffentlicht' &&
+                    {(purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') &&
                     <Button className="mr-3 mb-1"
                             onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
                     {!purchase.assignedVolunteer && <>

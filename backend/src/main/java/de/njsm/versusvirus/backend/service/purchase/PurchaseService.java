@@ -143,11 +143,21 @@ public class PurchaseService {
 
     public void withdrawPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        if (purchase.getAssignedVolunteer().isPresent() || !purchase.getVolunteerApplications().isEmpty()) {
-            throw new IllegalStateException("Cannot withdraw purchase after volunteers have applied");
+        if (purchase.getAssignedVolunteer().isPresent()) {
+            throw new IllegalStateException("Cannot delete purchase after volunteer is assigned");
         }
-        if (purchase.getStatus() == PUBLISHED) {
+
+        if (purchase.getStatus() == PUBLISHED ||
+                purchase.getStatus() == VOLUNTEER_FOUND) {
+
             telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
+            if (!purchase.getVolunteerApplications().isEmpty()) {
+                // The following entity is loaded from a not-null foreign key, it should never fail
+                //noinspection OptionalGetWithoutIsPresent
+                var customer = customerRepository.findById(purchase.getCustomerId()).get();
+                messageSender.rejectApplicants(customer, purchase, volunteerRepository.findAllById(purchase.getVolunteerApplications()));
+                purchase.getVolunteerApplications().clear();
+            }
             purchase.setStatus(NEW);
         }
     }
@@ -191,10 +201,12 @@ public class PurchaseService {
                 purchase.getStatus() == VOLUNTEER_FOUND) {
 
             telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
-            // The following entity is loaded from a not-null foreign key, it should never fail
-            //noinspection OptionalGetWithoutIsPresent
-            var customer = customerRepository.findById(purchase.getCustomerId()).get();
-            messageSender.rejectApplicants(customer, purchase, volunteerRepository.findAllById(purchase.getVolunteerApplications()));
+            if (!purchase.getVolunteerApplications().isEmpty()) {
+                // The following entity is loaded from a not-null foreign key, it should never fail
+                //noinspection OptionalGetWithoutIsPresent
+                var customer = customerRepository.findById(purchase.getCustomerId()).get();
+                messageSender.rejectApplicants(customer, purchase, volunteerRepository.findAllById(purchase.getVolunteerApplications()));
+            }
         }
     }
 
