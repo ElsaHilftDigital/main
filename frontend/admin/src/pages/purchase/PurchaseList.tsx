@@ -170,7 +170,7 @@ const PurchaseListInternal = (props: any) => {
                 if (leftIndex < rightIndex) {
                     return -1;
                 } else if (leftIndex === rightIndex) {
-                    if (new Date(l.executionDate) < new Date(r.executionDate)) {
+                    if (parseInt(l.purchaseNumber, 10) > parseInt(r.purchaseNumber, 10)) {
                         return -1;
                     } else {
                         return 1;
