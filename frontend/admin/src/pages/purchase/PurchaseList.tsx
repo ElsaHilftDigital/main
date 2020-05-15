@@ -187,8 +187,9 @@ const PurchaseListInternal = (props: any) => {
         return statusIndicators[index];
     }), [purchaseDates, purchasesByDate]);
 
-
-    const [selectedDate, setSelectedDate] = useState(purchaseDates[0]);
+    const indexToday = purchaseDates.indexOf(formatMoment(moment()));
+    const initialIndex = indexToday > -1 ? indexToday : 0;
+    const [selectedDate, setSelectedDate] = useState(purchaseDates[initialIndex]);
 
     return (<>
         <FlexRow>
