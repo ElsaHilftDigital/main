@@ -14,7 +14,7 @@ import { useToast } from 'toasts/useToast';
 
 const PurchaseDetail = () => {
     const { purchaseId } = useParams();
-    const { purchase } = usePurchase(purchaseId!);
+    const { purchase, refresh } = usePurchase(purchaseId!);
     const moderators = useModerators();
 
     if (!purchase) {
@@ -27,7 +27,7 @@ const PurchaseDetail = () => {
         );
     }
 
-    return <PurchaseDetailInternal purchase={purchase} moderators={moderators}/>;
+    return <PurchaseDetailInternal purchase={purchase} moderators={moderators} refresh={refresh}/>;
 };
 
 const PurchaseDetailInternal = (props: any) => {
@@ -45,34 +45,41 @@ const PurchaseDetailInternal = (props: any) => {
     const [executionDateValid, setExecutionDateValid] = useState(true);
 
     const handleExecutionDateUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setExecutionDate(e.target.value)
+        setExecutionDate(e.target.value);
     };
 
     const validateExecutionDate = () => {
-        setExecutionDateValid(!!parseDate(executionDate))
+        setExecutionDateValid(!!parseDate(executionDate));
     };
 
     const publishPurchaseSearchHelper = (data: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
         purchaseAPI.update(purchase.uuid, updatedPurchase)
             .then(() => purchaseAPI.publish(purchase.uuid))
-            .then(() => toast("Einkauf freigeben", "Einkauf wurde an Helfer-Gruppenchat gesendet."))
-            .catch(() => toast("Einkauf freigeben", "Einkauf konnte leider nicht freigegeben werden."));
+            .then(() => {
+                toast('Einkauf freigeben', 'Einkauf wurde an Helfer-Gruppenchat gesendet.');
+                props.refresh();
+            })
+            .catch(() => toast('Einkauf freigeben', 'Einkauf konnte leider nicht freigegeben werden.'));
     };
 
     const withdrawPurchase = () => {
         purchaseAPI.withdraw(purchase.uuid)
-            .then(() => toast("Einkauf zurückziehen", "Einkauf wurde von Helfer-Gruppenchat zurückgezogen."))
-            .catch(() => toast("Einkauf zurückziehen", "Einkauf konnte leider nicht zurückgezogen werden."));
-    }
+            .then(() => {
+                toast('Einkauf zurückziehen', 'Einkauf wurde von Helfer-Gruppenchat zurückgezogen.');
+                props.refresh();
+            })
+            .catch(() => toast('Einkauf zurückziehen', 'Einkauf konnte leider nicht zurückgezogen werden.'));
+    };
 
     const assignVolunteer = (uuid: string) => {
         purchaseAPI.assignVolunteer(purchase.uuid, uuid)
-            .then(() =>
-                toast("Helferzuordnung", "Der Helfer wurde erfolgreich zugeordnet.")
-            )
+            .then(() => {
+                toast('Helferzuordnung', 'Der Helfer wurde erfolgreich zugeordnet.');
+                props.refresh();
+            })
             .catch(() =>
-                toast("Helferzuordnung", "Der Helfer konnte leider nicht zugeordnet werden.")
+                toast('Helferzuordnung', 'Der Helfer konnte leider nicht zugeordnet werden.'),
             );
     };
 
@@ -80,11 +87,11 @@ const PurchaseDetailInternal = (props: any) => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich löschen?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             purchaseAPI.delete(purchase.uuid)
                 .then(() => {
-                    toast("Einkauf löschen", "Einkauf wurde erfolgreich gelöscht.")
+                    toast('Einkauf löschen', 'Einkauf wurde erfolgreich gelöscht.');
                     history.push(routes.purchaseList());
                 })
                 .catch(() =>
-                    toast("Einkauf löschen", "Einkauf konnte leider nicht gelöscht werden.")
+                    toast('Einkauf löschen', 'Einkauf konnte leider nicht gelöscht werden.'),
                 );
         }
     };
@@ -92,11 +99,12 @@ const PurchaseDetailInternal = (props: any) => {
     const onSubmit = (data: any) => {
         const updatedPurchase = Object.assign({}, purchase, data, { supermarkets }, { executionDate: parseDate(executionDate) });
         purchaseAPI.update(purchase.uuid, updatedPurchase)
-            .then(() =>
-                toast("Einkauf speichern", "Einkauf wurde erfolgreich gespeichert.")
-            )
+            .then(() => {
+                toast('Einkauf speichern', 'Einkauf wurde erfolgreich gespeichert.');
+                props.refresh();
+            })
             .catch(() =>
-                toast("Einkauf speichern", "Speichern ist leider fehlgeschlagen")
+                toast('Einkauf speichern', 'Speichern ist leider fehlgeschlagen'),
             );
     };
 
@@ -109,9 +117,12 @@ const PurchaseDetailInternal = (props: any) => {
 
             purchaseAPI.update(purchase.uuid, updatedPurchase)
                 .then(() => purchaseAPI.notifyCustomer(purchase.uuid, message))
-                .then(() => toast("Lieferung freigeben", "Einkauf wurde gespeichert und Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann."))
+                .then(() => {
+                    toast('Lieferung freigeben', 'Einkauf wurde gespeichert und Helfer wurde benachrichtigt, dass Einkauf geliefert werden kann.');
+                    props.refresh();
+                })
                 .catch(() =>
-                    toast("Lieferung freigeben", "Einkauf konnte nicht gespeichert oder Lieferung nicht freigegeben werden.")
+                    toast('Lieferung freigeben', 'Einkauf konnte nicht gespeichert oder Lieferung nicht freigegeben werden.'),
                 );
         }
     };
@@ -119,11 +130,12 @@ const PurchaseDetailInternal = (props: any) => {
     const markPurchaseAsCompleted = () => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich als abgeschlossen markieren?\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
             purchaseAPI.markCompleted(purchase.uuid)
-                .then(() =>
-                    toast("Einkauf abschliessen", "Der Einkauf wurde manuell abgeschlossen")
-                )
+                .then(() => {
+                    toast('Einkauf abschliessen', 'Der Einkauf wurde manuell abgeschlossen');
+                    props.refresh();
+                })
                 .catch(() =>
-                    toast("Einkauf abschliessen", "Einkauf konnte leider nicht manuell abgeschlossen werden.")
+                    toast('Einkauf abschliessen', 'Einkauf konnte leider nicht manuell abgeschlossen werden.'),
                 );
         }
     };
@@ -161,7 +173,8 @@ const PurchaseDetailInternal = (props: any) => {
                 <div className="flex-grow-0">
                     {purchase.status === 'Neu' &&
                     <Button className="mr-3 mb-1"
-                            onClick={handleSubmit(publishPurchaseSearchHelper)} disabled={!executionDateValid}>Speichern & Einkauf freigeben (Helfer suchen)</Button>}
+                            onClick={handleSubmit(publishPurchaseSearchHelper)} disabled={!executionDateValid}>Speichern
+                        & Einkauf freigeben (Helfer suchen)</Button>}
                     {((purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') && !purchase.assignedVolunteer) &&
                     <Button className="mr-3 mb-1"
                             onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
@@ -171,7 +184,8 @@ const PurchaseDetailInternal = (props: any) => {
                     </>}
                     {purchase.status === 'Einkauf abgeschlossen' && <>
                         <Button className="mr-3 mb-1"
-                                onClick={handleSubmit(onNotifyVolunteerToDeliver)} disabled={!executionDateValid}>Speichern & Lieferung
+                                onClick={handleSubmit(onNotifyVolunteerToDeliver)} disabled={!executionDateValid}>Speichern
+                            & Lieferung
                             freigeben</Button>
                     </>}
                     {(purchase.status === 'Kein Geld deponiert' || purchase.status === 'Ausgeliefert - Zahlung ausstehend' || purchase.status === 'Wird ausgeliefert') &&
@@ -201,7 +215,7 @@ const PurchaseDetailInternal = (props: any) => {
                 <div className="form-group">
                     <label htmlFor="displayFormCreateDate">Erstellungsdatum</label>
                     <input name="displayFormCreateDate" disabled type="text" className="form-control"
-                        id="displayFormCreateDate" value={formatDate(purchase.createdAt)}/>
+                           id="displayFormCreateDate" value={formatDate(purchase.createdAt)}/>
                 </div>
                 <div className="row">
                     <Form.Group className="col-md-6">
@@ -215,18 +229,18 @@ const PurchaseDetailInternal = (props: any) => {
                                 onBlur={validateExecutionDate}
                                 isInvalid={!executionDateValid}
                             />
-                        <div className="invalid-tooltip" style={{ display: 'block' }} hidden={executionDateValid}>
-                            Datumsformat: DD.MM.YYYY
-                        </div>
+                            <div className="invalid-tooltip" style={{ display: 'block' }} hidden={executionDateValid}>
+                                Datumsformat: DD.MM.YYYY
+                            </div>
                         </InputGroup>
                     </Form.Group>
                     <div className="form-group col-md-6">
                         <label htmlFor="displayFormNumber">Auftragsnummer</label>
                         <input name="displayFormNumber" disabled type="text" className="form-control"
-                            id="displayFormNumber" value={purchase.purchaseNumber}/>
+                               id="displayFormNumber" value={purchase.purchaseNumber}/>
                     </div>
                 </div>
-                
+
 
                 <h5 className="mt-2"> Helfer</h5>
                 {purchase.assignedVolunteer && (
