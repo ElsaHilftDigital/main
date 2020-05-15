@@ -170,7 +170,7 @@ const PurchaseListInternal = (props: any) => {
                 if (leftIndex < rightIndex) {
                     return -1;
                 } else if (leftIndex === rightIndex) {
-                    if (new Date(l.executionDate) < new Date(r.executionDate)) {
+                    if (parseInt(l.purchaseNumber, 10) > parseInt(r.purchaseNumber, 10)) {
                         return -1;
                     } else {
                         return 1;
@@ -187,8 +187,9 @@ const PurchaseListInternal = (props: any) => {
         return statusIndicators[index];
     }), [purchaseDates, purchasesByDate]);
 
-
-    const [selectedDate, setSelectedDate] = useState(purchaseDates[0]);
+    const indexToday = purchaseDates.indexOf(formatMoment(moment()));
+    const initialIndex = indexToday > -1 ? indexToday : 0;
+    const [selectedDate, setSelectedDate] = useState(purchaseDates[initialIndex]);
 
     return (<>
         <FlexRow>
