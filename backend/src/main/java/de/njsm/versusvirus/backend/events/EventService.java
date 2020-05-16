@@ -7,9 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.max;
