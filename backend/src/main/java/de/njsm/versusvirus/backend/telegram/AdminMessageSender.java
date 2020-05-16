@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.text.MessageFormat;
 import java.util.HashSet;
 
+import static de.njsm.versusvirus.backend.telegram.MessageUtils.escapeMarkdownCharacters;
+
 @Component
 public class AdminMessageSender {
 
@@ -60,7 +62,7 @@ public class AdminMessageSender {
     }
 
     private MessageToBeSent formatWithModeratorAndPurchaseNumber(String template, String moderatorName, long purchaseNumber) {
-        var escapedModerator = AdminMessageSender.escapeMarkdownCharacters(moderatorName);
+        var escapedModerator = escapeMarkdownCharacters(moderatorName);
         String text = MessageFormat.format(template, escapedModerator, String.valueOf(purchaseNumber));
         return new MessageToBeSent(moderatorChatId, text);
     }
@@ -83,40 +85,5 @@ public class AdminMessageSender {
 
         var m = new MessageToBeSent(moderatorChatId, forwardedMessage);
         api.sendMessage(m);
-    }
-
-    static String escapeMarkdownCharacters(String message) {
-        HashSet<Character> escapeableCharacters = getEscapeCharacters();
-        StringBuilder builder = new StringBuilder();
-        for (char c : message.toCharArray()) {
-            if (escapeableCharacters.contains(c)) {
-                builder.append('\\');
-            }
-            builder.append(c);
-        }
-        return builder.toString();
-    }
-
-    private static HashSet<Character> getEscapeCharacters() {
-        HashSet<Character> escapeableCharacters = new HashSet<>();
-        escapeableCharacters.add('_');
-        escapeableCharacters.add('*');
-        escapeableCharacters.add('[');
-        escapeableCharacters.add(']');
-        escapeableCharacters.add('(');
-        escapeableCharacters.add(')');
-        escapeableCharacters.add('~');
-        escapeableCharacters.add('`');
-        escapeableCharacters.add('>');
-        escapeableCharacters.add('#');
-        escapeableCharacters.add('+');
-        escapeableCharacters.add('-');
-        escapeableCharacters.add('=');
-        escapeableCharacters.add('|');
-        escapeableCharacters.add('{');
-        escapeableCharacters.add('}');
-        escapeableCharacters.add('.');
-        escapeableCharacters.add('!');
-        return escapeableCharacters;
     }
 }
