@@ -144,7 +144,7 @@ public class PurchaseService {
     public void withdrawPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
         if (purchase.getAssignedVolunteer().isPresent()) {
-            throw new IllegalStateException("Cannot delete purchase after volunteer is assigned");
+            throw new IllegalStateException("Cannot withdraw purchase after volunteer is assigned");
         }
 
         if (purchase.getStatus() == PUBLISHED ||
