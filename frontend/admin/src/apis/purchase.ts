@@ -115,6 +115,10 @@ function publishPurchase(uuid: string) {
     return client.post<void>(`/purchases/${uuid}/publish`);
 }
 
+function withdrawPurchase(uuid: string) {
+    return client.post<void>(`/purchases/${uuid}/withdraw`);
+}
+
 function markCompleted(uuid: string) {
     return client.post<void>(`/purchases/${uuid}/markcompleted`);
 }
@@ -126,5 +130,7 @@ export const purchaseAPI = {
     assignVolunteer: assignVolunteer,
     notifyCustomer: customerNotified,
     publish: publishPurchase,
+    withdraw: withdrawPurchase,
     markCompleted: markCompleted,
 };
+    
