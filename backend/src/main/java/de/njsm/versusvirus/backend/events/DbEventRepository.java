@@ -5,15 +5,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DbNotificationRepository extends JpaRepository<DbEvent, Long> {
+@Transactional
+public interface DbEventRepository extends JpaRepository<DbEvent, Long> {
 
     @Query("select max(n.id) from DbEvent n")
-    Optional<Long> lastNotificationId();
+    Optional<Long> lastEventId();
 
     @Query("select n from DbEvent n where n.id > :id order by n.id")
-    List<DbEvent> findNewNotifications(@Param("id") long lastNotificationId);
+    List<DbEvent> findNewEvents(@Param("id") long lastEventId);
 }

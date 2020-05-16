@@ -1,25 +1,20 @@
 package de.njsm.versusvirus.backend.events;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Component
 public class EventStore {
 
-    private final EventService eventService;
-    private final DbNotificationRepository repository;
-    private long lastNotificationId;
+    private final DbEventRepository repository;
 
-    public EventStore(EventService eventService,
-                      DbNotificationRepository repository
-    ) {
-        this.eventService = eventService;
+    public EventStore(DbEventRepository repository) {
         this.repository = repository;
-        lastNotificationId = repository.lastNotificationId().orElse(0L);
+    }
+
+    public long lastEventId() {
+        return repository.lastEventId().orElse(0L);
     }
 
     public void publish(Event event) {
@@ -29,16 +24,7 @@ public class EventStore {
         repository.save(dbEvent);
     }
 
-    @Scheduled(fixedDelay = 100)
-    private void poll() {
-        List<DbEvent> newEvents = fetchNewNotifications();
-        newEvents.forEach(eventService::handleEvent);
-    }
-
-    private List<DbEvent> fetchNewNotifications() {
-        return repository.findNewNotifications(lastNotificationId)
-                .stream()
-                .peek(event -> lastNotificationId = Math.max(event.getId(), lastNotificationId))
-                .collect(toList());
+    public List<DbEvent> getNewNotifications(long lastEventId) {
+        return repository.findNewEvents(lastEventId);
     }
 }
