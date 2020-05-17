@@ -20,7 +20,7 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<SseEmitter> events(@RequestHeader("Last-Event-Id") Long lastEventId) {
+    public ResponseEntity<SseEmitter> events(@RequestHeader(name = "Last-Event-Id", required = false) Long lastEventId) {
         return ResponseEntity.ok()
                 .cacheControl(CacheControl
                         .noCache()

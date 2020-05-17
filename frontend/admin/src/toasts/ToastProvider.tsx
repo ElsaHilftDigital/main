@@ -6,18 +6,20 @@ import { Toast as BootstrapToast } from 'react-bootstrap';
 interface Toast {
     title: string,
     message: string,
+    autoHide: boolean,
     onClose: () => void,
 }
 
 const ToastProvider: React.FC = props => {
     const [toasts, setToasts] = useState<{ [key: string]: Toast }>({});
-    const addToast = (title: string, message: string) => {
+    const addToast = (title: string, message: string, autoHide: boolean = true) => {
         const id = Math.random().toString() + Date.now().toString();
         setToasts({
             ...toasts,
             [id]: {
                 title: title,
                 message: message,
+                autoHide: autoHide,
                 onClose: () => removeToast(id),
             },
         });
@@ -52,12 +54,16 @@ const ToastContainer = styled.div`
     right: 0;
 `;
 
+const ToastBody = styled(BootstrapToast.Body)`
+    white-space: pre-line;
+`;
+
 const ToastContentInternal: React.FC<Toast> = props => {
-    return <BootstrapToast onClose={props.onClose} delay={3000} autohide>
+    return <BootstrapToast onClose={props.onClose} delay={3000} autohide={props.autoHide}>
         <BootstrapToast.Header>
             <strong className="mr-auto">{props.title}</strong>
         </BootstrapToast.Header>
-        <BootstrapToast.Body>{props.message}</BootstrapToast.Body>
+        <ToastBody>{props.message}</ToastBody>
     </BootstrapToast>;
 };
 
