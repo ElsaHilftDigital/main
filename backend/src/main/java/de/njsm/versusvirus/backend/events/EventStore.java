@@ -13,7 +13,7 @@ public class EventStore {
         this.repository = repository;
     }
 
-    public long lastEventId() {
+    long lastEventId() {
         return repository.lastEventId().orElse(0L);
     }
 
@@ -24,7 +24,7 @@ public class EventStore {
         repository.save(dbEvent);
     }
 
-    public List<DbEvent> getNewNotifications(long lastEventId) {
+    List<DbEvent> getNewNotifications(long lastEventId) {
         return repository.findNewEvents(lastEventId);
     }
 }

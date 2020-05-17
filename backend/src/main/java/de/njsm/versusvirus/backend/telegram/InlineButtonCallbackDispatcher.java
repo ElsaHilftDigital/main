@@ -1,6 +1,9 @@
 package de.njsm.versusvirus.backend.telegram;
 
 import de.njsm.versusvirus.backend.domain.Purchase;
+import de.njsm.versusvirus.backend.events.EventStore;
+import de.njsm.versusvirus.backend.events.Notification;
+import de.njsm.versusvirus.backend.events.Notifications;
 import de.njsm.versusvirus.backend.repository.CustomerRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseSupermarketRepository;
@@ -28,21 +31,14 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
     private static final Logger LOG = LoggerFactory.getLogger(InlineButtonCallbackDispatcher.class);
 
     private final VolunteerRepository volunteerRepository;
-
     private final PurchaseRepository purchaseRepository;
-
     private final PurchaseSupermarketRepository purchaseSupermarketRepository;
-
     private final MessageSender messageSender;
-
     private final AdminMessageSender adminMessageSender;
-
+    private final EventStore eventStore;
     private final TelegramApi telegramApi;
-
     private final CustomerRepository customerRepository;
-
     private final ModeratorRepository moderatorRepository;
-
     private final ReceiptService receiptService;
 
     private final long groupChatId;
@@ -63,6 +59,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                                           PurchaseSupermarketRepository purchaseSupermarketRepository,
                                           MessageSender messageSender,
                                           AdminMessageSender adminMessageSender,
+                                          EventStore eventStore,
                                           TelegramApi telegramApi,
                                           CustomerRepository customerRepository,
                                           ModeratorRepository moderatorRepository,
@@ -73,6 +70,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
         this.purchaseSupermarketRepository = purchaseSupermarketRepository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
+        this.eventStore = eventStore;
         this.telegramApi = telegramApi;
         this.customerRepository = customerRepository;
         this.moderatorRepository = moderatorRepository;
@@ -106,6 +104,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 messageSender.sendUnexpectedMessage(message.getChat().getId());
                 return new TelegramShouldBeFineException("responsible moderator not found");
             });
+            eventStore.publish(Notifications.helpersHaveApplied(purchase, moderator));
             adminMessageSender.helpersHaveApplied(moderator, purchase.getId());
         }
         messageSender.updateBroadcastMessage(customer, purchase);
@@ -183,6 +182,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                 return new TelegramShouldBeFineException("responsible moderator not found");
             });
             adminMessageSender.helperHasRejected(moderator, purchase.getId());
+            eventStore.publish(Notifications.helperHasRejected(purchase, moderator));
         } else {
             LOG.warn("Purchase in state " + purchase.getStatus().name() + " was rejected unexpectedly");
             messageSender.sendUnexpectedMessage(chatId);
@@ -246,6 +246,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
                     return new TelegramShouldBeFineException("responsible moderator not found");
                 });
                 adminMessageSender.receiptHasBeenSubmitted(moderator, purchase.getId());
+                eventStore.publish(Notifications.receiptHasBeenSubmitted(purchase, moderator));
             } else {
                 messageSender.confirmReceiptWaitingForNext(message.getChat().getId());
             }
@@ -325,6 +326,7 @@ public class InlineButtonCallbackDispatcher implements CallbackDispatcher {
             return new TelegramShouldBeFineException("responsible moderator not found");
         });
         adminMessageSender.notifyAboutMissingMoney(moderator, purchase.getId());
+        eventStore.publish(Notifications.moneyWasMissing(purchase, moderator));
     }
 
     @Override
