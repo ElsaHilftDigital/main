@@ -3,6 +3,8 @@ package de.njsm.versusvirus.backend.service.volunteer;
 import de.njsm.versusvirus.backend.domain.Purchase;
 import de.njsm.versusvirus.backend.domain.common.Address;
 import de.njsm.versusvirus.backend.domain.volunteer.Volunteer;
+import de.njsm.versusvirus.backend.events.EventStore;
+import de.njsm.versusvirus.backend.events.Notifications;
 import de.njsm.versusvirus.backend.mail.OurMailSender;
 import de.njsm.versusvirus.backend.repository.OrganizationRepository;
 import de.njsm.versusvirus.backend.repository.PurchaseRepository;
@@ -35,24 +37,19 @@ import java.util.stream.Collectors;
 public class VolunteerService {
 
     private final VolunteerRepository repository;
-
     private final MessageSender messageSender;
-
     private final AdminMessageSender adminMessageSender;
-
+    private final EventStore eventStore;
     private final OrganizationRepository organizationRepository;
-
     private final PurchaseRepository purchaseRepository;
-
     private final InviteLinkGenerator inviteLinkGenerator;
-
     private final OurMailSender mailSender;
-
     private final long moderatorChatId;
 
     public VolunteerService(VolunteerRepository repository,
                             MessageSender messageSender,
                             AdminMessageSender adminMessageSender,
+                            EventStore eventStore,
                             OrganizationRepository organizationRepository,
                             PurchaseRepository purchaseRepository,
                             InviteLinkGenerator inviteLinkGenerator,
@@ -61,6 +58,7 @@ public class VolunteerService {
         this.repository = repository;
         this.messageSender = messageSender;
         this.adminMessageSender = adminMessageSender;
+        this.eventStore = eventStore;
         this.organizationRepository = organizationRepository;
         this.purchaseRepository = purchaseRepository;
         this.inviteLinkGenerator = inviteLinkGenerator;
@@ -104,6 +102,7 @@ public class VolunteerService {
     }
 
     private void notifyModerators() {
+        eventStore.publish(Notifications.volunteerRegistered());
         adminMessageSender.newHelperHasRegistered();
     }
 
