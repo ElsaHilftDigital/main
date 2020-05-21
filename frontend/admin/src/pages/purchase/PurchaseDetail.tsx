@@ -72,6 +72,17 @@ const PurchaseDetailInternal = (props: any) => {
             .catch(() => toast('Einkauf zurückziehen', 'Einkauf konnte leider nicht zurückgezogen werden.'));
     };
 
+    const resetPurchase = () => {
+        if (window.confirm('Möchtest du diesen Einkauf wirklich zurücksetzen?\nEin/-e Helfer/-in hat den Einkauf bereits akzeptiert. Bitte kontaktiere sie/ihn zuerst direkt.')) {
+            purchaseAPI.withdraw(purchase.uuid)
+                .then(() => {
+                    toast('Einkauf zurücksetzen', 'Zugeordnete/-r Helfer/-in wurde vom Einkauf entfernt.\nEinkauf wurde von Helfer-Gruppenchat zurückgezogen.');
+                    props.refresh();
+                })
+                .catch(() => toast('Einkauf zurücksetzen', 'Einkauf konnte leider nicht zurückgesetzt werden.'));
+        }
+    };
+
     const assignVolunteer = (uuid: string) => {
         purchaseAPI.assignVolunteer(purchase.uuid, uuid)
             .then(() => {
@@ -178,6 +189,9 @@ const PurchaseDetailInternal = (props: any) => {
                     {((purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') && !purchase.assignedVolunteer) &&
                     <Button className="mr-3 mb-1"
                             onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
+                    {purchase.status === 'Helfer bestätigt' &&
+                    <Button variant="danger" className="mr-3 mb-1"
+                            onClick={() => resetPurchase()}>Einkauf zurücksetzen</Button>}
                     {!purchase.assignedVolunteer && <>
                         <Button variant="danger" className="mr-3 mb-1"
                                 onClick={() => deletePurchase()}>Löschen</Button>
