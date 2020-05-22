@@ -80,9 +80,9 @@ const SinglePurchaseList = (props) => {
 
     return (<>
         <label><b>Einkaufsliste für {supermarket.name}</b></label>
-        <p>
+        {enableSave && <p>
             <i>Bitte jedes Produkt mit "Enter" bestätigen.</i>
-        </p>
+        </p>}
         <ul className="list-group mb-3">
             {supermarket.orderItems.map((item, index) => <PurchaseListItem className="list-group-item" key={index}>
                 {item}
