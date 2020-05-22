@@ -154,7 +154,7 @@ const PurchaseDetailInternal = (props: any) => {
     const exportPurchase = () => {
         window.location.href = routes.purchaseExport(purchase.uuid);
     };
-    
+
     return (<>
         <Header/>
         <div className="container mt-3 mb-5">
@@ -434,8 +434,9 @@ const PurchaseDetailInternal = (props: any) => {
                               id="internalComments"/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="displayTableOrderItems"><i>Die Einkaufsliste kann nicht mehr verändert oder gepeichert werden, nachdem der Helfer oder die Helferin den Einkauf abgeschlossen hat.</i></label>
-                    <PurchaseList value={supermarkets} setValue={setSupermarkets}/>
+                    <label htmlFor="displayTableOrderItems"><i>Die Einkaufsliste kann nicht mehr verändert oder gepeichert werden, nachdem der Helfer oder die Helferin den Einkauf bestätigt hat.</i></label>
+                    <PurchaseList value={supermarkets} setValue={setSupermarkets}
+                        enableSave={purchase.status === 'Neu' || purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden'}/>
                 </div>
 
                 <div className="row">
