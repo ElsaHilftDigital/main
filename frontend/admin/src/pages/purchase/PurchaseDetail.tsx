@@ -189,7 +189,7 @@ const PurchaseDetailInternal = (props: any) => {
                     {((purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') && !purchase.assignedVolunteer) &&
                     <Button className="mr-3 mb-1"
                             onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
-                    {purchase.status === 'Helfer bestätigt' &&
+                    {(purchase.status === 'Helfer bestätigt' && purchase.numberOfReceipts === 0) &&
                     <Button variant="danger" className="mr-3 mb-1"
                             onClick={() => resetPurchase()}>Einkauf zurücksetzen</Button>}
                     {!purchase.assignedVolunteer && <>
@@ -434,8 +434,9 @@ const PurchaseDetailInternal = (props: any) => {
                               id="internalComments"/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="displayTableOrderItems"><i>Die Einkaufsliste kann nicht mehr verändert oder gepeichert werden, nachdem der Helfer oder die Helferin den Einkauf abgeschlossen hat.</i></label>
-                    <PurchaseList value={supermarkets} setValue={setSupermarkets}/>
+                    <label htmlFor="displayTableOrderItems"><i>Die Einkaufsliste kann nicht mehr verändert oder gepeichert werden, nachdem der Helfer oder die Helferin den Einkauf bestätigt hat.</i></label>
+                    <PurchaseList value={supermarkets} setValue={setSupermarkets}
+                        enableSave={purchase.status === 'Neu' || purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden'}/>
                 </div>
 
                 <div className="row">
