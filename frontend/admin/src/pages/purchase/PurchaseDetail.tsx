@@ -76,7 +76,7 @@ const PurchaseDetailInternal = (props: any) => {
         if (window.confirm('Möchtest du diesen Einkauf wirklich zurücksetzen?\nEin/-e Helfer/-in hat den Einkauf bereits akzeptiert. Bitte kontaktiere sie/ihn zuerst direkt.')) {
             purchaseAPI.withdraw(purchase.uuid)
                 .then(() => {
-                    toast('Einkauf zurücksetzen', 'Zugeordnete/-r Helfer/-in wurde vom Einkauf entfernt.\nEinkauf wurde von Helfer-Gruppenchat zurückgezogen.');
+                    toast('Einkauf zurücksetzen', 'Zugeordnete/-r Helfer/-in wurde vom Einkauf entfernt.\nEinkauf wurde zurückgesetzt.');
                     props.refresh();
                 })
                 .catch(() => toast('Einkauf zurücksetzen', 'Einkauf konnte leider nicht zurückgesetzt werden.'));
