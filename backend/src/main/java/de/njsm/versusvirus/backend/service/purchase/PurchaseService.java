@@ -143,6 +143,10 @@ public class PurchaseService {
     public void withdrawPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
 
+        if (purchase.numberOfReceipts() > 0) {
+            throw new IllegalStateException("Cannot withdraw purchase after receipts have been received");
+        }
+
         if (purchase.getStatus() == PUBLISHED || purchase.getStatus() == VOLUNTEER_FOUND) {
             if (purchase.getAssignedVolunteer().isPresent()) {
                 throw new IllegalStateException("Cannot withdraw purchase after volunteer is assigned");

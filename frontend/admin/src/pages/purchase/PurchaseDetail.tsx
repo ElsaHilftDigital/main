@@ -154,7 +154,7 @@ const PurchaseDetailInternal = (props: any) => {
     const exportPurchase = () => {
         window.location.href = routes.purchaseExport(purchase.uuid);
     };
-
+    
     return (<>
         <Header/>
         <div className="container mt-3 mb-5">
@@ -189,7 +189,7 @@ const PurchaseDetailInternal = (props: any) => {
                     {((purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') && !purchase.assignedVolunteer) &&
                     <Button className="mr-3 mb-1"
                             onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
-                    {purchase.status === 'Helfer bestätigt' &&
+                    {(purchase.status === 'Helfer bestätigt' && purchase.numberOfReceipts === 0) &&
                     <Button variant="danger" className="mr-3 mb-1"
                             onClick={() => resetPurchase()}>Einkauf zurücksetzen</Button>}
                     {!purchase.assignedVolunteer && <>
