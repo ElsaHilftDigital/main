@@ -40,8 +40,8 @@ const PasswordChange = () => {
             newPassword
         })
             .then(() => {
-                history.push("/")
                 toast('Passwort ändern', 'Passwort wurde geändert.');
+                history.push("/")
             })
             .catch((error) => {
                 if (error.response.status === 412) {
