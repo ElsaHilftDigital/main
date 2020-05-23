@@ -25,7 +25,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -143,13 +142,15 @@ public class PurchaseService {
 
     public void withdrawPurchase(UUID purchaseId) {
         var purchase = purchaseRepository.findByUuid(purchaseId).orElseThrow(NotFoundException::new);
-        if (purchase.getAssignedVolunteer().isPresent()) {
-            throw new IllegalStateException("Cannot withdraw purchase after volunteer is assigned");
+
+        if (purchase.numberOfReceipts() > 0) {
+            throw new IllegalStateException("Cannot withdraw purchase after receipts have been received");
         }
 
-        if (purchase.getStatus() == PUBLISHED ||
-                purchase.getStatus() == VOLUNTEER_FOUND) {
-
+        if (purchase.getStatus() == PUBLISHED || purchase.getStatus() == VOLUNTEER_FOUND) {
+            if (purchase.getAssignedVolunteer().isPresent()) {
+                throw new IllegalStateException("Cannot withdraw purchase after volunteer is assigned");
+            }
             telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
             if (!purchase.getVolunteerApplications().isEmpty()) {
                 // The following entity is loaded from a not-null foreign key, it should never fail
@@ -159,6 +160,15 @@ public class PurchaseService {
                 purchase.getVolunteerApplications().clear();
             }
             purchase.setStatus(NEW);
+        } else if (purchase.getStatus() == VOLUNTEER_ACCEPTED) {
+            telegramApi.deleteMessage(groupChatId, purchase.getBroadcastMessageId());
+            // VolunteerApplications should always be empty when volunteer is assigned and has accepted
+            // Therefore no rejectApplicants() is needed
+            purchase.getVolunteerApplications().clear();
+            purchase.setAssignedVolunteer(null);
+            purchase.setStatus(NEW);
+        } else {
+            throw new IllegalStateException("Invalid purchase status to withdraw purchase.");
         }
     }
 

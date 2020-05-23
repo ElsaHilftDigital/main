@@ -64,7 +64,7 @@ const PurchaseStep: React.FC<Props> = props => {
             <i>Bitte für jeden Supermarkt mit "Enter" bestätigen.</i>
         </p>
         <PurchaseList autoFocus value={purchase.supermarkets}
-                      setValue={setPurchaseList}/>
+                      setValue={setPurchaseList} enableSave={true}/>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
                 <label htmlFor="purchaseSize">Grösse des Einkaufs</label>

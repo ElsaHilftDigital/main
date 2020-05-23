@@ -35,6 +35,7 @@ public class FetchedPurchaseDTO {
     public Instant createdAt;
     public Instant executionDate;
     public String purchaseNumber;
+    public long numberOfReceipts;
 
     public FetchedPurchaseDTO(Purchase purchase,
                               Volunteer assignedVolunteer,
@@ -61,5 +62,6 @@ public class FetchedPurchaseDTO {
         this.createdAt = purchase.getCreateTime();
         this.executionDate = purchase.getExecutionTime();
         this.purchaseNumber = Long.toString(purchase.getId());
+        this.numberOfReceipts = purchase.numberOfReceipts();
     }
 }

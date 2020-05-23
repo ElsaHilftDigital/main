@@ -3,9 +3,11 @@ import Header from "../../components/Header";
 import { Alert, Button, Container, Form } from "react-bootstrap";
 import * as authentication from 'apis/authentication';
 import { useHistory } from 'react-router-dom';
+import { useToast } from 'toasts/useToast';
 
 const PasswordChange = () => {
     const history = useHistory();
+    const toast = useToast();
     const [invalidPassword, setInvalidPassword] = useState(false);
     const [unknownError, setUnknownError] = useState(false);
     const [oldPassword, setOldPassword] = useState("");
@@ -37,12 +39,16 @@ const PasswordChange = () => {
             oldPassword,
             newPassword
         })
-            .then(() => history.push("/"))
+            .then(() => {
+                toast('Passwort ändern', 'Passwort wurde geändert.');
+                history.push("/")
+            })
             .catch((error) => {
                 if (error.response.status === 412) {
                     setInvalidPassword(true);
                 } else {
                     setUnknownError(true);
+                    toast('Passwort ändern', 'Passwort konnte nicht geändert werden.');
                 }
             });
     };

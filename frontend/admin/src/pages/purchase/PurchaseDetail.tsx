@@ -72,6 +72,17 @@ const PurchaseDetailInternal = (props: any) => {
             .catch(() => toast('Einkauf zurückziehen', 'Einkauf konnte leider nicht zurückgezogen werden.'));
     };
 
+    const resetPurchase = () => {
+        if (window.confirm('Möchtest du diesen Einkauf wirklich zurücksetzen?\nEin/-e Helfer/-in hat den Einkauf bereits akzeptiert. Bitte kontaktiere sie/ihn zuerst direkt.')) {
+            purchaseAPI.withdraw(purchase.uuid)
+                .then(() => {
+                    toast('Einkauf zurücksetzen', 'Zugeordnete/-r Helfer/-in wurde vom Einkauf entfernt.\nEinkauf wurde zurückgesetzt.');
+                    props.refresh();
+                })
+                .catch(() => toast('Einkauf zurücksetzen', 'Einkauf konnte leider nicht zurückgesetzt werden.'));
+        }
+    };
+
     const assignVolunteer = (uuid: string) => {
         purchaseAPI.assignVolunteer(purchase.uuid, uuid)
             .then(() => {
@@ -178,6 +189,9 @@ const PurchaseDetailInternal = (props: any) => {
                     {((purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden') && !purchase.assignedVolunteer) &&
                     <Button className="mr-3 mb-1"
                             onClick={() => withdrawPurchase()}>Einkauf zurückziehen</Button>}
+                    {(purchase.status === 'Helfer bestätigt' && purchase.numberOfReceipts === 0) &&
+                    <Button variant="danger" className="mr-3 mb-1"
+                            onClick={() => resetPurchase()}>Einkauf zurücksetzen</Button>}
                     {!purchase.assignedVolunteer && <>
                         <Button variant="danger" className="mr-3 mb-1"
                                 onClick={() => deletePurchase()}>Löschen</Button>
@@ -343,18 +357,20 @@ const PurchaseDetailInternal = (props: any) => {
                 </div>
 
                 <h5 className="mt-2"> Einkaufsdetails</h5>
-                <div className="form-group">
-                    <label htmlFor="timing">Zeit</label>
-                    <input name="timing" ref={register()} type="text" className="form-control" id="timing"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="size">Grösse des Einkaufs</label>
-                    <select ref={register()} id="size" name="size" className="form-control"
-                            defaultValue={purchase.size}>
-                        <option value="SMALL">Kleiner Einkauf</option>
-                        <option value="MEDIUM">Mittlerer Einkauf</option>
-                        <option value="LARGE">Grosser Einkauf</option>
-                    </select>
+                <div className="row">
+                    <div className="form-group col-md-6">
+                        <label htmlFor="timing">Zeit</label>
+                        <input name="timing" ref={register()} type="text" className="form-control" id="timing"/>
+                    </div>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="size">Grösse des Einkaufs</label>
+                        <select ref={register()} id="size" name="size" className="form-control"
+                                defaultValue={purchase.size}>
+                            <option value="SMALL">Kleiner Einkauf</option>
+                            <option value="MEDIUM">Mittlerer Einkauf</option>
+                            <option value="LARGE">Grosser Einkauf</option>
+                        </select>
+                    </div>
                 </div>
                 <div className="form-group">
                     {(!(purchase.status === 'Neu') && !(purchase.status === 'Veröffentlicht') && !(purchase.status === 'Helfer gefunden') && !(purchase.status === 'Helfer bestätigt')) && <>
@@ -383,19 +399,21 @@ const PurchaseDetailInternal = (props: any) => {
                         </table>
                     </>}
                 </div>
-                <div className="form-group">
-                    <label htmlFor="cost">Kosten</label>
-                    <input name="cost" ref={register()} type="text" className="form-control" id="cost"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="paymentMethod">Zahlungsmethode</label>
-                    <select ref={register()} id="paymentMethod" name="paymentMethod" className="form-control"
-                            defaultValue={purchase.paymentMethod}>
-                        <option value="CASH">Bargeld</option>
-                        <option value="BILL">Rechnung</option>
-                        <option value="TWINT">TWINT</option>
-                        <option value="OTHER">Andere</option>
-                    </select>
+                <div className="row">
+                    <div className="form-group col-md-6">
+                        <label htmlFor="cost"><b>Kosten</b></label>
+                        <input name="cost" ref={register()} type="text" className="form-control" id="cost"/>
+                    </div>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="paymentMethod">Zahlungsmethode</label>
+                        <select ref={register()} id="paymentMethod" name="paymentMethod" className="form-control"
+                                defaultValue={purchase.paymentMethod}>
+                            <option value="CASH">Bargeld</option>
+                            <option value="BILL">Rechnung</option>
+                            <option value="TWINT">TWINT</option>
+                            <option value="OTHER">Andere</option>
+                        </select>
+                    </div>
                 </div>
                 <div className="form-group">
                     <label htmlFor="publicComments">Gruppenchat Kommentare</label>
@@ -416,8 +434,9 @@ const PurchaseDetailInternal = (props: any) => {
                               id="internalComments"/>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="displayTableOrderItems">Einkaufsliste</label>
-                    <PurchaseList value={supermarkets} setValue={setSupermarkets}/>
+                    <label htmlFor="displayTableOrderItems"><i>Die Einkaufsliste kann nicht mehr verändert oder gepeichert werden, nachdem der Helfer oder die Helferin den Einkauf bestätigt hat.</i></label>
+                    <PurchaseList value={supermarkets} setValue={setSupermarkets}
+                        enableSave={purchase.status === 'Neu' || purchase.status === 'Veröffentlicht' || purchase.status === 'Helfer gefunden'}/>
                 </div>
 
                 <div className="row">

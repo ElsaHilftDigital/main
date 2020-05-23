@@ -23,6 +23,8 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static de.njsm.versusvirus.backend.telegram.MessageUtils.escapeMarkdownCharacters;
+
 @Component
 public class MessageSender {
 
@@ -92,7 +94,7 @@ public class MessageSender {
         }
 
         String text;
-        String escapedFirstName = AdminMessageSender.escapeMarkdownCharacters(volunteer.getFirstName());
+        String escapedFirstName = escapeMarkdownCharacters(volunteer.getFirstName());
         if (volunteer.isValidated()) {
             String template = telegramMessages.getConfirmRegistration();
             text = MessageFormat.format(template, escapedFirstName, urlGroupChat);
@@ -158,13 +160,13 @@ public class MessageSender {
 
         return MessageFormat.format(
                 purchaseDescTemplate,
-                AdminMessageSender.escapeMarkdownCharacters(Long.toString(purchase.getId())),
-                AdminMessageSender.escapeMarkdownCharacters(formatter.format(purchase.getExecutionTime())),
-                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
-                AdminMessageSender.escapeMarkdownCharacters(supermarketList),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
+                escapeMarkdownCharacters(Long.toString(purchase.getId())),
+                escapeMarkdownCharacters(formatter.format(purchase.getExecutionTime())),
+                escapeMarkdownCharacters(customer.getAddress().getCity()),
+                escapeMarkdownCharacters(supermarketList),
+                escapeMarkdownCharacters(purchase.getTiming()),
                 purchase.getPurchaseSize().displayName(),
-                AdminMessageSender.escapeMarkdownCharacters(comment)
+                escapeMarkdownCharacters(comment)
         );
     }
 
@@ -197,13 +199,13 @@ public class MessageSender {
         for (PurchaseSupermarket m : purchase.getPurchaseSupermarketList()) {
             // This is telegram markdownv2 -> escape dashes
             purchaseList.append("*");
-            var market = AdminMessageSender.escapeMarkdownCharacters(m.getName());
+            var market = escapeMarkdownCharacters(m.getName());
             purchaseList.append(market);
             purchaseList.append("*\n");
 
             for (OrderItem i : m.getPurchaseList()) {
                 purchaseList.append("\\- ");
-                var item = AdminMessageSender.escapeMarkdownCharacters(i.getPurchaseItem());
+                var item = escapeMarkdownCharacters(i.getPurchaseItem());
                 purchaseList.append(item);
                 purchaseList.append("\n");
             }
@@ -216,16 +218,16 @@ public class MessageSender {
                 .withZone(ZoneId.of("Europe/Zurich"));
         String purchaseDesc = MessageFormat.format(
                 purchaseDescTemplate,
-                AdminMessageSender.escapeMarkdownCharacters(Long.toString(purchase.getId())),
-                AdminMessageSender.escapeMarkdownCharacters(formatter.format(purchase.getExecutionTime())),
-                AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName()),
-                AdminMessageSender.escapeMarkdownCharacters(customer.getLastName()),
-                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getAddress()),
-                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getZipCode().orElse("")),
-                AdminMessageSender.escapeMarkdownCharacters(customer.getAddress().getCity()),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getTiming()),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getPrivateComments()),
-                AdminMessageSender.escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
+                escapeMarkdownCharacters(Long.toString(purchase.getId())),
+                escapeMarkdownCharacters(formatter.format(purchase.getExecutionTime())),
+                escapeMarkdownCharacters(customer.getFirstName()),
+                escapeMarkdownCharacters(customer.getLastName()),
+                escapeMarkdownCharacters(customer.getAddress().getAddress()),
+                escapeMarkdownCharacters(customer.getAddress().getZipCode().orElse("")),
+                escapeMarkdownCharacters(customer.getAddress().getCity()),
+                escapeMarkdownCharacters(purchase.getTiming()),
+                escapeMarkdownCharacters(purchase.getPrivateComments()),
+                escapeMarkdownCharacters(purchase.getPaymentMethod().displayName()),
                 purchaseList.toString()
         );
 
@@ -303,12 +305,12 @@ public class MessageSender {
         }
 
         String template = telegramMessages.getInformToDeliverPurchase();
-        var escapedMessageToVolunteer = messageToVolunteer.isEmpty() ? "" : AdminMessageSender.escapeMarkdownCharacters("\nWICHTIG: " + messageToVolunteer);
-        var customerString = AdminMessageSender.escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
+        var escapedMessageToVolunteer = messageToVolunteer.isEmpty() ? "" : escapeMarkdownCharacters("\nWICHTIG: " + messageToVolunteer);
+        var customerString = escapeMarkdownCharacters(customer.getFirstName() + " " + customer.getLastName());
         String text = MessageFormat.format(
                 template,
                 customerString,
-                AdminMessageSender.escapeMarkdownCharacters(supportUserName),
+                escapeMarkdownCharacters(supportUserName),
                 escapedMessageToVolunteer,
                 String.valueOf(purchase.getId()));
 
@@ -349,7 +351,7 @@ public class MessageSender {
 
     public void confirmConfirmation(long chatId) {
         var template = telegramMessages.getThankForDoingPurchaseMessage();
-        var text = MessageFormat.format(template, AdminMessageSender.escapeMarkdownCharacters(supportUserName));
+        var text = MessageFormat.format(template, escapeMarkdownCharacters(supportUserName));
         var m = new MessageToBeSent(chatId, text);
         api.sendMessage(m);
     }

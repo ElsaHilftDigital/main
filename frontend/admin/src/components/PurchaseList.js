@@ -10,7 +10,7 @@ const SupermarketListItem = styled.li`
 `;
 
 const PurchaseList = (props) => {
-    const { value, setValue, autoFocus } = props;
+    const { value, setValue, autoFocus, enableSave } = props;
 
     const addToSupermarketList = supermarket => setValue(value.concat([supermarket]));
     const updateSupermarket = (supermarket) => (newSupermarket) => setValue(
@@ -39,18 +39,21 @@ const PurchaseList = (props) => {
     const [supermarket, setSupermarket] = useState('');
 
     return <ul className="list-group mb-3">
-        {value.map((supermarket, index) => <SupermarketListItem className="list-group-item" key={index}>
-            <i onClick={() => removeFromSupermarketList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />
-            <SinglePurchaseList autoFocus={autoFocus} supermarket={supermarket} onUpdate={updateSupermarket(supermarket)} />
+        {value.map((supermarket, index) =>
+        <SupermarketListItem className="list-group-item" key={index}>
+            {enableSave &&
+            <i onClick={() => removeFromSupermarketList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />}
+            <SinglePurchaseList autoFocus={autoFocus} supermarket={supermarket} onUpdate={updateSupermarket(supermarket)} enableSave={enableSave}/>
         </SupermarketListItem>)}
+        {enableSave &&
         <SupermarketListItem className="list-group-item">
             <input className="no-outline" type="text" value={supermarket} onChange={e => setSupermarket(e.target.value)} onKeyPress={keyPressHandler} placeholder="Eingabe neuer Supermarkt"/>
-        </SupermarketListItem>
+        </SupermarketListItem>}
     </ul>
 }
 
 const SinglePurchaseList = (props) => {
-    const { supermarket, onUpdate, autoFocus } = props;
+    const { supermarket, onUpdate, autoFocus, enableSave } = props;
 
     const addToPurchaseList = (item) => {
         onUpdate(
@@ -77,17 +80,19 @@ const SinglePurchaseList = (props) => {
 
     return (<>
         <label><b>Einkaufsliste für {supermarket.name}</b></label>
-        <p>
+        {enableSave && <p>
             <i>Bitte jedes Produkt mit "Enter" bestätigen.</i>
-        </p>
+        </p>}
         <ul className="list-group mb-3">
             {supermarket.orderItems.map((item, index) => <PurchaseListItem className="list-group-item" key={index}>
                 {item}
-                <i onClick={() => removeFromPurchaseList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />
+                {enableSave &&
+                <i onClick={() => removeFromPurchaseList(index)} style={{ margin: 'auto' }} className="fa fa-trash float-right" />}
             </PurchaseListItem>)}
+            {enableSave &&
             <PurchaseListItem className="list-group-item">
                 <input className="no-outline" type="text" onKeyPress={keyPressHandler} autoFocus={autoFocus} placeholder="Neues Einkaufsitem"/>
-            </PurchaseListItem>
+            </PurchaseListItem>}
         </ul>
     </>);
 }
